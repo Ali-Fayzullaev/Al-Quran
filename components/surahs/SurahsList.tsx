@@ -10,8 +10,9 @@ interface Surah {
 
 export default async function SurahsList() {
   const res = await fetch("https://api.alquran.cloud/v1/surah", {
-    next: { revalidate: 60 }, // ⚡ кеширование на 60 секунд
+    cache: "force-cache", // ✅ по умолчанию
   });
+
   const data = await res.json();
   const surahs: Surah[] = data.data;
 
