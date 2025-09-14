@@ -121,16 +121,20 @@
   }
 }
 
+.bg-main {
+  background-color: #13A895;
+  color: white;
+}
+
 
 .bb {
   border: 2px solid red;
 }
 
-
 .loader {
   width: 48px;
   height: 48px;
-  border: 5px solid #4bee1a;
+  border: 5px solid #13A895;
   border-bottom-color: transparent;
   border-radius: 50%;
   display: inline-block;

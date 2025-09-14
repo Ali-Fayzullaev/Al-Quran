@@ -9,7 +9,7 @@ export default function Header() {
   const { locale, setLocale } = useLocale();
 
   return (
-    <header className="flex justify-between items-center px-6 py-4 shadow-md bg-green-600 dark:bg-green-700 text-white">
+    <header className="flex justify-between items-center px-6 py-4 shadow-md bg-main dark:bg-green-700 text-white">
       <h1 className="text-2xl font-bold">Al-Quran AI</h1>
 
       <div className="flex items-center gap-4">
