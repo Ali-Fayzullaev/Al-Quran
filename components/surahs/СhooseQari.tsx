@@ -11,13 +11,13 @@ import { useEffect, useState } from "react";
 
 interface Qari {
   englishName: string;
-  identifier: string
+  identifier: string;
 }
 
 export default function СhooseQari() {
   const [qaris, setQaris] = useState<Qari[]>([]);
   const [loading, setLoading] = useState(true);
-  const [slecttedQari, setSelectedQari] = useState("ar.husary")
+  const [selecttedQari, setSelectedQari] = useState("ar.husary");
 
   useEffect(() => {
     async function loadQari() {
@@ -27,6 +27,13 @@ export default function СhooseQari() {
         );
         const data = await res.json();
         setQaris(data.data);
+
+        const savedEdition = localStorage.getItem("qari");
+        if (savedEdition) {
+          setSelectedQari(savedEdition);
+        } else {
+          localStorage.setItem("qari", "ar.husary");
+        }
       } catch (error) {
         console.log(error);
       } finally {
@@ -36,14 +43,22 @@ export default function СhooseQari() {
     loadQari();
   }, []);
 
-  if (loading) return <div className="flex justify-center items-center"> 
-    <p className="loaderTwo"></p>
-  </div>;
+  const handleQariChange = (value: string) => {
+    setSelectedQari(value);
+    localStorage.setItem("qari", value); // 🟢 сохраняем выбор
+  };
+
+  if (loading)
+    return (
+      <div className="flex justify-center items-center">
+        <p className="loaderTwo"></p>
+      </div>
+    );
 
   return (
     <>
       <div>
-        <Select>
+        <Select value={selecttedQari} onValueChange={handleQariChange}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Qaris" />
           </SelectTrigger>
