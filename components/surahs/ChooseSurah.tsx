@@ -9,23 +9,24 @@ import {
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 
-interface Qari {
+interface Surah {
   englishName: string;
   identifier: string
+  number: string
 }
 
-export default function СhooseQari() {
-  const [qaris, setQaris] = useState<Qari[]>([]);
+export default function СhooseSurah() {
+  const [surahs, setSurah] = useState<Surah[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadQari() {
       try {
         const res = await fetch(
-          "https://api.alquran.cloud/v1/edition?format=audio"
+          "https://api.alquran.cloud/v1/surah"
         );
         const data = await res.json();
-        setQaris(data.data);
+        setSurah(data.data);
       } catch (error) {
         console.log(error);
       } finally {
@@ -44,12 +45,12 @@ export default function СhooseQari() {
       <div>
         <Select>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Qaris" />
+            <SelectValue placeholder="Choose surah" />
           </SelectTrigger>
           <SelectContent>
-            {qaris.map((qari, index) => (
-              <SelectItem key={index + 1} value={qari.identifier}>
-                {qari.englishName}
+            {surahs.map((surah, index) => (
+              <SelectItem key={index + 1} value={surah.number}>
+                {surah.englishName}
               </SelectItem>
             ))}
           </SelectContent>

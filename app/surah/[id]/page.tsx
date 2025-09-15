@@ -4,6 +4,8 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Loader2, Play } from "lucide-react";
 import СhooseQari from "../../../components/surahs/СhooseQari"
+import ChooseEdition from "../../../components/surahs/ChooseEdition"
+import СhooseSurah from "../../../components/surahs/ChooseSurah"
 interface Ayah {
   numberInSurah: number;
   text: string;
@@ -52,15 +54,9 @@ export default function Surah() {
 
       {/* Панель (аудио и тафсир) */}
       <div className="flex justify-between items-center mb-8 bg-gray-100 dark:bg-neutral-800 p-4 rounded-xl shadow">
-        <div className="flex items-center gap-2 px-4 py-2 bg-[#13A895] text-white rounded-lg hover:bg-[#0f7c6d] transition">
          <СhooseQari/>
-        </div>
-        <select className="px-3 py-2 rounded-lg border dark:border-neutral-700 dark:bg-neutral-900 dark:text-white">
-          <option>Выбрать тафсир</option>
-          <option>Ибн Касир</option>
-          <option>Аль-Джалаалайн</option>
-          <option>Куртуби</option>
-        </select>
+         <СhooseSurah/>
+        <ChooseEdition/>
       </div>
 
       {/* Аяты */}
