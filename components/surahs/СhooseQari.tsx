@@ -17,6 +17,7 @@ interface Qari {
 export default function СhooseQari() {
   const [qaris, setQaris] = useState<Qari[]>([]);
   const [loading, setLoading] = useState(true);
+  const [slecttedQari, setSelectedQari] = useState("ar.husary")
 
   useEffect(() => {
     async function loadQari() {
