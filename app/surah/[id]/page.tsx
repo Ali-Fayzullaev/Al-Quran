@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Loader2, Play } from "lucide-react";
-import СhooseQari from "../../../components/СhooseQari"
+import СhooseQari from "../../../components/surahs/СhooseQari"
 interface Ayah {
   numberInSurah: number;
   text: string;
