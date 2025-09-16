@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
 
 interface Surah {
   englishName: string;
@@ -58,7 +59,9 @@ export default function ChooseSurah() {
         <SelectContent>
           {surahs.map((surah) => (
             <SelectItem key={surah.number} value={String(surah.number)}>
+                <Link  href={`/surah/${surah.number}`}>
                  {surah.englishName}
+            </Link>
             </SelectItem>
           ))}
         </SelectContent>

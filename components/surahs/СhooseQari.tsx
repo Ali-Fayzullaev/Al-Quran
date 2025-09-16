@@ -1,4 +1,4 @@
-"use clint";
+"use client";
 
 import {
   Select,
@@ -14,10 +14,15 @@ interface Qari {
   identifier: string;
 }
 
-export default function СhooseQari() {
+export default function ChooseQari({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (val: string) => void;
+}) {
   const [qaris, setQaris] = useState<Qari[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selecttedQari, setSelectedQari] = useState("ar.husary");
 
   useEffect(() => {
     async function loadQari() {
@@ -27,26 +32,14 @@ export default function СhooseQari() {
         );
         const data = await res.json();
         setQaris(data.data);
-
-        const savedEdition = localStorage.getItem("qari");
-        if (savedEdition) {
-          setSelectedQari(savedEdition);
-        } else {
-          localStorage.setItem("qari", "ar.husary");
-        }
       } catch (error) {
-        console.log(error);
+        console.error("Ошибка загрузки:", error);
       } finally {
         setLoading(false);
       }
     }
     loadQari();
   }, []);
-
-  const handleQariChange = (value: string) => {
-    setSelectedQari(value);
-    localStorage.setItem("qari", value); // 🟢 сохраняем выбор
-  };
 
   if (loading)
     return (
@@ -56,21 +49,17 @@ export default function СhooseQari() {
     );
 
   return (
-    <>
-      <div>
-        <Select value={selecttedQari} onValueChange={handleQariChange}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Qaris" />
-          </SelectTrigger>
-          <SelectContent>
-            {qaris.map((qari, index) => (
-              <SelectItem key={index + 1} value={qari.identifier}>
-                {qari.englishName}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-    </>
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger className="w-[220px]">
+        <SelectValue placeholder="Выберите кари" />
+      </SelectTrigger>
+      <SelectContent>
+        {qaris.map((qari) => (
+          <SelectItem key={qari.identifier} value={qari.identifier}>
+            {qari.englishName}
+          </SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }

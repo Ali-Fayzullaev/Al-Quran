@@ -8,6 +8,7 @@ import СhooseQari from "../../../components/surahs/СhooseQari";
 import ChooseEdition from "../../../components/surahs/ChooseEdition";
 import СhooseSurah from "../../../components/surahs/ChooseSurah";
 import { Item } from "@radix-ui/react-select";
+import ChooseQari from "../../../components/surahs/СhooseQari";
 interface Ayah {
   numberInSurah: number;
   text: string;
@@ -18,13 +19,23 @@ interface Transl {
   text: string;
 }
 
+interface QariList {
+  audio: string;
+  numberInSurah: number;
+}
+
 export default function Surah() {
   const params = useParams();
   const id = params.id;
   const [ayahs, setAyahs] = useState<Ayah[]>([]);
   const [translation, setTranslation] = useState<Transl[]>([]);
-  const [loading, setLoading] = useState(true);
   const [edition, setEdition] = useState("ru.kuliev");
+
+  const [loading, setLoading] = useState(true);
+
+  const [qariList, setQariList] = useState<QariList[]>([]);
+  const [qari, setQari] = useState("ar.husary");
+
   useEffect(() => {
     async function loadSurah() {
       try {
@@ -61,6 +72,27 @@ export default function Surah() {
     loadTranslation();
   }, [id, edition]);
 
+  useEffect(() => {
+    const savedQari = localStorage.getItem("qari");
+    if (savedQari) setQari(savedQari);
+  }, []);
+
+  useEffect(() => {
+    async function loadQari() {
+      try {
+        const res = await fetch(
+          `https://api.alquran.cloud/v1/surah/${id}/${qari}`
+        );
+
+        const data = await res.json();
+        setQariList(data.data.ayahs);
+      } catch (error) {
+        console.error("Ошибка загрузки перевода:", error);
+      }
+    }
+    loadQari();
+  }, [id, qari]);
+
   if (loading)
     return (
       <div className="flex justify-center items-center h-screen">
@@ -80,9 +112,16 @@ export default function Surah() {
 
       {/* Панель (аудио и тафсир) */}
       <div className="flex justify-between items-center mb-8 bg-gray-100 dark:bg-neutral-800 p-4 rounded-xl shadow">
-        <СhooseQari />
+        <ChooseQari
+          value={qari}
+          onChange={(val) => {
+            setQari(val);
+            localStorage.setItem("qari", val);
+          }}
+        />
+
         <СhooseSurah />
-        <ChooseEdition
+        <ChooseEdition  
           value={edition}
           onChange={(val) => {
             setEdition(val);
@@ -94,9 +133,13 @@ export default function Surah() {
       {/* Аяты */}
       <div className="space-y-6">
         {ayahs.map((a) => {
-          const transl = translation.find(
+          const transl = translation?.find(
             (t) => t.numberInSurah === a.numberInSurah
           );
+          const audio = qariList?.find(
+            (t) => t.numberInSurah === a.numberInSurah
+          );
+
           return (
             <div
               key={a.numberInSurah}
@@ -121,6 +164,10 @@ export default function Surah() {
                   {transl.text}
                 </p>
               )}
+
+              <div className="flex justify-center items-center ">
+                <audio controls src={audio?.audio}></audio>
+              </div>
             </div>
           );
         })}
