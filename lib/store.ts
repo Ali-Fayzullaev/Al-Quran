@@ -67,6 +67,30 @@ export interface QuranState {
   // Search history
   searchHistory: string[];
   
+  // Theme and display settings
+  colorTheme: string;
+  darkMode: 'light' | 'dark' | 'system';
+  nightMode: boolean;
+  
+  // Reading preferences
+  arabicFontFamily: string;
+  translationFontFamily: string;
+  lineHeight: number;
+  wordSpacing: number;
+  
+  // Accessibility
+  highContrast: boolean;
+  reducedMotion: boolean;
+  
+  // Notification settings
+  prayerReminders: boolean;
+  dailyReadingReminder: boolean;
+  reminderTime: string;
+  
+  // Privacy settings
+  analyticsEnabled: boolean;
+  crashReportingEnabled: boolean;
+  
   // Actions
   setCurrentPosition: (surah: number, verse: number) => void;
   setEdition: (edition: string) => void;
@@ -83,6 +107,20 @@ export interface QuranState {
   addReadingSession: (surah: number, verse: number, duration: number) => void;
   addToSearchHistory: (query: string) => void;
   clearSearchHistory: () => void;
+  setColorTheme: (theme: string) => void;
+  setDarkMode: (mode: 'light' | 'dark' | 'system') => void;
+  toggleNightMode: () => void;
+  setArabicFontFamily: (font: string) => void;
+  setTranslationFontFamily: (font: string) => void;
+  setLineHeight: (height: number) => void;
+  setWordSpacing: (spacing: number) => void;
+  setHighContrast: (enabled: boolean) => void;
+  setReducedMotion: (enabled: boolean) => void;
+  setPrayerReminders: (enabled: boolean) => void;
+  setDailyReadingReminder: (enabled: boolean) => void;
+  setReminderTime: (time: string) => void;
+  setAnalyticsEnabled: (enabled: boolean) => void;
+  setCrashReportingEnabled: (enabled: boolean) => void;
 }
 
 export const useQuranStore = create<QuranState>()(
@@ -105,6 +143,30 @@ export const useQuranStore = create<QuranState>()(
       bookmarks: [],
       readingSessions: [],
       searchHistory: [],
+      
+      // Theme and display settings
+      colorTheme: 'default',
+      darkMode: 'system',
+      nightMode: false,
+      
+      // Reading preferences
+      arabicFontFamily: 'amiri',
+      translationFontFamily: 'inter',
+      lineHeight: 1.8,
+      wordSpacing: 1,
+      
+      // Accessibility
+      highContrast: false,
+      reducedMotion: false,
+      
+      // Notification settings
+      prayerReminders: false,
+      dailyReadingReminder: false,
+      reminderTime: '20:00',
+      
+      // Privacy settings
+      analyticsEnabled: true,
+      crashReportingEnabled: true,
       
       // Actions
       setCurrentPosition: (surah: number, verse: number) => {
@@ -183,6 +245,62 @@ export const useQuranStore = create<QuranState>()(
       clearSearchHistory: () => {
         set({ searchHistory: [] });
       },
+      
+      setColorTheme: (theme: string) => {
+        set({ colorTheme: theme });
+      },
+      
+      setDarkMode: (mode: 'light' | 'dark' | 'system') => {
+        set({ darkMode: mode });
+      },
+      
+      toggleNightMode: () => {
+        set((state) => ({ nightMode: !state.nightMode }));
+      },
+      
+      setArabicFontFamily: (font: string) => {
+        set({ arabicFontFamily: font });
+      },
+      
+      setTranslationFontFamily: (font: string) => {
+        set({ translationFontFamily: font });
+      },
+      
+      setLineHeight: (height: number) => {
+        set({ lineHeight: Math.max(1.2, Math.min(3, height)) });
+      },
+      
+      setWordSpacing: (spacing: number) => {
+        set({ wordSpacing: Math.max(0.5, Math.min(2, spacing)) });
+      },
+      
+      setHighContrast: (enabled: boolean) => {
+        set({ highContrast: enabled });
+      },
+      
+      setReducedMotion: (enabled: boolean) => {
+        set({ reducedMotion: enabled });
+      },
+      
+      setPrayerReminders: (enabled: boolean) => {
+        set({ prayerReminders: enabled });
+      },
+      
+      setDailyReadingReminder: (enabled: boolean) => {
+        set({ dailyReadingReminder: enabled });
+      },
+      
+      setReminderTime: (time: string) => {
+        set({ reminderTime: time });
+      },
+      
+      setAnalyticsEnabled: (enabled: boolean) => {
+        set({ analyticsEnabled: enabled });
+      },
+      
+      setCrashReportingEnabled: (enabled: boolean) => {
+        set({ crashReportingEnabled: enabled });
+      },
     }),
     {
       name: 'quran-storage',
@@ -198,6 +316,20 @@ export const useQuranStore = create<QuranState>()(
         bookmarks: state.bookmarks,
         readingSessions: state.readingSessions,
         searchHistory: state.searchHistory,
+        colorTheme: state.colorTheme,
+        darkMode: state.darkMode,
+        nightMode: state.nightMode,
+        arabicFontFamily: state.arabicFontFamily,
+        translationFontFamily: state.translationFontFamily,
+        lineHeight: state.lineHeight,
+        wordSpacing: state.wordSpacing,
+        highContrast: state.highContrast,
+        reducedMotion: state.reducedMotion,
+        prayerReminders: state.prayerReminders,
+        dailyReadingReminder: state.dailyReadingReminder,
+        reminderTime: state.reminderTime,
+        analyticsEnabled: state.analyticsEnabled,
+        crashReportingEnabled: state.crashReportingEnabled,
       }),
     }
   )

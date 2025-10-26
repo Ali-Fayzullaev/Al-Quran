@@ -113,40 +113,7 @@ export async function getPage(pageNumber: number, edition: string = 'quran-uthma
   }
 }
 
-// Поиск в Коране
-export async function searchQuran(query: string, surah?: number): Promise<{ ayahs: ApiVerse[]; matches: number }> {
-  try {
-    let url = `${BASE_URL}/search/${encodeURIComponent(query)}/all/en`;
-    if (surah) {
-      url = `${BASE_URL}/search/${encodeURIComponent(query)}/${surah}/en`;
-    }
-    
-    const response = await fetch(url);
-    if (!response.ok) throw new Error('Failed to search Quran');
-    
-    const data: ApiResponse<{ ayahs: ApiVerse[]; matches: number }> = await response.json();
-    return data.data;
-  } catch (error) {
-    console.error('Error searching Quran:', error);
-    throw error;
-  }
-}
-
-// Получить конкретный аят
-export async function getAyah(ayahNumber: number, edition: string = 'quran-uthmani'): Promise<ApiVerse> {
-  try {
-    const response = await fetch(`${BASE_URL}/ayah/${ayahNumber}/${edition}`);
-    if (!response.ok) throw new Error(`Failed to fetch ayah ${ayahNumber}`);
-    
-    const data: ApiResponse<ApiVerse> = await response.json();
-    return data.data;
-  } catch (error) {
-    console.error(`Error fetching ayah ${ayahNumber}:`, error);
-    throw error;
-  }
-}
-
-// Получить доступные издания (переводы)
+// Получить список доступных изданий
 export async function getEditions(): Promise<Edition[]> {
   try {
     const response = await fetch(`${BASE_URL}/edition`);
@@ -160,10 +127,91 @@ export async function getEditions(): Promise<Edition[]> {
   }
 }
 
-// Получить случайный аят дня
-export async function getRandomAyah(edition: string = 'en.asad'): Promise<ApiVerse> {
+// Получить издания по типу (translation, tafsir, transliteration)
+export async function getEditionsByType(type: string): Promise<Edition[]> {
   try {
-    const response = await fetch(`${BASE_URL}/ayah/${Math.floor(Math.random() * 6236) + 1}/${edition}`);
+    const response = await fetch(`${BASE_URL}/edition/type/${type}`);
+    if (!response.ok) throw new Error(`Failed to fetch editions of type ${type}`);
+    
+    const data: ApiResponse<Edition[]> = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error(`Error fetching editions of type ${type}:`, error);
+    throw error;
+  }
+}
+
+// Получить издания по языку
+export async function getEditionsByLanguage(language: string): Promise<Edition[]> {
+  try {
+    const response = await fetch(`${BASE_URL}/edition/language/${language}`);
+    if (!response.ok) throw new Error(`Failed to fetch editions for language ${language}`);
+    
+    const data: ApiResponse<Edition[]> = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error(`Error fetching editions for language ${language}:`, error);
+    throw error;
+  }
+}
+
+// Поиск в Коране
+export async function searchQuran(query: string, surah?: number, edition: string = 'quran-uthmani'): Promise<{
+  count: number;
+  matches: Array<{
+    number: number;
+    text: string;
+    edition: Edition;
+    surah: ApiSurah;
+    numberInSurah: number;
+  }>;
+}> {
+  try {
+    let url = `${BASE_URL}/search/${encodeURIComponent(query)}/${edition}`;
+    if (surah) {
+      url += `/${surah}`;
+    }
+    
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Failed to search Quran');
+    
+    const data: ApiResponse<{
+      count: number;
+      matches: Array<{
+        number: number;
+        text: string;
+        edition: Edition;
+        surah: ApiSurah;
+        numberInSurah: number;
+      }>;
+    }> = await response.json();
+    
+    return data.data;
+  } catch (error) {
+    console.error('Error searching Quran:', error);
+    throw error;
+  }
+}
+
+// Получить конкретный аят
+export async function getAyah(reference: string, editions: string[] = ['quran-uthmani']): Promise<ApiVerse[]> {
+  try {
+    const editionString = editions.join(',');
+    const response = await fetch(`${BASE_URL}/ayah/${reference}/editions/${editionString}`);
+    if (!response.ok) throw new Error(`Failed to fetch ayah ${reference}`);
+    
+    const data: ApiResponse<ApiVerse[]> = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error(`Error fetching ayah ${reference}:`, error);
+    throw error;
+  }
+}
+
+// Получить случайный аят
+export async function getRandomAyah(edition: string = 'quran-uthmani'): Promise<ApiVerse> {
+  try {
+    const response = await fetch(`${BASE_URL}/ayah/random/${edition}`);
     if (!response.ok) throw new Error('Failed to fetch random ayah');
     
     const data: ApiResponse<ApiVerse> = await response.json();
@@ -174,43 +222,117 @@ export async function getRandomAyah(edition: string = 'en.asad'): Promise<ApiVer
   }
 }
 
-// Список доступных чтецов (кари)
+// Получить аяты в диапазоне
+export async function getAyahsRange(from: string, to: string, edition: string = 'quran-uthmani'): Promise<ApiVerse[]> {
+  try {
+    const response = await fetch(`${BASE_URL}/ayah/${from}-${to}/${edition}`);
+    if (!response.ok) throw new Error(`Failed to fetch ayahs range ${from}-${to}`);
+    
+    const data: ApiResponse<ApiVerse[]> = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error(`Error fetching ayahs range ${from}-${to}:`, error);
+    throw error;
+  }
+}
+
+// Получить информацию о месте саджда (земного поклона)
+export async function getSajdas(edition: string = 'quran-uthmani'): Promise<ApiVerse[]> {
+  try {
+    const response = await fetch(`${BASE_URL}/sajda/${edition}`);
+    if (!response.ok) throw new Error('Failed to fetch sajdas');
+    
+    const data: ApiResponse<ApiVerse[]> = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error('Error fetching sajdas:', error);
+    throw error;
+  }
+}
+
+// Список доступных чтецов (кари) - расширенный список
 export const RECITERS = [
-  { id: 'ar.alafasy', name: 'Mishary Rashid Alafasy', language: 'Arabic' },
-  { id: 'ar.abdulbasitmurattal', name: 'Abdul Basit Abd us-Samad (Murattal)', language: 'Arabic' },
-  { id: 'ar.abdullahbasfar', name: 'Abdullah Basfar', language: 'Arabic' },
-  { id: 'ar.abdurrahmaansudais', name: 'Abdul Rahman Al-Sudais', language: 'Arabic' },
-  { id: 'ar.shaatree', name: 'Abu Bakr Ash-Shaatree', language: 'Arabic' },
-  { id: 'ar.mahermuaiqly', name: 'Maher Al Muaiqly', language: 'Arabic' },
-  { id: 'ar.husary', name: 'Mahmoud Khalil Al-Husary', language: 'Arabic' },
-  { id: 'ar.minshawi', name: 'Mohammad al Minshawi', language: 'Arabic' },
-  { id: 'ar.muhammadayyoub', name: 'Muhammad Ayyoub', language: 'Arabic' },
-  { id: 'ar.saoodshuraym', name: 'Saood bin Ibraaheem Ash-Shuraym', language: 'Arabic' }
+  { id: 'ar.alafasy', name: 'Mishary Rashid Alafasy', language: 'Arabic', country: 'Kuwait' },
+  { id: 'ar.abdulbasitmurattal', name: 'Abdul Basit Abd us-Samad (Murattal)', language: 'Arabic', country: 'Egypt' },
+  { id: 'ar.abdullahbasfar', name: 'Abdullah Basfar', language: 'Arabic', country: 'Saudi Arabia' },
+  { id: 'ar.abdurrahmaansudais', name: 'Abdul Rahman Al-Sudais', language: 'Arabic', country: 'Saudi Arabia' },
+  { id: 'ar.shaatree', name: 'Abu Bakr Ash-Shaatree', language: 'Arabic', country: 'Saudi Arabia' },
+  { id: 'ar.mahermuaiqly', name: 'Maher Al Muaiqly', language: 'Arabic', country: 'Saudi Arabia' },
+  { id: 'ar.husary', name: 'Mahmoud Khalil Al-Husary', language: 'Arabic', country: 'Egypt' },
+  { id: 'ar.minshawi', name: 'Mohammad al Minshawi', language: 'Arabic', country: 'Egypt' },
+  { id: 'ar.muhammadayyoub', name: 'Muhammad Ayyoub', language: 'Arabic', country: 'Pakistan' },
+  { id: 'ar.saoodshuraym', name: 'Saood bin Ibraaheem Ash-Shuraym', language: 'Arabic', country: 'Saudi Arabia' },
+  { id: 'ar.parhizgar', name: 'Mahmoud Ali Al-Banna', language: 'Arabic', country: 'Egypt' },
+  { id: 'ar.tablawi', name: 'Mohammad At-Tablawi', language: 'Arabic', country: 'Egypt' },
+  { id: 'ar.abdullahawadallah', name: 'Abdullah Awad Al Juhani', language: 'Arabic', country: 'Saudi Arabia' },
+  { id: 'ar.hanirifai', name: 'Hani Ar-Rifai', language: 'Arabic', country: 'Saudi Arabia' },
+  { id: 'ar.ibrahimakhbar', name: 'Ibrahim Al-Akhdar', language: 'Arabic', country: 'Egypt' },
 ];
 
-// Список популярных переводов
+// Расширенный список переводов
 export const TRANSLATIONS = [
   // Английские переводы
-  { id: 'en.sahih', name: 'Sahih International', language: 'English', type: 'translation' },
-  { id: 'en.asad', name: 'Muhammad Asad', language: 'English', type: 'translation' },
-  { id: 'en.pickthall', name: 'Mohammed Marmaduke William Pickthall', language: 'English', type: 'translation' },
-  { id: 'en.yusufali', name: 'Abdullah Yusuf Ali', language: 'English', type: 'translation' },
-  { id: 'en.hilali', name: 'Muhsin Khan', language: 'English', type: 'translation' },
+  { id: 'en.sahih', name: 'Sahih International', language: 'English', type: 'translation', quality: 'high' },
+  { id: 'en.asad', name: 'Muhammad Asad', language: 'English', type: 'translation', quality: 'high' },
+  { id: 'en.pickthall', name: 'Mohammed Marmaduke William Pickthall', language: 'English', type: 'translation', quality: 'high' },
+  { id: 'en.yusufali', name: 'Abdullah Yusuf Ali', language: 'English', type: 'translation', quality: 'high' },
+  { id: 'en.hilali', name: 'Muhsin Khan & Muhammad Taqi-ud-Din', language: 'English', type: 'translation', quality: 'medium' },
+  { id: 'en.arberry', name: 'Arthur John Arberry', language: 'English', type: 'translation', quality: 'medium' },
+  { id: 'en.shakir', name: 'M. H. Shakir', language: 'English', type: 'translation', quality: 'medium' },
+  { id: 'en.sarwar', name: 'Muhammad Sarwar', language: 'English', type: 'translation', quality: 'medium' },
   
   // Русские переводы
-  { id: 'ru.kuliev', name: 'Эльмир Кулиев', language: 'Russian', type: 'translation' },
-  { id: 'ru.osmanov', name: 'М.-Н. О. Османов', language: 'Russian', type: 'translation' },
-  { id: 'ru.porokhova', name: 'В. Порохова', language: 'Russian', type: 'translation' },
+  { id: 'ru.kuliev', name: 'Эльмир Кулиев', language: 'Russian', type: 'translation', quality: 'high' },
+  { id: 'ru.osmanov', name: 'М.-Н. О. Османов', language: 'Russian', type: 'translation', quality: 'high' },
+  { id: 'ru.porokhova', name: 'В. Порохова', language: 'Russian', type: 'translation', quality: 'high' },
+  { id: 'ru.muntahab', name: 'Министерство вакуфов Египта', language: 'Russian', type: 'translation', quality: 'high' },
+  { id: 'ru.sablukov', name: 'Г. С. Саблуков', language: 'Russian', type: 'translation', quality: 'medium' },
+  { id: 'ru.krachkovsky', name: 'И. Ю. Крачковский', language: 'Russian', type: 'translation', quality: 'medium' },
   
-  // Арабский текст
-  { id: 'quran-uthmani', name: 'القرآن الكريم', language: 'Arabic', type: 'quran' },
-  { id: 'ar.muyassar', name: 'تفسير المیسر', language: 'Arabic', type: 'tafsir' },
+  // Арабский текст и тафсир
+  { id: 'quran-uthmani', name: 'القرآن الكريم (Uthmani)', language: 'Arabic', type: 'quran', quality: 'original' },
+  { id: 'quran-simple', name: 'القرآن الكريم (Simplified)', language: 'Arabic', type: 'quran', quality: 'original' },
+  { id: 'ar.muyassar', name: 'تفسير المیسر', language: 'Arabic', type: 'tafsir', quality: 'high' },
+  { id: 'ar.jalalayn', name: 'تفسير الجلالين', language: 'Arabic', type: 'tafsir', quality: 'high' },
   
-  // Другие языки
-  { id: 'fr.hamidullah', name: 'Muhammad Hamidullah', language: 'French', type: 'translation' },
-  { id: 'de.bubenheim', name: 'A. S. F. Bubenheim and N. Elyas', language: 'German', type: 'translation' },
-  { id: 'tr.ates', name: 'Süleyman Ateş', language: 'Turkish', type: 'translation' },
-  { id: 'ur.jalandhry', name: 'Fateh Muhammad Jalandhry', language: 'Urdu', type: 'translation' }
+  // Французские переводы
+  { id: 'fr.hamidullah', name: 'Muhammad Hamidullah', language: 'French', type: 'translation', quality: 'high' },
+  { id: 'fr.leclerc', name: 'André Du Ryer', language: 'French', type: 'translation', quality: 'medium' },
+  
+  // Немецкие переводы
+  { id: 'de.bubenheim', name: 'A. S. F. Bubenheim and N. Elyas', language: 'German', type: 'translation', quality: 'high' },
+  { id: 'de.khoury', name: 'Adel Theodor Khoury', language: 'German', type: 'translation', quality: 'high' },
+  
+  // Турецкие переводы
+  { id: 'tr.ates', name: 'Süleyman Ateş', language: 'Turkish', type: 'translation', quality: 'high' },
+  { id: 'tr.yuksel', name: 'Edip Yüksel', language: 'Turkish', type: 'translation', quality: 'medium' },
+  { id: 'tr.ozturk', name: 'Yaşar Nuri Öztürk', language: 'Turkish', type: 'translation', quality: 'medium' },
+  
+  // Урду переводы
+  { id: 'ur.jalandhry', name: 'Fateh Muhammad Jalandhry', language: 'Urdu', type: 'translation', quality: 'high' },
+  { id: 'ur.kanzuliman', name: 'Kanzul Iman', language: 'Urdu', type: 'translation', quality: 'medium' },
+  
+  // Персидские переводы
+  { id: 'fa.makarem', name: 'Makarem Shirazi', language: 'Persian', type: 'translation', quality: 'high' },
+  { id: 'fa.ansarian', name: 'Hussain Ansarian', language: 'Persian', type: 'translation', quality: 'medium' },
+  
+  // Индонезийские переводы
+  { id: 'id.indonesian', name: 'Indonesian Ministry of Religious Affairs', language: 'Indonesian', type: 'translation', quality: 'high' },
+  
+  // Малайские переводы
+  { id: 'ms.basmeih', name: 'Abdullah Muhammad Basmeih', language: 'Malay', type: 'translation', quality: 'high' },
+  
+  // Испанские переводы
+  { id: 'es.cortes', name: 'Julio Cortés', language: 'Spanish', type: 'translation', quality: 'high' },
+  
+  // Итальянские переводы
+  { id: 'it.piccardo', name: 'Hamza Roberto Piccardo', language: 'Italian', type: 'translation', quality: 'high' },
+  
+  // Китайские переводы
+  { id: 'zh.jian', name: '马坚 (Ma Jian)', language: 'Chinese', type: 'translation', quality: 'high' },
+  
+  // Японские переводы
+  { id: 'ja.japanese', name: '日本ムスリム協会', language: 'Japanese', type: 'translation', quality: 'medium' },
 ];
 
 // Исправленная функция для получения аудио суры
@@ -236,75 +358,240 @@ export function getAudioUrl(surahNumber: number, reciter: string = 'ar.alafasy')
   }
 }
 
-// Исправленная функция для получения аудио аята с более надежными URL
-export function getAyahAudioUrl(surahNumber: number, ayahNumber: number, reciter: string = 'ar.alafasy'): string {
+// Новая улучшенная функция для получения аудио аятов с множественными источниками
+export function getAyahAudioSources(surahNumber: number, ayahNumber: number, reciter: string = 'ar.alafasy'): string[] {
   const paddedSurah = surahNumber.toString().padStart(3, '0');
   const paddedAyah = ayahNumber.toString().padStart(3, '0');
+  const reciterCode = reciter.replace('ar.', '');
   
-  // Используем более надежные аудио источники
-  switch (reciter) {
-    case 'ar.alafasy':
-      return `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${paddedSurah}${paddedAyah}.mp3`;
-    case 'ar.abdulbasitmurattal':
-      return `https://cdn.islamic.network/quran/audio-surah/128/ar.abdulbasitmurattal/${paddedSurah}${paddedAyah}.mp3`;
-    case 'ar.abdurrahmaansudais':
-      return `https://cdn.islamic.network/quran/audio-surah/128/ar.abdurrahmaansudais/${paddedSurah}${paddedAyah}.mp3`;
-    case 'ar.mahermuaiqly':
-      return `https://cdn.islamic.network/quran/audio-surah/128/ar.mahermuaiqly/${paddedSurah}${paddedAyah}.mp3`;
-    case 'ar.husary':
-      return `https://cdn.islamic.network/quran/audio-surah/128/ar.husary/${paddedSurah}${paddedAyah}.mp3`;
-    case 'ar.minshawi':
-      return `https://cdn.islamic.network/quran/audio-surah/128/ar.minshawi/${paddedSurah}${paddedAyah}.mp3`;
-    case 'ar.muhammadayyoub':
-      return `https://cdn.islamic.network/quran/audio-surah/128/ar.muhammadayyoub/${paddedSurah}${paddedAyah}.mp3`;
-    case 'ar.saoodshuraym':
-      return `https://cdn.islamic.network/quran/audio-surah/128/ar.saoodshuraym/${paddedSurah}${paddedAyah}.mp3`;
-    default:
-      return `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${paddedSurah}${paddedAyah}.mp3`;
-  }
-}
+  // Конвертация в формат EveryAyah
+  const getEveryAyahReciterCode = (reciterId: string): string => {
+    const reciterMap: Record<string, string> = {
+      'ar.alafasy': 'Alafasy_128kbps',
+      'ar.abdulbasitmurattal': 'Abdul_Basit_Murattal_192kbps',
+      'ar.abdurrahmaansudais': 'Sudais_128kbps', 
+      'ar.mahermuaiqly': 'MaherAlMuaiqly128kbps',
+      'ar.husary': 'Husary_128kbps',
+      'ar.minshawi': 'Minshawi_Murattal_128kbps',
+      'ar.muhammadayyoub': 'Muhammad_Ayyoub_128kbps',
+      'ar.saoodshuraym': 'Saood_ash-Shuraym_128kbps',
+      'ar.shaatree': 'Shaatree_128kbps',
+      'ar.abdullahbasfar': 'Abdullah_Basfar_192kbps'
+    };
+    return reciterMap[reciterId] || 'Alafasy_128kbps';
+  };
 
-// Функция для проверки доступности аудио
-export async function checkAudioAvailability(url: string): Promise<boolean> {
-  try {
-    const response = await fetch(url, { method: 'HEAD' });
-    return response.ok;
-  } catch {
-    return false;
-  }
-}
-
-// Получить альтернативные аудио URL если основной не работает
-export async function getWorkingAudioUrl(surahNumber: number, ayahNumber?: number, reciter: string = 'ar.alafasy'): Promise<string> {
-  const urls = [];
+  const everyAyahCode = getEveryAyahReciterCode(reciter);
   
-  if (ayahNumber) {
-    // Для конкретного аята - используем разные источники
-    urls.push(getAyahAudioUrl(surahNumber, ayahNumber, reciter));
-    
-    // Резервные URL с разными форматами
-    const paddedSurah = surahNumber.toString().padStart(3, '0');
-    const paddedAyah = ayahNumber.toString().padStart(3, '0');
-    
-    // Everyayah.com - очень надежный источник
-    const everyAyahReciter = reciter.replace('ar.', '');
-    urls.push(`https://everyayah.com/data/${everyAyahReciter}/${paddedSurah}${paddedAyah}.mp3`);
+  return [
+    // EveryAyah - самый надежный источник
+    `https://everyayah.com/data/${everyAyahCode}/${paddedSurah}${paddedAyah}.mp3`,
     
     // QuranCDN
-    urls.push(`https://audio.qurancdn.com/${reciter.replace('ar.', '')}/${paddedSurah}${paddedAyah}.mp3`);
+    `https://audio.qurancdn.com/kh/${reciterCode}/${paddedSurah}${paddedAyah}.mp3`,
     
-    // Fallback to default reciter if current doesn't work
-    if (reciter !== 'ar.alafasy') {
-      urls.push(`https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${paddedSurah}${paddedAyah}.mp3`);
-      urls.push(`https://everyayah.com/data/Alafasy_128kbps/${paddedSurah}${paddedAyah}.mp3`);
+    // Tanzil.net
+    `https://tanzil.net/res/audio/${reciterCode}/${paddedSurah}${paddedAyah}.mp3`,
+    
+    // Islamic Network CDN (резервный)
+    `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${paddedSurah}${paddedAyah}.mp3`,
+    
+    // MP3Quran backup для полной суры (если аят не найден)
+    `https://server8.mp3quran.net/afs/${paddedSurah}.mp3`,
+    
+    // GlobalQuraan
+    `https://www.globalquraan.com/audio/${reciterCode}/${paddedSurah}${paddedAyah}.mp3`,
+  ];
+}
+
+// Функция для проверки доступности аудио с таймаутом
+export async function checkAudioAvailability(url: string, timeout: number = 5000): Promise<boolean> {
+  return new Promise((resolve) => {
+    const audio = new Audio();
+    let isResolved = false;
+    
+    const cleanup = () => {
+      if (!isResolved) {
+        isResolved = true;
+        audio.src = '';
+        audio.removeEventListener('canplaythrough', onSuccess);
+        audio.removeEventListener('error', onError);
+      }
+    };
+    
+    const onSuccess = () => {
+      cleanup();
+      resolve(true);
+    };
+    
+    const onError = () => {
+      cleanup();
+      resolve(false);
+    };
+    
+    // Устанавливаем таймаут
+    setTimeout(() => {
+      if (!isResolved) {
+        cleanup();
+        resolve(false);
+      }
+    }, timeout);
+    
+    audio.addEventListener('canplaythrough', onSuccess);
+    audio.addEventListener('error', onError);
+    
+    try {
+      audio.src = url;
+    } catch (error) {
+      cleanup();
+      resolve(false);
     }
+  });
+}
+
+// Улучшенная функция для получения работающего аудио URL
+export async function getWorkingAudioUrl(surahNumber: number, ayahNumber?: number, reciter: string = 'ar.alafasy'): Promise<string> {
+  if (ayahNumber) {
+    // Для конкретного аята
+    const sources = getAyahAudioSources(surahNumber, ayahNumber, reciter);
+    
+    // Пытаемся найти работающий источник
+    for (const url of sources) {
+      const isAvailable = await checkAudioAvailability(url, 3000);
+      if (isAvailable) {
+        console.log('Found working audio source:', url);
+        return url;
+      }
+    }
+    
+    // Если ничего не найдено, возвращаем первый источник как fallback
+    console.warn('No working audio sources found, using fallback');
+    return sources[0];
+    
   } else {
-    // Для всей суры
-    urls.push(getAudioUrl(surahNumber, reciter));
-    const paddedSurah = surahNumber.toString().padStart(3, '0');
-    urls.push(`https://download.quranicaudio.com/quran/${reciter.replace('ar.', '')}/${paddedSurah}.mp3`);
+    // Для всей суры - пробуем разные серверы
+    const surahSources = [
+      getAudioUrl(surahNumber, reciter),
+      `https://download.quranicaudio.com/quran/${reciter.replace('ar.', '')}/${surahNumber.toString().padStart(3, '0')}.mp3`,
+      `https://server8.mp3quran.net/afs/${surahNumber.toString().padStart(3, '0')}.mp3`, // fallback to Alafasy
+    ];
+    
+    for (const url of surahSources) {
+      const isAvailable = await checkAudioAvailability(url, 3000);
+      if (isAvailable) {
+        return url;
+      }
+    }
+    
+    return surahSources[0]; // fallback
+  }
+}
+
+// Функция для предзагрузки аудио
+export async function preloadAudio(url: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    const audio = new Audio();
+    audio.preload = 'metadata';
+    
+    audio.onloadedmetadata = () => {
+      resolve(true);
+    };
+    
+    audio.onerror = () => {
+      resolve(false);
+    };
+    
+    setTimeout(() => resolve(false), 10000); // 10 секунд таймаут
+    
+    audio.src = url;
+  });
+}
+
+// Функция для получения информации об аудио файле
+export async function getAudioInfo(url: string): Promise<{duration: number, canPlay: boolean}> {
+  return new Promise((resolve) => {
+    const audio = new Audio();
+    
+    audio.onloadedmetadata = () => {
+      resolve({
+        duration: audio.duration || 0,
+        canPlay: true
+      });
+    };
+    
+    audio.onerror = () => {
+      resolve({
+        duration: 0,
+        canPlay: false
+      });
+    };
+    
+    setTimeout(() => {
+      resolve({
+        duration: 0,
+        canPlay: false
+      });
+    }, 5000);
+    
+    audio.src = url;
+  });
+}
+
+// Кэш для аудио источников
+const audioSourceCache = new Map<string, string>();
+
+// Функция с кэшированием для быстрого доступа к работающим источникам
+export async function getCachedWorkingAudioUrl(surahNumber: number, ayahNumber?: number, reciter: string = 'ar.alafasy'): Promise<string> {
+  const cacheKey = `${reciter}-${surahNumber}-${ayahNumber || 'full'}`;
+  
+  // Проверяем кэш
+  if (audioSourceCache.has(cacheKey)) {
+    const cachedUrl = audioSourceCache.get(cacheKey)!;
+    // Проверяем, что кэшированный URL все еще работает
+    const isStillWorking = await checkAudioAvailability(cachedUrl, 2000);
+    if (isStillWorking) {
+      return cachedUrl;
+    } else {
+      audioSourceCache.delete(cacheKey);
+    }
   }
   
-  // Возвращаем первый URL (можно добавить проверку доступности)
-  return urls[0];
+  // Получаем новый рабочий URL
+  const workingUrl = await getWorkingAudioUrl(surahNumber, ayahNumber, reciter);
+  
+  // Сохраняем в кэш
+  audioSourceCache.set(cacheKey, workingUrl);
+  
+  return workingUrl;
+}
+
+// Функция для получения качественного перевода по языку
+export function getTranslationsByLanguage(language: string): typeof TRANSLATIONS {
+  return TRANSLATIONS.filter(t => t.language.toLowerCase() === language.toLowerCase())
+                   .sort((a, b) => {
+                     const qualityOrder = { 'original': 0, 'high': 1, 'medium': 2, 'low': 3 };
+                     return (qualityOrder[a.quality as keyof typeof qualityOrder] || 3) - 
+                            (qualityOrder[b.quality as keyof typeof qualityOrder] || 3);
+                   });
+}
+
+// Функция для получения рекомендуемых переводов
+export function getRecommendedTranslations(userLanguage: string = 'en'): typeof TRANSLATIONS {
+  const recommended = [];
+  
+  // Всегда добавляем арабский оригинал
+  recommended.push(TRANSLATIONS.find(t => t.id === 'quran-uthmani')!);
+  
+  // Добавляем лучший перевод на языке пользователя
+  const userLangTranslations = getTranslationsByLanguage(userLanguage);
+  if (userLangTranslations.length > 0) {
+    recommended.push(userLangTranslations[0]);
+  }
+  
+  // Добавляем популярные английские переводы если язык не английский
+  if (userLanguage !== 'English' && userLanguage !== 'en') {
+    recommended.push(TRANSLATIONS.find(t => t.id === 'en.sahih')!);
+  }
+  
+  return recommended.filter(Boolean);
 }

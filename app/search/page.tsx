@@ -20,47 +20,129 @@ function SearchContent() {
 
   const [query, setQuery] = useState(searchParams.get('q') || '');
   const [surahFilter, setSurahFilter] = useState<number | undefined>();
+  const [searchMode, setSearchMode] = useState<'arabic' | 'translation' | 'both'>('both');
+  const [translationLanguage, setTranslationLanguage] = useState<string>('en.sahih');
+  const [juzFilter, setJuzFilter] = useState<number | undefined>();
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [debouncedQuery, setDebouncedQuery] = useState(query);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [totalResults, setTotalResults] = useState(0);
 
   // Debounce search query
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedQuery(query);
     }, 500);
-
     return () => clearTimeout(timer);
   }, [query]);
 
-  // Update URL when query changes
+  // Search function with better error handling
   useEffect(() => {
-    if (debouncedQuery && debouncedQuery !== searchParams.get('q')) {
-      router.push(`/search?q=${encodeURIComponent(debouncedQuery)}`);
-      addToSearchHistory(debouncedQuery);
+    if (debouncedQuery && debouncedQuery.trim().length >= 2) {
+      performSearch(debouncedQuery.trim());
+      addToSearchHistory(debouncedQuery.trim());
+    } else {
+      setSearchResults([]);
     }
-  }, [debouncedQuery, router, searchParams, addToSearchHistory]);
+  }, [debouncedQuery, surahFilter, searchMode, translationLanguage, juzFilter]);
 
-  // Search API call
-  const { data: searchResults, isLoading, error } = useSearchQuran(
-    debouncedQuery, 
-    surahFilter
-  );
+  const performSearch = async (searchQuery: string) => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      let results: any[] = [];
+      
+      // Search in Arabic text
+      if (searchMode === 'arabic' || searchMode === 'both') {
+        const arabicResponse = await fetch(`https://api.alquran.cloud/v1/search/${encodeURIComponent(searchQuery)}/quran-uthmani`);
+        if (arabicResponse.ok) {
+          const arabicData = await arabicResponse.json();
+          if (arabicData.data?.matches) {
+            results.push(...arabicData.data.matches.map((match: any) => ({ 
+              ...match, 
+              source: 'arabic',
+              surahName: match.surah?.englishName || `Surah ${match.surah?.number || 0}`,
+              surahNameArabic: match.surah?.name || '',
+            })));
+          }
+        }
+      }
+
+      // Search in translation
+      if (searchMode === 'translation' || searchMode === 'both') {
+        const translationResponse = await fetch(`https://api.alquran.cloud/v1/search/${encodeURIComponent(searchQuery)}/${translationLanguage}`);
+        if (translationResponse.ok) {
+          const translationData = await translationResponse.json();
+          if (translationData.data?.matches) {
+            results.push(...translationData.data.matches.map((match: any) => ({ 
+              ...match, 
+              source: 'translation',
+              surahName: match.surah?.englishName || `Surah ${match.surah?.number || 0}`,
+              surahNameArabic: match.surah?.name || '',
+            })));
+          }
+        }
+      }
+
+      // Remove duplicates and clean up results
+      const uniqueResults = results.reduce((acc: any[], current: any) => {
+        const exists = acc.find(item => 
+          item.number === current.number && 
+          item.surah?.number === current.surah?.number
+        );
+        if (!exists) {
+          acc.push({
+            ...current,
+            // Ensure text fields are strings, not objects
+            text: typeof current.text === 'string' ? current.text : current.text?.arabic || '',
+            translation: typeof current.translation === 'string' ? current.translation : '',
+            surahName: current.surah?.englishName || `Surah ${current.surah?.number || 0}`,
+            surahNameArabic: current.surah?.name || '',
+          });
+        } else if (current.source === 'translation' && current.text) {
+          // Add translation to existing Arabic result
+          exists.translation = typeof current.text === 'string' ? current.text : current.text?.arabic || '';
+        }
+        return acc;
+      }, []);
+
+      // Apply filters
+      const filteredResults = uniqueResults.filter((match: any) => {
+        if (surahFilter && match.surah?.number !== surahFilter) return false;
+        if (juzFilter && match.juz !== juzFilter) return false;
+        return true;
+      });
+
+      setSearchResults(filteredResults);
+      setTotalResults(filteredResults.length);
+    } catch (searchError) {
+      console.error('Search error:', searchError);
+      setError(locale === 'en' ? 'Search failed. Please try again.' : 'Поиск не удался. Попробуйте снова.');
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (query.trim()) {
+    if (query.trim().length >= 2) {
       setDebouncedQuery(query.trim());
     }
   };
 
-  const highlightText = (text: string, searchTerm: string) => {
-    if (!searchTerm) return text;
+  const highlightSearchTerm = (text: string, searchTerm: string) => {
+    if (!searchTerm || !text) return text;
     
-    const regex = new RegExp(`(${searchTerm})`, 'gi');
+    const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
     const parts = text.split(regex);
     
     return parts.map((part, index) => 
       regex.test(part) ? (
-        <mark key={index} className="bg-yellow-200 dark:bg-yellow-800 px-1 rounded">
+        <mark key={index} className="bg-yellow-200 dark:bg-yellow-800/60 px-1 rounded">
           {part}
         </mark>
       ) : part
@@ -69,260 +151,314 @@ function SearchContent() {
 
   const copyVerse = async (verse: any) => {
     try {
-      await navigator.clipboard.writeText(verse.text);
-      // Show toast notification
+      const text = `${verse.text}\n\n${verse.surahName} ${verse.numberInSurah}:${verse.surah?.number}`;
+      await navigator.clipboard.writeText(text);
+      // Show success feedback
     } catch (error) {
       console.error('Failed to copy text:', error);
     }
   };
 
+  const handleResultClick = (result: any) => {
+    router.push(`/surah/${result.surah?.number}?verse=${result.numberInSurah}`);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-green-900/20">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">
-            {locale === 'en' ? 'Search the Holy Quran' : 'Поиск по Священному Корану'}
-          </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            {locale === 'en' 
-              ? 'Find verses, themes, and concepts throughout the Quran'
-              : 'Найдите аяты, темы и концепции по всему Корану'}
-          </p>
-        </motion.div>
-
-        {/* Search Form */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 mb-8 shadow-lg"
-        >
-          <form onSubmit={handleSearch} className="space-y-4">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder={locale === 'en' ? 'Enter your search query...' : 'Введите поисковый запрос...'}
-                className="w-full pl-12 pr-6 py-4 text-lg border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 focus:border-green-500 focus:ring-0 focus:outline-none transition-colors"
-              />
-            </div>
-            
-            <div className="flex flex-wrap gap-4 items-center">
-              <Select 
-                value={surahFilter?.toString() || 'all'} 
-                onValueChange={(value) => setSurahFilter(value === 'all' ? undefined : parseInt(value))}
-              >
-                <SelectTrigger className="w-[200px]">
-                  <Filter className="w-4 h-4 mr-2" />
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">
-                    {locale === 'en' ? 'All Surahs' : 'Все суры'}
-                  </SelectItem>
-                  {/* Add surah options dynamically */}
-                </SelectContent>
-              </Select>
-              
-              <Button type="submit" disabled={!query.trim()} className="px-6 py-2">
-                {locale === 'en' ? 'Search' : 'Поиск'}
-              </Button>
-            </div>
-          </form>
-        </motion.div>
-
-        {/* Search History */}
-        {searchHistory.length > 0 && !query && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="mb-8"
-          >
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-              <Clock className="w-5 h-5" />
-              {locale === 'en' ? 'Recent Searches' : 'Недавние поиски'}
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {searchHistory.slice(0, 5).map((historyQuery, index) => (
-                <button
-                  key={index}
-                  onClick={() => setQuery(historyQuery)}
-                  className="px-3 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                >
-                  {historyQuery}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        )}
-
-        {/* Search Results */}
-        <AnimatePresence mode="wait">
-          {isLoading && debouncedQuery && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="text-center py-12"
-            >
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-              <p className="text-gray-600 dark:text-gray-300">
-                {locale === 'en' ? 'Searching...' : 'Поиск...'}
-              </p>
-            </motion.div>
-          )}
-
-          {error && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="text-center py-12"
-            >
-              <p className="text-red-600 dark:text-red-400">
-                {locale === 'en' ? 'Error occurred while searching' : 'Ошибка при выполнении поиска'}
-              </p>
-            </motion.div>
-          )}
-
-          {searchResults && debouncedQuery && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-            >
-              {/* Results Header */}
-              <div className="mb-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl">
-                <h3 className="text-lg font-semibold text-green-800 dark:text-green-200 mb-2">
-                  {locale === 'en' ? 'Search Results' : 'Результаты поиска'}
-                </h3>
-                <p className="text-green-600 dark:text-green-300">
-                  {locale === 'en' 
-                    ? `Found ${searchResults.matches} matches for "${debouncedQuery}"`
-                    : `Найдено ${searchResults.matches} совпадений для "${debouncedQuery}"`}
-                </p>
-              </div>
-
-              {/* Results List */}
-              <div className="space-y-6">
-                {searchResults.ayahs?.map((ayah, index) => (
-                  <motion.div
-                    key={ayah.number}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-all duration-300"
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
-                          <span className="text-sm font-bold text-green-700 dark:text-green-300">
-                            {ayah.numberInSurah}
-                          </span>
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">
-                            {locale === 'en' ? `Surah ${ayah.number}` : `Сура ${ayah.number}`} • 
-                            {locale === 'en' ? ` Verse ${ayah.numberInSurah}` : ` Аят ${ayah.numberInSurah}`}
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            {locale === 'en' ? `Juz ${ayah.juz} • Page ${ayah.page}` : `Джуз ${ayah.juz} • Страница ${ayah.page}`}
-                          </p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => copyVerse(ayah)}
-                        >
-                          <Copy className="w-4 h-4" />
-                        </Button>
-                        
-                        <Link href={`/surah/${Math.floor((ayah.number - 1) / 10) + 1}?verse=${ayah.numberInSurah}`}>
-                          <Button variant="ghost" size="sm">
-                            <ExternalLink className="w-4 h-4" />
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
-                    
-                    <div className="text-gray-700 dark:text-gray-300 leading-relaxed">
-                      {highlightText(ayah.text, debouncedQuery)}
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* No Results */}
-              {searchResults.matches === 0 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-center py-16"
-                >
-                  <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-300 mb-2">
-                    {locale === 'en' ? 'No results found' : 'Результаты не найдены'}
-                  </h3>
-                  <p className="text-gray-500 dark:text-gray-400 mb-6">
-                    {locale === 'en' 
-                      ? 'Try different keywords or check your spelling'
-                      : 'Попробуйте другие ключевые слова или проверьте правописание'}
-                  </p>
-                </motion.div>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Search Tips */}
-        {!debouncedQuery && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="mt-12"
-          >
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-              {locale === 'en' ? 'Search Tips' : 'Советы по поиску'}
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-                <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">
-                  {locale === 'en' ? 'Keywords' : 'Ключевые слова'}
-                </h4>
-                <p className="text-sm text-blue-600 dark:text-blue-300">
-                  {locale === 'en' 
-                    ? 'Search for specific words like "mercy", "prayer", "guidance"'
-                    : 'Ищите конкретные слова как "милость", "молитва", "руководство"'}
-                </p>
-              </div>
-              
-              <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl">
-                <h4 className="font-medium text-purple-800 dark:text-purple-200 mb-2">
-                  {locale === 'en' ? 'Themes' : 'Темы'}
-                </h4>
-                <p className="text-sm text-purple-600 dark:text-purple-300">
-                  {locale === 'en' 
-                    ? 'Find verses by theme like "paradise", "patience", "forgiveness"'
-                    : 'Найдите аяты по теме как "рай", "терпение", "прощение"'}
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        )}
+    <div className="max-w-4xl mx-auto p-6 space-y-6">
+      {/* Search Header */}
+      <div className="text-center space-y-4">
+        <h1 className="text-3xl font-bold">
+          {locale === 'en' ? 'Search the Quran' : 'Поиск по Корану'}
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400">
+          {locale === 'en' 
+            ? 'Search through verses in Arabic text and translations'
+            : 'Поиск по аятам в арабском тексте и переводах'
+          }
+        </p>
       </div>
+
+      {/* Search Input */}
+      <div className="relative">
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={locale === 'en' ? 'Enter your search query...' : 'Введите поисковый запрос...'}
+          className="w-full p-4 text-lg border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none bg-white dark:bg-gray-800"
+        />
+        <button
+          onClick={() => setShowAdvanced(!showAdvanced)}
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-500"
+        >
+          ⚙️
+        </button>
+      </div>
+
+      {/* Advanced Search Options */}
+      {showAdvanced && (
+        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl space-y-4">
+          <h3 className="font-semibold text-lg">
+            {locale === 'en' ? 'Advanced Search' : 'Расширенный поиск'}
+          </h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Search Mode */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                {locale === 'en' ? 'Search Mode' : 'Режим поиска'}
+              </label>
+              <select
+                value={searchMode}
+                onChange={(e) => setSearchMode(e.target.value as any)}
+                className="w-full p-2 border rounded-lg bg-white dark:bg-gray-700"
+              >
+                <option value="both">
+                  {locale === 'en' ? 'Arabic & Translation' : 'Арабский и перевод'}
+                </option>
+                <option value="arabic">
+                  {locale === 'en' ? 'Arabic Only' : 'Только арабский'}
+                </option>
+                <option value="translation">
+                  {locale === 'en' ? 'Translation Only' : 'Только перевод'}
+                </option>
+              </select>
+            </div>
+
+            {/* Translation Language */}
+            {(searchMode === 'translation' || searchMode === 'both') && (
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  {locale === 'en' ? 'Translation' : 'Перевод'}
+                </label>
+                <select
+                  value={translationLanguage}
+                  onChange={(e) => setTranslationLanguage(e.target.value)}
+                  className="w-full p-2 border rounded-lg bg-white dark:bg-gray-700"
+                >
+                  <option value="en.sahih">Sahih International</option>
+                  <option value="en.pickthall">Pickthall</option>
+                  <option value="en.yusufali">Yusuf Ali</option>
+                  <option value="ru.kuliev">Кулиев (Russian)</option>
+                  <option value="ru.osmanov">Османов (Russian)</option>
+                </select>
+              </div>
+            )}
+
+            {/* Surah Filter */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                {locale === 'en' ? 'Filter by Surah' : 'Фильтр по суре'}
+              </label>
+              <select
+                value={surahFilter || ''}
+                onChange={(e) => setSurahFilter(e.target.value ? Number(e.target.value) : undefined)}
+                className="w-full p-2 border rounded-lg bg-white dark:bg-gray-700"
+              >
+                <option value="">
+                  {locale === 'en' ? 'All Surahs' : 'Все суры'}
+                </option>
+                {Array.from({ length: 114 }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {locale === 'en' ? `Surah ${i + 1}` : `Сура ${i + 1}`}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Juz Filter */}
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                {locale === 'en' ? 'Filter by Juz' : 'Фильтр по джузу'}
+              </label>
+              <select
+                value={juzFilter || ''}
+                onChange={(e) => setJuzFilter(e.target.value ? Number(e.target.value) : undefined)}
+                className="w-full p-2 border rounded-lg bg-white dark:bg-gray-700"
+              >
+                <option value="">
+                  {locale === 'en' ? 'All Juz' : 'Все джузы'}
+                </option>
+                {Array.from({ length: 30 }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {locale === 'en' ? `Juz ${i + 1}` : `Джуз ${i + 1}`}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Search Results Summary */}
+      {searchResults.length > 0 && (
+        <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
+          <p className="text-blue-700 dark:text-blue-300">
+            {locale === 'en' 
+              ? `Found ${totalResults} result${totalResults !== 1 ? 's' : ''} for "${debouncedQuery}"`
+              : `Найдено ${totalResults} результат${totalResults === 1 ? '' : totalResults < 5 ? 'а' : 'ов'} по запросу "${debouncedQuery}"`
+            }
+          </p>
+        </div>
+      )}
+
+      {/* Loading State */}
+      {isLoading && (
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-2 text-gray-600 dark:text-gray-400">
+            {locale === 'en' ? 'Searching...' : 'Поиск...'}
+          </p>
+        </div>
+      )}
+
+      {/* Error State */}
+      {error && (
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+          <p className="text-red-700 dark:text-red-300">{error}</p>
+        </div>
+      )}
+
+      {/* Search Results */}
+      {searchResults.length > 0 && (
+        <div className="space-y-4">
+          {searchResults.map((result, index) => (
+            <div
+              key={`${result.number}-${index}`}
+              className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl p-6 hover:shadow-md transition-shadow cursor-pointer"
+              onClick={() => handleResultClick(result)}
+            >
+              <div className="flex justify-between items-start mb-3">
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="font-medium">{result.surahName}</span>
+                  {result.surahNameArabic && (
+                    <span className="mr-2 text-right" dir="rtl"> • {result.surahNameArabic}</span>
+                  )}
+                  <span> • {locale === 'en' ? 'Verse' : 'Аят'} {result.numberInSurah}</span>
+                  <span> • Juz {result.juz}</span>
+                </div>
+                
+                <div className="flex gap-2">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      copyVerse(result);
+                    }}
+                    className="p-1 text-gray-500 hover:text-blue-500 transition-colors"
+                    title={locale === 'en' ? 'Copy verse' : 'Копировать аят'}
+                  >
+                    <Copy size={16} />
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      // Add to bookmarks functionality
+                    }}
+                    className="p-1 text-gray-500 hover:text-yellow-500 transition-colors"
+                    title={locale === 'en' ? 'Bookmark verse' : 'Добавить в закладки'}
+                  >
+                    <Bookmark size={16} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Arabic Text */}
+              <div className="text-right mb-4" dir="rtl">
+                <p className="text-xl leading-relaxed font-arabic text-gray-800 dark:text-gray-200">
+                  {highlightSearchTerm(result.text, searchMode === 'arabic' || searchMode === 'both' ? debouncedQuery : '')}
+                </p>
+              </div>
+
+              {/* Translation (if available) */}
+              {result.translation && (
+                <div className="border-t pt-3">
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                    {highlightSearchTerm(result.translation, searchMode === 'translation' || searchMode === 'both' ? debouncedQuery : '')}
+                  </p>
+                </div>
+              )}
+
+              {/* Source indicator */}
+              <div className="mt-3 flex justify-between items-center text-xs text-gray-500">
+                <span>
+                  {result.source === 'arabic' && (locale === 'en' ? 'Found in Arabic text' : 'Найдено в арабском тексте')}
+                  {result.source === 'translation' && (locale === 'en' ? 'Found in translation' : 'Найдено в переводе')}
+                </span>
+                <span className="flex items-center gap-1 text-blue-500 hover:text-blue-600">
+                  {locale === 'en' ? 'Read full surah' : 'Читать полную суру'}
+                  <ExternalLink size={12} />
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* No Results */}
+      {debouncedQuery && !isLoading && searchResults.length === 0 && !error && (
+        <div className="text-center py-12">
+          <BookOpen className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+          <h3 className="text-xl font-medium text-gray-700 dark:text-gray-300 mb-2">
+            {locale === 'en' ? 'No verses found' : 'Аяты не найдены'}
+          </h3>
+          <p className="text-gray-500 dark:text-gray-400">
+            {locale === 'en' 
+              ? 'Try different keywords or check your spelling'
+              : 'Попробуйте другие ключевые слова или проверьте правописание'
+            }
+          </p>
+        </div>
+      )}
+
+      {/* Search History */}
+      {searchHistory.length > 0 && !debouncedQuery && (
+        <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <Clock size={20} />
+            {locale === 'en' ? 'Recent Searches' : 'Недавние поиски'}
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {searchHistory.slice(0, 10).map((searchTerm, index) => (
+              <button
+                key={index}
+                onClick={() => setQuery(searchTerm)}
+                className="px-3 py-1 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-full text-sm hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+              >
+                {searchTerm}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Search Tips */}
+      {!debouncedQuery && (
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl p-6">
+          <h3 className="text-lg font-semibold mb-4">
+            {locale === 'en' ? 'Search Tips' : 'Советы по поиску'}
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700 dark:text-gray-300">
+            <div>
+              <h4 className="font-medium mb-2">
+                {locale === 'en' ? 'Arabic Search:' : 'Поиск на арабском:'}
+              </h4>
+              <ul className="space-y-1">
+                <li>• {locale === 'en' ? 'Use Arabic text for exact matches' : 'Используйте арабский текст для точных совпадений'}</li>
+                <li>• {locale === 'en' ? 'Try different word forms' : 'Попробуйте разные формы слов'}</li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-medium mb-2">
+                {locale === 'en' ? 'Translation Search:' : 'Поиск в переводе:'}
+              </h4>
+              <ul className="space-y-1">
+                <li>• {locale === 'en' ? 'Search in your preferred language' : 'Ищите на предпочитаемом языке'}</li>
+                <li>• {locale === 'en' ? 'Use keywords and phrases' : 'Используйте ключевые слова и фразы'}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -330,8 +466,12 @@ function SearchContent() {
 export default function SearchPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-600"></div>
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="animate-pulse space-y-6">
+          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mx-auto"></div>
+          <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded"></div>
+          <div className="h-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
+        </div>
       </div>
     }>
       <SearchContent />
