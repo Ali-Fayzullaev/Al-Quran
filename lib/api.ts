@@ -236,27 +236,31 @@ export function getAudioUrl(surahNumber: number, reciter: string = 'ar.alafasy')
   }
 }
 
-// Исправленная функция для получения аудио аята
+// Исправленная функция для получения аудио аята с более надежными URL
 export function getAyahAudioUrl(surahNumber: number, ayahNumber: number, reciter: string = 'ar.alafasy'): string {
   const paddedSurah = surahNumber.toString().padStart(3, '0');
   const paddedAyah = ayahNumber.toString().padStart(3, '0');
   
-  // Используем правильный URL для аудио аятов
+  // Используем более надежные аудио источники
   switch (reciter) {
     case 'ar.alafasy':
-      return `https://verses.quran.com/Alafasy/mp3/${paddedSurah}${paddedAyah}.mp3`;
+      return `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${paddedSurah}${paddedAyah}.mp3`;
     case 'ar.abdulbasitmurattal':
-      return `https://verses.quran.com/AbdulBaset/Murattal/mp3/${paddedSurah}${paddedAyah}.mp3`;
+      return `https://cdn.islamic.network/quran/audio-surah/128/ar.abdulbasitmurattal/${paddedSurah}${paddedAyah}.mp3`;
     case 'ar.abdurrahmaansudais':
-      return `https://verses.quran.com/Sudais/mp3/${paddedSurah}${paddedAyah}.mp3`;
+      return `https://cdn.islamic.network/quran/audio-surah/128/ar.abdurrahmaansudais/${paddedSurah}${paddedAyah}.mp3`;
     case 'ar.mahermuaiqly':
-      return `https://verses.quran.com/Maher/mp3/${paddedSurah}${paddedAyah}.mp3`;
+      return `https://cdn.islamic.network/quran/audio-surah/128/ar.mahermuaiqly/${paddedSurah}${paddedAyah}.mp3`;
     case 'ar.husary':
-      return `https://verses.quran.com/Husary/mp3/${paddedSurah}${paddedAyah}.mp3`;
+      return `https://cdn.islamic.network/quran/audio-surah/128/ar.husary/${paddedSurah}${paddedAyah}.mp3`;
     case 'ar.minshawi':
-      return `https://verses.quran.com/Minshawi/Murattal/mp3/${paddedSurah}${paddedAyah}.mp3`;
+      return `https://cdn.islamic.network/quran/audio-surah/128/ar.minshawi/${paddedSurah}${paddedAyah}.mp3`;
+    case 'ar.muhammadayyoub':
+      return `https://cdn.islamic.network/quran/audio-surah/128/ar.muhammadayyoub/${paddedSurah}${paddedAyah}.mp3`;
+    case 'ar.saoodshuraym':
+      return `https://cdn.islamic.network/quran/audio-surah/128/ar.saoodshuraym/${paddedSurah}${paddedAyah}.mp3`;
     default:
-      return `https://verses.quran.com/Alafasy/mp3/${paddedSurah}${paddedAyah}.mp3`;
+      return `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${paddedSurah}${paddedAyah}.mp3`;
   }
 }
 
@@ -275,28 +279,32 @@ export async function getWorkingAudioUrl(surahNumber: number, ayahNumber?: numbe
   const urls = [];
   
   if (ayahNumber) {
-    // Для конкретного аята
+    // Для конкретного аята - используем разные источники
     urls.push(getAyahAudioUrl(surahNumber, ayahNumber, reciter));
-    // Резервные URL
+    
+    // Резервные URL с разными форматами
     const paddedSurah = surahNumber.toString().padStart(3, '0');
     const paddedAyah = ayahNumber.toString().padStart(3, '0');
-    urls.push(`https://audio.qurancdn.com/Alafasy/${paddedSurah}${paddedAyah}.mp3`);
-    urls.push(`https://cdn.islamic.network/quran/audio/128/ar.alafasy/${surahNumber * 1000 + ayahNumber}.mp3`);
+    
+    // Everyayah.com - очень надежный источник
+    const everyAyahReciter = reciter.replace('ar.', '');
+    urls.push(`https://everyayah.com/data/${everyAyahReciter}/${paddedSurah}${paddedAyah}.mp3`);
+    
+    // QuranCDN
+    urls.push(`https://audio.qurancdn.com/${reciter.replace('ar.', '')}/${paddedSurah}${paddedAyah}.mp3`);
+    
+    // Fallback to default reciter if current doesn't work
+    if (reciter !== 'ar.alafasy') {
+      urls.push(`https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${paddedSurah}${paddedAyah}.mp3`);
+      urls.push(`https://everyayah.com/data/Alafasy_128kbps/${paddedSurah}${paddedAyah}.mp3`);
+    }
   } else {
     // Для всей суры
     urls.push(getAudioUrl(surahNumber, reciter));
-    // Резервные URL для суры
     const paddedSurah = surahNumber.toString().padStart(3, '0');
-    urls.push(`https://download.quranicaudio.com/quran/alafasy/${paddedSurah}.mp3`);
+    urls.push(`https://download.quranicaudio.com/quran/${reciter.replace('ar.', '')}/${paddedSurah}.mp3`);
   }
   
-  // Проверяем каждый URL
-  for (const url of urls) {
-    if (await checkAudioAvailability(url)) {
-      return url;
-    }
-  }
-  
-  // Возвращаем первый URL если ничего не работает
+  // Возвращаем первый URL (можно добавить проверку доступности)
   return urls[0];
 }

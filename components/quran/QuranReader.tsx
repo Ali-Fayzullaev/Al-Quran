@@ -17,7 +17,8 @@ import {
   Type,
   Languages,
   User,
-  Globe
+  Globe,
+  X
 } from "lucide-react";
 import { useQuranStore } from "@/lib/store";
 import { useSurahMultipleEditions } from "@/lib/hooks";
@@ -37,7 +38,6 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
   const {
     fontSize,
     showTranslation,
-    showTransliteration,
     selectedTranslations,
     audioReciter,
     audioSpeed,
@@ -46,10 +46,8 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
     bookmarks,
     availableReciters,
     availableTranslations,
-    setCurrentPosition,
     setFontSize,
     toggleTranslation,
-    toggleTransliteration,
     setSelectedTranslations,
     setAudioReciter,
     setAudioSpeed,
@@ -57,20 +55,16 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
     setAutoPlay,
     addBookmark,
     removeBookmark,
-    addReadingSession,
   } = useQuranStore();
 
   const [currentVerse, setCurrentVerse] = useState(initialVerse);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [audioProgress, setAudioProgress] = useState(0);
   const [showSettings, setShowSettings] = useState(false);
-  const [autoScroll, setAutoScroll] = useState(true);
   const [isLoadingAudio, setIsLoadingAudio] = useState(false);
   const [audioError, setAudioError] = useState<string | null>(null);
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const verseRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
-  const sessionStartTime = useRef<Date>(new Date());
 
   // Получаем суру с множественными переводами
   const { data: surahData, isLoading, error } = useSurahMultipleEditions(
@@ -81,36 +75,26 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
   const arabicSurah = surahData?.[0];
   const translationSurahs = surahData?.slice(1) || [];
 
-  // Обновляем позицию в store
-  useEffect(() => {
-    setCurrentPosition(surahNumber, currentVerse);
-  }, [surahNumber, currentVerse, setCurrentPosition]);
-
   // Автоскролл к текущему аяту
   useEffect(() => {
-    if (autoScroll && verseRefs.current[currentVerse]) {
+    if (verseRefs.current[currentVerse]) {
       verseRefs.current[currentVerse]?.scrollIntoView({
         behavior: 'smooth',
         block: 'center'
       });
     }
-  }, [currentVerse, autoScroll]);
+  }, [currentVerse]);
 
-  // Обработка аудио с улучшенной обработкой ошибок
+  // Обработка аудио
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-
-    const handleTimeUpdate = () => {
-      const progress = (audio.currentTime / audio.duration) * 100;
-      setAudioProgress(progress);
-    };
 
     const handleEnded = () => {
       setIsPlaying(false);
       if (autoPlay && arabicSurah && currentVerse < arabicSurah.numberOfAyahs) {
         setCurrentVerse(prev => prev + 1);
-        setTimeout(() => playAudio(), 1000);
+        setTimeout(() => playVerseAudio(currentVerse + 1), 1000);
       }
     };
 
@@ -118,7 +102,7 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
       console.error('Audio playback error');
       setIsPlaying(false);
       setIsLoadingAudio(false);
-      setAudioError('Ошибка воспроизведения аудио');
+      setAudioError(locale === 'en' ? 'Audio not available for this reciter' : 'Аудио недоступно для этого чтеца');
     };
 
     const handleLoadStart = () => {
@@ -131,23 +115,21 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
       setAudioError(null);
     };
 
-    audio.addEventListener('timeupdate', handleTimeUpdate);
     audio.addEventListener('ended', handleEnded);
     audio.addEventListener('error', handleError);
     audio.addEventListener('loadstart', handleLoadStart);
     audio.addEventListener('canplay', handleCanPlay);
 
     return () => {
-      audio.removeEventListener('timeupdate', handleTimeUpdate);
       audio.removeEventListener('ended', handleEnded);
       audio.removeEventListener('error', handleError);
       audio.removeEventListener('loadstart', handleLoadStart);
       audio.removeEventListener('canplay', handleCanPlay);
     };
-  }, [currentVerse, arabicSurah, autoPlay]);
+  }, [currentVerse, arabicSurah, autoPlay, locale]);
 
-  // Воспроизведение аудио с улучшенной обработкой
-  const playAudio = async () => {
+  // ИСПРАВЛЕННАЯ функция для воспроизведения аудио конкретного аята
+  const playVerseAudio = async (verseNumber: number) => {
     const audio = audioRef.current;
     if (!audio || !arabicSurah) return;
 
@@ -155,19 +137,21 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
       setIsLoadingAudio(true);
       setAudioError(null);
       
-      const currentAyah = arabicSurah.ayahs?.[currentVerse - 1];
-      if (currentAyah) {
-        // Используем новую функцию для получения рабочего URL
-        const audioUrl = await getWorkingAudioUrl(surahNumber, currentVerse, audioReciter);
-        
-        audio.src = audioUrl;
-        audio.playbackRate = audioSpeed;
-        audio.volume = audioVolume;
-        
-        await audio.play();
-        setIsPlaying(true);
-        setIsLoadingAudio(false);
-      }
+      // Устанавливаем текущий аят
+      setCurrentVerse(verseNumber);
+      
+      // Получаем рабочий URL для аудио
+      const audioUrl = await getWorkingAudioUrl(surahNumber, verseNumber, audioReciter);
+      
+      console.log('Playing audio:', audioUrl); // Для отладки
+      
+      audio.src = audioUrl;
+      audio.playbackRate = audioSpeed;
+      audio.volume = audioVolume;
+      
+      await audio.play();
+      setIsPlaying(true);
+      setIsLoadingAudio(false);
     } catch (error) {
       console.error('Error playing audio:', error);
       setIsPlaying(false);
@@ -188,7 +172,7 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
     if (isPlaying) {
       pauseAudio();
     } else {
-      playAudio();
+      playVerseAudio(currentVerse);
     }
   };
 
@@ -225,14 +209,13 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
     ).filter(Boolean);
 
     let text = `${arabicVerse?.text}\n\n`;
-    translationVerses.forEach((translation, index) => {
+    translationVerses.forEach((translation) => {
       text += `${translation}\n`;
     });
     text += `\n${arabicSurah.englishName} ${verseNumber}:${arabicSurah.number}`;
 
     try {
       await navigator.clipboard.writeText(text);
-      // Показать уведомление об успешном копировании
     } catch (error) {
       console.error('Failed to copy text:', error);
     }
@@ -267,39 +250,41 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="w-full max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
       <audio ref={audioRef} preload="metadata" />
       
-      {/* Header */}
-      <div className="text-center mb-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl">
-        <h1 className="text-3xl font-bold text-green-800 dark:text-green-200 mb-2">
+      {/* Header - Адаптивный */}
+      <div className="text-center mb-6 sm:mb-8 p-4 sm:p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl sm:rounded-2xl">
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-800 dark:text-green-200 mb-2 font-amiri" dir="rtl">
           {arabicSurah.name}
         </h1>
-        <p className="text-lg text-gray-600 dark:text-gray-300">
+        <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-300">
           {arabicSurah.englishName} - {arabicSurah.englishNameTranslation}
         </p>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
           {arabicSurah.numberOfAyahs} {locale === 'en' ? 'verses' : 'аятов'} • {arabicSurah.revelationType}
         </p>
       </div>
 
-      {/* Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
-        <div className="flex items-center gap-2">
+      {/* Controls - Адаптивный */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 p-3 sm:p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+        <div className="flex items-center justify-center sm:justify-start gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => navigateVerse('prev')}
             disabled={currentVerse === 1}
+            className="flex-1 sm:flex-initial"
           >
             <ChevronLeft className="h-4 w-4" />
+            <span className="sm:hidden">{locale === 'en' ? 'Prev' : 'Пред'}</span>
           </Button>
           
           <Button
             variant="outline"
             size="sm"
             onClick={toggleAudio}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 flex-1 sm:flex-initial"
             disabled={isLoadingAudio}
           >
             {isLoadingAudio ? (
@@ -309,7 +294,7 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
             ) : (
               <Play className="h-4 w-4" />
             )}
-            {locale === 'en' ? 'Audio' : 'Аудио'}
+            <span className="hidden sm:inline">{locale === 'en' ? 'Audio' : 'Аудио'}</span>
           </Button>
           
           <Button
@@ -317,13 +302,15 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
             size="sm"
             onClick={() => navigateVerse('next')}
             disabled={currentVerse === arabicSurah.numberOfAyahs}
+            className="flex-1 sm:flex-initial"
           >
             <ChevronRight className="h-4 w-4" />
+            <span className="sm:hidden">{locale === 'en' ? 'Next' : 'След'}</span>
           </Button>
         </div>
 
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600 dark:text-gray-300">
+        <div className="flex items-center justify-between sm:justify-end gap-2">
+          <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
             {currentVerse} / {arabicSurah.numberOfAyahs}
           </span>
           
@@ -334,6 +321,7 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
             className={cn(showTranslation && "bg-green-100 dark:bg-green-900")}
           >
             <Languages className="h-4 w-4" />
+            <span className="hidden sm:inline ml-1">{locale === 'en' ? 'Translation' : 'Перевод'}</span>
           </Button>
           
           <Button
@@ -342,6 +330,7 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
             onClick={() => setShowSettings(!showSettings)}
           >
             <Settings className="h-4 w-4" />
+            <span className="hidden sm:inline ml-1">{locale === 'en' ? 'Settings' : 'Настройки'}</span>
           </Button>
         </div>
       </div>
@@ -353,153 +342,184 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
         </div>
       )}
 
-      {/* Settings Panel */}
+      {/* УЛУЧШЕННАЯ Settings Panel - Полностью адаптивная */}
       <AnimatePresence>
         {showSettings && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="mb-6 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl space-y-6"
+            className="mb-4 sm:mb-6 bg-gray-50 dark:bg-gray-800 rounded-xl overflow-hidden"
           >
-            {/* Reciter Selection */}
-            <div>
-              <label className="block text-sm font-medium mb-3 flex items-center gap-2">
-                <User className="w-4 h-4" />
-                {locale === 'en' ? 'Select Reciter (Qari)' : 'Выбрать чтеца (Кари)'}
-              </label>
-              <Select value={audioReciter} onValueChange={setAudioReciter}>
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableReciters.map((reciter) => (
-                    <SelectItem key={reciter.id} value={reciter.id}>
-                      {reciter.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Translation Selection */}
-            <div>
-              <label className="block text-sm font-medium mb-3 flex items-center gap-2">
-                <Globe className="w-4 h-4" />
-                {locale === 'en' ? 'Select Translations' : 'Выбрать переводы'}
-              </label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto">
-                {availableTranslations
-                  .filter(t => t.type === 'translation')
-                  .map((translation) => (
-                    <label
-                      key={translation.id}
-                      className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={selectedTranslations.includes(translation.id)}
-                        onChange={(e) => handleTranslationChange(translation.id, e.target.checked)}
-                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
-                      />
-                      <div className="flex-1">
-                        <div className="text-sm font-medium">{translation.name}</div>
-                        <div className="text-xs text-gray-500">{translation.language}</div>
-                      </div>
-                    </label>
-                  ))}
-              </div>
-            </div>
-
-            {/* Audio Settings */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  {locale === 'en' ? 'Font Size' : 'Размер шрифта'}
-                </label>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setFontSize(fontSize - 2)}
-                  >
-                    -
-                  </Button>
-                  <span className="text-sm font-medium w-12 text-center">{fontSize}px</span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setFontSize(fontSize + 2)}
-                  >
-                    +
-                  </Button>
-                </div>
+            <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+              {/* Header with close button */}
+              <div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-700">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
+                  {locale === 'en' ? 'Settings' : 'Настройки'}
+                </h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowSettings(false)}
+                  className="sm:hidden"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  {locale === 'en' ? 'Volume' : 'Громкость'}
+              {/* Reciter Selection - Адаптивный */}
+              <div className="space-y-3">
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <User className="w-4 h-4" />
+                  {locale === 'en' ? 'Select Reciter (Qari)' : 'Выбрать чтеца (Кари)'}
                 </label>
-                <div className="flex items-center gap-2">
-                  <VolumeX className="h-4 w-4" />
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.1"
-                    value={audioVolume}
-                    onChange={(e) => setAudioVolume(parseFloat(e.target.value))}
-                    className="flex-1"
-                  />
-                  <Volume2 className="h-4 w-4" />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">
-                  {locale === 'en' ? 'Speed' : 'Скорость'}
-                </label>
-                <Select value={audioSpeed.toString()} onValueChange={(value) => setAudioSpeed(parseFloat(value))}>
-                  <SelectTrigger>
+                <Select value={audioReciter} onValueChange={setAudioReciter}>
+                  <SelectTrigger className="w-full">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="0.5">0.5x</SelectItem>
-                    <SelectItem value="0.75">0.75x</SelectItem>
-                    <SelectItem value="1">1x</SelectItem>
-                    <SelectItem value="1.25">1.25x</SelectItem>
-                    <SelectItem value="1.5">1.5x</SelectItem>
+                  <SelectContent className="max-h-60">
+                    {availableReciters.map((reciter) => (
+                      <SelectItem key={reciter.id} value={reciter.id}>
+                        <div className="text-left">
+                          <div className="font-medium">{reciter.name}</div>
+                          <div className="text-xs text-gray-500">{reciter.language}</div>
+                        </div>
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
-            </div>
 
-            {/* Auto Play Toggle */}
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium">
-                {locale === 'en' ? 'Auto-play next verse' : 'Автовоспроизведение следующего аята'}
-              </label>
-              <button
-                onClick={() => setAutoPlay(!autoPlay)}
-                className={cn(
-                  "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
-                  autoPlay ? "bg-green-600" : "bg-gray-200 dark:bg-gray-600"
-                )}
-              >
-                <span
+              {/* Translation Selection - Улучшенный и адаптивный */}
+              <div className="space-y-3">
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-white">
+                  <Globe className="w-4 h-4" />
+                  {locale === 'en' ? 'Select Translations' : 'Выбрать переводы'}
+                </label>
+                <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-lg p-2">
+                  {availableTranslations
+                    .filter(t => t.type === 'translation')
+                    .map((translation) => (
+                      <label
+                        key={translation.id}
+                        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedTranslations.includes(translation.id)}
+                          onChange={(e) => handleTranslationChange(translation.id, e.target.checked)}
+                          className="rounded border-gray-300 text-green-600 focus:ring-green-500 w-4 h-4"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                            {translation.name}
+                          </div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            {translation.language}
+                          </div>
+                        </div>
+                      </label>
+                    ))}
+                </div>
+              </div>
+
+              {/* Audio Settings - Адаптивная сетка */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-900 dark:text-white">
+                    {locale === 'en' ? 'Font Size' : 'Размер шрифта'}
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setFontSize(fontSize - 2)}
+                      className="w-8 h-8 p-0"
+                    >
+                      -
+                    </Button>
+                    <span className="text-sm font-medium w-16 text-center bg-gray-100 dark:bg-gray-700 rounded px-2 py-1">
+                      {fontSize}px
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setFontSize(fontSize + 2)}
+                      className="w-8 h-8 p-0"
+                    >
+                      +
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-900 dark:text-white">
+                    {locale === 'en' ? 'Volume' : 'Громкость'}
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <VolumeX className="h-4 w-4 text-gray-500" />
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.1"
+                      value={audioVolume}
+                      onChange={(e) => setAudioVolume(parseFloat(e.target.value))}
+                      className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                    />
+                    <Volume2 className="h-4 w-4 text-gray-500" />
+                  </div>
+                  <div className="text-xs text-center text-gray-500">
+                    {Math.round(audioVolume * 100)}%
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-900 dark:text-white">
+                    {locale === 'en' ? 'Speed' : 'Скорость'}
+                  </label>
+                  <Select value={audioSpeed.toString()} onValueChange={(value) => setAudioSpeed(parseFloat(value))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="0.5">0.5x</SelectItem>
+                      <SelectItem value="0.75">0.75x</SelectItem>
+                      <SelectItem value="1">1x</SelectItem>
+                      <SelectItem value="1.25">1.25x</SelectItem>
+                      <SelectItem value="1.5">1.5x</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Auto Play Toggle */}
+              <div className="flex items-center justify-between p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+                <label className="text-sm font-medium text-gray-900 dark:text-white">
+                  {locale === 'en' ? 'Auto-play next verse' : 'Автовоспроизведение следующего аята'}
+                </label>
+                <button
+                  onClick={() => setAutoPlay(!autoPlay)}
                   className={cn(
-                    "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
-                    autoPlay ? "translate-x-6" : "translate-x-1"
+                    "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+                    autoPlay ? "bg-green-600" : "bg-gray-300 dark:bg-gray-600"
                   )}
-                />
-              </button>
+                >
+                  <span
+                    className={cn(
+                      "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                      autoPlay ? "translate-x-6" : "translate-x-1"
+                    )}
+                  />
+                </button>
+              </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Verses */}
-      <div className="space-y-6">
+      {/* Verses - Полностью адаптивные */}
+      <div className="space-y-4 sm:space-y-6">
         {arabicSurah.ayahs?.map((verse, index) => {
           const verseNumber = verse.numberInSurah;
           const isCurrentVerse = verseNumber === currentVerse;
@@ -507,19 +527,20 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
           return (
             <motion.div
               key={verse.number}
-              ref={(el) => (verseRefs.current[verseNumber] = el)}
+              ref={(el) => {
+                verseRefs.current[verseNumber] = el;
+              }}
               className={cn(
-                "p-6 rounded-xl border transition-all duration-300",
+                "p-4 sm:p-6 rounded-xl border transition-all duration-300",
                 isCurrentVerse 
                   ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 shadow-lg" 
                   : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
               )}
-              layout
             >
-              {/* Verse Number */}
+              {/* Verse Header - Адаптивный */}
               <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-600 text-white rounded-full flex items-center justify-center text-sm sm:text-base font-bold">
                     {verseNumber}
                   </div>
                   {isCurrentVerse && isPlaying && (
@@ -531,40 +552,52 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                   )}
                 </div>
                 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 sm:gap-2">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => toggleBookmark(verseNumber)}
                     className={cn(
+                      "p-2",
                       isBookmarked(verseNumber) && "text-yellow-500"
                     )}
                   >
-                    {isBookmarked(verseNumber) ? <BookmarkCheck className="h-4 w-4" /> : <Bookmark className="h-4 w-4" />}
+                    {isBookmarked(verseNumber) ? 
+                      <BookmarkCheck className="h-4 w-4" /> : 
+                      <Bookmark className="h-4 w-4" />
+                    }
                   </Button>
                   
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => copyVerse(verseNumber)}
+                    className="p-2"
                   >
                     <Copy className="h-4 w-4" />
                   </Button>
                   
+                  {/* ИСПРАВЛЕННАЯ кнопка Play */}
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => setCurrentVerse(verseNumber)}
+                    onClick={() => playVerseAudio(verseNumber)}
+                    disabled={isLoadingAudio}
+                    className="p-2"
                   >
-                    <Play className="h-4 w-4" />
+                    {isLoadingAudio && currentVerse === verseNumber ? (
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+                    ) : (
+                      <Play className="h-4 w-4" />
+                    )}
                   </Button>
                 </div>
               </div>
 
-              {/* Arabic Text */}
+              {/* Arabic Text - Адаптивный размер */}
               <div 
-                className="text-right mb-4 leading-loose font-amiri"
-                style={{ fontSize: `${fontSize + 4}px` }}
+                className="text-right mb-4 leading-loose font-amiri px-2"
+                style={{ fontSize: `${fontSize + 2}px` }}
                 dir="rtl"
               >
                 <p className="text-gray-900 dark:text-gray-100">
@@ -572,21 +605,21 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                 </p>
               </div>
 
-              {/* Translations */}
+              {/* Translations - Адаптивный */}
               {showTranslation && translationSurahs.map((translationSurah, tIndex) => {
                 const translationVerse = translationSurah.ayahs?.[index];
                 if (!translationVerse) return null;
 
                 return (
-                  <div key={tIndex} className="mb-3 last:mb-0">
+                  <div key={tIndex} className="mb-3 last:mb-0 px-2">
                     <p 
                       className="text-gray-700 dark:text-gray-300 leading-relaxed"
-                      style={{ fontSize: `${fontSize}px` }}
+                      style={{ fontSize: `${fontSize - 2}px` }}
                     >
                       {translationVerse.text}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {translationSurah.name || selectedTranslations[tIndex]}
+                      {selectedTranslations[tIndex] && availableTranslations.find(t => t.id === selectedTranslations[tIndex])?.name}
                     </p>
                   </div>
                 );
@@ -596,19 +629,22 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
         })}
       </div>
 
-      {/* Navigation Footer */}
-      <div className="mt-12 flex justify-center">
-        <div className="flex items-center gap-4">
+      {/* Navigation Footer - Адаптивный */}
+      <div className="mt-8 sm:mt-12 flex justify-center">
+        <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
           <Button
             variant="outline"
             onClick={() => navigateVerse('prev')}
             disabled={currentVerse === 1}
+            className="flex-1 sm:flex-initial"
           >
-            <ChevronLeft className="h-4 w-4 mr-2" />
-            {locale === 'en' ? 'Previous' : 'Предыдущий'}
+            <ChevronLeft className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="text-sm sm:text-base">
+              {locale === 'en' ? 'Previous' : 'Предыдущий'}
+            </span>
           </Button>
           
-          <span className="px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-sm">
+          <span className="px-3 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs sm:text-sm font-medium">
             {currentVerse} / {arabicSurah.numberOfAyahs}
           </span>
           
@@ -616,9 +652,12 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
             variant="outline"
             onClick={() => navigateVerse('next')}
             disabled={currentVerse === arabicSurah.numberOfAyahs}
+            className="flex-1 sm:flex-initial"
           >
-            {locale === 'en' ? 'Next' : 'Следующий'}
-            <ChevronRight className="h-4 w-4 ml-2" />
+            <span className="text-sm sm:text-base">
+              {locale === 'en' ? 'Next' : 'Следующий'}
+            </span>
+            <ChevronRight className="h-4 w-4 ml-1 sm:ml-2" />
           </Button>
         </div>
       </div>
