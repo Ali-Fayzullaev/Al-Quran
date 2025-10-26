@@ -1,22 +1,35 @@
 "use client"
 
-import Link from "next/link"
 import { Globe } from "lucide-react"
-import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { useLocale } from "@/context/LocaleContext"
 
 export function LanguageToggle() {
-  const pathname = usePathname()
+  const { locale, setLocale, t } = useLocale()
+  
+  const handleLanguageChange = (newLocale: string) => {
+    setLocale(newLocale)
+  }
   
   return (
-    <div className="flex gap-2">
-      <Button variant="outline" size="sm" asChild>
-        <Link href={`/en${pathname}`}>🇬🇧 EN</Link>
+    <div className="flex items-center gap-2">
+      <Button 
+        variant={locale === 'en' ? 'default' : 'outline'} 
+        size="sm" 
+        onClick={() => handleLanguageChange('en')}
+        className="min-w-[60px]"
+      >
+        🇬🇧 EN
       </Button>
-      <Button variant="outline" size="sm" asChild>
-        <Link href={`/ru${pathname}`}>🇷🇺 RU</Link>
+      <Button 
+        variant={locale === 'ru' ? 'default' : 'outline'} 
+        size="sm" 
+        onClick={() => handleLanguageChange('ru')}
+        className="min-w-[60px]"
+      >
+        🇷🇺 RU
       </Button>
-      <Globe className="w-5 h-5 text-muted-foreground" />
+      <Globe className="w-4 h-4 text-muted-foreground ml-1" />
     </div>
   )
 }

@@ -10,7 +10,7 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight, Home, Book, Play, Pause, Settings, Copy, Bookmark, BookmarkCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
-import { getAyahAudioUrl } from "@/lib/api";
+import { getWorkingAudioUrl } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
 interface JuzPageProps {
@@ -19,7 +19,7 @@ interface JuzPageProps {
 
 export default function JuzPage({ params }: JuzPageProps) {
   const resolvedParams = use(params);
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const juzId = parseInt(resolvedParams.id);
   
   const {
@@ -48,15 +48,26 @@ export default function JuzPage({ params }: JuzPageProps) {
   // Получаем данные джуза
   const { data: juzData, isLoading, error } = useJuz(juzId);
 
-  const playAudio = async (ayahNumber: number) => {
+  const playAudio = async (verse: any) => {
     const audio = audioRef.current;
     if (!audio) return;
 
     try {
-      audio.src = getAyahAudioUrl(ayahNumber, audioReciter);
+      // Находим номер суры для данного аята
+      const surahNumber = Object.keys(juzData?.surahs || {}).find(key => 
+        juzData?.surahs?.[parseInt(key)]?.ayahs?.some(ayah => ayah.number === verse.number)
+      );
+      
+      if (!surahNumber) {
+        console.error('Could not find surah number for verse:', verse);
+        return;
+      }
+
+      const audioUrl = await getWorkingAudioUrl(parseInt(surahNumber), verse.numberInSurah, audioReciter);
+      audio.src = audioUrl;
       await audio.play();
       setIsPlaying(true);
-      setCurrentVerse(ayahNumber);
+      setCurrentVerse(verse.number);
     } catch (error) {
       console.error('Error playing audio:', error);
       setIsPlaying(false);
@@ -71,11 +82,11 @@ export default function JuzPage({ params }: JuzPageProps) {
     }
   };
 
-  const toggleAudio = (ayahNumber: number) => {
-    if (isPlaying && currentVerse === ayahNumber) {
+  const toggleAudio = (verse: any) => {
+    if (isPlaying && currentVerse === verse.number) {
       pauseAudio();
     } else {
-      playAudio(ayahNumber);
+      playAudio(verse);
     }
   };
 
@@ -105,7 +116,7 @@ export default function JuzPage({ params }: JuzPageProps) {
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-600 mx-auto mb-4"></div>
           <p className="text-gray-600 dark:text-gray-300">
-            {locale === 'en' ? 'Loading Juz...' : 'Загрузка джуза...'}
+            {t('loadingJuz')}
           </p>
         </div>
       </div>
@@ -117,7 +128,7 @@ export default function JuzPage({ params }: JuzPageProps) {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center text-red-600">
           <p className="text-xl mb-2">
-            {locale === 'en' ? 'Error loading Juz' : 'Ошибка загрузки джуза'}
+            {t('errorLoadingJuz')}
           </p>
         </div>
       </div>
@@ -138,14 +149,14 @@ export default function JuzPage({ params }: JuzPageProps) {
               <Link href="/">
                 <Button variant="ghost" size="sm" className="gap-2">
                   <Home className="w-4 h-4" />
-                  {locale === 'en' ? 'Home' : 'Главная'}
+                  {t('home')}
                 </Button>
               </Link>
               
               <Link href="/juz">
                 <Button variant="ghost" size="sm" className="gap-2">
                   <Book className="w-4 h-4" />
-                  {locale === 'en' ? 'All Juz' : 'Все джузы'}
+                  {t('allJuz')}
                 </Button>
               </Link>
             </div>
@@ -153,10 +164,10 @@ export default function JuzPage({ params }: JuzPageProps) {
             {/* Center - Juz Info */}
             <div className="text-center">
               <h1 className="font-bold text-gray-900 dark:text-white">
-                {locale === 'en' ? `Juz ${juzId}` : `Джуз ${juzId}`}
+                {t('juz')} {juzId}
               </h1>
               <p className="text-sm text-gray-600 dark:text-gray-300">
-                {juzData.ayahs?.length} {locale === 'en' ? 'verses' : 'аятов'}
+                {juzData.ayahs?.length} {t('verses')}
               </p>
             </div>
 
@@ -170,7 +181,7 @@ export default function JuzPage({ params }: JuzPageProps) {
                   className="gap-1"
                 >
                   <ChevronLeft className="w-4 h-4" />
-                  {locale === 'en' ? 'Prev' : 'Пред'}
+                  {t('prev')}
                 </Button>
               </Link>
               
@@ -181,7 +192,7 @@ export default function JuzPage({ params }: JuzPageProps) {
                   disabled={juzId === 30}
                   className="gap-1"
                 >
-                  {locale === 'en' ? 'Next' : 'След'}
+                  {t('next')}
                   <ChevronRight className="w-4 h-4" />
                 </Button>
               </Link>
@@ -196,10 +207,10 @@ export default function JuzPage({ params }: JuzPageProps) {
         {/* Header */}
         <div className="text-center mb-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl">
           <h1 className="text-3xl font-bold text-green-800 dark:text-green-200 mb-2">
-            {locale === 'en' ? `Juz ${juzId}` : `Джуз ${juzId}`}
+            {t('juz')} {juzId}
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">
-            {juzData.ayahs?.length} {locale === 'en' ? 'verses from multiple surahs' : 'аятов из нескольких сур'}
+            {juzData.ayahs?.length} {t('versesFromMultipleSurahs')}
           </p>
         </div>
 
@@ -212,7 +223,7 @@ export default function JuzPage({ params }: JuzPageProps) {
               onClick={toggleTranslation}
               className={cn(showTranslation && "bg-green-100 dark:bg-green-900")}
             >
-              {locale === 'en' ? 'Translation' : 'Перевод'}
+              {t('translation')}
             </Button>
             
             <Button
@@ -226,7 +237,7 @@ export default function JuzPage({ params }: JuzPageProps) {
 
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-600 dark:text-gray-300">
-              {locale === 'en' ? 'Font Size:' : 'Размер шрифта:'}
+              {t('fontSizeLabel')}
             </span>
             <Button
               variant="outline"
@@ -275,10 +286,10 @@ export default function JuzPage({ params }: JuzPageProps) {
                     </div>
                     <div>
                       <p className="text-sm text-gray-600 dark:text-gray-300">
-                        {locale === 'en' ? `Surah ${surahNumber} • Verse ${verse.numberInSurah}` : `Сура ${surahNumber} • Аят ${verse.numberInSurah}`}
+                        {t('surah')} {surahNumber} • {t('verse')} {verse.numberInSurah}
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {locale === 'en' ? `Page ${verse.page}` : `Страница ${verse.page}`}
+                        {t('page')} {verse.page}
                       </p>
                     </div>
                   </div>
@@ -311,7 +322,7 @@ export default function JuzPage({ params }: JuzPageProps) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => toggleAudio(verse.number)}
+                      onClick={() => toggleAudio(verse)}
                     >
                       {isPlaying && currentVerse === verse.number ? 
                         <Pause className="w-4 h-4" /> : 
@@ -336,7 +347,7 @@ export default function JuzPage({ params }: JuzPageProps) {
                 {showTranslation && (
                   <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
                     <p className="text-gray-600 dark:text-gray-300 italic">
-                      {locale === 'en' ? 'Translation will be available soon' : 'Перевод скоро будет доступен'}
+                      {t('translationAvailableSoon')}
                     </p>
                   </div>
                 )}

@@ -2,7 +2,6 @@
 
 import "./globals.css";
 import { Inter, Amiri } from "next/font/google";
-import { NextIntlClientProvider } from "next-intl";
 import { useState } from "react";
 import { ThemeProvider } from "next-themes";
 import { LocaleProvider } from "@/context/LocaleContext";
@@ -31,32 +30,23 @@ const queryClient = new QueryClient({
 });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const [locale, setLocale] = useState("en");
-  
-  let messages;
-  try {
-    messages = require(`../messages/${locale}.json`);
-  } catch (error) {
-    messages = {};
-  }
-
   return (
-    <html lang={locale} suppressHydrationWarning className={`${inter.variable} ${amiri.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${amiri.variable}`}>
       <body className={inter.className}>
         <QueryClientProvider client={queryClient}>
-          <NextIntlClientProvider locale={locale} messages={messages}>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <LocaleProvider>
-                <Header/>
-                {children}
-              </LocaleProvider>
-            </ThemeProvider>
-          </NextIntlClientProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <LocaleProvider>
+              <div className="min-h-screen bg-background">
+                <Header />
+                <main>{children}</main>
+              </div>
+            </LocaleProvider>
+          </ThemeProvider>
         </QueryClientProvider>
       </body>
     </html>
