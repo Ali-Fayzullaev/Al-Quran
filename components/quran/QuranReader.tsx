@@ -15,11 +15,13 @@ import {
   Volume2,
   VolumeX,
   Type,
-  Languages
+  Languages,
+  User,
+  Globe
 } from "lucide-react";
 import { useQuranStore } from "@/lib/store";
 import { useSurahMultipleEditions } from "@/lib/hooks";
-import { getAudioUrl, getAyahAudioUrl } from "@/lib/api";
+import { getWorkingAudioUrl, RECITERS, TRANSLATIONS } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLocale } from "@/context/LocaleContext";
@@ -38,11 +40,21 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
     showTransliteration,
     selectedTranslations,
     audioReciter,
+    audioSpeed,
+    audioVolume,
+    autoPlay,
     bookmarks,
+    availableReciters,
+    availableTranslations,
     setCurrentPosition,
     setFontSize,
     toggleTranslation,
     toggleTransliteration,
+    setSelectedTranslations,
+    setAudioReciter,
+    setAudioSpeed,
+    setAudioVolume,
+    setAutoPlay,
     addBookmark,
     removeBookmark,
     addReadingSession,
@@ -53,8 +65,8 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
   const [audioProgress, setAudioProgress] = useState(0);
   const [showSettings, setShowSettings] = useState(false);
   const [autoScroll, setAutoScroll] = useState(true);
-  const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const [volume, setVolume] = useState(1);
+  const [isLoadingAudio, setIsLoadingAudio] = useState(false);
+  const [audioError, setAudioError] = useState<string | null>(null);
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const verseRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
@@ -84,7 +96,7 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
     }
   }, [currentVerse, autoScroll]);
 
-  // Обработка аудио
+  // Обработка аудио с улучшенной обработкой ошибок
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -96,39 +108,71 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
 
     const handleEnded = () => {
       setIsPlaying(false);
-      // Переходим к следующему аяту
-      if (arabicSurah && currentVerse < arabicSurah.numberOfAyahs) {
+      if (autoPlay && arabicSurah && currentVerse < arabicSurah.numberOfAyahs) {
         setCurrentVerse(prev => prev + 1);
-        setTimeout(() => playAudio(), 1000); // Пауза между аятами
+        setTimeout(() => playAudio(), 1000);
       }
+    };
+
+    const handleError = () => {
+      console.error('Audio playback error');
+      setIsPlaying(false);
+      setIsLoadingAudio(false);
+      setAudioError('Ошибка воспроизведения аудио');
+    };
+
+    const handleLoadStart = () => {
+      setIsLoadingAudio(true);
+      setAudioError(null);
+    };
+
+    const handleCanPlay = () => {
+      setIsLoadingAudio(false);
+      setAudioError(null);
     };
 
     audio.addEventListener('timeupdate', handleTimeUpdate);
     audio.addEventListener('ended', handleEnded);
+    audio.addEventListener('error', handleError);
+    audio.addEventListener('loadstart', handleLoadStart);
+    audio.addEventListener('canplay', handleCanPlay);
 
     return () => {
       audio.removeEventListener('timeupdate', handleTimeUpdate);
       audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('error', handleError);
+      audio.removeEventListener('loadstart', handleLoadStart);
+      audio.removeEventListener('canplay', handleCanPlay);
     };
-  }, [currentVerse, arabicSurah]);
+  }, [currentVerse, arabicSurah, autoPlay]);
 
-  // Воспроизведение аудио
+  // Воспроизведение аудио с улучшенной обработкой
   const playAudio = async () => {
     const audio = audioRef.current;
     if (!audio || !arabicSurah) return;
 
     try {
-      const ayahNumber = arabicSurah.ayahs?.[currentVerse - 1]?.number;
-      if (ayahNumber) {
-        audio.src = getAyahAudioUrl(ayahNumber, audioReciter);
-        audio.playbackRate = playbackSpeed;
-        audio.volume = volume;
+      setIsLoadingAudio(true);
+      setAudioError(null);
+      
+      const currentAyah = arabicSurah.ayahs?.[currentVerse - 1];
+      if (currentAyah) {
+        // Используем новую функцию для получения рабочего URL
+        const audioUrl = await getWorkingAudioUrl(surahNumber, currentVerse, audioReciter);
+        
+        audio.src = audioUrl;
+        audio.playbackRate = audioSpeed;
+        audio.volume = audioVolume;
+        
         await audio.play();
         setIsPlaying(true);
+        setIsLoadingAudio(false);
       }
     } catch (error) {
       console.error('Error playing audio:', error);
       setIsPlaying(false);
+      setIsLoadingAudio(false);
+      setAudioError(locale === 'en' ? 'Audio not available' : 'Аудио недоступно');
     }
   };
 
@@ -194,6 +238,16 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
     }
   };
 
+  const handleTranslationChange = (translationId: string, checked: boolean) => {
+    const currentTranslations = selectedTranslations.filter(t => t !== 'quran-uthmani');
+    
+    if (checked) {
+      setSelectedTranslations([...currentTranslations, translationId]);
+    } else {
+      setSelectedTranslations(currentTranslations.filter(t => t !== translationId));
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -246,8 +300,15 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
             size="sm"
             onClick={toggleAudio}
             className="flex items-center gap-2"
+            disabled={isLoadingAudio}
           >
-            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+            {isLoadingAudio ? (
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+            ) : isPlaying ? (
+              <Pause className="h-4 w-4" />
+            ) : (
+              <Play className="h-4 w-4" />
+            )}
             {locale === 'en' ? 'Audio' : 'Аудио'}
           </Button>
           
@@ -285,6 +346,13 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
         </div>
       </div>
 
+      {/* Audio Error */}
+      {audioError && (
+        <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+          <p className="text-red-600 dark:text-red-400 text-sm">{audioError}</p>
+        </div>
+      )}
+
       {/* Settings Panel */}
       <AnimatePresence>
         {showSettings && (
@@ -292,8 +360,58 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-xl"
+            className="mb-6 p-6 bg-gray-50 dark:bg-gray-800 rounded-xl space-y-6"
           >
+            {/* Reciter Selection */}
+            <div>
+              <label className="block text-sm font-medium mb-3 flex items-center gap-2">
+                <User className="w-4 h-4" />
+                {locale === 'en' ? 'Select Reciter (Qari)' : 'Выбрать чтеца (Кари)'}
+              </label>
+              <Select value={audioReciter} onValueChange={setAudioReciter}>
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableReciters.map((reciter) => (
+                    <SelectItem key={reciter.id} value={reciter.id}>
+                      {reciter.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Translation Selection */}
+            <div>
+              <label className="block text-sm font-medium mb-3 flex items-center gap-2">
+                <Globe className="w-4 h-4" />
+                {locale === 'en' ? 'Select Translations' : 'Выбрать переводы'}
+              </label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto">
+                {availableTranslations
+                  .filter(t => t.type === 'translation')
+                  .map((translation) => (
+                    <label
+                      key={translation.id}
+                      className="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedTranslations.includes(translation.id)}
+                        onChange={(e) => handleTranslationChange(translation.id, e.target.checked)}
+                        className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                      />
+                      <div className="flex-1">
+                        <div className="text-sm font-medium">{translation.name}</div>
+                        <div className="text-xs text-gray-500">{translation.language}</div>
+                      </div>
+                    </label>
+                  ))}
+              </div>
+            </div>
+
+            {/* Audio Settings */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-2">
@@ -329,8 +447,8 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                     min="0"
                     max="1"
                     step="0.1"
-                    value={volume}
-                    onChange={(e) => setVolume(parseFloat(e.target.value))}
+                    value={audioVolume}
+                    onChange={(e) => setAudioVolume(parseFloat(e.target.value))}
                     className="flex-1"
                   />
                   <Volume2 className="h-4 w-4" />
@@ -341,7 +459,7 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                 <label className="block text-sm font-medium mb-2">
                   {locale === 'en' ? 'Speed' : 'Скорость'}
                 </label>
-                <Select value={playbackSpeed.toString()} onValueChange={(value) => setPlaybackSpeed(parseFloat(value))}>
+                <Select value={audioSpeed.toString()} onValueChange={(value) => setAudioSpeed(parseFloat(value))}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -354,6 +472,27 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                   </SelectContent>
                 </Select>
               </div>
+            </div>
+
+            {/* Auto Play Toggle */}
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium">
+                {locale === 'en' ? 'Auto-play next verse' : 'Автовоспроизведение следующего аята'}
+              </label>
+              <button
+                onClick={() => setAutoPlay(!autoPlay)}
+                className={cn(
+                  "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+                  autoPlay ? "bg-green-600" : "bg-gray-200 dark:bg-gray-600"
+                )}
+              >
+                <span
+                  className={cn(
+                    "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                    autoPlay ? "translate-x-6" : "translate-x-1"
+                  )}
+                />
+              </button>
             </div>
           </motion.div>
         )}

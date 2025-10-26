@@ -46,13 +46,13 @@ export function useSurah(surahNumber: number, edition: string = 'quran-uthmani')
   });
 }
 
-// Получить суру с множественными переводами
+// Хук для получения суры с множественными переводами
 export function useSurahMultipleEditions(surahNumber: number, editions: string[]) {
   return useQuery({
-    queryKey: QUERY_KEYS.surahMultiple(surahNumber, editions),
+    queryKey: ['surah', surahNumber, 'multiple', editions.sort().join(',')],
     queryFn: () => getSurahMultipleEditions(surahNumber, editions),
-    enabled: surahNumber > 0 && surahNumber <= 114 && editions.length > 0,
-    staleTime: 30 * 60 * 1000,
+    enabled: !!surahNumber && editions.length > 0,
+    staleTime: 10 * 60 * 1000, // 10 minutes
   });
 }
 

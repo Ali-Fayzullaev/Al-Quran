@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { RECITERS, TRANSLATIONS } from './api';
 
 export interface Verse {
   number: number;
@@ -39,6 +40,13 @@ export interface QuranState {
   showTransliteration: boolean;
   selectedTranslations: string[];
   audioReciter: string;
+  availableReciters: typeof RECITERS;
+  availableTranslations: typeof TRANSLATIONS;
+  
+  // Audio settings
+  audioSpeed: number;
+  audioVolume: number;
+  autoPlay: boolean;
   
   // Bookmarks and notes
   bookmarks: Array<{
@@ -67,6 +75,9 @@ export interface QuranState {
   toggleTransliteration: () => void;
   setSelectedTranslations: (translations: string[]) => void;
   setAudioReciter: (reciter: string) => void;
+  setAudioSpeed: (speed: number) => void;
+  setAudioVolume: (volume: number) => void;
+  setAutoPlay: (autoPlay: boolean) => void;
   addBookmark: (surah: number, verse: number, note?: string) => void;
   removeBookmark: (surah: number, verse: number) => void;
   addReadingSession: (surah: number, verse: number, duration: number) => void;
@@ -84,8 +95,13 @@ export const useQuranStore = create<QuranState>()(
       fontSize: 18,
       showTranslation: true,
       showTransliteration: false,
-      selectedTranslations: ['en.asad', 'ru.kuliev'],
+      selectedTranslations: ['en.sahih', 'ru.kuliev'],
       audioReciter: 'ar.alafasy',
+      availableReciters: RECITERS,
+      availableTranslations: TRANSLATIONS,
+      audioSpeed: 1,
+      audioVolume: 1,
+      autoPlay: false,
       bookmarks: [],
       readingSessions: [],
       searchHistory: [],
@@ -117,6 +133,18 @@ export const useQuranStore = create<QuranState>()(
       
       setAudioReciter: (reciter: string) => {
         set({ audioReciter: reciter });
+      },
+      
+      setAudioSpeed: (speed: number) => {
+        set({ audioSpeed: Math.max(0.5, Math.min(2, speed)) });
+      },
+      
+      setAudioVolume: (volume: number) => {
+        set({ audioVolume: Math.max(0, Math.min(1, volume)) });
+      },
+      
+      setAutoPlay: (autoPlay: boolean) => {
+        set({ autoPlay });
       },
       
       addBookmark: (surah: number, verse: number, note?: string) => {
@@ -164,6 +192,9 @@ export const useQuranStore = create<QuranState>()(
         showTransliteration: state.showTransliteration,
         selectedTranslations: state.selectedTranslations,
         audioReciter: state.audioReciter,
+        audioSpeed: state.audioSpeed,
+        audioVolume: state.audioVolume,
+        autoPlay: state.autoPlay,
         bookmarks: state.bookmarks,
         readingSessions: state.readingSessions,
         searchHistory: state.searchHistory,

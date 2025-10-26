@@ -174,14 +174,129 @@ export async function getRandomAyah(edition: string = 'en.asad'): Promise<ApiVer
   }
 }
 
-// Получить аудио для суры
+// Список доступных чтецов (кари)
+export const RECITERS = [
+  { id: 'ar.alafasy', name: 'Mishary Rashid Alafasy', language: 'Arabic' },
+  { id: 'ar.abdulbasitmurattal', name: 'Abdul Basit Abd us-Samad (Murattal)', language: 'Arabic' },
+  { id: 'ar.abdullahbasfar', name: 'Abdullah Basfar', language: 'Arabic' },
+  { id: 'ar.abdurrahmaansudais', name: 'Abdul Rahman Al-Sudais', language: 'Arabic' },
+  { id: 'ar.shaatree', name: 'Abu Bakr Ash-Shaatree', language: 'Arabic' },
+  { id: 'ar.mahermuaiqly', name: 'Maher Al Muaiqly', language: 'Arabic' },
+  { id: 'ar.husary', name: 'Mahmoud Khalil Al-Husary', language: 'Arabic' },
+  { id: 'ar.minshawi', name: 'Mohammad al Minshawi', language: 'Arabic' },
+  { id: 'ar.muhammadayyoub', name: 'Muhammad Ayyoub', language: 'Arabic' },
+  { id: 'ar.saoodshuraym', name: 'Saood bin Ibraaheem Ash-Shuraym', language: 'Arabic' }
+];
+
+// Список популярных переводов
+export const TRANSLATIONS = [
+  // Английские переводы
+  { id: 'en.sahih', name: 'Sahih International', language: 'English', type: 'translation' },
+  { id: 'en.asad', name: 'Muhammad Asad', language: 'English', type: 'translation' },
+  { id: 'en.pickthall', name: 'Mohammed Marmaduke William Pickthall', language: 'English', type: 'translation' },
+  { id: 'en.yusufali', name: 'Abdullah Yusuf Ali', language: 'English', type: 'translation' },
+  { id: 'en.hilali', name: 'Muhsin Khan', language: 'English', type: 'translation' },
+  
+  // Русские переводы
+  { id: 'ru.kuliev', name: 'Эльмир Кулиев', language: 'Russian', type: 'translation' },
+  { id: 'ru.osmanov', name: 'М.-Н. О. Османов', language: 'Russian', type: 'translation' },
+  { id: 'ru.porokhova', name: 'В. Порохова', language: 'Russian', type: 'translation' },
+  
+  // Арабский текст
+  { id: 'quran-uthmani', name: 'القرآن الكريم', language: 'Arabic', type: 'quran' },
+  { id: 'ar.muyassar', name: 'تفسير المیسر', language: 'Arabic', type: 'tafsir' },
+  
+  // Другие языки
+  { id: 'fr.hamidullah', name: 'Muhammad Hamidullah', language: 'French', type: 'translation' },
+  { id: 'de.bubenheim', name: 'A. S. F. Bubenheim and N. Elyas', language: 'German', type: 'translation' },
+  { id: 'tr.ates', name: 'Süleyman Ateş', language: 'Turkish', type: 'translation' },
+  { id: 'ur.jalandhry', name: 'Fateh Muhammad Jalandhry', language: 'Urdu', type: 'translation' }
+];
+
+// Исправленная функция для получения аудио суры
 export function getAudioUrl(surahNumber: number, reciter: string = 'ar.alafasy'): string {
   const paddedSurah = surahNumber.toString().padStart(3, '0');
-  return `https://cdn.islamic.network/quran/audio-surah/${reciter}/${paddedSurah}.mp3`;
+  
+  // Используем правильный URL для аудио сур
+  switch (reciter) {
+    case 'ar.alafasy':
+      return `https://server8.mp3quran.net/afs/${paddedSurah}.mp3`;
+    case 'ar.abdulbasitmurattal':
+      return `https://server7.mp3quran.net/basit/${paddedSurah}.mp3`;
+    case 'ar.abdurrahmaansudais':
+      return `https://server11.mp3quran.net/sds/${paddedSurah}.mp3`;
+    case 'ar.mahermuaiqly':
+      return `https://server12.mp3quran.net/maher/${paddedSurah}.mp3`;
+    case 'ar.husary':
+      return `https://server6.mp3quran.net/husary/${paddedSurah}.mp3`;
+    case 'ar.minshawi':
+      return `https://server10.mp3quran.net/minsh/${paddedSurah}.mp3`;
+    default:
+      return `https://server8.mp3quran.net/afs/${paddedSurah}.mp3`;
+  }
 }
 
-// Получить аудио для конкретного аята
-export function getAyahAudioUrl(ayahNumber: number, reciter: string = 'ar.alafasy'): string {
-  const paddedAyah = ayahNumber.toString().padStart(6, '0');
-  return `https://cdn.islamic.network/quran/audio/${reciter}/${paddedAyah}.mp3`;
+// Исправленная функция для получения аудио аята
+export function getAyahAudioUrl(surahNumber: number, ayahNumber: number, reciter: string = 'ar.alafasy'): string {
+  const paddedSurah = surahNumber.toString().padStart(3, '0');
+  const paddedAyah = ayahNumber.toString().padStart(3, '0');
+  
+  // Используем правильный URL для аудио аятов
+  switch (reciter) {
+    case 'ar.alafasy':
+      return `https://verses.quran.com/Alafasy/mp3/${paddedSurah}${paddedAyah}.mp3`;
+    case 'ar.abdulbasitmurattal':
+      return `https://verses.quran.com/AbdulBaset/Murattal/mp3/${paddedSurah}${paddedAyah}.mp3`;
+    case 'ar.abdurrahmaansudais':
+      return `https://verses.quran.com/Sudais/mp3/${paddedSurah}${paddedAyah}.mp3`;
+    case 'ar.mahermuaiqly':
+      return `https://verses.quran.com/Maher/mp3/${paddedSurah}${paddedAyah}.mp3`;
+    case 'ar.husary':
+      return `https://verses.quran.com/Husary/mp3/${paddedSurah}${paddedAyah}.mp3`;
+    case 'ar.minshawi':
+      return `https://verses.quran.com/Minshawi/Murattal/mp3/${paddedSurah}${paddedAyah}.mp3`;
+    default:
+      return `https://verses.quran.com/Alafasy/mp3/${paddedSurah}${paddedAyah}.mp3`;
+  }
+}
+
+// Функция для проверки доступности аудио
+export async function checkAudioAvailability(url: string): Promise<boolean> {
+  try {
+    const response = await fetch(url, { method: 'HEAD' });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+// Получить альтернативные аудио URL если основной не работает
+export async function getWorkingAudioUrl(surahNumber: number, ayahNumber?: number, reciter: string = 'ar.alafasy'): Promise<string> {
+  const urls = [];
+  
+  if (ayahNumber) {
+    // Для конкретного аята
+    urls.push(getAyahAudioUrl(surahNumber, ayahNumber, reciter));
+    // Резервные URL
+    const paddedSurah = surahNumber.toString().padStart(3, '0');
+    const paddedAyah = ayahNumber.toString().padStart(3, '0');
+    urls.push(`https://audio.qurancdn.com/Alafasy/${paddedSurah}${paddedAyah}.mp3`);
+    urls.push(`https://cdn.islamic.network/quran/audio/128/ar.alafasy/${surahNumber * 1000 + ayahNumber}.mp3`);
+  } else {
+    // Для всей суры
+    urls.push(getAudioUrl(surahNumber, reciter));
+    // Резервные URL для суры
+    const paddedSurah = surahNumber.toString().padStart(3, '0');
+    urls.push(`https://download.quranicaudio.com/quran/alafasy/${paddedSurah}.mp3`);
+  }
+  
+  // Проверяем каждый URL
+  for (const url of urls) {
+    if (await checkAudioAvailability(url)) {
+      return url;
+    }
+  }
+  
+  // Возвращаем первый URL если ничего не работает
+  return urls[0];
 }
