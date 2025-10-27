@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 
 export default function Header() {
   const pathname = usePathname();
-  const { locale, t } = useLocale();
+  const { locale, t, isLoading } = useLocale();
   const { bookmarks } = useQuranStore();
 
   const navigation = [

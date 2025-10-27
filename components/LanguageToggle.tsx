@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button"
 import { useLocale } from "@/context/LocaleContext"
 
 export function LanguageToggle() {
-  const { locale, setLocale, t } = useLocale()
+  const { locale, setLocale, t, isLoading } = useLocale()
   
   const handleLanguageChange = (newLocale: string) => {
+    if (isLoading) return; // Предотвращаем переключение во время загрузки
     setLocale(newLocale)
   }
   
@@ -18,6 +19,7 @@ export function LanguageToggle() {
         size="sm" 
         onClick={() => handleLanguageChange('en')}
         className="min-w-[60px]"
+        disabled={isLoading}
       >
         🇬🇧 EN
       </Button>
@@ -26,6 +28,7 @@ export function LanguageToggle() {
         size="sm" 
         onClick={() => handleLanguageChange('ru')}
         className="min-w-[60px]"
+        disabled={isLoading}
       >
         🇷🇺 RU
       </Button>

@@ -4,24 +4,24 @@ import { useState } from "react";
 import { useLocale } from "@/context/LocaleContext";
 import { useQuranStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
-import { 
-  Settings, 
-  Volume2, 
-  Type, 
-  Globe, 
+import {
+  Settings,
+  Volume2,
+  Type,
+  Globe,
   Book,
   Trash2,
-  RefreshCw
+  RefreshCw,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
 
 export default function SettingsPage() {
-  const { t } = useLocale();
-  const { 
-    audioReciter, 
-    selectedTranslations, 
-    setAudioReciter, 
+  const { t, isLoading } = useLocale();
+  const {
+    audioReciter,
+    selectedTranslations,
+    setAudioReciter,
     setSelectedTranslations,
     fontSize,
     setFontSize,
@@ -29,29 +29,31 @@ export default function SettingsPage() {
     showTransliteration,
     toggleTranslation,
     toggleTransliteration,
-    bookmarks
+    bookmarks,
   } = useQuranStore();
 
   const reciters = [
-    { id: 'ar.alafasy', name: 'Mishary Rashid Alafasy' },
-    { id: 'ar.abdulbasitmurattal', name: 'Abdul Basit Abd us-Samad' },
-    { id: 'ar.abdurrahmaansudais', name: 'Abdul Rahman Al-Sudais' },
-    { id: 'ar.mahermuaiqly', name: 'Maher Al Muaiqly' },
-    { id: 'ar.husary', name: 'Mahmoud Khalil Al-Husary' },
+    { id: "ar.alafasy", name: "Mishary Rashid Alafasy" },
+    { id: "ar.abdulbasitmurattal", name: "Abdul Basit Abd us-Samad" },
+    { id: "ar.abdurrahmaansudais", name: "Abdul Rahman Al-Sudais" },
+    { id: "ar.mahermuaiqly", name: "Maher Al Muaiqly" },
+    { id: "ar.husary", name: "Mahmoud Khalil Al-Husary" },
   ];
 
   const translations = [
-    { id: 'en.sahih', name: 'Sahih International', language: 'English' },
-    { id: 'ru.kuliev', name: 'Эльмир Кулиев', language: 'Русский' },
-    { id: 'ru.osmanov', name: 'М.-Н. О. Османов', language: 'Русский' },
-    { id: 'en.yusufali', name: 'Abdullah Yusuf Ali', language: 'English' },
+    { id: "en.sahih", name: "Sahih International", language: "English" },
+    { id: "ru.kuliev", name: "Эльмир Кулиев", language: "Русский" },
+    { id: "ru.osmanov", name: "М.-Н. О. Османов", language: "Русский" },
+    { id: "en.yusufali", name: "Abdullah Yusuf Ali", language: "English" },
   ];
 
   const handleClearBookmarks = () => {
-    if (window.confirm(t('confirmClearBookmarks'))) {
+    if (window.confirm(t("confirmClearBookmarks"))) {
       // Удаляем все закладки по одной (так как нет clearBookmarks функции)
-      bookmarks.forEach(bookmark => {
-        useQuranStore.getState().removeBookmark(bookmark.surahNumber, bookmark.verseNumber);
+      bookmarks.forEach((bookmark) => {
+        useQuranStore
+          .getState()
+          .removeBookmark(bookmark.surahNumber, bookmark.verseNumber);
       });
     }
   };
@@ -59,17 +61,33 @@ export default function SettingsPage() {
   const handleTranslationChange = (translationId: string) => {
     const currentTranslations = selectedTranslations;
     let newTranslations;
-    
+
     if (currentTranslations.includes(translationId)) {
       // Удаляем перевод если он уже выбран
-      newTranslations = currentTranslations.filter(id => id !== translationId);
+      newTranslations = currentTranslations.filter(
+        (id) => id !== translationId
+      );
     } else {
       // Добавляем перевод
       newTranslations = [...currentTranslations, translationId];
     }
-    
+
     setSelectedTranslations(newTranslations);
   };
+
+  // Показываем индикатор загрузки если переводы еще загружаются
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="flex items-center justify-center h-32">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"></div>
+          <span className="ml-3 text-gray-600 dark:text-gray-400">
+            Загрузка настроек...
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -80,11 +98,11 @@ export default function SettingsPage() {
             <Settings className="h-6 w-6 text-green-600 dark:text-green-400" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-            {t('settings')}
+            {t("settings")}
           </h1>
         </div>
         <p className="text-gray-600 dark:text-gray-400">
-          {t('settingsDescription')}
+          {t("settingsDescription")}
         </p>
       </div>
 
@@ -94,21 +112,21 @@ export default function SettingsPage() {
           <div className="flex items-center space-x-3 mb-6">
             <Globe className="h-5 w-5 text-blue-600 dark:text-blue-400" />
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-              {t('languageAndTheme')}
+              {t("languageAndTheme")}
             </h2>
           </div>
-          
+
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                {t('selectLanguage')}
+                {t("selectLanguage")}
               </label>
               <LanguageToggle />
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                {t('theme')}
+                {t("theme")}
               </label>
               <ThemeToggle />
             </div>
@@ -120,15 +138,15 @@ export default function SettingsPage() {
           <div className="flex items-center space-x-3 mb-6">
             <Volume2 className="h-5 w-5 text-purple-600 dark:text-purple-400" />
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-              {t('audioSettings')}
+              {t("audioSettings")}
             </h2>
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-              {t('selectReciter')}
+              {t("selectReciter")}
             </label>
-            <select 
+            <select
               value={audioReciter}
               onChange={(e) => setAudioReciter(e.target.value)}
               className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-green-500"
@@ -147,18 +165,21 @@ export default function SettingsPage() {
           <div className="flex items-center space-x-3 mb-6">
             <Type className="h-5 w-5 text-green-600 dark:text-green-400" />
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-              {t('displaySettings')}
+              {t("displaySettings")}
             </h2>
           </div>
-          
+
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                {t('selectTranslation')} ({t('selectMultipleTranslations')})
+                {t("selectTranslation")} ({t("selectMultipleTranslations")})
               </label>
               <div className="grid md:grid-cols-2 gap-3">
                 {translations.map((translation) => (
-                  <label key={translation.id} className="flex items-center space-x-3 cursor-pointer p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <label
+                    key={translation.id}
+                    className="flex items-center space-x-3 cursor-pointer p-3 border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700"
+                  >
                     <input
                       type="checkbox"
                       checked={selectedTranslations.includes(translation.id)}
@@ -178,9 +199,9 @@ export default function SettingsPage() {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                {t('fontSizeLabel')} {fontSize}px
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                {t("fontSizeLabel")} {fontSize}px
               </label>
               <input
                 type="range"
@@ -188,7 +209,14 @@ export default function SettingsPage() {
                 max="32"
                 value={fontSize}
                 onChange={(e) => setFontSize(Number(e.target.value))}
-                className="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer"
+                className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer range-slider"
+                style={{
+                  background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${
+                    ((fontSize - 12) / (32 - 12)) * 100
+                  }%, #e5e7eb ${
+                    ((fontSize - 12) / (32 - 12)) * 100
+                  }%, #e5e7eb 100%)`,
+                }}
               />
             </div>
 
@@ -201,7 +229,7 @@ export default function SettingsPage() {
                   className="w-4 h-4 text-green-600 bg-gray-100 dark:bg-gray-600 border-gray-300 dark:border-gray-500 rounded focus:ring-green-500"
                 />
                 <span className="text-sm text-gray-700 dark:text-gray-300">
-                  {t('showTranslation')}
+                  {t("showTranslation")}
                 </span>
               </label>
 
@@ -213,7 +241,7 @@ export default function SettingsPage() {
                   className="w-4 h-4 text-green-600 bg-gray-100 dark:bg-gray-600 border-gray-300 dark:border-gray-500 rounded focus:ring-green-500"
                 />
                 <span className="text-sm text-gray-700 dark:text-gray-300">
-                  {t('showTransliteration')}
+                  {t("showTransliteration")}
                 </span>
               </label>
             </div>
@@ -225,18 +253,21 @@ export default function SettingsPage() {
           <div className="flex items-center space-x-3 mb-6">
             <Book className="h-5 w-5 text-orange-600 dark:text-orange-400" />
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-              {t('dataManagement')}
+              {t("dataManagement")}
             </h2>
           </div>
-          
+
           <div className="space-y-4">
             <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
               <div>
                 <h3 className="font-medium text-gray-900 dark:text-gray-100">
-                  {t('bookmarks')}
+                  {t("bookmarks")}
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {t('bookmarksCount').replace('{{count}}', bookmarks.length.toString())}
+                  {t("bookmarksCount").replace(
+                    "{{count}}",
+                    bookmarks.length.toString()
+                  )}
                 </p>
               </div>
               <Button
@@ -247,22 +278,22 @@ export default function SettingsPage() {
                 className="text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300"
               >
                 <Trash2 className="h-4 w-4 mr-2" />
-                {t('clearAll')}
+                {t("clearAll")}
               </Button>
             </div>
 
             <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
               <div>
                 <h3 className="font-medium text-gray-900 dark:text-gray-100">
-                  {t('appCache')}
+                  {t("appCache")}
                 </h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {t('clearCacheDescription')}
+                  {t("clearCacheDescription")}
                 </p>
               </div>
               <Button
                 onClick={() => {
-                  if (window.confirm(t('confirmClearCache'))) {
+                  if (window.confirm(t("confirmClearCache"))) {
                     localStorage.clear();
                     window.location.reload();
                   }
@@ -271,7 +302,7 @@ export default function SettingsPage() {
                 size="sm"
               >
                 <RefreshCw className="h-4 w-4 mr-2" />
-                {t('clearCache')}
+                {t("clearCache")}
               </Button>
             </div>
           </div>
@@ -281,13 +312,13 @@ export default function SettingsPage() {
         <section className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10 rounded-lg p-6 border border-green-200 dark:border-green-800">
           <div className="text-center">
             <h3 className="text-lg font-semibold text-green-800 dark:text-green-300 mb-2">
-              {t('title')}
+              {t("title")}
             </h3>
             <p className="text-green-600 dark:text-green-400 text-sm">
-              {t('appDescription')}
+              {t("appDescription")}
             </p>
             <div className="mt-4 text-xs text-green-500 dark:text-green-500">
-              {t('version')}
+              {t("version")}
             </div>
           </div>
         </section>

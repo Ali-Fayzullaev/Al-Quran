@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import CountUp from "react-countup";
 
 export default function HomePage() {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -33,25 +33,25 @@ export default function HomePage() {
   const quranStats = [
     { 
       number: 114, 
-      label: locale === "en" ? "Surahs" : "Сур",
+      label: t("surahs"),
       icon: Book,
       color: "text-green-600"
     },
     { 
       number: 6236, 
-      label: locale === "en" ? "Verses" : "Аятов",
+      label: t("verses"),
       icon: Quote,
       color: "text-blue-600"
     },
     { 
       number: 30, 
-      label: locale === "en" ? "Juz" : "Джузов",
+      label: t("juz"),
       icon: Star,
       color: "text-purple-600"
     },
     { 
       number: 604, 
-      label: locale === "en" ? "Pages" : "Страниц",
+      label: t("pages"),
       icon: TrendingUp,
       color: "text-orange-600"
     }
@@ -81,11 +81,11 @@ export default function HomePage() {
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 rounded-full text-green-800 dark:text-green-200 text-sm font-medium mb-6">
               <Star className="w-4 h-4" />
-              {locale === "en" ? "World's Best Quran Experience" : "Лучший в мире интерфейс для изучения Корана"}
+              {t("bestQuranExperience")}
             </div>
             
             <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent mb-6">
-              {locale === "en" ? "Quran AI" : "Коран AI"}
+              {t("title")}
             </h1>
             
             <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">
@@ -108,14 +108,14 @@ export default function HomePage() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={locale === "en" ? "Search in Quran..." : "Поиск в Коране..."}
+                  placeholder={t("searchPlaceholder")}
                   className="w-full pl-12 pr-6 py-4 text-lg border-2 border-gray-200 dark:border-gray-600 rounded-2xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm focus:border-green-500 focus:ring-0 focus:outline-none transition-colors placeholder-gray-400"
                 />
                 <Button 
                   type="submit"
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl"
                 >
-                  {locale === "en" ? "Search" : "Поиск"}
+                  {t("search")}
                 </Button>
               </div>
             </motion.form>
@@ -163,7 +163,7 @@ export default function HomePage() {
               className="text-center mb-8"
             >
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                {locale === "en" ? "Verse of the Day" : "Аят дня"}
+                {t("verseOfTheDay")}
               </h2>
             </motion.div>
             
@@ -204,7 +204,7 @@ export default function HomePage() {
             className="text-center mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              {locale === "en" ? "Explore Islamic Knowledge" : "Изучайте исламские знания"}
+              {t("exploreKnowledge")}
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               {locale === "en" 

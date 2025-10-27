@@ -9,6 +9,7 @@ type LocaleContextType = {
   setLocale: (loc: string) => void;
   messages: Messages;
   t: (key: string) => string;
+  isLoading: boolean;
 };
 
 const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
@@ -16,18 +17,44 @@ const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState("en");
   const [messages, setMessages] = useState<Messages>({});
+  const [isLoading, setIsLoading] = useState(true);
 
   // Загружаем переводы при изменении языка
   useEffect(() => {
     const loadMessages = async () => {
+      setIsLoading(true);
       try {
         const response = await fetch(`/messages/${locale}.json`);
         if (response.ok) {
           const msgs = await response.json();
           setMessages(msgs);
+        } else {
+          console.error(`Failed to fetch messages for locale ${locale}: HTTP ${response.status}`);
+          // Fallback to English if current locale fails
+          if (locale !== 'en') {
+            const fallbackResponse = await fetch('/messages/en.json');
+            if (fallbackResponse.ok) {
+              const fallbackMsgs = await fallbackResponse.json();
+              setMessages(fallbackMsgs);
+            }
+          }
         }
       } catch (error) {
         console.error(`Failed to load messages for locale ${locale}:`, error);
+        // Fallback to English
+        if (locale !== 'en') {
+          try {
+            const fallbackResponse = await fetch('/messages/en.json');
+            if (fallbackResponse.ok) {
+              const fallbackMsgs = await fallbackResponse.json();
+              setMessages(fallbackMsgs);
+            }
+          } catch (fallbackError) {
+            console.error('Failed to load fallback messages:', fallbackError);
+          }
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -36,6 +63,7 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
 
   // Сохраняем выбранный язык в localStorage
   const setLocale = (newLocale: string) => {
+    if (newLocale === locale) return; // Избегаем ненужных перезагрузок
     setLocaleState(newLocale);
     if (typeof window !== 'undefined') {
       localStorage.setItem('preferred-locale', newLocale);
@@ -58,7 +86,7 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <LocaleContext.Provider value={{ locale, setLocale, messages, t }}>
+    <LocaleContext.Provider value={{ locale, setLocale, messages, t, isLoading }}>
       {children}
     </LocaleContext.Provider>
   );
