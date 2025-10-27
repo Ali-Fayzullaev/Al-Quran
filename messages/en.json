@@ -109,5 +109,12 @@
   "classic": "Classic",
   "modern": "Modern",
   "elegant": "Elegant",
-  "vibrant": "Vibrant"
+  "vibrant": "Vibrant",
+  "forest": "Forest",
+  "sunset": "Sunset",
+  "ocean": "Ocean",
+  "autoPlayTitle": "Auto Play",
+  "autoPlayMessage": "Would you like to automatically play the next verse after the current one finishes?",
+  "yes": "Yes",
+  "no": "No"
 }

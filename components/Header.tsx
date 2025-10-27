@@ -50,13 +50,13 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-gray-900/60">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo - адаптивный */}
           <div className="flex items-center space-x-2">
             <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg shadow-md theme-primary">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg shadow-md theme-bg-primary">
                 <Book className="h-5 w-5 text-white" />
               </div>
               <span className="hidden sm:block font-bold text-lg theme-text-primary">
@@ -78,8 +78,8 @@ export default function Header() {
                   className={cn(
                     "relative flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105",
                     isActive
-                      ? "theme-secondary theme-text-primary shadow-sm"
-                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary-theme"
+                      ? "theme-active-bg shadow-sm"
+                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:theme-text-primary"
                   )}
                 >
                   <Icon className="h-4 w-4" />
@@ -123,7 +123,7 @@ function MobileNav({ navigation, pathname }: { navigation: any[]; pathname: stri
       {/* Mobile menu button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden p-2 rounded-lg theme-bg-secondary hover:theme-bg-surface transition-all duration-200 hover:scale-105"
+        className="lg:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 hover:scale-105"
         aria-label={t('menu')}
       >
         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -167,8 +167,8 @@ function MobileNav({ navigation, pathname }: { navigation: any[]; pathname: stri
                     className={cn(
                       "relative flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 w-full hover:scale-[1.02]",
                       isActive
-                        ? "theme-secondary theme-text-primary shadow-sm"
-                        : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary-theme"
+                        ? "theme-active-bg shadow-sm"
+                        : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:theme-text-primary"
                     )}
                   >
                     <Icon className="h-5 w-5" />

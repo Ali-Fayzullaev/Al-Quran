@@ -88,6 +88,27 @@ export default function ColorPicker({ type, title, description }: ColorPickerPro
     applyCurrentColors();
   };
 
+  // Переводы названий тем
+  const getThemeName = (theme: any) => {
+    const names = {
+      emerald: t('emerald') || 'Изумрудный',
+      blue: t('blue') || 'Синий', 
+      purple: t('purple') || 'Фиолетовый',
+      pink: t('pink') || 'Розовый',
+      orange: t('orange') || 'Оранжевый',
+      teal: t('teal') || 'Бирюзовый',
+      indigo: t('indigo') || 'Индиго',
+      classic: t('classic') || 'Классический',
+      elegant: t('elegant') || 'Элегантный',
+      modern: t('modern') || 'Современный',
+      vibrant: t('vibrant') || 'Яркий',
+      forest: t('forest') || 'Лесной',
+      sunset: t('sunset') || 'Закат',
+      ocean: t('ocean') || 'Океанский',
+    };
+    return names[theme.name as keyof typeof names] || theme.name;
+  };
+
   return (
     <div className="space-y-6">
       {/* Заголовок */}
@@ -101,7 +122,7 @@ export default function ColorPicker({ type, title, description }: ColorPickerPro
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{description}</p>
           )}
         </div>
-        
+
         {/* Кнопки управления */}
         <div className="flex items-center gap-2">
           {isPreviewMode && (
@@ -117,10 +138,10 @@ export default function ColorPicker({ type, title, description }: ColorPickerPro
               <Button
                 size="sm"
                 onClick={() => previewTheme && handleApply(previewTheme)}
-                className="bg-green-600 hover:bg-green-700"
+                className="theme-btn-primary"
               >
                 <Check className="w-4 h-4 mr-1" />
-                {t("applyColor")}
+                {t("applyColor") || "Применить"}
               </Button>
             </>
           )}
@@ -132,35 +153,27 @@ export default function ColorPicker({ type, title, description }: ColorPickerPro
             className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
           >
             <RefreshCw className="w-4 h-4 mr-1" />
-            {t("resetToDefault")}
+            Сброс
           </Button>
-          
+
           <Button
             variant="ghost"
             size="sm"
             onClick={handleForceUpdate}
-            className="text-blue-500 hover:text-blue-700 dark:hover:text-blue-300"
+            className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
           >
-            🔄 Обновить
-          </Button>
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={debugCSSVariables}
-            className="text-purple-500 hover:text-purple-700 dark:hover:text-purple-300"
-          >
-            🔍 Debug
+            <RefreshCw className="w-4 h-4 mr-1" />
+            Обновить
           </Button>
         </div>
       </div>
 
-      {/* Превью режим уведомление */}
-      {isPreviewMode && (
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-          <div className="flex items-center gap-2 text-blue-800 dark:text-blue-200">
+      {/* Режим предпросмотра */}
+      {isPreviewMode && previewTheme && (
+        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+          <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
             <Eye className="w-4 h-4" />
-            <span className="text-sm font-medium">{t("preview")} - {previewTheme && t(themes.find(t => t.id === previewTheme)?.name || previewTheme)}</span>
+            <span className="text-sm font-medium">Предпросмотр - {getThemeName(themes.find(t => t.id === previewTheme))}</span>
           </div>
         </div>
       )}
@@ -176,9 +189,9 @@ export default function ColorPicker({ type, title, description }: ColorPickerPro
               {/* Карточка цветовой схемы */}
               <div 
                 className={`
-                  relative p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer hover:scale-105
+                  relative p-4 rounded-xl border-2 transition-all duration-200 cursor-pointer hover:scale-105 group
                   ${isActive 
-                    ? 'border-green-500 bg-green-50 dark:bg-green-900/20' 
+                    ? 'border-green-500 bg-green-50 dark:bg-green-900/20 shadow-lg' 
                     : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
                   }
                   ${isPreviewing ? 'ring-2 ring-blue-400 ring-opacity-50' : ''}
@@ -197,13 +210,27 @@ export default function ColorPicker({ type, title, description }: ColorPickerPro
                 {/* Название */}
                 <div className="text-center">
                   <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                    {t(theme.name)}
+                    {getThemeName(theme)}
                   </p>
                   {isActive && (
                     <div className="flex items-center justify-center mt-1">
                       <Check className="w-4 h-4 text-green-600" />
                     </div>
                   )}
+                </div>
+
+                {/* Кнопка применения */}
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute top-2 right-2">
+                  <Button
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleApply(theme.id);
+                    }}
+                    className="bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 shadow-md"
+                  >
+                    <Check className="w-3 h-3" />
+                  </Button>
                 </div>
               </div>
             </div>
@@ -215,7 +242,7 @@ export default function ColorPicker({ type, title, description }: ColorPickerPro
       {type === 'quran' && (
         <div className="mt-8 p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
           <h4 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
-            {t("colorPreview")}
+            {t("colorPreview") || "Предпросмотр цветов"}
           </h4>
           
           <div className="space-y-4">
@@ -224,13 +251,21 @@ export default function ColorPicker({ type, title, description }: ColorPickerPro
               className="text-right text-2xl font-arabic leading-relaxed"
               style={{ color: 'var(--quran-arabic-color)' }}
             >
-              بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
+              بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ
+            </div>
+            
+            {/* Перевод */}
+            <div 
+              className="text-left text-base leading-relaxed"
+              style={{ color: 'var(--quran-translation-color)' }}
+            >
+              Во имя Аллаха, Милостивого, Милосердного!
             </div>
             
             {/* Номер аята */}
             <div className="flex items-center gap-2">
               <span 
-                className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+                className="inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold"
                 style={{ 
                   color: 'var(--quran-verse-number-color)',
                   backgroundColor: 'var(--quran-highlight-color)'
@@ -238,21 +273,9 @@ export default function ColorPicker({ type, title, description }: ColorPickerPro
               >
                 1
               </span>
-            </div>
-            
-            {/* Перевод */}
-            <div 
-              className="text-base leading-relaxed"
-              style={{ color: 'var(--quran-translation-color)' }}
-            >
-              In the name of Allah, the Entirely Merciful, the Especially Merciful.
-            </div>
-            
-            <div 
-              className="text-base leading-relaxed"
-              style={{ color: 'var(--quran-translation-color)' }}
-            >
-              Во имя Аллаха, Милостивого, Милосердного!
+              <span className="text-sm text-gray-600 dark:text-gray-400">
+                Номер аята
+              </span>
             </div>
           </div>
         </div>
@@ -263,30 +286,61 @@ export default function ColorPicker({ type, title, description }: ColorPickerPro
 
 // Компонент превью цветовой схемы сайта
 function SiteColorPreview({ theme }: { theme: ColorTheme }) {
-  const colors = theme.colors;
-  
   return (
-    <div className="flex flex-wrap gap-1">
-      <div 
-        className="w-6 h-6 rounded-full border border-white dark:border-gray-800 shadow-sm"
-        style={{ backgroundColor: colors.primary }}
-        title="Primary"
-      />
-      <div 
-        className="w-6 h-6 rounded-full border border-white dark:border-gray-800 shadow-sm"
-        style={{ backgroundColor: colors.secondary }}
-        title="Secondary"
-      />
-      <div 
-        className="w-6 h-6 rounded-full border border-white dark:border-gray-800 shadow-sm"
-        style={{ backgroundColor: colors.accent }}
-        title="Accent"
-      />
-      <div 
-        className="w-4 h-4 rounded border border-white dark:border-gray-800 shadow-sm"
-        style={{ backgroundColor: colors.background }}
-        title="Background"
-      />
+    <div className="space-y-2">
+      {/* Светлый режим */}
+      <div>
+        <p className="text-xs text-gray-500 mb-1">Светлый</p>
+        <div className="flex gap-1">
+          <div 
+            className="w-6 h-6 rounded-full border border-white shadow-sm"
+            style={{ backgroundColor: theme.lightMode.primary }}
+            title="Primary"
+          />
+          <div 
+            className="w-6 h-6 rounded-full border border-white shadow-sm"
+            style={{ backgroundColor: theme.lightMode.secondary }}
+            title="Secondary"
+          />
+          <div 
+            className="w-6 h-6 rounded-full border border-white shadow-sm"
+            style={{ backgroundColor: theme.lightMode.accent }}
+            title="Accent"
+          />
+          <div 
+            className="w-4 h-4 rounded border border-white shadow-sm mt-1"
+            style={{ backgroundColor: theme.lightMode.background }}
+            title="Background"
+          />
+        </div>
+      </div>
+      
+      {/* Темный режим */}
+      <div>
+        <p className="text-xs text-gray-500 mb-1">Темный</p>
+        <div className="flex gap-1">
+          <div 
+            className="w-6 h-6 rounded-full border border-gray-600 shadow-sm"
+            style={{ backgroundColor: theme.darkMode.primary }}
+            title="Primary Dark"
+          />
+          <div 
+            className="w-6 h-6 rounded-full border border-gray-600 shadow-sm"
+            style={{ backgroundColor: theme.darkMode.secondary }}
+            title="Secondary Dark"
+          />
+          <div 
+            className="w-6 h-6 rounded-full border border-gray-600 shadow-sm"
+            style={{ backgroundColor: theme.darkMode.accent }}
+            title="Accent Dark"
+          />
+          <div 
+            className="w-4 h-4 rounded border border-gray-600 shadow-sm mt-1"
+            style={{ backgroundColor: theme.darkMode.background }}
+            title="Background Dark"
+          />
+        </div>
+      </div>
     </div>
   );
 }
@@ -295,29 +349,48 @@ function SiteColorPreview({ theme }: { theme: ColorTheme }) {
 function QuranTextColorPreview({ scheme }: { scheme: QuranTextColorScheme }) {
   return (
     <div className="space-y-2">
-      <div className="flex gap-1">
-        <div 
-          className="w-8 h-3 rounded border border-white dark:border-gray-800 shadow-sm"
-          style={{ backgroundColor: scheme.arabicColor }}
-          title="Arabic text"
-        />
-        <div 
-          className="w-8 h-3 rounded border border-white dark:border-gray-800 shadow-sm"
-          style={{ backgroundColor: scheme.translationColor }}
-          title="Translation text"
-        />
+      {/* Светлый режим */}
+      <div>
+        <p className="text-xs text-gray-500 mb-1">Светлый</p>
+        <div className="flex gap-1">
+          <div 
+            className="w-8 h-3 rounded border border-white shadow-sm"
+            style={{ backgroundColor: scheme.lightMode.arabicColor }}
+            title="Arabic text"
+          />
+          <div 
+            className="w-8 h-3 rounded border border-white shadow-sm"
+            style={{ backgroundColor: scheme.lightMode.translationColor }}
+            title="Translation text"
+          />
+          <div 
+            className="w-4 h-4 rounded-full border border-white shadow-sm"
+            style={{ backgroundColor: scheme.lightMode.verseNumberColor }}
+            title="Verse number"
+          />
+        </div>
       </div>
-      <div className="flex gap-1">
-        <div 
-          className="w-4 h-4 rounded-full border border-white dark:border-gray-800 shadow-sm"
-          style={{ backgroundColor: scheme.verseNumberColor }}
-          title="Verse number"
-        />
-        <div 
-          className="w-8 h-3 rounded border border-white dark:border-gray-800 shadow-sm"
-          style={{ backgroundColor: scheme.highlightColor }}
-          title="Highlight"
-        />
+      
+      {/* Темный режим */}
+      <div>
+        <p className="text-xs text-gray-500 mb-1">Темный</p>
+        <div className="flex gap-1">
+          <div 
+            className="w-8 h-3 rounded border border-gray-600 shadow-sm"
+            style={{ backgroundColor: scheme.darkMode.arabicColor }}
+            title="Arabic text dark"
+          />
+          <div 
+            className="w-8 h-3 rounded border border-gray-600 shadow-sm"
+            style={{ backgroundColor: scheme.darkMode.translationColor }}
+            title="Translation text dark"
+          />
+          <div 
+            className="w-4 h-4 rounded-full border border-gray-600 shadow-sm"
+            style={{ backgroundColor: scheme.darkMode.verseNumberColor }}
+            title="Verse number dark"
+          />
+        </div>
       </div>
     </div>
   );

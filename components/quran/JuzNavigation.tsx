@@ -72,7 +72,7 @@ export default function JuzNavigation({ currentJuz = 1 }: JuzNavigationProps) {
               className="w-32 mb-2" 
             />
             <Link href={`/juz/${selectedJuz}`}>
-              <Button className="bg-green-600 hover:bg-green-700">
+              <Button className="theme-btn-primary">
                 {locale === 'en' ? 'Continue Reading' : 'Продолжить чтение'}
               </Button>
             </Link>
@@ -156,7 +156,7 @@ export default function JuzNavigation({ currentJuz = 1 }: JuzNavigationProps) {
                 </div>
                 
                 {/* Hover Effect */}
-                <div className="absolute inset-0 bg-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute inset-0 theme-bg-primary-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </button>
             </motion.div>
           );

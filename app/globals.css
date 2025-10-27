@@ -28,29 +28,31 @@
   --chart-4: 43 74% 66%;
   --chart-5: 27 87% 67%;
 
-  /* Custom color theme variables */
-  --primary-color: #3b82f6;
-  --secondary-color: #1e40af;
-  --accent-color: #60a5fa;
-  --background-color: #f8fafc;
+  /* Основные системные переменные для совместимости */
+  --primary-color: #10b981;
+  --secondary-color: #047857;
+  --accent-color: #34d399;
+  --background-color: #ffffff;
   --card-color: #ffffff;
 
-  /* Font family for Arabic text */
+  /* Шрифт для арабского текста */
   --font-arabic: "Amiri", "Scheherazade New", "Traditional Arabic", serif;
 
-  /* Dynamic site color theme variables */
+  /* Динамические переменные цветовых тем */
   --color-primary: #10b981;
   --color-primary-light: #34d399;
   --color-primary-dark: #047857;
   --color-secondary: #f0fdf4;
   --color-accent: #059669;
   --color-background: #ffffff;
-  --color-background-secondary: #f9fafb;
+  --color-background-secondary: #f8fafc;
   --color-surface: #ffffff;
   --color-text: #111827;
   --color-text-secondary: #6b7280;
+  --color-border: #e5e7eb;
+  --color-muted: #f3f4f6;
 
-  /* Dynamic Quran text color variables */
+  /* Переменные для текста Корана */
   --quran-arabic-color: #1f2937;
   --quran-translation-color: #4b5563;
   --quran-verse-number-color: #10b981;
@@ -82,6 +84,26 @@
   --chart-3: 30 80% 55%;
   --chart-4: 280 65% 60%;
   --chart-5: 340 75% 55%;
+
+  /* Темная тема - переменные будут обновляться динамически через JS */
+  --color-primary: #34d399;
+  --color-primary-light: #6ee7b7;
+  --color-primary-dark: #10b981;
+  --color-secondary: #064e3b;
+  --color-accent: #10b981;
+  --color-background: #0f172a;
+  --color-background-secondary: #1e293b;
+  --color-surface: #334155;
+  --color-text: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-border: #475569;
+  --color-muted: #374151;
+
+  /* Темная тема для текста Корана */
+  --quran-arabic-color: #f9fafb;
+  --quran-translation-color: #d1d5db;
+  --quran-verse-number-color: #34d399;
+  --quran-highlight-color: #374151;
 }
 
 * {
@@ -91,11 +113,13 @@
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
+  /* Плавные переходы для смены тем */
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Original styles */
+/* Основные стили */
 .bg-main {
-  background-color: #13a895;
+  background-color: var(--color-primary);
   color: white;
 }
 
@@ -154,7 +178,7 @@ input[type="range"] {
 }
 
 input[type="range"]::-webkit-slider-track {
-  background: hsl(var(--muted));
+  background: var(--color-muted);
   height: 8px;
   border-radius: 4px;
 }
@@ -162,7 +186,7 @@ input[type="range"]::-webkit-slider-track {
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  background: var(--primary-color);
+  background: var(--color-primary);
   height: 20px;
   width: 20px;
   border-radius: 50%;
@@ -171,14 +195,14 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 input[type="range"]::-moz-range-track {
-  background: hsl(var(--muted));
+  background: var(--color-muted);
   height: 8px;
   border-radius: 4px;
   border: none;
 }
 
 input[type="range"]::-moz-range-thumb {
-  background: var(--primary-color);
+  background: var(--color-primary);
   height: 20px;
   width: 20px;
   border-radius: 50%;
@@ -196,20 +220,21 @@ input[type="range"]::-moz-range-thumb {
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--muted));
+  background: var(--color-muted);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--primary-color);
+  background: var(--color-primary);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--secondary-color);
+  background: var(--color-primary-dark);
 }
 
 /* Animation classes */
@@ -231,7 +256,7 @@ input[type="range"]::-moz-range-thumb {
 /* Loading spinner */
 .spinner {
   border: 2px solid transparent;
-  border-top: 2px solid var(--primary-color);
+  border-top: 2px solid var(--color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -255,7 +280,7 @@ input[type="range"]::-moz-range-thumb {
 
 .audio-bar {
   width: 3px;
-  background: var(--primary-color);
+  background: var(--color-primary);
   border-radius: 2px;
   animation: audioWave 1.5s ease-in-out infinite;
 }
@@ -285,10 +310,10 @@ input[type="range"]::-moz-range-thumb {
 
 /* Search result highlighting */
 mark {
-  background-color: hsl(var(--accent));
+  background-color: var(--quran-highlight-color);
   padding: 2px 4px;
   border-radius: 3px;
-  color: hsl(var(--accent-foreground));
+  color: var(--color-text);
 }
 
 /* Card hover effects */
@@ -587,6 +612,161 @@ mark {
 /* Font classes for Arabic text */
 .font-arabic {
   font-family: var(--font-arabic);
+}
+
+/* Классы для градиентов */
+.gradient-primary {
+  background: linear-gradient(
+    to right,
+    var(--color-primary),
+    var(--color-accent)
+  ) !important;
+}
+
+.gradient-text-primary {
+  background: linear-gradient(
+    to right,
+    var(--color-primary),
+    var(--color-accent)
+  ) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+}
+
+/* Шрифт для арабского текста */
+.font-arabic {
+  font-family: var(--font-arabic);
+}
+
+/* Адаптивный дизайн */
+@media (max-width: 768px) {
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .color-themes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Стили для печати */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .print-friendly {
+    background: white !important;
+    color: black !important;
+  }
+}
+
+/* Динамические классы для цветовых тем с фоллбэками */
+.theme-bg-primary {
+  background-color: var(--color-primary) !important;
+}
+
+.theme-bg-primary-light {
+  background-color: var(--color-primary-light) !important;
+}
+
+/* Фоллбэки для color-mix() */
+.theme-bg-primary-10 {
+  background-color: var(--color-secondary) !important; /* фоллбэк */
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent) !important;
+}
+
+.theme-bg-primary-20 {
+  background-color: var(--color-secondary) !important; /* фоллбэк */
+  background-color: color-mix(in srgb, var(--color-primary) 20%, transparent) !important;
+}
+
+.theme-bg-primary-soft {
+  background-color: var(--color-secondary) !important; /* фоллбэк */
+  background-color: color-mix(in srgb, var(--color-primary) 10%, var(--color-background)) !important;
+}
+
+.theme-text-primary {
+  color: var(--color-primary) !important;
+}
+
+.theme-text-primary-light {
+  color: var(--color-primary-light) !important;
+}
+
+.theme-border-primary {
+  border-color: var(--color-primary) !important;
+}
+
+.theme-hover-bg-soft {
+  transition: background-color 0.2s ease !important;
+}
+
+.theme-hover-bg-soft:hover {
+  background-color: var(--color-secondary) !important; /* фоллбэк */
+  background-color: color-mix(in srgb, var(--color-primary) 5%, var(--color-background)) !important;
+}
+
+.dark .theme-hover-bg-soft:hover {
+  background-color: var(--color-secondary) !important; /* фоллбэк */
+  background-color: color-mix(in srgb, var(--color-primary) 15%, var(--color-background)) !important;
+}
+
+.theme-active-bg {
+  background-color: var(--color-secondary) !important; /* фоллбэк */
+  background-color: color-mix(in srgb, var(--color-primary) 15%, var(--color-background)) !important;
+  color: var(--color-primary) !important;
+}
+
+.dark .theme-active-bg {
+  background-color: var(--color-secondary) !important; /* фоллбэк */
+  background-color: color-mix(in srgb, var(--color-primary) 25%, var(--color-background)) !important;
+  color: var(--color-primary-light) !important;
+}
+
+/* Анимированные точки */
+.theme-dot-animated {
+  background-color: var(--color-primary) !important;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+}
+
+/* Градиенты с динамическими цветами */
+.theme-gradient-subtle {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-background) 100%) !important; /* фоллбэк */
+  background: linear-gradient(135deg, 
+    color-mix(in srgb, var(--color-primary) 5%, var(--color-background)) 0%,
+    var(--color-background) 100%) !important;
+}
+
+.dark .theme-gradient-subtle {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-background) 100%) !important; /* фоллбэк */
+  background: linear-gradient(135deg, 
+    color-mix(in srgb, var(--color-primary) 10%, var(--color-background)) 0%,
+    var(--color-background) 100%) !important;
+}
+
+/* Декоративные элементы */
+.theme-decoration {
+  background-color: var(--color-secondary) !important; /* фоллбэк */
+  background-color: color-mix(in srgb, var(--color-primary) 8%, transparent) !important;
+}
+
+.dark .theme-decoration {
+  background-color: var(--color-secondary) !important; /* фоллбэк */
+  background-color: color-mix(in srgb, var(--color-primary-light) 12%, transparent) !important;
+}
+
+/* Кнопки */
+.theme-btn-primary {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+  border-color: var(--color-primary) !important;
+}
+
+.theme-btn-primary:hover {
+  background-color: var(--color-primary-dark) !important;
+  border-color: var(--color-primary-dark) !important;
 }
 
 @import './theme-styles.css';

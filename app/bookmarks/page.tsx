@@ -101,7 +101,7 @@ export default function BookmarksPage() {
             
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/surahs">
-                <Button className="bg-green-600 hover:bg-green-700 gap-2">
+                <Button className="theme-btn-primary gap-2">
                   <Book className="w-4 h-4" />
                   {locale === 'en' ? 'Browse Surahs' : 'Просмотр сур'}
                 </Button>

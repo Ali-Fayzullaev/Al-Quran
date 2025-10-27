@@ -34,38 +34,39 @@ function HoverCard({ surah }: { surah: Surah }) {
   return (
     <Link href={`/surah/${surah.number}`}>
       <div
-        className="group relative overflow-hidden rounded-2xl border shadow-lg p-6 cursor-pointer bg-white dark:bg-neutral-900 border-gray-200 dark:border-neutral-700 transition-transform duration-300 hover:scale-105 hover:shadow-2xl"
+        className="group relative overflow-hidden rounded-2xl border shadow-lg p-6 cursor-pointer bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 transition-transform duration-300 hover:scale-105 hover:shadow-2xl hover:theme-border-primary"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full bg-[#13A895] opacity-10 group-hover:opacity-20 transition" />
+        <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full theme-decoration group-hover:theme-bg-primary-20 transition" />
 
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="p-3 rounded-full bg-[#13A895]/20 text-[#13A895]">
-            <BookOpen className="w-6 h-6" />
+          <div className="p-3 rounded-full theme-bg-primary-20 theme-text-primary">
+            <span className="text-lg font-bold">{surah.number}</span>
           </div>
-          <h3 className="font-bold text-xl text-gray-900 dark:text-white">
-            {surah.number}. {surah.englishName}
-          </h3>
+          <div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 group-hover:theme-text-primary">
+              {surah.englishName}
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{surah.englishNameTranslation}</p>
+          </div>
         </div>
 
-        {/* Arabic Name */}
-        <p className="mt-2 text-lg font-medium text-gray-700 dark:text-gray-300">
-          {surah.name}
-        </p>
+        {/* Arabic name */}
+        <div className="mt-4 text-center" dir="rtl">
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200 font-amiri group-hover:theme-text-primary">
+            {surah.name}
+          </h2>
+        </div>
 
-        {/* Info (hover эффект) */}
-        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-          {hovered ? (
-            <CountUp start={0} end={surah.numberOfAyahs} duration={2} />
-          ) : (
-            surah.numberOfAyahs
-          )}{" "}
-          аятов – <span className="capitalize">{surah.revelationType}</span>
-        </p>
+        {/* Footer info */}
+        <div className="mt-4 flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+          <span>{surah.numberOfAyahs} аятов</span>
+          <span className="capitalize">{surah.revelationType}</span>
+        </div>
 
-        <div className="mt-4 h-1 w-0 group-hover:w-full bg-[#13A895] transition-all duration-500 rounded-full" />
+        <div className="mt-4 h-1 w-0 group-hover:w-full theme-bg-primary transition-all duration-500 rounded-full" />
       </div>
     </Link>
   );

@@ -36,14 +36,12 @@ export function ColorThemeProvider({ children }: { children: React.ReactNode }) 
       // Применяем цветовую схему сайта
       const siteTheme = getThemeByName(siteColorTheme);
       if (siteTheme) {
-        console.log('Applying site theme:', siteTheme);
         applySiteColorTheme(siteTheme, isDark);
       }
 
       // Применяем цветовую схему текста Корана
       const quranScheme = getQuranColorSchemeByName(quranTextColorScheme);
       if (quranScheme) {
-        console.log('Applying quran scheme:', quranScheme);
         applyQuranTextColors(quranScheme, isDark);
       }
     };
@@ -51,7 +49,7 @@ export function ColorThemeProvider({ children }: { children: React.ReactNode }) 
     // Применяем сразу
     applyColors();
     
-    // И еще раз через небольшую задержку для уверенности
+    // Также применяем при изменении темы с небольшой задержкой
     const timeoutId = setTimeout(applyColors, 100);
     
     return () => clearTimeout(timeoutId);

@@ -45,10 +45,10 @@ export function useColorTheme() {
     
     const currentTheme = getCurrentTheme();
     const isDark = currentTheme === 'dark';
-    const theme = getThemeByName(themeId);
+    const themeData = getThemeByName(themeId);
     
-    if (theme) {
-      applySiteColorTheme(theme, isDark);
+    if (themeData) {
+      applySiteColorTheme(themeData, isDark);
     }
   };
 

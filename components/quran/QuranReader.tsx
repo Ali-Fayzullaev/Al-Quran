@@ -502,7 +502,7 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                   onClick={() => setAutoPlay(!autoPlay)}
                   className={cn(
                     "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
-                    autoPlay ? "bg-green-600" : "bg-gray-300 dark:bg-gray-600"
+                    autoPlay ? "theme-bg-primary" : "bg-gray-300 dark:bg-gray-600"
                   )}
                 >
                   <span
@@ -547,7 +547,7 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                     <motion.div
                       animate={{ scale: [1, 1.2, 1] }}
                       transition={{ repeat: Infinity, duration: 1 }}
-                      className="w-2 h-2 bg-green-500 rounded-full"
+                      className="w-2 h-2 theme-dot-animated rounded-full"
                     />
                   )}
                 </div>

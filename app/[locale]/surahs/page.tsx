@@ -188,11 +188,11 @@ export default function SurahsPage() {
             </p>
             <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
               <span className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <div className="w-3 h-3 theme-dot-animated rounded-full"></div>
                 {locale === 'en' ? 'Meccan' : 'Мекканские'}
               </span>
               <span className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                <div className="w-3 h-3 theme-dot-animated rounded-full"></div>
                 {locale === 'en' ? 'Medinan' : 'Мединские'}
               </span>
             </div>

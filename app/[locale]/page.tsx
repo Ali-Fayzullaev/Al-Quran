@@ -113,7 +113,7 @@ export default function HomePage() {
                 />
                 <Button 
                   type="submit"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 theme-btn-primary rounded-xl"
                 >
                   {locale === "en" ? "Search" : "Поиск"}
                 </Button>

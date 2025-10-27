@@ -32,76 +32,8 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { RECITERS, TRANSLATIONS, getWorkingAudioUrl, getCachedWorkingAudioUrl, preloadAudio } from "@/lib/api";
-
-// Color themes configuration
-const COLOR_THEMES = [
-  {
-    id: 'default',
-    name: { en: 'Default Blue', ru: 'Синий по умолчанию' },
-    colors: {
-      primary: '#3B82F6',
-      secondary: '#1E40AF',
-      accent: '#60A5FA',
-      background: '#F8FAFC',
-      card: '#FFFFFF'
-    }
-  },
-  {
-    id: 'emerald',
-    name: { en: 'Emerald Green', ru: 'Изумрудно-зеленый' },
-    colors: {
-      primary: '#10B981',
-      secondary: '#047857',
-      accent: '#34D399',
-      background: '#F0FDF4',
-      card: '#FFFFFF'
-    }
-  },
-  {
-    id: 'purple',
-    name: { en: 'Royal Purple', ru: 'Королевский фиолетовый' },
-    colors: {
-      primary: '#8B5CF6',
-      secondary: '#6D28D9',
-      accent: '#A78BFA',
-      background: '#FAF5FF',
-      card: '#FFFFFF'
-    }
-  },
-  {
-    id: 'rose',
-    name: { en: 'Rose Gold', ru: 'Розовое золото' },
-    colors: {
-      primary: '#F43F5E',
-      secondary: '#BE185D',
-      accent: '#FB7185',
-      background: '#FFF1F2',
-      card: '#FFFFFF'
-    }
-  },
-  {
-    id: 'amber',
-    name: { en: 'Golden Amber', ru: 'Золотистый янтарь' },
-    colors: {
-      primary: '#F59E0B',
-      secondary: '#D97706',
-      accent: '#FCD34D',
-      background: '#FFFBEB',
-      card: '#FFFFFF'
-    }
-  },
-  {
-    id: 'teal',
-    name: { en: 'Ocean Teal', ru: 'Океанский бирюзовый' },
-    colors: {
-      primary: '#14B8A6',
-      secondary: '#0F766E',
-      accent: '#2DD4BF',
-      background: '#F0FDFA',
-      card: '#FFFFFF'
-    }
-  }
-];
+import ColorPicker from "@/components/ColorPicker";
+import { useTheme } from "next-themes";
 
 // Популярные чтецы для быстрого доступа
 const POPULAR_RECITERS = ['ar.alafasy', 'ar.abdulbasitmurattal', 'ar.abdurrahmaansudais', 'ar.mahermuaiqly'];
@@ -114,7 +46,8 @@ const QUICK_TRANSLATIONS = {
 };
 
 export default function SettingsPage() {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
+  const { theme, setTheme } = useTheme();
   const {
     fontSize,
     showTranslation,
@@ -124,8 +57,8 @@ export default function SettingsPage() {
     audioSpeed,
     audioVolume,
     autoPlay,
-    colorTheme,
-    darkMode,
+    siteColorTheme,
+    quranTextColorScheme,
     setFontSize,
     toggleTranslation,
     toggleTransliteration,
@@ -134,8 +67,8 @@ export default function SettingsPage() {
     setAudioSpeed,
     setAudioVolume,
     setAutoPlay,
-    setColorTheme,
-    setDarkMode
+    setSiteColorTheme,
+    setQuranTextColorScheme
   } = useQuranStore();
 
   const [previewAudio, setPreviewAudio] = useState<string | null>(null);
@@ -174,24 +107,6 @@ export default function SettingsPage() {
     }, {} as Record<string, typeof TRANSLATIONS>);
   }, [translationSearch]);
 
-  // Применяем цветовую тему при загрузке и изменении
-  useEffect(() => {
-    applyColorTheme(colorTheme);
-  }, [colorTheme]);
-
-  const applyColorTheme = (themeId: string) => {
-    const theme = COLOR_THEMES.find(t => t.id === themeId);
-    if (theme) {
-      setColorTheme(themeId);
-      const root = document.documentElement;
-      root.style.setProperty('--primary-color', theme.colors.primary);
-      root.style.setProperty('--secondary-color', theme.colors.secondary);
-      root.style.setProperty('--accent-color', theme.colors.accent);
-      root.style.setProperty('--background-color', theme.colors.background);
-      root.style.setProperty('--card-color', theme.colors.card);
-    }
-  };
-
   const previewReciter = async (reciterId: string) => {
     try {
       if (audioElement) {
@@ -202,14 +117,12 @@ export default function SettingsPage() {
       setPreviewAudio(reciterId);
       setIsPlaying(true);
       
-      // Используем улучшенную функцию для получения аудио URL
       const audioUrl = await getCachedWorkingAudioUrl(1, 1, reciterId);
       const audio = new Audio();
       audio.volume = audioVolume;
-      audio.crossOrigin = 'anonymous'; // Для обхода CORS
+      audio.crossOrigin = 'anonymous';
       setAudioElement(audio);
       
-      // Предзагружаем аудио
       const isPreloaded = await preloadAudio(audioUrl);
       if (!isPreloaded) {
         throw new Error('Failed to preload audio');
@@ -236,7 +149,6 @@ export default function SettingsPage() {
         setPreviewAudio(null);
       };
       
-      // Автоматическая остановка через 8 секунд
       setTimeout(() => {
         if (audio && !audio.paused) {
           audio.pause();
@@ -250,12 +162,10 @@ export default function SettingsPage() {
       setIsPlaying(false);
       setPreviewAudio(null);
       
-      // Показываем уведомление об ошибке
       const errorMessage = locale === 'en' 
         ? 'Preview not available for this reciter' 
         : 'Превью недоступно для этого чтеца';
       
-      // Временно показываем ошибку (можно добавить toast notification)
       setTimeout(() => {
         alert(errorMessage);
       }, 100);
@@ -278,11 +188,11 @@ export default function SettingsPage() {
     setAutoPlay(false);
     setSelectedTranslations(['en.sahih', 'ru.kuliev']);
     setAudioReciter('ar.alafasy');
-    applyColorTheme('default');
-    setDarkMode('system');
+    setSiteColorTheme('emerald');
+    setQuranTextColorScheme('classic');
+    setTheme('system');
   };
 
-  // Быстрая установка переводов по языку
   const setQuickTranslations = (language: string) => {
     const quickTranslations = QUICK_TRANSLATIONS[language as keyof typeof QUICK_TRANSLATIONS];
     if (quickTranslations) {
@@ -298,27 +208,24 @@ export default function SettingsPage() {
       {/* Header */}
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-3">
-          <SettingsIcon className="w-8 h-8 text-blue-600" />
-          <h1 className="text-3xl font-bold">
-            {locale === 'en' ? 'Settings' : 'Настройки'}
+          <SettingsIcon className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+            {t('settings')}
           </h1>
         </div>
         <p className="text-gray-600 dark:text-gray-400">
-          {locale === 'en' 
-            ? 'Customize your Quran reading experience'
-            : 'Настройте ваш опыт чтения Корана'
-          }
+          {t('settingsDescription')}
         </p>
       </div>
 
       {/* Quick Settings Tabs */}
       <div className="flex justify-center">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-2 shadow-lg">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-2 shadow-lg border border-gray-200 dark:border-gray-700">
           <div className="flex gap-2">
             {[
-              { id: 'theme', icon: Palette, label: locale === 'en' ? 'Theme' : 'Тема' },
-              { id: 'audio', icon: Volume2, label: locale === 'en' ? 'Audio' : 'Аудио' },
-              { id: 'translation', icon: Languages, label: locale === 'en' ? 'Translation' : 'Перевод' },
+              { id: 'theme', icon: Palette, label: t('theme') },
+              { id: 'audio', icon: Volume2, label: t('audio') },
+              { id: 'translation', icon: Languages, label: t('translation') },
               { id: 'reading', icon: Type, label: locale === 'en' ? 'Reading' : 'Чтение' }
             ].map(({ id, icon: Icon, label }) => (
               <button
@@ -327,8 +234,8 @@ export default function SettingsPage() {
                 className={cn(
                   "flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition-all",
                   activeTab === id
-                    ? "bg-blue-500 text-white shadow-lg"
-                    : "hover:bg-gray-100 dark:hover:bg-gray-700"
+                    ? "theme-bg-primary text-white shadow-lg"
+                    : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
                 )}
               >
                 <Icon size={16} />
@@ -345,90 +252,61 @@ export default function SettingsPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg"
+            className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
           >
             <div className="flex items-center gap-3 mb-6">
-              <Palette className="w-6 h-6 text-purple-600" />
-              <h2 className="text-xl font-semibold">
+              <Palette className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
                 {locale === 'en' ? 'Appearance' : 'Внешний вид'}
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Color Themes */}
-              <div>
-                <h3 className="text-lg font-medium mb-4">
-                  {locale === 'en' ? 'Color Theme' : 'Цветовая тема'}
-                </h3>
-                <div className="grid grid-cols-2 gap-3">
-                  {COLOR_THEMES.map((theme) => (
-                    <div
-                      key={theme.id}
-                      onClick={() => applyColorTheme(theme.id)}
-                      className={cn(
-                        "p-4 rounded-xl border-2 cursor-pointer transition-all hover:scale-105",
-                        colorTheme === theme.id 
-                          ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 shadow-lg" 
-                          : "border-gray-200 dark:border-gray-600 hover:border-gray-300"
-                      )}
-                    >
-                      <div className="flex gap-2 mb-3">
-                        <div 
-                          className="w-5 h-5 rounded-full shadow-sm" 
-                          style={{ backgroundColor: theme.colors.primary }}
-                        />
-                        <div 
-                          className="w-5 h-5 rounded-full shadow-sm" 
-                          style={{ backgroundColor: theme.colors.secondary }}
-                        />
-                        <div 
-                          className="w-5 h-5 rounded-full shadow-sm" 
-                          style={{ backgroundColor: theme.colors.accent }}
-                        />
-                      </div>
-                      <p className="text-sm font-medium mb-2">
-                        {theme.name[locale as 'en' | 'ru']}
-                      </p>
-                      {colorTheme === theme.id && (
-                        <div className="flex items-center gap-1 text-blue-500">
-                          <Check className="w-4 h-4" />
-                          <span className="text-xs">
-                            {locale === 'en' ? 'Active' : 'Активна'}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
+            <div className="space-y-8">
               {/* Dark Mode */}
               <div>
-                <h3 className="text-lg font-medium mb-4">
+                <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-gray-100">
                   {locale === 'en' ? 'Display Mode' : 'Режим отображения'}
                 </h3>
-                <div className="space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {[
-                    { id: 'light', icon: Sun, label: locale === 'en' ? 'Light Mode' : 'Светлый режим' },
-                    { id: 'dark', icon: Moon, label: locale === 'en' ? 'Dark Mode' : 'Темный режим' },
-                    { id: 'system', icon: Monitor, label: locale === 'en' ? 'System Default' : 'Системный' }
+                    { id: 'light', icon: Sun, label: t('lightMode') },
+                    { id: 'dark', icon: Moon, label: t('darkMode') },
+                    { id: 'system', icon: Monitor, label: t('systemMode') }
                   ].map(({ id, icon: Icon, label }) => (
                     <button
                       key={id}
-                      onClick={() => setDarkMode(id as any)}
+                      onClick={() => setTheme(id)}
                       className={cn(
-                        "w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all",
-                        darkMode === id
-                          ? "bg-blue-500 text-white shadow-lg"
-                          : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+                        "flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all border",
+                        theme === id
+                          ? "bg-green-500 text-white shadow-lg border-green-500"
+                          : "bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300"
                       )}
                     >
                       <Icon size={18} />
                       <span className="font-medium">{label}</span>
-                      {darkMode === id && <Check size={16} className="ml-auto" />}
+                      {theme === id && <Check size={16} className="ml-auto" />}
                     </button>
                   ))}
                 </div>
+              </div>
+
+              {/* Site Color Theme */}
+              <div>
+                <ColorPicker
+                  type="site"
+                  title={t('siteTheme')}
+                  description="Выберите основную цветовую схему для интерфейса сайта"
+                />
+              </div>
+
+              {/* Quran Text Color Scheme */}
+              <div>
+                <ColorPicker
+                  type="quran"
+                  title={t('quranTextColor')}
+                  description="Настройте цвета для арабского текста и переводов Корана"
+                />
               </div>
             </div>
           </motion.div>
@@ -439,23 +317,330 @@ export default function SettingsPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg"
+            className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
           >
             <div className="flex items-center gap-3 mb-6">
-              <Headphones className="w-6 h-6 text-green-600" />
-              <h2 className="text-xl font-semibold">
-                {locale === 'en' ? 'Audio Settings' : 'Настройки аудио'}
+              <Headphones className="w-6 h-6 text-green-600 dark:text-green-400" />
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                {t('audioSettings')}
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Rest of the component continues with the same structure... */}
-              {/* For brevity, I'm showing the key structure change */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Reciter Selection */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                    {t('selectReciterQari')}
+                  </h3>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowAllReciters(!showAllReciters)}
+                    className="text-xs"
+                  >
+                    {showAllReciters 
+                      ? (locale === 'en' ? 'Show Popular' : 'Популярные')
+                      : (locale === 'en' ? 'Show All' : 'Все')
+                    }
+                  </Button>
+                </div>
+
+                {/* Search */}
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <input
+                    type="text"
+                    placeholder={locale === 'en' ? 'Search reciters...' : 'Поиск чтецов...'}
+                    value={reciterSearch}
+                    onChange={(e) => setReciterSearch(e.target.value)}
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                  />
+                </div>
+
+                {/* Reciters List */}
+                <div className="max-h-64 overflow-y-auto space-y-2 border border-gray-200 dark:border-gray-600 rounded-lg p-2">
+                  {filteredReciters.map((reciter) => (
+                    <div
+                      key={reciter.id}
+                      className={cn(
+                        "flex items-center justify-between p-3 rounded-lg transition-all cursor-pointer",
+                        audioReciter === reciter.id
+                          ? "bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-600"
+                          : "hover:bg-gray-50 dark:hover:bg-gray-700"
+                      )}
+                      onClick={() => setAudioReciter(reciter.id)}
+                    >
+                      <div>
+                        <p className="font-medium text-gray-900 dark:text-gray-100">{reciter.name}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{reciter.country}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {audioReciter === reciter.id && (
+                          <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (previewAudio === reciter.id && isPlaying) {
+                              stopPreview();
+                            } else {
+                              previewReciter(reciter.id);
+                            }
+                          }}
+                          className="p-1"
+                        >
+                          {previewAudio === reciter.id && isPlaying ? (
+                            <Pause className="w-4 h-4" />
+                          ) : (
+                            <Play className="w-4 h-4" />
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Audio Controls */}
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {t('volume')}: {Math.round(audioVolume * 100)}%
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.1"
+                    value={audioVolume}
+                    onChange={(e) => setAudioVolume(Number(e.target.value))}
+                    className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    {t('speed')}: {audioSpeed}x
+                  </label>
+                  <input
+                    type="range"
+                    min="0.5"
+                    max="2"
+                    step="0.25"
+                    value={audioSpeed}
+                    onChange={(e) => setAudioSpeed(Number(e.target.value))}
+                    className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">
+                      {t('autoplayNext')}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {locale === 'en' ? 'Automatically play next verse' : 'Автоматически воспроизводить следующий аят'}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setAutoPlay(!autoPlay)}
+                    className={cn(
+                      "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+                      autoPlay ? "theme-bg-primary" : "bg-gray-300 dark:bg-gray-600"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                        autoPlay ? "translate-x-6" : "translate-x-1"
+                      )}
+                    />
+                  </button>
+                </div>
+              </div>
             </div>
           </motion.div>
         )}
 
-        {/* Translation Settings and Reading Settings would continue similarly... */}
+        {/* Translation Settings */}
+        {activeTab === 'translation' && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <Languages className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                {t('selectTranslations')}
+              </h2>
+            </div>
+
+            {/* Quick Language Selection */}
+            <div className="mb-6">
+              <h3 className="text-lg font-medium mb-3 text-gray-900 dark:text-gray-100">
+                {locale === 'en' ? 'Quick Setup' : 'Быстрая настройка'}
+              </h3>
+              <div className="flex gap-2 flex-wrap">
+                {[
+                  { code: 'ru', label: 'Русский', flag: '🇷🇺' },
+                  { code: 'en', label: 'English', flag: '🇺🇸' },
+                  { code: 'ar', label: 'العربية', flag: '🇸🇦' }
+                ].map(({ code, label, flag }) => (
+                  <Button
+                    key={code}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setQuickTranslations(code)}
+                    className="flex items-center gap-2"
+                  >
+                    <span>{flag}</span>
+                    {label}
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Search */}
+            <div className="relative mb-4">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                placeholder={locale === 'en' ? 'Search translations...' : 'Поиск переводов...'}
+                value={translationSearch}
+                onChange={(e) => setTranslationSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+              />
+            </div>
+
+            {/* Translations by Language */}
+            <div className="max-h-96 overflow-y-auto space-y-4">
+              {Object.entries(filteredTranslationsByLanguage).map(([language, translations]) => (
+                <div key={language} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
+                  <h4 className="font-semibold mb-3 text-gray-900 dark:text-gray-100 capitalize">
+                    {language === 'arabic' ? 'العربية' : 
+                     language === 'russian' ? 'Русский' :
+                     language === 'english' ? 'English' : language}
+                  </h4>
+                  <div className="space-y-2">
+                    {translations.map((translation) => (
+                      <label
+                        key={translation.id}
+                        className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedTranslations.includes(translation.id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedTranslations([...selectedTranslations, translation.id]);
+                            } else {
+                              setSelectedTranslations(selectedTranslations.filter(id => id !== translation.id));
+                            }
+                          }}
+                          className="w-4 h-4 text-green-600 border-gray-300 dark:border-gray-600 rounded focus:ring-green-500"
+                        />
+                        <div>
+                          <p className="font-medium text-gray-900 dark:text-gray-100">{translation.name}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">{translation.author}</p>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Reading Settings */}
+        {activeTab === 'reading' && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+          >
+            <div className="flex items-center gap-3 mb-6">
+              <Type className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                {t('displaySettings')}
+              </h2>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Font Size */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  {t('fontSizeLabel')} {fontSize}px
+                </label>
+                <input
+                  type="range"
+                  min="12"
+                  max="32"
+                  value={fontSize}
+                  onChange={(e) => setFontSize(Number(e.target.value))}
+                  className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer"
+                />
+              </div>
+
+              {/* Display Options */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">
+                      {t('showTranslation')}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {locale === 'en' ? 'Show verse translations' : 'Показывать переводы аятов'}
+                    </p>
+                  </div>
+                  <button
+                    onClick={toggleTranslation}
+                    className={cn(
+                      "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+                      showTranslation ? "theme-bg-primary" : "bg-gray-300 dark:bg-gray-600"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                        showTranslation ? "translate-x-6" : "translate-x-1"
+                      )}
+                    />
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">
+                      {t('showTransliteration')}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {locale === 'en' ? 'Show Arabic transliteration' : 'Показывать транслитерацию'}
+                    </p>
+                  </div>
+                  <button
+                    onClick={toggleTransliteration}
+                    className={cn(
+                      "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
+                      showTransliteration ? "theme-bg-primary" : "bg-gray-300 dark:bg-gray-600"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "inline-block h-4 w-4 transform rounded-full bg-white transition-transform",
+                        showTransliteration ? "translate-x-6" : "translate-x-1"
+                      )}
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
       </div>
 
       {/* Action Buttons */}
@@ -471,17 +656,17 @@ export default function SettingsPage() {
           className="flex items-center gap-2 px-6 py-3"
         >
           <RotateCcw size={18} />
-          {locale === 'en' ? 'Reset to Defaults' : 'Сбросить к стандартным'}
+          {t('resetToDefault')}
         </Button>
         
-        <Button className="flex items-center gap-2 bg-green-600 hover:bg-green-700 px-6 py-3">
+        <Button className="flex items-center gap-2 theme-btn-primary px-6 py-3">
           <Save size={18} />
           {locale === 'en' ? 'Settings Saved' : 'Настройки сохранены'}
         </Button>
       </motion.div>
 
       {/* Settings Info */}
-      <div className="text-center text-sm text-gray-500 dark:text-gray-400 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 border">
+      <div className="text-center text-sm text-gray-500 dark:text-gray-400 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-6 border border-green-200 dark:border-green-700">
         <div className="flex items-center justify-center gap-2 mb-2">
           <SettingsIcon className="w-4 h-4" />
           <span className="font-medium">
