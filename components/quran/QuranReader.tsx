@@ -18,7 +18,11 @@ import {
   Languages,
   User,
   Globe,
-  X
+  X,
+  SkipBack,
+  SkipForward,
+  RotateCcw,
+  Loader2
 } from "lucide-react";
 import { useQuranStore } from "@/lib/store";
 import { useSurahMultipleEditions } from "@/lib/hooks";
@@ -62,6 +66,11 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
   const [showSettings, setShowSettings] = useState(false);
   const [isLoadingAudio, setIsLoadingAudio] = useState(false);
   const [audioError, setAudioError] = useState<string | null>(null);
+  // НОВЫЕ состояния для улучшенного аудио
+  const [audioProgress, setAudioProgress] = useState(0);
+  const [audioDuration, setAudioDuration] = useState(0);
+  const [audioCurrentTime, setAudioCurrentTime] = useState(0);
+  const [isBuffering, setIsBuffering] = useState(false);
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const verseRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
@@ -98,13 +107,15 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
     }
   }, [currentVerse]);
 
-  // Обработка аудио
+  // УЛУЧШЕННАЯ обработка аудио с прогрессом
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     const handleEnded = () => {
       setIsPlaying(false);
+      setAudioProgress(0);
+      setAudioCurrentTime(0);
       if (autoPlay && arabicSurah && currentVerse < arabicSurah.numberOfAyahs) {
         setCurrentVerse(prev => prev + 1);
         setTimeout(() => playVerseAudio(currentVerse + 1), 1000);
@@ -115,29 +126,61 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
       console.error('Audio playback error');
       setIsPlaying(false);
       setIsLoadingAudio(false);
+      setIsBuffering(false);
       setAudioError(locale === 'en' ? 'Audio not available for this reciter' : 'Аудио недоступно для этого чтеца');
     };
 
     const handleLoadStart = () => {
       setIsLoadingAudio(true);
+      setIsBuffering(true);
       setAudioError(null);
     };
 
     const handleCanPlay = () => {
       setIsLoadingAudio(false);
+      setIsBuffering(false);
       setAudioError(null);
+    };
+
+    const handleTimeUpdate = () => {
+      const currentTime = audio.currentTime;
+      const duration = audio.duration;
+      setAudioCurrentTime(currentTime);
+      if (duration) {
+        setAudioProgress((currentTime / duration) * 100);
+      }
+    };
+
+    const handleDurationChange = () => {
+      setAudioDuration(audio.duration);
+    };
+
+    const handleWaiting = () => {
+      setIsBuffering(true);
+    };
+
+    const handleCanPlayThrough = () => {
+      setIsBuffering(false);
     };
 
     audio.addEventListener('ended', handleEnded);
     audio.addEventListener('error', handleError);
     audio.addEventListener('loadstart', handleLoadStart);
     audio.addEventListener('canplay', handleCanPlay);
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('durationchange', handleDurationChange);
+    audio.addEventListener('waiting', handleWaiting);
+    audio.addEventListener('canplaythrough', handleCanPlayThrough);
 
     return () => {
       audio.removeEventListener('ended', handleEnded);
       audio.removeEventListener('error', handleError);
       audio.removeEventListener('loadstart', handleLoadStart);
       audio.removeEventListener('canplay', handleCanPlay);
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('durationchange', handleDurationChange);
+      audio.removeEventListener('waiting', handleWaiting);
+      audio.removeEventListener('canplaythrough', handleCanPlayThrough);
     };
   }, [currentVerse, arabicSurah, autoPlay, locale]);
 
@@ -244,6 +287,62 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
     }
   };
 
+  // НОВЫЕ функции управления аудио
+  const seekAudio = (percentage: number) => {
+    const audio = audioRef.current;
+    if (audio && audioDuration) {
+      const newTime = (percentage / 100) * audioDuration;
+      audio.currentTime = newTime;
+      setAudioCurrentTime(newTime);
+      setAudioProgress(percentage);
+    }
+  };
+
+  const skipAudio = (seconds: number) => {
+    const audio = audioRef.current;
+    if (audio) {
+      const newTime = Math.max(0, Math.min(audioDuration, audioCurrentTime + seconds));
+      audio.currentTime = newTime;
+    }
+  };
+
+  const restartAudio = () => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.currentTime = 0;
+      setAudioProgress(0);
+      setAudioCurrentTime(0);
+    }
+  };
+
+  // Форматирование времени
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // УЛУЧШЕННАЯ функция для получения иконки состояния аудио
+  const getAudioIcon = (verseNumber?: number) => {
+    const isCurrentlyPlaying = verseNumber ? (currentVerse === verseNumber && isPlaying) : isPlaying;
+    const isCurrentlyLoading = verseNumber ? (currentVerse === verseNumber && isLoadingAudio) : isLoadingAudio;
+    const isCurrentlyBuffering = verseNumber ? (currentVerse === verseNumber && isBuffering) : isBuffering;
+
+    if (isCurrentlyLoading) {
+      return <Loader2 className="h-4 w-4 animate-spin" />;
+    }
+    
+    if (isCurrentlyBuffering) {
+      return <RotateCcw className="h-4 w-4 animate-spin" />;
+    }
+    
+    if (isCurrentlyPlaying) {
+      return <Pause className="h-4 w-4" />;
+    }
+    
+    return <Play className="h-4 w-4" />;
+  };
+
   // ИСПРАВЛЕНИЕ: Показываем лоадер только при первоначальной загрузке
   if (isLoading && !arabicSurah) {
     return (
@@ -285,7 +384,7 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
         </p>
       </div>
 
-      {/* Controls - Адаптивный */}
+      {/* УПРОЩЕННЫЕ Controls без общей аудио-панели */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 p-3 sm:p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
         <div className="flex items-center justify-center sm:justify-start gap-2">
           <Button
@@ -306,13 +405,7 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
             className="flex items-center gap-2 flex-1 sm:flex-initial"
             disabled={isLoadingAudio}
           >
-            {isLoadingAudio ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
-            ) : isPlaying ? (
-              <Pause className="h-4 w-4" />
-            ) : (
-              <Play className="h-4 w-4" />
-            )}
+            {getAudioIcon()}
             <span className="hidden sm:inline">{locale === 'en' ? 'Audio' : 'Аудио'}</span>
           </Button>
           
@@ -356,9 +449,16 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
 
       {/* Audio Error */}
       {audioError && (
-        <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-          <p className="text-red-600 dark:text-red-400 text-sm">{audioError}</p>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg"
+        >
+          <p className="text-red-600 dark:text-red-400 text-sm flex items-center gap-2">
+            <X className="w-4 h-4" />
+            {audioError}
+          </p>
+        </motion.div>
       )}
 
       {/* УЛУЧШЕННАЯ Settings Panel - Полностью адаптивная */}
@@ -537,11 +637,13 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
         )}
       </AnimatePresence>
 
-      {/* Verses - Полностью адаптивные */}
+      {/* УЛУЧШЕННЫЕ Verses с индивидуальными аудио-панелями */}
       <div className="space-y-4 sm:space-y-6">
         {arabicSurah.ayahs?.map((verse, index) => {
           const verseNumber = verse.numberInSurah;
           const isCurrentVerse = verseNumber === currentVerse;
+          const isCurrentlyPlaying = isCurrentVerse && isPlaying;
+          const hasAudioProgress = isCurrentVerse && (isPlaying || audioProgress > 0);
           
           return (
             <motion.div
@@ -555,20 +657,31 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                   ? "quran-highlight theme-border-primary shadow-lg" 
                   : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
               )}
-              layout // Добавляем layout animation для плавности
+              layout
             >
-              {/* Verse Header - Адаптивный */}
+              {/* Verse Header с улучшенными иконками */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2 sm:gap-3">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm sm:text-base font-bold quran-verse-number">
                     {verseNumber}
                   </div>
-                  {isCurrentVerse && isPlaying && (
-                    <motion.div
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ repeat: Infinity, duration: 1 }}
-                      className="w-2 h-2 theme-dot-animated rounded-full"
-                    />
+                  {isCurrentVerse && (
+                    <div className="flex items-center gap-2">
+                      {isPlaying && (
+                        <motion.div
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ repeat: Infinity, duration: 1 }}
+                          className="w-2 h-2 theme-dot-animated rounded-full"
+                        />
+                      )}
+                      {isBuffering && (
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ repeat: Infinity, duration: 1 }}
+                          className="w-3 h-3 border-2 border-green-500 border-t-transparent rounded-full"
+                        />
+                      )}
+                    </div>
                   )}
                 </div>
                 
@@ -597,19 +710,18 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                     <Copy className="h-4 w-4" />
                   </Button>
                   
-                  {/* ИСПРАВЛЕННАЯ кнопка Play */}
+                  {/* УЛУЧШЕННАЯ кнопка Play с динамической иконкой */}
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => playVerseAudio(verseNumber)}
-                    disabled={isLoadingAudio}
-                    className="p-2"
-                  >
-                    {isLoadingAudio && currentVerse === verseNumber ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
-                    ) : (
-                      <Play className="h-4 w-4" />
+                    disabled={isLoadingAudio && currentVerse === verseNumber}
+                    className={cn(
+                      "p-2 transition-all duration-200",
+                      isCurrentVerse && isPlaying && "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20"
                     )}
+                  >
+                    {getAudioIcon(verseNumber)}
                   </Button>
                 </div>
               </div>
@@ -624,6 +736,139 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                   {verse.text}
                 </p>
               </div>
+
+              {/* НОВАЯ Индивидуальная аудио-панель для каждого аята */}
+              <AnimatePresence>
+                {hasAudioProgress && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0, y: -20 }}
+                    animate={{ opacity: 1, height: 'auto', y: 0 }}
+                    exit={{ opacity: 0, height: 0, y: -20 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="mb-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 p-4 rounded-xl border border-green-200 dark:border-green-700 overflow-hidden"
+                  >
+                    {/* Прогресс-бар */}
+                    <div className="mb-3">
+                      <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-300 mb-2">
+                        <span className="flex items-center gap-2">
+                          <motion.div
+                            animate={{ scale: isCurrentlyPlaying ? [1, 1.1, 1] : 1 }}
+                            transition={{ repeat: isCurrentlyPlaying ? Infinity : 0, duration: 1.5 }}
+                            className="w-2 h-2 bg-green-500 rounded-full"
+                          />
+                          {formatTime(audioCurrentTime)}
+                        </span>
+                        <span className="text-green-600 dark:text-green-400 font-medium px-2 py-1 bg-white dark:bg-gray-800 rounded-full text-xs">
+                          {locale === 'en' ? 'Verse' : 'Аят'} {currentVerse}
+                        </span>
+                        <span>{formatTime(audioDuration)}</span>
+                      </div>
+                      <div className="relative h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <motion.div 
+                          className="absolute left-0 top-0 h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full"
+                          style={{ width: `${audioProgress}%` }}
+                          transition={{ duration: 0.1 }}
+                        />
+                        {isBuffering && (
+                          <motion.div 
+                            className="absolute inset-0 bg-gray-300 dark:bg-gray-600 rounded-full"
+                            animate={{ opacity: [0.3, 0.7, 0.3] }}
+                            transition={{ repeat: Infinity, duration: 1.5 }}
+                          />
+                        )}
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={audioProgress}
+                          onChange={(e) => seekAudio(parseFloat(e.target.value))}
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Расширенные элементы управления для конкретного аята */}
+                    <div className="flex items-center justify-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={restartAudio}
+                        disabled={!isPlaying && audioProgress === 0}
+                        className="p-2 hover:bg-white dark:hover:bg-gray-800 transition-colors"
+                        title={locale === 'en' ? 'Restart verse' : 'Перезапустить аят'}
+                      >
+                        <RotateCcw className="h-4 w-4" />
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => skipAudio(-10)}
+                        disabled={audioCurrentTime < 10}
+                        className="p-2 hover:bg-white dark:hover:bg-gray-800 transition-colors"
+                        title={locale === 'en' ? 'Back 10 seconds' : 'Назад 10 секунд'}
+                      >
+                        <SkipBack className="h-4 w-4" />
+                        <span className="text-xs ml-1">10s</span>
+                      </Button>
+
+                      <Button
+                        variant="default"
+                        size="sm"
+                        onClick={toggleAudio}
+                        className="px-4 bg-green-600 hover:bg-green-700 text-white shadow-lg"
+                        disabled={isLoadingAudio}
+                      >
+                        {getAudioIcon()}
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => skipAudio(10)}
+                        disabled={audioCurrentTime > audioDuration - 10}
+                        className="p-2 hover:bg-white dark:hover:bg-gray-800 transition-colors"
+                        title={locale === 'en' ? 'Forward 10 seconds' : 'Вперед 10 секунд'}
+                      >
+                        <SkipForward className="h-4 w-4" />
+                        <span className="text-xs ml-1">10s</span>
+                      </Button>
+
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => navigateVerse('next')}
+                        disabled={currentVerse === arabicSurah.numberOfAyahs}
+                        className="p-2 hover:bg-white dark:hover:bg-gray-800 transition-colors"
+                        title={locale === 'en' ? 'Next verse' : 'Следующий аят'}
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    {/* Статус буферизации */}
+                    {isBuffering && (
+                      <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="mt-2 text-center text-xs text-gray-500 dark:text-gray-400 flex items-center justify-center gap-2"
+                      >
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ repeat: Infinity, duration: 1 }}
+                          className="w-3 h-3 border-2 border-green-500 border-t-transparent rounded-full"
+                        />
+                        {locale === 'en' ? 'Buffering...' : 'Буферизация...'}
+                      </motion.div>
+                    )}
+
+                    {/* Информация о чтеце */}
+                    <div className="mt-3 text-center text-xs text-gray-500 dark:text-gray-400">
+                      {availableReciters.find(r => r.id === audioReciter)?.name || 'Unknown Reciter'}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
               {/* ИСПРАВЛЕНИЕ: Улучшенное отображение переводов с анимацией */}
               <AnimatePresence mode="wait">
