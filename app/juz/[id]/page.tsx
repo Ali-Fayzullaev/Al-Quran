@@ -51,6 +51,38 @@ export default function JuzPage({ params }: JuzPageProps) {
   // Получаем данные джуза
   const { data: juzData, isLoading, error } = useJuz(juzId);
 
+  // Добавляем детальное логирование структуры данных
+  useEffect(() => {
+    if (juzData) {
+      console.log('=== JUZ DATA STRUCTURE ===');
+      console.log('Full juzData:', juzData);
+      console.log('Surahs keys:', Object.keys(juzData.surahs || {}));
+      console.log('Total ayahs:', juzData.ayahs?.length);
+      
+      // Логируем первые 10 аятов для понимания структуры
+      console.log('First 10 ayahs:');
+      juzData.ayahs?.slice(0, 10).forEach((ayah, index) => {
+        console.log(`Ayah ${index + 1}:`, {
+          number: ayah.number,
+          numberInSurah: ayah.numberInSurah,
+          text: ayah.text?.substring(0, 50) + '...',
+          juz: ayah.juz,
+          page: ayah.page
+        });
+      });
+
+      // Логируем структуру каждой суры в джузе
+      Object.entries(juzData.surahs || {}).forEach(([surahId, surahData]) => {
+        console.log(`Surah ${surahId} (${surahData.englishName}):`, {
+          numberOfAyahs: surahData.numberOfAyahs,
+          ayahsInThisJuz: surahData.ayahs?.length,
+          firstAyah: surahData.ayahs?.[0],
+          lastAyah: surahData.ayahs?.[surahData.ayahs?.length - 1]
+        });
+      });
+    }
+  }, [juzData]);
+
   // Функция для поиска номера суры по аяту
   const findSurahForVerse = (verseNumber: number) => {
     if (!juzData?.surahs || !juzData?.ayahs) {
@@ -59,37 +91,51 @@ export default function JuzPage({ params }: JuzPageProps) {
     }
 
     console.log('Looking for verse number:', verseNumber);
-    console.log('Available surahs:', Object.keys(juzData.surahs));
     
-    // Способ 1: Поиск по ayahs в каждой суре
+    // Найти аят в основном массиве
+    const verse = juzData.ayahs.find(ayah => ayah.number === verseNumber);
+    if (!verse) {
+      console.error('Verse not found in juz data:', verseNumber);
+      return null;
+    }
+
+    console.log('Found verse:', verse);
+
+    // Найти суру, которая содержит этот аят
+    // Проверяем каждую суру в джузе
     for (const [surahId, surahData] of Object.entries(juzData.surahs)) {
-      if (surahData.ayahs?.some(ayah => ayah.number === verseNumber)) {
-        console.log(`Found verse ${verseNumber} in surah ${surahId}`);
-        return parseInt(surahId);
+      const surahNumber = parseInt(surahId);
+      
+      // Проверяем, содержит ли эта сура наш аят
+      const ayahInSurah = surahData.ayahs?.find(ayah => 
+        ayah.number === verseNumber || 
+        ayah.numberInSurah === verse.numberInSurah
+      );
+      
+      if (ayahInSurah) {
+        console.log(`Found verse ${verseNumber} in surah ${surahNumber} (${surahData.englishName})`);
+        return surahNumber;
+      }
+    }
+
+    // Если не найдено в структуре сур, попробуем определить по логике
+    // В первом джузе: аяты 1-7 - Фатиха (сура 1), остальные - Бакара (сура 2)
+    if (juzId === 1) {
+      if (verse.numberInSurah <= 7 && Object.keys(juzData.surahs).includes('1')) {
+        console.log(`Verse ${verseNumber} belongs to Al-Fatiha (Surah 1)`);
+        return 1; // Аль-Фатиха
+      } else if (Object.keys(juzData.surahs).includes('2')) {
+        console.log(`Verse ${verseNumber} belongs to Al-Baqarah (Surah 2)`);
+        return 2; // Аль-Бакара
       }
     }
     
-    // Способ 2: Найти аят в основном массиве и использовать его индекс для определения суры
-    const verseIndex = juzData.ayahs.findIndex(ayah => ayah.number === verseNumber);
-    if (verseIndex !== -1) {
-      const verse = juzData.ayahs[verseIndex];
-      console.log('Found verse in main array:', verse);
-      
-      // Если у аята есть информация о джузе, мы можем использовать её для определения суры
-      // Попробуем найти суру по номеру аята в суре (numberInSurah)
-      for (const [surahId, surahData] of Object.entries(juzData.surahs)) {
-        if (surahData.ayahs?.some(ayah => ayah.numberInSurah === verse.numberInSurah)) {
-          console.log(`Found verse by numberInSurah ${verse.numberInSurah} in surah ${surahId}`);
-          return parseInt(surahId);
-        }
-      }
-      
-      // Способ 3: Используем первую суру из джуза как fallback
-      const firstSurahId = Object.keys(juzData.surahs)[0];
-      if (firstSurahId) {
-        console.log(`Using fallback surah ${firstSurahId} for verse ${verseNumber}`);
-        return parseInt(firstSurahId);
-      }
+    // Fallback: используем первую доступную суру
+    const firstSurahId = Object.keys(juzData.surahs)[0];
+    if (firstSurahId) {
+      const fallbackSurahNumber = parseInt(firstSurahId);
+      console.log(`Using fallback surah ${fallbackSurahNumber} for verse ${verseNumber}`);
+      return fallbackSurahNumber;
     }
     
     console.error('Could not find surah for verse:', verseNumber);
