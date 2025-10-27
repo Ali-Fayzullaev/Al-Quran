@@ -8,6 +8,7 @@ import { LocaleProvider } from "@/context/LocaleContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Header from "@/components/Header";
+import { ColorThemeProvider } from "@/components/ColorThemeProvider";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -41,10 +42,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             disableTransitionOnChange
           >
             <LocaleProvider>
-              <div className="min-h-screen bg-background">
-                <Header />
-                <main>{children}</main>
-              </div>
+              <ColorThemeProvider>
+                <div className="min-h-screen bg-background">
+                  <Header />
+                  <main>{children}</main>
+                </div>
+              </ColorThemeProvider>
             </LocaleProvider>
           </ThemeProvider>
         </QueryClientProvider>

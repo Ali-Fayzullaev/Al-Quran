@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -29,14 +29,32 @@
   --chart-5: 27 87% 67%;
 
   /* Custom color theme variables */
-  --primary-color: #3B82F6;
-  --secondary-color: #1E40AF;
-  --accent-color: #60A5FA;
-  --background-color: #F8FAFC;
-  --card-color: #FFFFFF;
-  
+  --primary-color: #3b82f6;
+  --secondary-color: #1e40af;
+  --accent-color: #60a5fa;
+  --background-color: #f8fafc;
+  --card-color: #ffffff;
+
   /* Font family for Arabic text */
-  --font-arabic: 'Amiri', 'Scheherazade New', 'Traditional Arabic', serif;
+  --font-arabic: "Amiri", "Scheherazade New", "Traditional Arabic", serif;
+
+  /* Dynamic site color theme variables */
+  --color-primary: #10b981;
+  --color-primary-light: #34d399;
+  --color-primary-dark: #047857;
+  --color-secondary: #f0fdf4;
+  --color-accent: #059669;
+  --color-background: #ffffff;
+  --color-background-secondary: #f9fafb;
+  --color-surface: #ffffff;
+  --color-text: #111827;
+  --color-text-secondary: #6b7280;
+
+  /* Dynamic Quran text color variables */
+  --quran-arabic-color: #1f2937;
+  --quran-translation-color: #4b5563;
+  --quran-verse-number-color: #10b981;
+  --quran-highlight-color: #fef3c7;
 }
 
 .dark {
@@ -77,7 +95,7 @@ body {
 
 /* Original styles */
 .bg-main {
-  background-color: #13A895;
+  background-color: #13a895;
   color: white;
 }
 
@@ -88,7 +106,7 @@ body {
 .loader {
   width: 48px;
   height: 48px;
-  border: 5px solid #13A895;
+  border: 5px solid #13a895;
   border-bottom-color: transparent;
   border-radius: 50%;
   display: inline-block;
@@ -171,7 +189,8 @@ input[type="range"]::-moz-range-thumb {
 
 /* Smooth transitions for theme changes */
 * {
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease,
+    color 0.3s ease;
 }
 
 /* Custom scrollbar */
@@ -303,39 +322,39 @@ mark {
 
 /* Theme-specific styles */
 .theme-default {
-  --primary-color: #3B82F6;
-  --secondary-color: #1E40AF;
-  --accent-color: #60A5FA;
+  --primary-color: #3b82f6;
+  --secondary-color: #1e40af;
+  --accent-color: #60a5fa;
 }
 
 .theme-emerald {
-  --primary-color: #10B981;
+  --primary-color: #10b981;
   --secondary-color: #047857;
-  --accent-color: #34D399;
+  --accent-color: #34d399;
 }
 
 .theme-purple {
-  --primary-color: #8B5CF6;
-  --secondary-color: #6D28D9;
-  --accent-color: #A78BFA;
+  --primary-color: #8b5cf6;
+  --secondary-color: #6d28d9;
+  --accent-color: #a78bfa;
 }
 
 .theme-rose {
-  --primary-color: #F43F5E;
-  --secondary-color: #BE185D;
-  --accent-color: #FB7185;
+  --primary-color: #f43f5e;
+  --secondary-color: #be185d;
+  --accent-color: #fb7185;
 }
 
 .theme-amber {
-  --primary-color: #F59E0B;
-  --secondary-color: #D97706;
-  --accent-color: #FCD34D;
+  --primary-color: #f59e0b;
+  --secondary-color: #d97706;
+  --accent-color: #fcd34d;
 }
 
 .theme-teal {
-  --primary-color: #14B8A6;
-  --secondary-color: #0F766E;
-  --accent-color: #2DD4BF;
+  --primary-color: #14b8a6;
+  --secondary-color: #0f766e;
+  --accent-color: #2dd4bf;
 }
 
 /* Responsive design improvements */
@@ -359,4 +378,64 @@ mark {
     background: white !important;
     color: black !important;
   }
+}
+
+/* Dynamic theming classes */
+.theme-primary {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+}
+
+.theme-primary-light {
+  background-color: var(--color-primary-light) !important;
+  color: white !important;
+}
+
+.theme-secondary {
+  background-color: var(--color-secondary) !important;
+  color: var(--color-text) !important;
+}
+
+.theme-text-primary {
+  color: var(--color-primary) !important;
+}
+
+.theme-text-accent {
+  color: var(--color-accent) !important;
+}
+
+.theme-border-primary {
+  border-color: var(--color-primary) !important;
+}
+
+.theme-bg-surface {
+  background-color: var(--color-surface) !important;
+}
+
+.theme-bg-secondary {
+  background-color: var(--color-background-secondary) !important;
+}
+
+/* Quran text styling classes */
+.quran-arabic-text {
+  color: var(--quran-arabic-color) !important;
+  font-family: var(--font-arabic);
+}
+
+.quran-translation-text {
+  color: var(--quran-translation-color) !important;
+}
+
+.quran-verse-number {
+  color: var(--quran-verse-number-color) !important;
+  background-color: var(--quran-highlight-color) !important;
+}
+
+.quran-highlight {
+  background-color: var(--quran-highlight-color) !important;
+}
+
+/* Font classes for Arabic text */
+.font-arabic {
+  font-family: var(--font-arabic);
 }

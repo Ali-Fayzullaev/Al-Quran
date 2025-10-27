@@ -12,9 +12,11 @@ import {
   Book,
   Trash2,
   RefreshCw,
+  Palette,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import ColorPicker from "@/components/ColorPicker";
 
 export default function SettingsPage() {
   const { t, isLoading } = useLocale();
@@ -129,6 +131,36 @@ export default function SettingsPage() {
                 {t("theme")}
               </label>
               <ThemeToggle />
+            </div>
+          </div>
+        </section>
+
+        {/* Цветовые настройки */}
+        <section className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="flex items-center space-x-3 mb-6">
+            <Palette className="h-5 w-5 text-pink-600 dark:text-pink-400" />
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+              {t("colorSettings")}
+            </h2>
+          </div>
+
+          <div className="space-y-8">
+            {/* Тема сайта */}
+            <div>
+              <ColorPicker 
+                type="site" 
+                title={t("siteTheme")}
+                description="Выберите цветовую схему для интерфейса приложения"
+              />
+            </div>
+
+            {/* Цвета текста Корана */}
+            <div>
+              <ColorPicker 
+                type="quran" 
+                title={t("quranTextColor")}
+                description="Настройте цвета для арабского текста и переводов Корана"
+              />
             </div>
           </div>
         </section>
