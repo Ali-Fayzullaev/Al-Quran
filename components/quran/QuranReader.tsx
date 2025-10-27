@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Play, 
@@ -66,14 +66,27 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
   const audioRef = useRef<HTMLAudioElement>(null);
   const verseRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
-  // Получаем суру с множественными переводами
+  // ИСПРАВЛЕНИЕ: Мемоизируем список изданий для предотвращения ненужных перезагрузок
+  const requestedEditions = useMemo(() => {
+    const baseEdition = 'quran-uthmani';
+    // Включаем переводы только если они действительно нужны
+    const translationsToLoad = showTranslation ? selectedTranslations.filter(t => t !== baseEdition) : [];
+    return [baseEdition, ...translationsToLoad];
+  }, [selectedTranslations, showTranslation]);
+
+  // Получаем суру с множественными переводами - теперь стабильно
   const { data: surahData, isLoading, error } = useSurahMultipleEditions(
     surahNumber, 
-    ['quran-uthmani', ...selectedTranslations]
+    requestedEditions
   );
 
   const arabicSurah = surahData?.[0];
-  const translationSurahs = surahData?.slice(1) || [];
+  
+  // ИСПРАВЛЕНИЕ: Фильтруем переводы только при отображении
+  const translationSurahs = useMemo(() => {
+    if (!showTranslation || !surahData) return [];
+    return surahData.slice(1) || [];
+  }, [surahData, showTranslation]);
 
   // Автоскролл к текущему аяту
   useEffect(() => {
@@ -231,10 +244,16 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
     }
   };
 
-  if (isLoading) {
+  // ИСПРАВЛЕНИЕ: Показываем лоадер только при первоначальной загрузке
+  if (isLoading && !arabicSurah) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600"></div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-300">
+            {locale === 'en' ? 'Loading Surah...' : 'Загрузка суры...'}
+          </p>
+        </div>
       </div>
     );
   }
@@ -536,6 +555,7 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                   ? "quran-highlight theme-border-primary shadow-lg" 
                   : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
               )}
+              layout // Добавляем layout animation для плавности
             >
               {/* Verse Header - Адаптивный */}
               <div className="flex items-center justify-between mb-4">
@@ -605,25 +625,51 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                 </p>
               </div>
 
-              {/* Translations - Адаптивный */}
-              {showTranslation && translationSurahs.map((translationSurah, tIndex) => {
-                const translationVerse = translationSurah.ayahs?.[index];
-                if (!translationVerse) return null;
+              {/* ИСПРАВЛЕНИЕ: Улучшенное отображение переводов с анимацией */}
+              <AnimatePresence mode="wait">
+                {showTranslation && (
+                  <motion.div
+                    key="translations"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    {translationSurahs.map((translationSurah, tIndex) => {
+                      const translationVerse = translationSurah.ayahs?.[index];
+                      if (!translationVerse) return null;
 
-                return (
-                  <div key={tIndex} className="mb-3 last:mb-0 px-2">
-                    <p 
-                      className="quran-translation-text leading-relaxed"
-                      style={{ fontSize: `${fontSize - 2}px` }}
-                    >
-                      {translationVerse.text}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                      {selectedTranslations[tIndex] && availableTranslations.find(t => t.id === selectedTranslations[tIndex])?.name}
-                    </p>
-                  </div>
-                );
-              })}
+                      const translationId = selectedTranslations[tIndex];
+                      const translationInfo = availableTranslations.find(t => t.id === translationId);
+
+                      return (
+                        <motion.div 
+                          key={`${translationId}-${verseNumber}`}
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ delay: tIndex * 0.1 }}
+                          className="mb-3 last:mb-0 px-2 py-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border-l-4 border-green-200 dark:border-green-700"
+                        >
+                          <p 
+                            className="quran-translation-text leading-relaxed text-gray-700 dark:text-gray-200"
+                            style={{ fontSize: `${fontSize - 2}px` }}
+                          >
+                            {translationVerse.text}
+                          </p>
+                          {translationInfo && (
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2">
+                              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                              {translationInfo.name}
+                            </p>
+                          )}
+                        </motion.div>
+                      );
+                    })}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           );
         })}
