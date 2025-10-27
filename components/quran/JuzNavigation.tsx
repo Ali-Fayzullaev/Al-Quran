@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { BookOpen, Play, Clock, CheckCircle } from "lucide-react";
 import Link from "next/link";
@@ -19,25 +19,52 @@ export default function JuzNavigation({ currentJuz = 1 }: JuzNavigationProps) {
   const { locale } = useLocale();
   const { readingSessions } = useQuranStore();
   const [selectedJuz, setSelectedJuz] = useState(currentJuz);
+  const [progressUpdateTrigger, setProgressUpdateTrigger] = useState(0);
+
+  // Обновляем прогресс каждые 2 секунды
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgressUpdateTrigger(prev => prev + 1);
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Создаем список всех 30 джузов
   const juzList = Array.from({ length: 30 }, (_, i) => i + 1);
 
+  // Точное количество аятов в каждом джузе
+  const juzVerseCounts = {
+    1: 148, 2: 111, 3: 126, 4: 131, 5: 124, 6: 110, 7: 149, 8: 142, 9: 159, 10: 127,
+    11: 135, 12: 160, 13: 163, 14: 154, 15: 170, 16: 150, 17: 160, 18: 142, 19: 160, 20: 171,
+    21: 147, 22: 170, 23: 154, 24: 172, 25: 177, 26: 146, 27: 170, 28: 139, 29: 170, 30: 564
+  };
+
   // Вычисляем прогресс чтения для каждого джуза
   const getJuzProgress = (juzNumber: number) => {
-    const juzSessions = readingSessions.filter(session => {
-      // Приблизительное сопоставление джуза с сурами
-      const juzSurahRanges = [
-        [1, 2], [2, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 9], [9, 11],
-        [11, 12], [12, 14], [15, 16], [17, 18], [19, 20], [21, 22], [23, 25], [26, 27], [28, 29], [30, 33],
-        [34, 36], [37, 39], [40, 42], [43, 45], [46, 51], [52, 57], [58, 66], [67, 77], [78, 87], [88, 114]
-      ];
+    try {
+      // Получаем сохраненный прогресс из localStorage
+      const savedProgress = localStorage.getItem(`juz-${juzNumber}-progress`);
+      if (!savedProgress) {
+        return 0;
+      }
       
-      const range = juzSurahRanges[juzNumber - 1];
-      return session.surahNumber >= range[0] && session.surahNumber <= range[1];
-    });
-
-    return Math.min(100, (juzSessions.length / 20) * 100); // Примерно 20 аятов за сессию
+      const { versesRead } = JSON.parse(savedProgress);
+      if (!versesRead || !Array.isArray(versesRead)) {
+        return 0;
+      }
+      
+      // Используем точное количество аятов для данного джуза
+      const totalVerses = juzVerseCounts[juzNumber as keyof typeof juzVerseCounts] || 150;
+      
+      const readVersesCount = versesRead.length;
+      const percentage = Math.min(100, (readVersesCount / totalVerses) * 100);
+      
+      return percentage;
+    } catch (error) {
+      console.error(`Ошибка при получении прогресса джуза ${juzNumber}:`, error);
+      return 0;
+    }
   };
 
   return (

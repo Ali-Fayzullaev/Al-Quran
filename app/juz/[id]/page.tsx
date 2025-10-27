@@ -26,7 +26,10 @@ import {
   Clock,
   Eye,
   Heart,
-  Star
+  Star,
+  Minus,
+  Plus,
+  Minimize2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
@@ -68,6 +71,12 @@ export default function JuzPage({ params }: JuzPageProps) {
   const [showQuiz, setShowQuiz] = useState(false);
   const [currentQuizVerse, setCurrentQuizVerse] = useState<any>(null);
   
+  // Состояния для перемещаемой панели статистики
+  const [statsPosition, setStatsPosition] = useState({ x: 20, y: 100 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [statsMinimized, setStatsMinimized] = useState(false);
+  
   const audioRef = useRef<HTMLAudioElement>(null);
   const readingStartTime = useRef<number>(Date.now());
 
@@ -75,6 +84,39 @@ export default function JuzPage({ params }: JuzPageProps) {
   if (isNaN(juzId) || juzId < 1 || juzId > 30) {
     notFound();
   }
+
+  // Загрузка данных из localStorage при монтировании
+  useEffect(() => {
+    const savedProgress = localStorage.getItem(`juz-${juzId}-progress`);
+    if (savedProgress) {
+      const { versesRead: savedVersesRead, readingStreak: savedStreak, readingTime: savedTime } = JSON.parse(savedProgress);
+      setVersesRead(new Set(savedVersesRead));
+      setReadingStreak(savedStreak || 0);
+      setReadingTime(savedTime || 0);
+    }
+
+    const savedStatsPosition = localStorage.getItem('stats-position');
+    if (savedStatsPosition) {
+      setStatsPosition(JSON.parse(savedStatsPosition));
+    }
+
+    const savedStatsMinimized = localStorage.getItem('stats-minimized');
+    if (savedStatsMinimized) {
+      setStatsMinimized(JSON.parse(savedStatsMinimized));
+    }
+  }, [juzId]);
+
+  // Сохранение прогресса в localStorage
+  useEffect(() => {
+    if (versesRead.size > 0 || readingStreak > 0 || readingTime > 0) {
+      const progressData = {
+        versesRead: Array.from(versesRead),
+        readingStreak,
+        readingTime
+      };
+      localStorage.setItem(`juz-${juzId}-progress`, JSON.stringify(progressData));
+    }
+  }, [versesRead, readingStreak, readingTime, juzId]);
 
   // Получаем данные джуза
   const { data: juzData, isLoading, error } = useJuz(juzId);
@@ -136,23 +178,70 @@ export default function JuzPage({ params }: JuzPageProps) {
       if (!newSet.has(verseNumber)) {
         newSet.add(verseNumber);
         // Увеличиваем streak при прочтении нового аята
-        setReadingStreak(prev => prev + 1);
+        setReadingStreak(prevStreak => prevStreak + 1);
+        console.log(`Аят ${verseNumber} отмечен как прочитанный. Всего прочитано: ${newSet.size}`);
       }
       return newSet;
     });
   };
 
-  // Запуск викторины
+  // Обработчики перетаскивания
+  const handleMouseDown = (e: React.MouseEvent) => {
+    setIsDragging(true);
+    const rect = e.currentTarget.getBoundingClientRect();
+    setDragOffset({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top
+    });
+  };
+
+  const handleMouseMove = (e: MouseEvent) => {
+    if (isDragging) {
+      const newX = Math.max(0, Math.min(window.innerWidth - 200, e.clientX - dragOffset.x));
+      const newY = Math.max(0, Math.min(window.innerHeight - 150, e.clientY - dragOffset.y));
+      const newPosition = { x: newX, y: newY };
+      setStatsPosition(newPosition);
+      localStorage.setItem('stats-position', JSON.stringify(newPosition));
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  useEffect(() => {
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isDragging, dragOffset]);
+
+  // Функция переключения минимизации
+  const toggleStatsMinimized = () => {
+    const newMinimized = !statsMinimized;
+    setStatsMinimized(newMinimized);
+    localStorage.setItem('stats-minimized', JSON.stringify(newMinimized));
+  };
+
+  // Функция запуска теста
   const startQuiz = () => {
-    if (!juzData?.ayahs || juzData.ayahs.length === 0) return;
+    if (versesRead.size === 0) return;
+    const readVersesArray = Array.from(versesRead);
+    const randomIndex = Math.floor(Math.random() * readVersesArray.length);
+    const randomVerseNumber = readVersesArray[randomIndex];
+    const randomVerse = juzData?.ayahs?.find(v => v.number === randomVerseNumber);
     
-    const randomVerse = juzData.ayahs[Math.floor(Math.random() * juzData.ayahs.length)];
-    setCurrentQuizVerse(randomVerse);
-    setShowQuiz(true);
+    if (randomVerse) {
+      setCurrentQuizVerse(randomVerse);
+      setShowQuiz(true);
+    }
   };
 
   const playAudio = async (verse: any) => {
-    // ...existing playAudio code...
     const audio = audioRef.current;
     if (!audio) return;
 
@@ -287,9 +376,28 @@ export default function JuzPage({ params }: JuzPageProps) {
   };
 
   const getProgressPercentage = () => {
-    if (!juzData?.ayahs) return 0;
-    return (versesRead.size / juzData.ayahs.length) * 100;
+    if (!juzData?.ayahs) {
+      console.log('getProgressPercentage: juzData.ayahs не найден');
+      return 0;
+    }
+    
+    const totalVerses = juzData.ayahs.length;
+    const readVerses = versesRead.size;
+    const percentage = (readVerses / totalVerses) * 100;
+    
+    console.log(`Прогресс: ${readVerses}/${totalVerses} = ${percentage.toFixed(1)}%`);
+    console.log('versesRead:', Array.from(versesRead));
+    
+    return percentage;
   };
+
+  // Добавляем useEffect для отладки загрузки данных
+  useEffect(() => {
+    console.log('juzData загружен:', !!juzData);
+    console.log('juzData.ayahs length:', juzData?.ayahs?.length);
+    console.log('versesRead size:', versesRead.size);
+    console.log('Текущий прогресс:', getProgressPercentage());
+  }, [juzData, versesRead]);
 
   if (isLoading) {
     return (
@@ -469,48 +577,58 @@ export default function JuzPage({ params }: JuzPageProps) {
       </div>
 
       {/* Progress Stats */}
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white/90 dark:bg-gray-800/90 p-4 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 text-center">
-            <Eye className="w-6 h-6 theme-text-primary mx-auto mb-2" />
-            <p className="text-2xl font-bold theme-text-primary">
-              {versesRead.size}
-            </p>
-            <p className="text-xs text-gray-600 dark:text-gray-300">
-              Прочитано аятов
-            </p>
-          </div>
-          
-          <div className="bg-white/90 dark:bg-gray-800/90 p-4 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 text-center">
-            <Clock className="w-6 h-6 theme-text-primary mx-auto mb-2" />
-            <p className="text-2xl font-bold theme-text-primary">
-              {formatTime(readingTime)}
-            </p>
-            <p className="text-xs text-gray-600 dark:text-gray-300">
-              Время чтения
-            </p>
-          </div>
-          
-          <div className="bg-white/90 dark:bg-gray-800/90 p-4 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 text-center">
-            <Target className="w-6 h-6 theme-text-primary mx-auto mb-2" />
-            <p className="text-2xl font-bold theme-text-primary">
-              {Math.round(getProgressPercentage())}%
-            </p>
-            <p className="text-xs text-gray-600 dark:text-gray-300">
-              Прогресс
-            </p>
-          </div>
-          
-          <div className="bg-white/90 dark:bg-gray-800/90 p-4 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 text-center">
-            <Star className="w-6 h-6 theme-text-primary mx-auto mb-2" />
-            <p className="text-2xl font-bold theme-text-primary">
-              {readingStreak}
-            </p>
-            <p className="text-xs text-gray-600 dark:text-gray-300">
-              Серия
-            </p>
-          </div>
+      <div
+        className="fixed z-50 bg-white/90 dark:bg-gray-800/90 p-4 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700"
+        style={{
+          top: statsPosition.y,
+          left: statsPosition.x,
+          width: statsMinimized ? "auto" : "200px",
+          height: statsMinimized ? "auto" : "150px",
+          cursor: isDragging ? "grabbing" : "grab",
+        }}
+        onMouseDown={handleMouseDown}
+      >
+        <div className="flex items-center justify-between mb-2">
+          <h4 className="text-sm font-bold text-gray-900 dark:text-gray-100">
+            {t('stats') || 'Статистика'}
+          </h4>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleStatsMinimized}
+            className="p-1"
+          >
+            <Minimize2 className="w-4 h-4" />
+          </Button>
         </div>
+        {!statsMinimized && (
+          <div className="grid grid-cols-2 gap-2">
+            <div className="text-center">
+              <Eye className="w-5 h-5 theme-text-primary mx-auto mb-1" />
+              <p className="text-sm font-bold theme-text-primary">
+                {versesRead.size}
+              </p>
+            </div>
+            <div className="text-center">
+              <Clock className="w-5 h-5 theme-text-primary mx-auto mb-1" />
+              <p className="text-sm font-bold theme-text-primary">
+                {formatTime(readingTime)}
+              </p>
+            </div>
+            <div className="text-center">
+              <Target className="w-5 h-5 theme-text-primary mx-auto mb-1" />
+              <p className="text-sm font-bold theme-text-primary">
+                {Math.round(getProgressPercentage())}%
+              </p>
+            </div>
+            <div className="text-center">
+              <Star className="w-5 h-5 theme-text-primary mx-auto mb-1" />
+              <p className="text-sm font-bold theme-text-primary">
+                {readingStreak}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Main Content */}
@@ -602,7 +720,7 @@ export default function JuzPage({ params }: JuzPageProps) {
               onClick={() => setFontSize(fontSize - 2)}
               className="w-8 h-8 p-0 theme-hover-bg-soft"
             >
-              -
+              <Minus className="w-4 h-4" />
             </Button>
             <span className="text-sm font-bold gradient-text-primary w-16 text-center">{fontSize}px</span>
             <Button
@@ -611,7 +729,7 @@ export default function JuzPage({ params }: JuzPageProps) {
               onClick={() => setFontSize(fontSize + 2)}
               className="w-8 h-8 p-0 theme-hover-bg-soft"
             >
-              +
+              <Plus className="w-4 h-4" />
             </Button>
           </div>
         </div>
@@ -630,14 +748,14 @@ export default function JuzPage({ params }: JuzPageProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
                 className={cn(
-                  "group relative p-8 rounded-3xl shadow-xl transition-all duration-500 border hover:shadow-2xl transform hover:-translate-y-1",
+                  "group relative p-8 rounded-3xl shadow-xl transition-all duration-500 border hover:shadow-2xl transform hover:-translate-y-1 cursor-pointer",
                   isCurrentVerse && isPlaying
                     ? "theme-gradient-active border-green-300 dark:border-green-600 ring-4 ring-green-200/50 dark:ring-green-800/50 scale-[1.02]"
                     : isRead
                     ? "bg-gradient-to-br from-blue-50/80 to-indigo-50/80 dark:from-blue-900/20 dark:to-indigo-900/20 border-blue-200 dark:border-blue-700"
                     : "bg-white/90 dark:bg-gray-800/90 border-gray-200 dark:border-gray-700 hover:border-green-200 dark:hover:border-green-700"
                 )}
-                onClick={() => !isRead && markVerseAsRead(verse.number)}
+                onClick={() => markVerseAsRead(verse.number)}
               >
                 {/* Reading Progress Indicator */}
                 {isRead && (
@@ -773,13 +891,27 @@ export default function JuzPage({ params }: JuzPageProps) {
                 </div>
 
                 {/* Translation */}
-                {showTranslation && (
+                {showTranslation && (verse as any).translations && (
                   <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600">
-                    <div className="bg-gray-50/80 dark:bg-gray-700/40 p-4 rounded-xl">
-                      <p className="text-gray-600 dark:text-gray-300 italic text-lg leading-relaxed">
-                        {t('translationAvailableSoon')}
-                      </p>
-                    </div>
+                    {(verse as any).translations.map((translation: any, idx: number) => (
+                      <div key={idx} className="bg-gray-50/80 dark:bg-gray-700/40 p-4 rounded-xl mb-3 last:mb-0">
+                        <p className="text-gray-600 dark:text-gray-300 italic text-lg leading-relaxed">
+                          {translation.text}
+                        </p>
+                        {translation.resource_name && (
+                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                            — {translation.resource_name}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                    {(!(verse as any).translations || (verse as any).translations.length === 0) && (
+                      <div className="bg-gray-50/80 dark:bg-gray-700/40 p-4 rounded-xl">
+                        <p className="text-gray-600 dark:text-gray-300 italic text-lg leading-relaxed">
+                          {t('translationAvailableSoon')}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
               </motion.div>
