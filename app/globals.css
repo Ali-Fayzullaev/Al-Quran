@@ -519,7 +519,11 @@ mark {
 
 /* Force override gradients */
 .theme-gradient-primary {
-  background: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  background: linear-gradient(
+    to right,
+    var(--color-primary),
+    var(--color-accent)
+  ) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   color: transparent !important;
@@ -584,3 +588,5 @@ mark {
 .font-arabic {
   font-family: var(--font-arabic);
 }
+
+@import './theme-styles.css';

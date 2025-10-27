@@ -1,3 +1,4 @@
+// app/surah/[id]/page.tsx
 "use client";
 
 import { use } from "react";
@@ -44,10 +45,16 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-green-900/20">
+    <div className="min-h-screen theme-gradient-bg relative overflow-hidden">
       
+      {/* Декоративные элементы */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-1/2 -right-1/2 w-96 h-96 theme-bg-secondary opacity-10 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-1/2 -left-1/2 w-96 h-96 theme-bg-secondary opacity-10 rounded-full blur-3xl"></div>
+      </div>
+
       {/* Navigation Header */}
-      <div className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+      <div className="sticky top-0 z-10 theme-glass-surface backdrop-blur-xl theme-border-primary/20 border-b shadow-lg">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             
@@ -70,13 +77,18 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
 
             {/* Center - Surah Info */}
             {surahInfo && (
-              <div className="text-center">
-                <h1 className="font-bold text-gray-900 dark:text-white">
-                  {surahInfo.englishName}
-                </h1>
-                <p className="text-sm text-gray-600 dark:text-gray-300">
-                  {locale === 'en' ? 'Surah' : 'Сура'} {surahId}
+              <div className="text-center theme-card-elegant p-4 rounded-xl shadow-xl">
+                <div className="flex items-center justify-center gap-3 mb-2">
+                  <div className="w-2 h-2 theme-primary rounded-full animate-pulse"></div>
+                  <h1 className="font-bold text-xl theme-text-primary bg-gradient-to-r from-current to-current bg-clip-text">
+                    {surahInfo.englishName}
+                  </h1>
+                  <div className="w-2 h-2 theme-primary rounded-full animate-pulse"></div>
+                </div>
+                <p className="text-sm theme-text-accent font-medium">
+                  {locale === 'en' ? 'Surah' : 'Сура'} {surahId} • {surahInfo.numberOfAyahs} {locale === 'en' ? 'verses' : 'аятов'}
                 </p>
+                <div className="mt-2 h-1 theme-gradient-primary rounded-full w-20 mx-auto opacity-60"></div>
               </div>
             )}
 
@@ -109,7 +121,7 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
           </div>
         </div>
       </div>
-
+      
       {/* Main Content */}
       <QuranReader 
         surahNumber={surahId} 
@@ -117,54 +129,64 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
       />
       
       {/* Footer Navigation */}
-      <div className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700 py-8">
+      <div className="theme-glass-surface backdrop-blur-xl border-t theme-border-primary/20 py-12 relative">
+        <div className="absolute inset-0 theme-gradient-primary opacity-5"></div>
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             {/* Previous Surah */}
             {surahId > 1 && (
               <Link href={`/surah/${surahId - 1}`} className="group">
-                <div className="p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-600 transition-all duration-300 group-hover:shadow-lg">
-                  <div className="flex items-center gap-3">
-                    <ChevronLeft className="w-6 h-6 text-gray-400 group-hover:text-green-600" />
+                <div className="theme-card-elegant theme-hover-lift theme-gradient-border p-6 rounded-2xl shadow-xl group-hover:shadow-2xl transition-all duration-500">
+                  <div className="flex items-center gap-4">
+                    <div className="theme-primary w-12 h-12 rounded-full flex items-center justify-center theme-glow-soft group-hover:animate-pulse">
+                      <ChevronLeft className="w-6 h-6 text-white" />
+                    </div>
                     <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <p className="text-sm theme-text-accent font-medium mb-1">
                         {locale === 'en' ? 'Previous Surah' : 'Предыдущая сура'}
                       </p>
-                      <p className="font-semibold text-gray-900 dark:text-white">
+                      <p className="font-bold theme-text-primary text-lg theme-ornament">
                         {locale === 'en' ? `Surah ${surahId - 1}` : `Сура ${surahId - 1}`}
                       </p>
                     </div>
                   </div>
+                  <div className="mt-3 h-1 theme-gradient-primary rounded-full w-0 group-hover:w-full transition-all duration-500"></div>
                 </div>
               </Link>
             )}
             
             {/* Back to List */}
             <Link href="/surahs" className="group md:col-start-2">
-              <div className="p-4 rounded-xl bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 border border-green-200 dark:border-green-800 hover:shadow-lg transition-all duration-300 text-center">
-                <Book className="w-6 h-6 text-green-600 dark:text-green-400 mx-auto mb-2" />
-                <p className="font-semibold text-green-800 dark:text-green-200">
+              <div className="p-6 rounded-2xl theme-card-premium border theme-border-primary hover:shadow-2xl transition-all duration-500 text-center group-hover:scale-105 group-hover:-translate-y-1">
+                <div className="theme-primary w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
+                  <Book className="w-6 h-6 text-white" />
+                </div>
+                <p className="font-bold theme-text-primary text-lg">
                   {locale === 'en' ? 'View All Surahs' : 'Посмотреть все суры'}
                 </p>
+                <div className="mt-2 h-1 theme-gradient-primary rounded-full w-16 mx-auto opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </div>
             </Link>
             
             {/* Next Surah */}
             {surahId < 114 && (
               <Link href={`/surah/${surahId + 1}`} className="group">
-                <div className="p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-600 transition-all duration-300 group-hover:shadow-lg">
-                  <div className="flex items-center gap-3 justify-end text-right">
+                <div className="theme-card-elegant theme-hover-lift theme-gradient-border p-6 rounded-2xl shadow-xl group-hover:shadow-2xl transition-all duration-500">
+                  <div className="flex items-center gap-4 justify-end text-right">
                     <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <p className="text-sm theme-text-accent font-medium mb-1">
                         {locale === 'en' ? 'Next Surah' : 'Следующая сура'}
                       </p>
-                      <p className="font-semibold text-gray-900 dark:text-white">
+                      <p className="font-bold theme-text-primary text-lg theme-ornament">
                         {locale === 'en' ? `Surah ${surahId + 1}` : `Сура ${surahId + 1}`}
                       </p>
                     </div>
-                    <ChevronRight className="w-6 h-6 text-gray-400 group-hover:text-green-600" />
+                    <div className="theme-primary w-12 h-12 rounded-full flex items-center justify-center theme-glow-soft group-hover:animate-pulse">
+                      <ChevronRight className="w-6 h-6 text-white" />
+                    </div>
                   </div>
+                  <div className="mt-3 h-1 theme-gradient-primary rounded-full w-0 group-hover:w-full transition-all duration-500"></div>
                 </div>
               </Link>
             )}

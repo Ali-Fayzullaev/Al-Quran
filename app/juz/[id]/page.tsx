@@ -1,3 +1,4 @@
+// app/juz/[id]/page.tsx
 "use client";
 
 import { use } from "react";
@@ -136,11 +137,17 @@ export default function JuzPage({ params }: JuzPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-green-900/20">
+    <div className="min-h-screen theme-gradient-bg relative overflow-hidden">
       <audio ref={audioRef} preload="metadata" onEnded={() => setIsPlaying(false)} />
       
+      {/* Декоративные элементы */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-1/2 -right-1/2 w-96 h-96 theme-bg-secondary opacity-10 rounded-full blur-3xl theme-float"></div>
+        <div className="absolute -bottom-1/2 -left-1/2 w-96 h-96 theme-bg-secondary opacity-10 rounded-full blur-3xl theme-float" style={{animationDelay: '2s'}}></div>
+      </div>
+      
       {/* Navigation Header */}
-      <div className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+      <div className="sticky top-0 z-10 theme-glass-surface backdrop-blur-xl theme-border-primary/20 border-b shadow-lg">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             
@@ -162,23 +169,28 @@ export default function JuzPage({ params }: JuzPageProps) {
             </div>
 
             {/* Center - Juz Info */}
-            <div className="text-center">
-              <h1 className="font-bold text-gray-900 dark:text-white">
-                {t('juz')} {juzId}
-              </h1>
-              <p className="text-sm text-gray-600 dark:text-gray-300">
+            <div className="text-center theme-card-elegant p-4 rounded-xl shadow-xl">
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <div className="w-2 h-2 theme-primary rounded-full animate-pulse"></div>
+                <h1 className="font-bold text-xl theme-gradient-text">
+                  {t('juz')} {juzId}
+                </h1>
+                <div className="w-2 h-2 theme-primary rounded-full animate-pulse"></div>
+              </div>
+              <p className="text-sm theme-text-accent font-medium">
                 {juzData.ayahs?.length} {t('verses')}
               </p>
+              <div className="mt-2 h-1 theme-gradient-primary rounded-full w-20 mx-auto opacity-60"></div>
             </div>
 
             {/* Right Navigation */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Link href={`/juz/${Math.max(1, juzId - 1)}`}>
                 <Button 
                   variant="outline" 
                   size="sm"
                   disabled={juzId === 1}
-                  className="gap-1"
+                  className="theme-btn-luxury theme-hover-lift disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none gap-1"
                 >
                   <ChevronLeft className="w-4 h-4" />
                   {t('prev')}
@@ -190,7 +202,7 @@ export default function JuzPage({ params }: JuzPageProps) {
                   variant="outline" 
                   size="sm"
                   disabled={juzId === 30}
-                  className="gap-1"
+                  className="theme-btn-luxury theme-hover-lift disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none gap-1"
                 >
                   {t('next')}
                   <ChevronRight className="w-4 h-4" />
@@ -205,23 +217,31 @@ export default function JuzPage({ params }: JuzPageProps) {
       <div className="max-w-4xl mx-auto px-4 py-8">
         
         {/* Header */}
-        <div className="text-center mb-8 p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl">
-          <h1 className="text-3xl font-bold text-green-800 dark:text-green-200 mb-2">
-            {t('juz')} {juzId}
-          </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300">
+        <div className="text-center mb-8 theme-card-premium p-8 rounded-3xl shadow-2xl theme-hover-lift">
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="w-3 h-3 theme-primary rounded-full theme-pulse-glow"></div>
+            <h1 className="text-4xl font-bold theme-gradient-text theme-ornament">
+              {t('juz')} {juzId}
+            </h1>
+            <div className="w-3 h-3 theme-primary rounded-full theme-pulse-glow"></div>
+          </div>
+          <p className="text-lg theme-text-accent font-medium">
             {juzData.ayahs?.length} {t('versesFromMultipleSurahs')}
           </p>
+          <div className="mt-4 h-2 theme-gradient-primary rounded-full w-32 mx-auto opacity-70"></div>
         </div>
 
         {/* Controls */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-6 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8 theme-glass-intense p-6 rounded-2xl shadow-xl theme-scrollbar">
+          <div className="flex items-center gap-3">
             <Button
               variant="outline"
               size="sm"
               onClick={toggleTranslation}
-              className={cn(showTranslation && "bg-green-100 dark:bg-green-900")}
+              className={cn(
+                "theme-btn-luxury theme-hover-lift transition-all duration-300",
+                showTranslation && "theme-glow-soft"
+              )}
             >
               {t('translation')}
             </Button>
@@ -230,27 +250,30 @@ export default function JuzPage({ params }: JuzPageProps) {
               variant="outline"
               size="sm"
               onClick={() => setShowSettings(!showSettings)}
+              className="theme-btn-luxury theme-hover-lift"
             >
               <Settings className="w-4 h-4" />
             </Button>
           </div>
 
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600 dark:text-gray-300">
+          <div className="flex items-center gap-3 theme-card-elegant p-3 rounded-xl">
+            <span className="text-sm theme-text-accent font-medium">
               {t('fontSizeLabel')}
             </span>
             <Button
               variant="outline"
               size="sm"
               onClick={() => setFontSize(fontSize - 2)}
+              className="theme-btn-luxury w-8 h-8 p-0"
             >
               -
             </Button>
-            <span className="text-sm font-medium w-12 text-center">{fontSize}px</span>
+            <span className="text-sm font-bold theme-gradient-text w-16 text-center">{fontSize}px</span>
             <Button
               variant="outline"
               size="sm"
               onClick={() => setFontSize(fontSize + 2)}
+              className="theme-btn-luxury w-8 h-8 p-0"
             >
               +
             </Button>
@@ -272,41 +295,42 @@ export default function JuzPage({ params }: JuzPageProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
                 className={cn(
-                  "p-6 rounded-xl border transition-all duration-300",
+                  "theme-card-elegant theme-hover-lift theme-gradient-border p-8 rounded-2xl shadow-xl transition-all duration-500",
                   isCurrentVerse && isPlaying
-                    ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 shadow-lg" 
-                    : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    ? "theme-glow theme-shimmer" 
+                    : "hover:shadow-2xl"
                 )}
               >
                 {/* Verse Header */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 theme-primary rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg theme-glow-soft">
                       {verse.numberInSurah}
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                      <p className="text-sm theme-text-accent font-semibold mb-1">
                         {t('surah')} {surahNumber} • {t('verse')} {verse.numberInSurah}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                      <p className="text-xs theme-text-muted">
                         {t('page')} {verse.page}
                       </p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     {surahNumber && (
                       <Button
                         variant="ghost"
                         size="sm"
                         onClick={() => toggleBookmark(parseInt(surahNumber), verse.numberInSurah)}
                         className={cn(
-                          isBookmarked(parseInt(surahNumber), verse.numberInSurah) && "text-yellow-500"
+                          "theme-btn-luxury theme-hover-lift p-2 rounded-xl",
+                          isBookmarked(parseInt(surahNumber), verse.numberInSurah) && "theme-glow text-yellow-400"
                         )}
                       >
                         {isBookmarked(parseInt(surahNumber), verse.numberInSurah) ? 
-                          <BookmarkCheck className="w-4 h-4" /> : 
-                          <Bookmark className="w-4 h-4" />
+                          <BookmarkCheck className="w-5 h-5" /> : 
+                          <Bookmark className="w-5 h-5" />
                         }
                       </Button>
                     )}
@@ -315,18 +339,23 @@ export default function JuzPage({ params }: JuzPageProps) {
                       variant="ghost"
                       size="sm"
                       onClick={() => copyVerse(verse)}
+                      className="theme-btn-luxury theme-hover-lift p-2 rounded-xl"
                     >
-                      <Copy className="w-4 h-4" />
+                      <Copy className="w-5 h-5" />
                     </Button>
                     
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => toggleAudio(verse)}
+                      className={cn(
+                        "theme-btn-luxury theme-hover-lift p-2 rounded-xl",
+                        isPlaying && currentVerse === verse.number && "theme-pulse-glow"
+                      )}
                     >
                       {isPlaying && currentVerse === verse.number ? 
-                        <Pause className="w-4 h-4" /> : 
-                        <Play className="w-4 h-4" />
+                        <Pause className="w-5 h-5" /> : 
+                        <Play className="w-5 h-5" />
                       }
                     </Button>
                   </div>
@@ -334,11 +363,11 @@ export default function JuzPage({ params }: JuzPageProps) {
 
                 {/* Arabic Text */}
                 <div 
-                  className="text-right mb-4 leading-loose font-amiri"
+                  className="text-right mb-6 leading-loose font-amiri theme-scrollbar"
                   style={{ fontSize: `${fontSize + 4}px` }}
                   dir="rtl"
                 >
-                  <p className="text-gray-900 dark:text-gray-100">
+                  <p className="quran-arabic-text theme-hover-glow transition-all duration-300 p-4 rounded-xl">
                     {verse.text}
                   </p>
                 </div>
