@@ -113,7 +113,7 @@ export default function HomePage() {
                 />
                 <Button 
                   type="submit"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 search-button rounded-xl"
                 >
                   {t("search")}
                 </Button>
@@ -341,7 +341,7 @@ export default function HomePage() {
             className="text-center mt-12"
           >
             <Link href="/surahs">
-              <Button className="px-8 py-4 bg-green-600 hover:bg-green-700 text-white rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
+              <Button className="px-8 py-4 theme-override-primary rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
                 {locale === "en" ? "View All Surahs" : "Посмотреть все суры"}
               </Button>
             </Link>

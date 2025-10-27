@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Header from "@/components/Header";
 import { ColorThemeProvider } from "@/components/ColorThemeProvider";
+import { ForceColorApplication } from "@/components/ForceColorApplication";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             <LocaleProvider>
               <ColorThemeProvider>
+                <ForceColorApplication />
                 <div className="min-h-screen bg-background">
                   <Header />
                   <main>{children}</main>

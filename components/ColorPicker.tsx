@@ -3,15 +3,15 @@
 import { useState, useEffect } from "react";
 import { useLocale } from "@/context/LocaleContext";
 import { useQuranStore } from "@/lib/store";
+import { useColorTheme } from "@/lib/useColorTheme";
 import { 
   SITE_COLOR_THEMES, 
   QURAN_TEXT_COLOR_SCHEMES, 
-  applySiteColorTheme,
-  applyQuranTextColors,
   getThemeByName,
   getQuranColorSchemeByName,
   ColorTheme,
-  QuranTextColorScheme
+  QuranTextColorScheme,
+  debugCSSVariables
 } from "@/lib/colorThemes";
 import { Button } from "@/components/ui/button";
 import { Check, Palette, Eye, RefreshCw } from "lucide-react";
@@ -30,6 +30,7 @@ export default function ColorPicker({ type, title, description }: ColorPickerPro
     setSiteColorTheme, 
     setQuranTextColorScheme 
   } = useQuranStore();
+  const { applySiteTheme, applyQuranTheme, applyCurrentColors } = useColorTheme();
   
   const [previewTheme, setPreviewTheme] = useState<string | null>(null);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
@@ -43,26 +44,24 @@ export default function ColorPicker({ type, title, description }: ColorPickerPro
     setIsPreviewMode(true);
     
     if (type === 'site') {
-      const theme = getThemeByName(themeId);
-      if (theme) {
-        const isDark = document.documentElement.classList.contains('dark');
-        applySiteColorTheme(theme, isDark);
-      }
+      console.log('Previewing site theme:', themeId);
+      applySiteTheme(themeId);
     } else {
-      const scheme = getQuranColorSchemeByName(themeId);
-      if (scheme) {
-        const isDark = document.documentElement.classList.contains('dark');
-        applyQuranTextColors(scheme, isDark);
-      }
+      console.log('Previewing quran scheme:', themeId);
+      applyQuranTheme(themeId);
     }
   };
 
   // Применить выбранную схему
   const handleApply = (themeId: string) => {
+    console.log('Applying theme:', themeId, 'type:', type);
+    
     if (type === 'site') {
       setSiteColorTheme(themeId);
+      applySiteTheme(themeId);
     } else {
       setQuranTextColorScheme(themeId);
+      applyQuranTheme(themeId);
     }
     setIsPreviewMode(false);
     setPreviewTheme(null);
@@ -74,25 +73,19 @@ export default function ColorPicker({ type, title, description }: ColorPickerPro
     setPreviewTheme(null);
     
     // Восстанавливаем текущую тему
-    if (type === 'site') {
-      const theme = getThemeByName(currentTheme);
-      if (theme) {
-        const isDark = document.documentElement.classList.contains('dark');
-        applySiteColorTheme(theme, isDark);
-      }
-    } else {
-      const scheme = getQuranColorSchemeByName(currentTheme);
-      if (scheme) {
-        const isDark = document.documentElement.classList.contains('dark');
-        applyQuranTextColors(scheme, isDark);
-      }
-    }
+    applyCurrentColors();
   };
 
   // Сброс к стандартной теме
   const handleReset = () => {
     const defaultTheme = type === 'site' ? 'emerald' : 'classic';
     handleApply(defaultTheme);
+  };
+
+  // Принудительное обновление цветов
+  const handleForceUpdate = () => {
+    console.log('Force updating colors...');
+    applyCurrentColors();
   };
 
   return (
@@ -140,6 +133,24 @@ export default function ColorPicker({ type, title, description }: ColorPickerPro
           >
             <RefreshCw className="w-4 h-4 mr-1" />
             {t("resetToDefault")}
+          </Button>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleForceUpdate}
+            className="text-blue-500 hover:text-blue-700 dark:hover:text-blue-300"
+          >
+            🔄 Обновить
+          </Button>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={debugCSSVariables}
+            className="text-purple-500 hover:text-purple-700 dark:hover:text-purple-300"
+          >
+            🔍 Debug
           </Button>
         </div>
       </div>

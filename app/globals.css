@@ -439,3 +439,148 @@ mark {
 .font-arabic {
   font-family: var(--font-arabic);
 }
+
+/* Button styling with dynamic colors */
+.btn-primary {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: white !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-dark) !important;
+  border-color: var(--color-primary-dark) !important;
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
+}
+
+/* Text colors */
+.text-primary-theme {
+  color: var(--color-primary) !important;
+}
+
+.text-accent-theme {
+  color: var(--color-accent) !important;
+}
+
+/* Additional utility classes for better override */
+.hover\:text-primary-theme:hover {
+  color: var(--color-primary) !important;
+}
+
+.hover\:theme-bg-surface:hover {
+  background-color: var(--color-surface) !important;
+}
+
+/* Hover states for navigation */
+.nav-item:hover {
+  color: var(--color-primary) !important;
+}
+
+/* Search and interactive elements */
+.search-button {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: white !important;
+}
+
+.search-button:hover {
+  background-color: var(--color-primary-dark) !important;
+}
+
+/* Stats and cards */
+.stat-card {
+  background-color: var(--color-surface) !important;
+  border-color: var(--color-primary) !important;
+}
+
+.stat-number {
+  color: var(--color-primary) !important;
+}
+
+/* Force override for Tailwind classes */
+.theme-override-primary {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+}
+
+.theme-override-secondary {
+  background-color: var(--color-secondary) !important;
+  color: var(--color-text) !important;
+}
+
+.theme-override-text-primary {
+  color: var(--color-primary) !important;
+}
+
+/* Force override gradients */
+.theme-gradient-primary {
+  background: linear-gradient(to right, var(--color-primary), var(--color-accent)) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+}
+
+/* Dynamic theming classes */
+.theme-primary {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+}
+
+.theme-primary-light {
+  background-color: var(--color-primary-light) !important;
+  color: white !important;
+}
+
+.theme-secondary {
+  background-color: var(--color-secondary) !important;
+  color: var(--color-text) !important;
+}
+
+.theme-text-primary {
+  color: var(--color-primary) !important;
+}
+
+.theme-text-accent {
+  color: var(--color-accent) !important;
+}
+
+.theme-border-primary {
+  border-color: var(--color-primary) !important;
+}
+
+.theme-bg-surface {
+  background-color: var(--color-surface) !important;
+}
+
+.theme-bg-secondary {
+  background-color: var(--color-background-secondary) !important;
+}
+
+/* Quran text styling classes */
+.quran-arabic-text {
+  color: var(--quran-arabic-color) !important;
+  font-family: var(--font-arabic);
+}
+
+.quran-translation-text {
+  color: var(--quran-translation-color) !important;
+}
+
+.quran-verse-number {
+  color: var(--quran-verse-number-color) !important;
+  background-color: var(--quran-highlight-color) !important;
+}
+
+.quran-highlight {
+  background-color: var(--quran-highlight-color) !important;
+}
+
+/* Font classes for Arabic text */
+.font-arabic {
+  font-family: var(--font-arabic);
+}

@@ -533,14 +533,14 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
               className={cn(
                 "p-4 sm:p-6 rounded-xl border transition-all duration-300",
                 isCurrentVerse 
-                  ? "bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 shadow-lg" 
+                  ? "quran-highlight theme-border-primary shadow-lg" 
                   : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
               )}
             >
               {/* Verse Header - Адаптивный */}
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2 sm:gap-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-600 text-white rounded-full flex items-center justify-center text-sm sm:text-base font-bold">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm sm:text-base font-bold quran-verse-number">
                     {verseNumber}
                   </div>
                   {isCurrentVerse && isPlaying && (
@@ -596,11 +596,11 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
 
               {/* Arabic Text - Адаптивный размер */}
               <div 
-                className="text-right mb-4 leading-loose font-amiri px-2"
+                className="text-right mb-4 leading-loose font-amiri px-2 quran-arabic-text"
                 style={{ fontSize: `${fontSize + 2}px` }}
                 dir="rtl"
               >
-                <p className="text-gray-900 dark:text-gray-100">
+                <p>
                   {verse.text}
                 </p>
               </div>
@@ -613,7 +613,7 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                 return (
                   <div key={tIndex} className="mb-3 last:mb-0 px-2">
                     <p 
-                      className="text-gray-700 dark:text-gray-300 leading-relaxed"
+                      className="quran-translation-text leading-relaxed"
                       style={{ fontSize: `${fontSize - 2}px` }}
                     >
                       {translationVerse.text}

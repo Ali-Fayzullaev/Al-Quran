@@ -11,51 +11,51 @@ import {
 } from "@/lib/colorThemes";
 
 export function ColorThemeProvider({ children }: { children: React.ReactNode }) {
-  const { theme } = useTheme();
+  const { theme, systemTheme } = useTheme();
   const { siteColorTheme, quranTextColorScheme } = useQuranStore();
+
+  // Функция для определения текущей темы
+  const getCurrentTheme = () => {
+    if (theme === 'system') {
+      return systemTheme || 'light';
+    }
+    return theme || 'light';
+  };
 
   // Применяем цветовые схемы при загрузке или изменении темы
   useEffect(() => {
-    const isDark = theme === 'dark' || 
-      (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    // Ждем пока тема загрузится и DOM будет готов
+    if (!theme) return;
 
-    // Применяем цветовую схему сайта
-    const siteTheme = getThemeByName(siteColorTheme);
-    if (siteTheme) {
-      applySiteColorTheme(siteTheme, isDark);
-    }
+    const applyColors = () => {
+      const currentTheme = getCurrentTheme();
+      const isDark = currentTheme === 'dark';
 
-    // Применяем цветовую схему текста Корана
-    const quranScheme = getQuranColorSchemeByName(quranTextColorScheme);
-    if (quranScheme) {
-      applyQuranTextColors(quranScheme, isDark);
-    }
-  }, [theme, siteColorTheme, quranTextColorScheme]);
+      console.log('Applying color themes:', { siteColorTheme, quranTextColorScheme, isDark });
 
-  // Слушаем изменения системной темы
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
-    const handleChange = () => {
-      if (theme === 'system') {
-        const isDark = mediaQuery.matches;
-        
-        const siteTheme = getThemeByName(siteColorTheme);
-        if (siteTheme) {
-          applySiteColorTheme(siteTheme, isDark);
-        }
+      // Применяем цветовую схему сайта
+      const siteTheme = getThemeByName(siteColorTheme);
+      if (siteTheme) {
+        console.log('Applying site theme:', siteTheme);
+        applySiteColorTheme(siteTheme, isDark);
+      }
 
-        const quranScheme = getQuranColorSchemeByName(quranTextColorScheme);
-        if (quranScheme) {
-          applyQuranTextColors(quranScheme, isDark);
-        }
+      // Применяем цветовую схему текста Корана
+      const quranScheme = getQuranColorSchemeByName(quranTextColorScheme);
+      if (quranScheme) {
+        console.log('Applying quran scheme:', quranScheme);
+        applyQuranTextColors(quranScheme, isDark);
       }
     };
 
-    mediaQuery.addEventListener('change', handleChange);
+    // Применяем сразу
+    applyColors();
     
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, [theme, siteColorTheme, quranTextColorScheme]);
+    // И еще раз через небольшую задержку для уверенности
+    const timeoutId = setTimeout(applyColors, 100);
+    
+    return () => clearTimeout(timeoutId);
+  }, [theme, systemTheme, siteColorTheme, quranTextColorScheme]);
 
   return <>{children}</>;
 }

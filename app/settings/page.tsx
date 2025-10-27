@@ -162,6 +162,26 @@ export default function SettingsPage() {
                 description="Настройте цвета для арабского текста и переводов Корана"
               />
             </div>
+
+            {/* Тестовая демонстрация цветов */}
+            <div className="mt-8 p-4 border border-gray-200 dark:border-gray-700 rounded-lg">
+              <h4 className="text-lg font-semibold mb-4">Тест цветов:</h4>
+              <div className="space-y-4">
+                <div className="flex gap-4 flex-wrap">
+                  <div className="theme-primary px-4 py-2 rounded">Primary Button</div>
+                  <div className="theme-secondary px-4 py-2 rounded border">Secondary Button</div>
+                  <div className="text-primary-theme font-bold">Primary Text</div>
+                  <div className="text-accent-theme font-bold">Accent Text</div>
+                </div>
+                <div className="p-4 theme-bg-surface rounded border">
+                  <div className="quran-arabic-text text-2xl text-right mb-2">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+                  <div className="quran-translation-text">In the name of Allah, the Entirely Merciful, the Especially Merciful.</div>
+                  <div className="flex items-center mt-2">
+                    <span className="quran-verse-number w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 

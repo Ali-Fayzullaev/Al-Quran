@@ -56,10 +56,10 @@ export default function Header() {
           {/* Logo - адаптивный */}
           <div className="flex items-center space-x-2">
             <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-              <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg shadow-md">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg shadow-md theme-primary">
                 <Book className="h-5 w-5 text-white" />
               </div>
-              <span className="hidden sm:block font-bold text-lg bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+              <span className="hidden sm:block font-bold text-lg theme-text-primary">
                 {t('title')}
               </span>
             </Link>
@@ -78,8 +78,8 @@ export default function Header() {
                   className={cn(
                     "relative flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:scale-105",
                     isActive
-                      ? "bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300 shadow-sm"
-                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-green-600 dark:hover:text-green-400"
+                      ? "theme-secondary theme-text-primary shadow-sm"
+                      : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary-theme"
                   )}
                 >
                   <Icon className="h-4 w-4" />
@@ -123,7 +123,7 @@ function MobileNav({ navigation, pathname }: { navigation: any[]; pathname: stri
       {/* Mobile menu button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-200 hover:scale-105"
+        className="lg:hidden p-2 rounded-lg theme-bg-secondary hover:theme-bg-surface transition-all duration-200 hover:scale-105"
         aria-label={t('menu')}
       >
         <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -167,8 +167,8 @@ function MobileNav({ navigation, pathname }: { navigation: any[]; pathname: stri
                     className={cn(
                       "relative flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 w-full hover:scale-[1.02]",
                       isActive
-                        ? "bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300 shadow-sm"
-                        : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-green-600 dark:hover:text-green-400"
+                        ? "theme-secondary theme-text-primary shadow-sm"
+                        : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-primary-theme"
                     )}
                   >
                     <Icon className="h-5 w-5" />

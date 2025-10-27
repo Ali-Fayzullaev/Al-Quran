@@ -355,8 +355,17 @@ export function getQuranColorSchemeByName(schemeName: string): QuranTextColorSch
 
 // Применить цветовую тему к CSS переменным
 export function applySiteColorTheme(theme: ColorTheme, isDark: boolean = false) {
+  // Убеждаемся что DOM загружен
+  if (typeof window === 'undefined') return;
+  
   const colors = isDark && theme.darkColors ? theme.darkColors : theme.colors;
   const root = document.documentElement;
+  
+  console.log('Applying site colors:', colors);
+  console.log('Current theme variables before:', {
+    primary: getComputedStyle(root).getPropertyValue('--color-primary'),
+    secondary: getComputedStyle(root).getPropertyValue('--color-secondary')
+  });
   
   root.style.setProperty('--color-primary', colors.primary);
   root.style.setProperty('--color-primary-light', colors.primaryLight);
@@ -368,15 +377,50 @@ export function applySiteColorTheme(theme: ColorTheme, isDark: boolean = false) 
   root.style.setProperty('--color-surface', colors.surface);
   root.style.setProperty('--color-text', colors.text);
   root.style.setProperty('--color-text-secondary', colors.textSecondary);
+  
+  // Также обновляем CSS переменные Tailwind для совместимости
+  root.style.setProperty('--tw-color-primary', colors.primary);
+  root.style.setProperty('--tw-color-secondary', colors.secondary);
+  
+  console.log('Current theme variables after:', {
+    primary: getComputedStyle(root).getPropertyValue('--color-primary'),
+    secondary: getComputedStyle(root).getPropertyValue('--color-secondary')
+  });
 }
 
 // Применить цветовую схему текста Корана
 export function applyQuranTextColors(scheme: QuranTextColorScheme, isDark: boolean = false) {
+  // Убеждаемся что DOM загружен
+  if (typeof window === 'undefined') return;
+  
   const colors = isDark && scheme.darkMode ? scheme.darkMode : scheme;
   const root = document.documentElement;
+  
+  console.log('Applying Quran colors:', colors);
   
   root.style.setProperty('--quran-arabic-color', colors.arabicColor);
   root.style.setProperty('--quran-translation-color', colors.translationColor);
   root.style.setProperty('--quran-verse-number-color', colors.verseNumberColor);
   root.style.setProperty('--quran-highlight-color', colors.highlightColor);
+}
+
+// Диагностическая функция для проверки CSS переменных
+export function debugCSSVariables() {
+  if (typeof window === 'undefined') return;
+  
+  const root = document.documentElement;
+  const computedStyle = getComputedStyle(root);
+  
+  console.log('=== CSS Variables Debug ===');
+  console.log('Site colors:', {
+    '--color-primary': computedStyle.getPropertyValue('--color-primary'),
+    '--color-secondary': computedStyle.getPropertyValue('--color-secondary'),
+    '--color-accent': computedStyle.getPropertyValue('--color-accent'),
+  });
+  console.log('Quran colors:', {
+    '--quran-arabic-color': computedStyle.getPropertyValue('--quran-arabic-color'),
+    '--quran-translation-color': computedStyle.getPropertyValue('--quran-translation-color'),
+    '--quran-verse-number-color': computedStyle.getPropertyValue('--quran-verse-number-color'),
+  });
+  console.log('========================');
 }
