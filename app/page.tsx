@@ -334,8 +334,8 @@ export default function HomePage() {
       </section>
 
       {/* Popular Surahs */}
-      <section className="py-16 px-6 backdrop-blur-sm" style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.6)'
+      <section className="py-16 px-6" style={{
+        backgroundColor: 'var(--verse-background)'
       }}>
         <div className="max-w-6xl mx-auto">
           <motion.div 
@@ -361,21 +361,26 @@ export default function HomePage() {
                 transition={{ duration: 0.6, delay: 2.0 + index * 0.1 }}
               >
                 <Link href={`/surah/${surah.number}`}>
-                  <div className="p-6 rounded-2xl shadow-sm border transition-all duration-300 group theme-card-elegant"
+                  <div className="p-6 rounded-2xl shadow-sm border transition-all duration-300 group"
                     style={{
-                      backgroundColor: 'var(--color-surface)',
+                      backgroundColor: 'var(--fixed-background)',
                       borderColor: 'var(--color-border)'
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.borderColor = 'var(--color-primary)';
+                      e.currentTarget.style.transform = 'translateY(-4px)';
+                      e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.1)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.borderColor = 'var(--color-border)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
                     }}>
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg transition-colors"
+                      <div className="w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg transition-colors border-2"
                         style={{
-                          backgroundColor: 'var(--color-secondary)',
+                          backgroundColor: 'var(--verse-background)',
+                          borderColor: 'var(--color-primary)',
                           color: 'var(--color-primary)'
                         }}>
                         {surah.number}

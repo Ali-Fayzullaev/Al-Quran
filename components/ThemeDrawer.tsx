@@ -34,10 +34,16 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
       <SheetTrigger asChild>
         {children}
       </SheetTrigger>
-      <SheetContent className="w-80 bg-white dark:bg-gray-950 border-l border-gray-200 dark:border-gray-800">
+      <SheetContent 
+        className="w-80 border-l"
+        style={{
+          backgroundColor: 'var(--fixed-background)',
+          borderColor: 'var(--color-border)'
+        }}
+      >
         <SheetHeader className="pb-6">
-          <SheetTitle className="flex items-center gap-2 text-left">
-            <Palette className="w-5 h-5" />
+          <SheetTitle className="flex items-center gap-2 text-left" style={{ color: 'var(--fixed-text)' }}>
+            <Palette className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
             Настройки темы
           </SheetTitle>
         </SheetHeader>
@@ -45,7 +51,7 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
         <div className="space-y-6">
           {/* Display Mode */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
+            <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--fixed-text)' }}>
               Режим отображения
             </h3>
             <div className="grid grid-cols-3 gap-2">
@@ -57,16 +63,26 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
                 <button
                   key={id}
                   onClick={() => setTheme(id)}
-                  className={cn(
-                    "flex flex-col items-center gap-2 px-3 py-3 rounded-lg text-xs transition-all border",
-                    theme === id
-                      ? "bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600"
-                      : "hover:bg-gray-50 dark:hover:bg-gray-900 border-gray-200 dark:border-gray-800"
-                  )}
+                  className="flex flex-col items-center gap-2 px-3 py-3 rounded-lg text-xs transition-all border"
+                  style={{
+                    backgroundColor: theme === id ? 'var(--verse-background)' : 'transparent',
+                    borderColor: theme === id ? 'var(--color-primary)' : 'var(--color-border)',
+                    color: 'var(--fixed-text)'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (theme !== id) {
+                      e.currentTarget.style.backgroundColor = 'var(--color-border)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (theme !== id) {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }
+                  }}
                 >
-                  <Icon size={18} className="text-gray-700 dark:text-gray-300" />
-                  <span className="text-gray-700 dark:text-gray-300 font-medium">{label}</span>
-                  {theme === id && <Check size={12} className="text-primary" />}
+                  <Icon size={18} style={{ color: 'var(--fixed-text-secondary)' }} />
+                  <span className="font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>{label}</span>
+                  {theme === id && <Check size={12} style={{ color: 'var(--color-primary)' }} />}
                 </button>
               ))}
             </div>
@@ -74,7 +90,7 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
 
           {/* Color Themes */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3">
+            <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--fixed-text)' }}>
               Цветовые темы
             </h3>
             <div className="space-y-2">
@@ -82,31 +98,44 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
                 <button
                   key={colorTheme.id}
                   onClick={() => handleThemeChange(colorTheme.id)}
-                  className={cn(
-                    "w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm transition-all border",
-                    siteColorTheme === colorTheme.id
-                      ? "bg-gray-50 dark:bg-gray-900 border-gray-300 dark:border-gray-700"
-                      : "hover:bg-gray-50 dark:hover:bg-gray-900 border-gray-200 dark:border-gray-800"
-                  )}
+                  className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm transition-all border"
+                  style={{
+                    backgroundColor: siteColorTheme === colorTheme.id ? 'var(--verse-background)' : 'transparent',
+                    borderColor: siteColorTheme === colorTheme.id ? 'var(--color-primary)' : 'var(--color-border)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'var(--verse-background)';
+                  }}
+                  onMouseLeave={(e) => {
+                    if (siteColorTheme !== colorTheme.id) {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }
+                  }}
                 >
                   {/* Color Preview */}
                   <div className="flex gap-1">
                     <div 
-                      className="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600"
-                      style={{ backgroundColor: colorTheme.lightMode.primary }}
+                      className="w-4 h-4 rounded-full border"
+                      style={{ 
+                        backgroundColor: colorTheme.lightMode.primary,
+                        borderColor: 'var(--color-border)'
+                      }}
                     />
                     <div 
-                      className="w-4 h-4 rounded-full border border-gray-300 dark:border-gray-600"
-                      style={{ backgroundColor: colorTheme.darkMode.primary }}
+                      className="w-4 h-4 rounded-full border"
+                      style={{ 
+                        backgroundColor: colorTheme.darkMode.primary,
+                        borderColor: 'var(--color-border)'
+                      }}
                     />
                   </div>
                   
-                  <span className="flex-1 text-left font-medium text-gray-900 dark:text-gray-100">
+                  <span className="flex-1 text-left font-medium" style={{ color: 'var(--fixed-text)' }}>
                     {colorTheme.name}
                   </span>
                   
                   {siteColorTheme === colorTheme.id && (
-                    <Check size={16} className="text-primary" />
+                    <Check size={16} style={{ color: 'var(--color-primary)' }} />
                   )}
                 </button>
               ))}
@@ -115,8 +144,8 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
         </div>
 
         {/* Footer */}
-        <div className="mt-8 pt-4 border-t border-gray-200 dark:border-gray-800">
-          <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+        <div className="mt-8 pt-4 border-t" style={{ borderColor: 'var(--color-border)' }}>
+          <p className="text-xs text-center" style={{ color: 'var(--fixed-text-secondary)' }}>
             Настройки автоматически сохраняются
           </p>
         </div>

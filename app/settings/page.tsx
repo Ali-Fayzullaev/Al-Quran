@@ -277,7 +277,7 @@ export default function SettingsPage() {
               {/* Reciter Selection */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">
+                  <h3 className="text-lg font-medium" style={{ color: 'var(--fixed-text)' }}>
                     {t('selectReciterQari')}
                   </h3>
                   <Button
@@ -295,36 +295,50 @@ export default function SettingsPage() {
 
                 {/* Search */}
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" style={{ color: 'var(--fixed-text-secondary)' }} />
                   <input
                     type="text"
                     placeholder={locale === 'en' ? 'Search reciters...' : 'Поиск чтецов...'}
                     value={reciterSearch}
                     onChange={(e) => setReciterSearch(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                    className="w-full pl-10 pr-4 py-2 border rounded-lg"
+                    style={{
+                      backgroundColor: 'var(--fixed-background)',
+                      borderColor: 'var(--color-border)',
+                      color: 'var(--fixed-text)'
+                    }}
                   />
                 </div>
 
                 {/* Reciters List */}
-                <div className="max-h-64 overflow-y-auto space-y-2 border border-gray-200 dark:border-gray-600 rounded-lg p-2">
+                <div className="max-h-64 overflow-y-auto space-y-2 border rounded-lg p-2" style={{ borderColor: 'var(--color-border)' }}>
                   {filteredReciters.map((reciter) => (
                     <div
                       key={reciter.id}
-                      className={cn(
-                        "flex items-center justify-between p-3 rounded-lg transition-all cursor-pointer",
-                        audioReciter === reciter.id
-                          ? "bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-600"
-                          : "hover:bg-gray-50 dark:hover:bg-gray-700"
-                      )}
+                      className="flex items-center justify-between p-3 rounded-lg transition-all cursor-pointer border"
+                      style={{
+                        backgroundColor: audioReciter === reciter.id ? 'var(--verse-background)' : 'transparent',
+                        borderColor: audioReciter === reciter.id ? 'var(--color-primary)' : 'transparent'
+                      }}
                       onClick={() => setAudioReciter(reciter.id)}
+                      onMouseEnter={(e) => {
+                        if (audioReciter !== reciter.id) {
+                          e.currentTarget.style.backgroundColor = 'var(--color-border)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (audioReciter !== reciter.id) {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }
+                      }}
                     >
                       <div>
-                        <p className="font-medium text-gray-900 dark:text-gray-100">{reciter.name}</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">{reciter.country}</p>
+                        <p className="font-medium" style={{ color: 'var(--fixed-text)' }}>{reciter.name}</p>
+                        <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>{reciter.country}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         {audioReciter === reciter.id && (
-                          <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
+                          <Check className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
                         )}
                         <Button
                           variant="ghost"
@@ -354,7 +368,7 @@ export default function SettingsPage() {
               {/* Audio Controls */}
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium mb-2" style={{ color: 'var(--fixed-text-secondary)' }}>
                     {t('volume')}: {Math.round(audioVolume * 100)}%
                   </label>
                   <input
@@ -364,12 +378,15 @@ export default function SettingsPage() {
                     step="0.1"
                     value={audioVolume}
                     onChange={(e) => setAudioVolume(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer"
+                    className="w-full h-2 rounded-full appearance-none cursor-pointer"
+                    style={{
+                      background: `linear-gradient(to right, var(--color-primary) 0%, var(--color-primary) ${audioVolume * 100}%, var(--color-border) ${audioVolume * 100}%, var(--color-border) 100%)`
+                    }}
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <label className="block text-sm font-medium mb-2" style={{ color: 'var(--fixed-text-secondary)' }}>
                     {t('speed')}: {audioSpeed}x
                   </label>
                   <input
@@ -379,25 +396,26 @@ export default function SettingsPage() {
                     step="0.25"
                     value={audioSpeed}
                     onChange={(e) => setAudioSpeed(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer"
+                    className="w-full h-2 rounded-full appearance-none cursor-pointer"
+                    style={{
+                      background: `linear-gradient(to right, var(--color-primary) 0%, var(--color-primary) ${((audioSpeed - 0.5) / 1.5) * 100}%, var(--color-border) ${((audioSpeed - 0.5) / 1.5) * 100}%, var(--color-border) 100%)`
+                    }}
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div className="flex items-center justify-between p-4 rounded-lg" style={{ backgroundColor: 'var(--color-secondary)' }}>
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-gray-100">
+                    <p className="font-medium" style={{ color: 'var(--fixed-text)' }}>
                       {t('autoplayNext')}
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
                       {locale === 'en' ? 'Automatically play next verse' : 'Автоматически воспроизводить следующий аят'}
                     </p>
                   </div>
                   <button
                     onClick={() => setAutoPlay(!autoPlay)}
-                    className={cn(
-                      "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
-                      autoPlay ? "theme-bg-primary" : "bg-gray-300 dark:bg-gray-600"
-                    )}
+                    className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                    style={{ backgroundColor: autoPlay ? 'var(--color-primary)' : 'var(--color-border)' }}
                   >
                     <span
                       className={cn(
@@ -417,18 +435,21 @@ export default function SettingsPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+            className="lg:col-span-2 rounded-2xl p-6 shadow-lg border" style={{
+              backgroundColor: 'var(--verse-background)',
+              borderColor: 'var(--color-border)'
+            }}
           >
             <div className="flex items-center gap-3 mb-6">
-              <Languages className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+              <Languages className="w-6 h-6" style={{ color: 'var(--color-primary)' }} />
+              <h2 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
                 {t('selectTranslations')}
               </h2>
             </div>
 
             {/* Quick Language Selection */}
             <div className="mb-6">
-              <h3 className="text-lg font-medium mb-3 text-gray-900 dark:text-gray-100">
+              <h3 className="text-lg font-medium mb-3" style={{ color: 'var(--fixed-text)' }}>
                 {locale === 'en' ? 'Quick Setup' : 'Быстрая настройка'}
               </h3>
               <div className="flex gap-2 flex-wrap">
@@ -476,7 +497,16 @@ export default function SettingsPage() {
                     {translations.map((translation) => (
                       <label
                         key={translation.id}
-                        className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
+                        className="flex items-center gap-3 p-2 rounded-lg cursor-pointer transition-colors"
+                        style={{
+                          backgroundColor: 'transparent'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'var(--color-border)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
                       >
                         <input
                           type="checkbox"
@@ -488,11 +518,14 @@ export default function SettingsPage() {
                               setSelectedTranslations(selectedTranslations.filter(id => id !== translation.id));
                             }
                           }}
-                          className="w-4 h-4 text-green-600 border-gray-300 dark:border-gray-600 rounded focus:ring-green-500"
+                          className="w-4 h-4 rounded"
+                          style={{
+                            accentColor: 'var(--color-primary)'
+                          }}
                         />
                         <div>
-                          <p className="font-medium text-gray-900 dark:text-gray-100">{translation.name}</p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">{translation.language}</p>
+                          <p className="font-medium" style={{ color: 'var(--fixed-text)' }}>{translation.name}</p>
+                          <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>{translation.language}</p>
                         </div>
                       </label>
                     ))}
@@ -508,11 +541,14 @@ export default function SettingsPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+            className="lg:col-span-2 rounded-2xl p-6 shadow-lg border" style={{
+              backgroundColor: 'var(--verse-background)',
+              borderColor: 'var(--color-border)'
+            }}
           >
             <div className="flex items-center gap-3 mb-6">
-              <Type className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+              <Type className="w-6 h-6" style={{ color: 'var(--color-primary)' }} />
+              <h2 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
                 {t('displaySettings')}
               </h2>
             </div>
@@ -520,7 +556,7 @@ export default function SettingsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Font Size */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--fixed-text-secondary)' }}>
                   {t('fontSizeLabel')} {fontSize}px
                 </label>
                 <input
@@ -529,27 +565,28 @@ export default function SettingsPage() {
                   max="32"
                   value={fontSize}
                   onChange={(e) => setFontSize(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer"
+                  className="w-full h-2 rounded-full appearance-none cursor-pointer"
+                  style={{
+                    background: `linear-gradient(to right, var(--color-primary) 0%, var(--color-primary) ${((fontSize - 12) / 20) * 100}%, var(--color-border) ${((fontSize - 12) / 20) * 100}%, var(--color-border) 100%)`
+                  }}
                 />
               </div>
 
               {/* Display Options */}
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div className="flex items-center justify-between p-4 rounded-lg" style={{ backgroundColor: 'var(--color-secondary)' }}>
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-gray-100">
+                    <p className="font-medium" style={{ color: 'var(--fixed-text)' }}>
                       {t('showTranslation')}
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
                       {locale === 'en' ? 'Show verse translations' : 'Показывать переводы аятов'}
                     </p>
                   </div>
                   <button
                     onClick={toggleTranslation}
-                    className={cn(
-                      "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
-                      showTranslation ? "theme-bg-primary" : "bg-gray-300 dark:bg-gray-600"
-                    )}
+                    className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                    style={{ backgroundColor: showTranslation ? 'var(--color-primary)' : 'var(--color-border)' }}
                   >
                     <span
                       className={cn(
@@ -560,21 +597,19 @@ export default function SettingsPage() {
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div className="flex items-center justify-between p-4 rounded-lg" style={{ backgroundColor: 'var(--color-secondary)' }}>
                   <div>
-                    <p className="font-medium text-gray-900 dark:text-gray-100">
+                    <p className="font-medium" style={{ color: 'var(--fixed-text)' }}>
                       {t('showTransliteration')}
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                    <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
                       {locale === 'en' ? 'Show Arabic transliteration' : 'Показывать транслитерацию'}
                     </p>
                   </div>
                   <button
                     onClick={toggleTransliteration}
-                    className={cn(
-                      "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
-                      showTransliteration ? "theme-bg-primary" : "bg-gray-300 dark:bg-gray-600"
-                    )}
+                    className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors"
+                    style={{ backgroundColor: showTransliteration ? 'var(--color-primary)' : 'var(--color-border)' }}
                   >
                     <span
                       className={cn(
