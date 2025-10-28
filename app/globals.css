@@ -835,4 +835,11 @@ mark {
   border-color: var(--color-primary-dark) !important;
 }
 
+/* Quiz arabic text styling */
+.arabic-text {
+  font-family: var(--font-arabic);
+  direction: rtl;
+  line-height: 2;
+}
+
 @import "./theme-styles.css";
