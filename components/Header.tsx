@@ -3,7 +3,7 @@
 import { useState, memo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Book, Search, Navigation, Bookmark, Settings, Palette, Brain } from "lucide-react";
+import { Book, Search, Navigation, Bookmark, Settings, Palette, Brain, Map } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
 import dynamic from "next/dynamic";
@@ -36,6 +36,11 @@ const Header = memo(function Header() {
       name: t('juz'),
       href: '/juz',
       icon: Navigation,
+    },
+    {
+      name: locale === 'en' ? 'Journey' : 'Путешествие',
+      href: '/journey',
+      icon: Map,
     },
     {
       name: t('quiz'),

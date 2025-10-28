@@ -65,7 +65,9 @@ function getRandomElements<T>(array: T[], count: number): T[] {
  * Get surah numbers based on difficulty
  */
 function getSurahsByDifficulty(difficulty: Difficulty, specificSurahs?: number[]): number[] {
+  // ИСПРАВЛЕНО: если указаны конкретные суры, используем только их
   if (specificSurahs && specificSurahs.length > 0) {
+    console.log('Using specific surahs:', specificSurahs);
     return specificSurahs;
   }
   
@@ -340,13 +342,18 @@ export async function generateQuizQuestions(config: QuizConfig): Promise<Questio
   const questions: Question[] = [];
   const { questionCount, difficulty, questionTypes, specificSurahs } = config;
   
+  // Проверяем наличие questionTypes и устанавливаем значения по умолчанию
+  const types: QuestionType[] = questionTypes && questionTypes.length > 0 
+    ? questionTypes 
+    : ['guess-surah', 'continue-ayah', 'missing-word', 'surah-description'];
+  
   // Distribute questions across types
-  const typesCount = questionTypes.length;
+  const typesCount = types.length;
   const questionsPerType = Math.floor(questionCount / typesCount);
   const remainder = questionCount % typesCount;
   
   for (let i = 0; i < typesCount; i++) {
-    const type = questionTypes[i];
+    const type = types[i];
     const count = questionsPerType + (i < remainder ? 1 : 0);
     
     for (let j = 0; j < count; j++) {
