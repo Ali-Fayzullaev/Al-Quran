@@ -40,26 +40,22 @@ export default function HomePage() {
     { 
       number: 114, 
       label: t("surahs"),
-      icon: Book,
-      color: "text-green-600"
+      icon: Book
     },
     { 
       number: 6236, 
       label: t("verses"),
-      icon: Quote,
-      color: "text-blue-600"
+      icon: Quote
     },
     { 
       number: 30, 
       label: t("juz"),
-      icon: Star,
-      color: "text-purple-600"
+      icon: Star
     },
     { 
       number: 604, 
       label: t("pages"),
-      icon: TrendingUp,
-      color: "text-orange-600"
+      icon: TrendingUp
     }
   ];
 
@@ -73,10 +69,16 @@ export default function HomePage() {
   ];
 
   return (
-    <main className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors">
+    <main className="min-h-screen transition-colors" style={{ 
+      backgroundColor: 'var(--fixed-background)',
+      color: 'var(--fixed-text)'
+    }}>
       
       {/* Hero Section */}
-      <section className="relative py-20 px-6 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <section className="relative py-20 px-6 border-b" style={{
+        backgroundColor: 'var(--verse-background)',
+        borderColor: 'var(--color-border)'
+      }}>
         <div className="max-w-6xl mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -84,16 +86,19 @@ export default function HomePage() {
             transition={{ duration: 0.6 }}
             className="text-center"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium mb-6">
-              <Star className="w-4 h-4 text-primary" />
-              <span className="text-gray-700 dark:text-gray-300">{t("bestQuranExperience")}</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border text-sm font-medium mb-6" style={{
+              backgroundColor: 'var(--verse-background)',
+              borderColor: 'var(--color-border)'
+            }}>
+              <Star className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
+              <span style={{ color: 'var(--fixed-text-secondary)' }}>{t("bestQuranExperience")}</span>
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-gray-900 dark:text-gray-100">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6" style={{ color: 'var(--fixed-text)' }}>
               {t("title")}
             </h1>
             
-            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">
+            <p className="text-xl md:text-2xl max-w-3xl mx-auto mb-8 leading-relaxed" style={{ color: 'var(--fixed-text-secondary)' }}>
               {locale === "en"
                 ? "Experience the Holy Quran with modern technology. Read, listen, search, and reflect with our intelligent platform designed for Muslims worldwide."
                 : "Познавайте Священный Коран с помощью современных технологий. Читайте, слушайте, ищите и размышляйте с нашей интеллектуальной платформой для мусульман всего мира."}
@@ -108,17 +113,30 @@ export default function HomePage() {
               className="max-w-2xl mx-auto mb-12"
             >
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5" style={{ color: 'var(--fixed-text-secondary)' }} />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t("searchPlaceholder")}
-                  className="w-full pl-12 pr-6 py-4 text-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder-gray-500"
+                  className="w-full pl-12 pr-6 py-4 text-lg border rounded-xl focus:ring-2 focus:outline-none transition-all"
+                  style={{
+                    backgroundColor: 'var(--verse-background)',
+                    borderColor: 'var(--color-border)',
+                    color: 'var(--fixed-text)'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = 'var(--color-primary)';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(var(--color-primary-rgb), 0.1)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = 'var(--color-border)';
+                    e.target.style.boxShadow = 'none';
+                  }}
                 />
                 <Button 
                   type="submit"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 theme-override-primary rounded-lg"
                 >
                   {t("search")}
                 </Button>
@@ -129,7 +147,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 px-6 bg-white dark:bg-gray-950">
+      <section className="py-16 px-6" style={{ backgroundColor: 'var(--fixed-background)' }}>
         <div className="max-w-6xl mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -141,13 +159,16 @@ export default function HomePage() {
               const Icon = stat.icon;
               return (
                 <div key={index} className="text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 mb-4">
-                    <Icon className="w-8 h-8 text-primary" />
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl border mb-4" style={{
+                    backgroundColor: 'var(--verse-background)',
+                    borderColor: 'var(--color-border)'
+                  }}>
+                    <Icon className="w-8 h-8" style={{ color: 'var(--color-primary)' }} />
                   </div>
-                  <div className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
+                  <div className="text-3xl md:text-4xl font-bold mb-2" style={{ color: 'var(--fixed-text)' }}>
                     <CountUp end={stat.number} duration={2} />
                   </div>
-                  <div className="text-gray-600 dark:text-gray-400 font-medium">
+                  <div className="font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>
                     {stat.label}
                   </div>
                 </div>
@@ -167,7 +188,7 @@ export default function HomePage() {
               transition={{ duration: 0.6, delay: 0.6 }}
               className="text-center mb-8"
             >
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: 'var(--fixed-text)' }}>
                 {t("verseOfTheDay")}
               </h2>
             </motion.div>
@@ -176,21 +197,25 @@ export default function HomePage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="p-8 md:p-12 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"
-            >
+              className="p-8 md:p-12 rounded-2xl border" style={{
+                backgroundColor: 'var(--verse-background)',
+                borderColor: 'var(--color-border)'
+              }}>
               <div className="text-center mb-6">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium">
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-medium" style={{
+                  backgroundColor: 'var(--color-primary)'
+                }}>
                   <Quote className="w-4 h-4" />
                   {locale === "en" ? `Verse ${randomAyah.numberInSurah}` : `Аят ${randomAyah.numberInSurah}`}
                 </div>
               </div>
               
-              <blockquote className="text-xl md:text-2xl text-gray-700 dark:text-gray-200 leading-relaxed text-center font-medium italic mb-6">
+              <blockquote className="text-xl md:text-2xl leading-relaxed text-center font-medium italic mb-6" style={{ color: 'var(--fixed-text-secondary)' }}>
                 "{randomAyah.text}"
               </blockquote>
               
               <div className="text-center">
-                <p className="font-semibold text-primary">
+                <p className="font-semibold" style={{ color: 'var(--color-primary)' }}>
                   {locale === "en" ? `Juz ${randomAyah.juz} • Page ${randomAyah.page}` : `Джуз ${randomAyah.juz} • Страница ${randomAyah.page}`}
                 </p>
               </div>
@@ -208,10 +233,10 @@ export default function HomePage() {
             transition={{ duration: 0.6, delay: 1.0 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: 'var(--fixed-text)' }}>
               {t("exploreKnowledge")}
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-xl max-w-2xl mx-auto" style={{ color: 'var(--fixed-text-secondary)' }}>
               {locale === "en" 
                 ? "Access the complete Quran, authentic Hadith collections, and daily duas with modern features"
                 : "Получите доступ к полному Корану, достоверным сборникам хадисов и ежедневным дуа с современными возможностями"}
@@ -233,10 +258,10 @@ export default function HomePage() {
                   <div className="absolute top-0 right-0 w-32 h-32 rounded-full -translate-y-16 translate-x-16 opacity-20"
                     style={{ backgroundColor: 'var(--color-primary)' }}></div>
                   <Book className="w-12 h-12 mb-6 relative z-10" style={{ color: 'var(--color-primary)' }} />
-                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 relative z-10">
+                  <h3 className="text-2xl font-bold mb-4 relative z-10" style={{ color: 'var(--fixed-text)' }}>
                     {locale === "en" ? "Holy Quran" : "Священный Коран"}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-300 mb-6 relative z-10">
+                  <p className="mb-6 relative z-10" style={{ color: 'var(--fixed-text-secondary)' }}>
                     {locale === "en"
                       ? "Read and listen to all 114 Surahs with multiple translations, audio recitations, and advanced study tools."
                       : "Читайте и слушайте все 114 сур с множественными переводами, аудио-чтениями и продвинутыми инструментами изучения."}
@@ -262,10 +287,10 @@ export default function HomePage() {
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full -translate-y-16 translate-x-16 opacity-20"
                   style={{ backgroundColor: 'var(--color-primary)' }}></div>
                 <Quote className="w-12 h-12 mb-6 relative z-10" style={{ color: 'var(--color-primary)' }} />
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 relative z-10">
+                <h3 className="text-2xl font-bold mb-4 relative z-10" style={{ color: 'var(--fixed-text)' }}>
                   {locale === "en" ? "Hadith Collections" : "Сборники хадисов"}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-6 relative z-10">
+                <p className="mb-6 relative z-10" style={{ color: 'var(--fixed-text-secondary)' }}>
                   {locale === "en"
                     ? "Explore authentic Hadith from Sahih Bukhari, Sahih Muslim, and other trusted collections."
                     : "Изучайте достоверные хадисы из Сахих аль-Бухари, Сахих Муслим и других надежных сборников."}
@@ -290,10 +315,10 @@ export default function HomePage() {
                 <div className="absolute top-0 right-0 w-32 h-32 rounded-full -translate-y-16 translate-x-16 opacity-20"
                   style={{ backgroundColor: 'var(--color-primary)' }}></div>
                 <Hand className="w-12 h-12 mb-6 relative z-10" style={{ color: 'var(--color-primary)' }} />
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 relative z-10">
+                <h3 className="text-2xl font-bold mb-4 relative z-10" style={{ color: 'var(--fixed-text)' }}>
                   {locale === "en" ? "Daily Duas" : "Ежедневные дуа"}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-6 relative z-10">
+                <p className="mb-6 relative z-10" style={{ color: 'var(--fixed-text-secondary)' }}>
                   {locale === "en"
                     ? "Learn and practice essential daily prayers and supplications with audio pronunciation guides."
                     : "Изучайте и практикуйте важные ежедневные молитвы и мольбы с аудио-гидами произношения."}
@@ -319,10 +344,10 @@ export default function HomePage() {
             transition={{ duration: 0.6, delay: 1.8 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: 'var(--fixed-text)' }}>
               {locale === "en" ? "Popular Surahs" : "Популярные суры"}
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300">
+            <p className="text-xl" style={{ color: 'var(--fixed-text-secondary)' }}>
               {locale === "en" ? "Most read and beloved chapters" : "Наиболее читаемые и любимые главы"}
             </p>
           </motion.div>
@@ -356,10 +381,10 @@ export default function HomePage() {
                         {surah.number}
                       </div>
                       <div>
-                        <h3 className="font-bold text-gray-900 dark:text-white text-lg mb-1">
+                        <h3 className="font-bold text-lg mb-1" style={{ color: 'var(--fixed-text)' }}>
                           {surah.name}
                         </h3>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm">
+                        <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
                           {surah.translation}
                         </p>
                       </div>

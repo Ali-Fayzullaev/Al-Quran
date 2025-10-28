@@ -29,6 +29,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import { RECITERS, TRANSLATIONS, getWorkingAudioUrl, getCachedWorkingAudioUrl, preloadAudio } from "@/lib/api";
 import ColorPicker from "@/components/ColorPicker";
+import CustomColorSettings from "@/components/CustomColorSettings";
 
 // Популярные чтецы для быстрого доступа
 const POPULAR_RECITERS = ['ar.alafasy', 'ar.abdulbasitmurattal', 'ar.abdurrahmaansudais', 'ar.mahermuaiqly'];
@@ -201,34 +202,48 @@ export default function SettingsPage() {
       {/* Header */}
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-3">
-          <SettingsIcon className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+          <SettingsIcon className="w-8 h-8" style={{ color: 'var(--color-primary)' }} />
+          <h1 className="text-3xl font-bold gradient-text-primary">
             {t('settings')}
           </h1>
         </div>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p style={{ color: 'var(--fixed-text-secondary)' }}>
           {t('settingsDescription')}
         </p>
       </div>
 
       {/* Quick Settings Tabs */}
       <div className="flex justify-center">
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-2 shadow-lg border border-gray-200 dark:border-gray-700">
+        <div className="rounded-2xl p-2 shadow-lg border" style={{
+          backgroundColor: 'var(--verse-background)',
+          borderColor: 'var(--color-border)'
+        }}>
           <div className="flex gap-2">
             {[
               { id: 'audio', icon: Volume2, label: t('audio') },
               { id: 'translation', icon: Languages, label: t('translation') },
-              { id: 'reading', icon: Type, label: locale === 'en' ? 'Reading' : 'Чтение' }
+              { id: 'reading', icon: Type, label: locale === 'en' ? 'Reading' : 'Чтение' },
+              { id: 'colors', icon: Eye, label: locale === 'en' ? 'Colors' : 'Цвета' }
             ].map(({ id, icon: Icon, label }) => (
               <button
                 key={id}
                 onClick={() => setActiveTab(id)}
-                className={cn(
-                  "flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition-all",
-                  activeTab === id
-                    ? "theme-bg-primary text-white shadow-lg"
-                    : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300"
-                )}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition-all"
+                style={{
+                  backgroundColor: activeTab === id ? 'var(--color-primary)' : 'transparent',
+                  color: activeTab === id ? '#ffffff' : 'var(--fixed-text-secondary)',
+                  boxShadow: activeTab === id ? '0 4px 10px rgba(0,0,0,0.1)' : 'none'
+                }}
+                onMouseEnter={(e) => {
+                  if (activeTab !== id) {
+                    e.currentTarget.style.backgroundColor = 'var(--color-border)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeTab !== id) {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                  }
+                }}
               >
                 <Icon size={16} />
                 {label}
@@ -246,11 +261,14 @@ export default function SettingsPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
+            className="lg:col-span-2 rounded-2xl p-6 shadow-lg border" style={{
+              backgroundColor: 'var(--verse-background)',
+              borderColor: 'var(--color-border)'
+            }}
           >
             <div className="flex items-center gap-3 mb-6">
-              <Headphones className="w-6 h-6 text-green-600 dark:text-green-400" />
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+              <Headphones className="w-6 h-6" style={{ color: 'var(--color-primary)' }} />
+              <h2 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
                 {t('audioSettings')}
               </h2>
             </div>
@@ -568,6 +586,17 @@ export default function SettingsPage() {
                 </div>
               </div>
             </div>
+          </motion.div>
+        )}
+
+        {/* Colors Settings */}
+        {activeTab === 'colors' && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="lg:col-span-2"
+          >
+            <CustomColorSettings />
           </motion.div>
         )}
       </div>

@@ -71,10 +71,10 @@ export default function JuzNavigation({ currentJuz = 1 }: JuzNavigationProps) {
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Header */}
       <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4 gradient-text-primary">
           {locale === 'en' ? 'Juz Navigation' : 'Навигация по Джузам'}
         </h1>
-        <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+        <p className="text-xl max-w-2xl mx-auto" style={{ color: 'var(--fixed-text-secondary)' }}>
           {locale === 'en' 
             ? 'The Quran is divided into 30 Juz (parts) for easier reading and memorization'
             : 'Коран разделен на 30 джузов (частей) для более легкого чтения и запоминания'}
@@ -82,13 +82,16 @@ export default function JuzNavigation({ currentJuz = 1 }: JuzNavigationProps) {
       </div>
 
       {/* Current Juz Info */}
-      <div className="bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-2xl p-6 mb-8">
+      <div className="rounded-2xl p-6 mb-8 border" style={{
+        background: 'linear-gradient(135deg, var(--verse-background) 0%, var(--color-secondary) 100%)',
+        borderColor: 'var(--color-primary)'
+      }}>
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-green-800 dark:text-green-200 mb-2">
+            <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--color-primary)' }}>
               {locale === 'en' ? `Juz ${selectedJuz}` : `Джуз ${selectedJuz}`}
             </h2>
-            <p className="text-green-600 dark:text-green-300">
+            <p style={{ color: 'var(--fixed-text-secondary)' }}>
               {locale === 'en' ? 'Reading Progress' : 'Прогресс чтения'}: {getJuzProgress(selectedJuz).toFixed(0)}%
             </p>
           </div>
@@ -125,31 +128,40 @@ export default function JuzNavigation({ currentJuz = 1 }: JuzNavigationProps) {
             >
               <button
                 onClick={() => setSelectedJuz(juzNumber)}
-                className={cn(
-                  "relative w-full aspect-square rounded-2xl border-2 transition-all duration-300 group overflow-hidden",
-                  isSelected 
-                    ? "border-green-500 bg-green-50 dark:bg-green-900/30 shadow-lg"
-                    : "border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-600 bg-white dark:bg-gray-800",
-                  isCompleted && "ring-2 ring-green-400"
-                )}
+                className="relative w-full aspect-square rounded-2xl border-2 transition-all duration-300 group overflow-hidden"
+                style={{
+                  borderColor: isSelected ? 'var(--color-primary)' : 'var(--color-border)',
+                  backgroundColor: isSelected ? 'var(--verse-background)' : 'var(--verse-background)',
+                  boxShadow: isSelected ? '0 10px 25px rgba(0,0,0,0.1)' : 'none',
+                  ...(isCompleted && { outline: '2px solid var(--color-primary)', outlineOffset: '2px' })
+                }}
+                onMouseEnter={(e) => {
+                  if (!isSelected) e.currentTarget.style.borderColor = 'var(--color-primary)';
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSelected) e.currentTarget.style.borderColor = 'var(--color-border)';
+                }}
               >
                 {/* Background Progress */}
                 <div 
-                  className="absolute inset-0 bg-gradient-to-t from-green-200/30 to-transparent transition-all duration-300"
-                  style={{ opacity: progress / 100 }}
+                  className="absolute inset-0 transition-all duration-300"
+                  style={{ 
+                    background: `linear-gradient(to top, var(--color-secondary), transparent)`,
+                    opacity: progress / 200 
+                  }}
                 />
                 
                 {/* Content */}
                 <div className="relative z-10 flex flex-col items-center justify-center h-full p-3">
                   {isCompleted && (
-                    <CheckCircle className="absolute top-2 right-2 w-5 h-5 text-green-600" />
+                    <CheckCircle className="absolute top-2 right-2 w-5 h-5" style={{ color: 'var(--color-primary)' }} />
                   )}
                   
-                  <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+                  <div className="text-2xl font-bold mb-1" style={{ color: 'var(--fixed-text)' }}>
                     {juzNumber}
                   </div>
                   
-                  <div className="text-xs text-gray-600 dark:text-gray-300 text-center mb-2">
+                  <div className="text-xs text-center mb-2" style={{ color: 'var(--fixed-text-secondary)' }}>
                     {locale === 'en' ? 'Juz' : 'Джуз'}
                   </div>
                   
@@ -161,22 +173,21 @@ export default function JuzNavigation({ currentJuz = 1 }: JuzNavigationProps) {
                         cy="16"
                         r="12"
                         fill="none"
-                        stroke="currentColor"
+                        stroke="var(--color-border)"
                         strokeWidth="2"
-                        className="text-gray-300 dark:text-gray-600"
                       />
                       <circle
                         cx="16"
                         cy="16"
                         r="12"
                         fill="none"
-                        stroke="currentColor"
+                        stroke="var(--color-primary)"
                         strokeWidth="2"
                         strokeDasharray={`${progress * 0.75} 75`}
-                        className="text-green-500 transition-all duration-500"
+                        className="transition-all duration-500"
                       />
                     </svg>
-                    <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold text-gray-700 dark:text-gray-300">
+                    <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold" style={{ color: 'var(--fixed-text-secondary)' }}>
                       {Math.round(progress)}
                     </span>
                   </div>

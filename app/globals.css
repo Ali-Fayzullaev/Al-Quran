@@ -28,6 +28,11 @@
   --chart-4: 43 74% 66%;
   --chart-5: 27 87% 67%;
 
+  /* Фиксированные цвета фона и текста для светлого режима */
+  --fixed-background: #ffffff;
+  --fixed-text: #1c1e21;
+  --fixed-text-secondary: #5a5d61;
+
   /* Основные системные переменные для совместимости */
   --primary-color: #10b981;
   --secondary-color: #047857;
@@ -44,19 +49,20 @@
   --color-primary-dark: #047857;
   --color-secondary: #f0fdf4;
   --color-accent: #059669;
-  --color-background: #ffffff;
+  --color-background: #ffffff; /* Используем фиксированный цвет */
   --color-background-secondary: #f9fafb;
   --color-surface: #ffffff;
-  --color-text: #111827;
-  --color-text-secondary: #6b7280;
+  --color-text: #1c1e21; /* Используем фиксированный цвет */
+  --color-text-secondary: #5a5d61;
   --color-border: #e5e7eb;
   --color-muted: #f3f4f6;
 
-  /* Переменные для текста Корана */
-  --quran-arabic-color: #1f2937;
-  --quran-translation-color: #4b5563;
+  /* Переменные для текста Корана - по умолчанию используют стандартные цвета */
+  --quran-arabic-color: #1c1e21;
+  --quran-translation-color: #5a5d61;
   --quran-verse-number-color: #10b981;
   --quran-highlight-color: #fef3c7;
+  --verse-background: #ffffff;
 }
 
 .dark {
@@ -85,25 +91,31 @@
   --chart-4: 280 65% 60%;
   --chart-5: 340 75% 55%;
 
+  /* Фиксированные цвета фона и текста для темного режима */
+  --fixed-background: #1b1b1d;
+  --fixed-text: #e3e3e3;
+  --fixed-text-secondary: #b0b0b0;
+
   /* Темная тема - зеленая по умолчанию, переменные обновляются динамически через JS */
   --color-primary: #34d399;
   --color-primary-light: #6ee7b7;
   --color-primary-dark: #10b981;
   --color-secondary: #064e3b;
   --color-accent: #10b981;
-  --color-background: #0f172a;
-  --color-background-secondary: #1e293b;
-  --color-surface: #1f2937;
-  --color-text: #f1f5f9;
-  --color-text-secondary: #cbd5e1;
-  --color-border: #374151;
-  --color-muted: #374151;
+  --color-background: #1b1b1d; /* Используем фиксированный цвет */
+  --color-background-secondary: #252527;
+  --color-surface: #2a2a2c;
+  --color-text: #e3e3e3; /* Используем фиксированный цвет */
+  --color-text-secondary: #b0b0b0;
+  --color-border: #3a3a3c;
+  --color-muted: #3a3a3c;
 
-  /* Темная тема для текста Корана */
-  --quran-arabic-color: #f9fafb;
-  --quran-translation-color: #d1d5db;
+  /* Темная тема для текста Корана - по умолчанию используют стандартные цвета */
+  --quran-arabic-color: #e3e3e3;
+  --quran-translation-color: #b0b0b0;
   --quran-verse-number-color: #34d399;
   --quran-highlight-color: #374151;
+  --verse-background: #1b1b1d;
 }
 
 * {
@@ -111,8 +123,8 @@
 }
 
 body {
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
+  background-color: var(--fixed-background);
+  color: var(--fixed-text);
   /* Плавные переходы для смены тем */
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -166,6 +178,10 @@ body {
 
 /* Arabic font */
 .font-arabic {
+  font-family: var(--font-arabic);
+}
+
+.font-amiri {
   font-family: var(--font-arabic);
 }
 
@@ -452,12 +468,13 @@ mark {
 }
 
 .quran-verse-number {
-  color: var(--quran-verse-number-color) !important;
-  background-color: var(--quran-highlight-color) !important;
+  color: var(--color-primary) !important;
+  background-color: transparent !important;
 }
 
 .quran-highlight {
-  background-color: var(--quran-highlight-color) !important;
+  background-color: var(--verse-background) !important;
+  border-color: var(--color-primary) !important;
 }
 
 /* Font classes for Arabic text */
@@ -601,12 +618,13 @@ mark {
 }
 
 .quran-verse-number {
-  color: var(--quran-verse-number-color) !important;
-  background-color: var(--quran-highlight-color) !important;
+  color: var(--color-primary) !important;
+  background-color: transparent !important;
 }
 
 .quran-highlight {
-  background-color: var(--quran-highlight-color) !important;
+  background-color: var(--verse-background) !important;
+  border-color: var(--color-primary) !important;
 }
 
 /* Font classes for Arabic text */

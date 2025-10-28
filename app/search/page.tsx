@@ -167,10 +167,10 @@ function SearchContent() {
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       {/* Search Header */}
       <div className="text-center space-y-4">
-        <h1 className="text-3xl font-bold">
+        <h1 className="text-3xl font-bold gradient-text-primary">
           {locale === 'en' ? 'Search the Quran' : 'Поиск по Корану'}
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p style={{ color: 'var(--fixed-text-secondary)' }}>
           {locale === 'en' 
             ? 'Search through verses in Arabic text and translations'
             : 'Поиск по аятам в арабском тексте и переводах'
@@ -185,11 +185,29 @@ function SearchContent() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={locale === 'en' ? 'Enter your search query...' : 'Введите поисковый запрос...'}
-          className="w-full p-4 text-lg border-2 border-gray-300 dark:border-gray-600 rounded-xl focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none bg-white dark:bg-gray-800"
+          className="w-full p-4 text-lg border-2 rounded-xl focus:outline-none"
+          style={{
+            backgroundColor: 'var(--verse-background)',
+            borderColor: 'var(--color-border)',
+            color: 'var(--fixed-text)'
+          }}
+          onFocus={(e) => {
+            e.target.style.borderColor = 'var(--color-primary)';
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = 'var(--color-border)';
+          }}
         />
         <button
           onClick={() => setShowAdvanced(!showAdvanced)}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-blue-500"
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 transition-colors"
+          style={{ color: 'var(--fixed-text-secondary)' }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = 'var(--color-primary)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = 'var(--fixed-text-secondary)';
+          }}
         >
           ⚙️
         </button>
@@ -197,21 +215,30 @@ function SearchContent() {
 
       {/* Advanced Search Options */}
       {showAdvanced && (
-        <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl space-y-4">
-          <h3 className="font-semibold text-lg">
+        <div className="p-4 rounded-xl space-y-4" style={{
+          backgroundColor: 'var(--verse-background)',
+          borderColor: 'var(--color-border)',
+          border: '1px solid'
+        }}>
+          <h3 className="font-semibold text-lg" style={{ color: 'var(--fixed-text)' }}>
             {locale === 'en' ? 'Advanced Search' : 'Расширенный поиск'}
           </h3>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Search Mode */}
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--fixed-text-secondary)' }}>
                 {locale === 'en' ? 'Search Mode' : 'Режим поиска'}
               </label>
               <select
                 value={searchMode}
                 onChange={(e) => setSearchMode(e.target.value as any)}
-                className="w-full p-2 border rounded-lg bg-white dark:bg-gray-700"
+                className="w-full p-2 border rounded-lg"
+                style={{
+                  backgroundColor: 'var(--fixed-background)',
+                  borderColor: 'var(--color-border)',
+                  color: 'var(--fixed-text)'
+                }}
               >
                 <option value="both">
                   {locale === 'en' ? 'Arabic & Translation' : 'Арабский и перевод'}
@@ -228,13 +255,18 @@ function SearchContent() {
             {/* Translation Language */}
             {(searchMode === 'translation' || searchMode === 'both') && (
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--fixed-text-secondary)' }}>
                   {locale === 'en' ? 'Translation' : 'Перевод'}
                 </label>
                 <select
                   value={translationLanguage}
                   onChange={(e) => setTranslationLanguage(e.target.value)}
-                  className="w-full p-2 border rounded-lg bg-white dark:bg-gray-700"
+                  className="w-full p-2 border rounded-lg"
+                  style={{
+                    backgroundColor: 'var(--fixed-background)',
+                    borderColor: 'var(--color-border)',
+                    color: 'var(--fixed-text)'
+                  }}
                 >
                   <option value="en.sahih">Sahih International</option>
                   <option value="en.pickthall">Pickthall</option>
@@ -247,13 +279,18 @@ function SearchContent() {
 
             {/* Surah Filter */}
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--fixed-text-secondary)' }}>
                 {locale === 'en' ? 'Filter by Surah' : 'Фильтр по суре'}
               </label>
               <select
                 value={surahFilter || ''}
-                onChange={(e) => setSurahFilter(e.target.value ? Number(e.target.value) : undefined)}
-                className="w-full p-2 border rounded-lg bg-white dark:bg-gray-700"
+                onChange={(e) => setSurahFilter(e.target.value ? parseInt(e.target.value) : undefined)}
+                className="w-full p-2 border rounded-lg"
+                style={{
+                  backgroundColor: 'var(--fixed-background)',
+                  borderColor: 'var(--color-border)',
+                  color: 'var(--fixed-text)'
+                }}
               >
                 <option value="">
                   {locale === 'en' ? 'All Surahs' : 'Все суры'}
@@ -268,13 +305,18 @@ function SearchContent() {
 
             {/* Juz Filter */}
             <div>
-              <label className="block text-sm font-medium mb-2">
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--fixed-text-secondary)' }}>
                 {locale === 'en' ? 'Filter by Juz' : 'Фильтр по джузу'}
               </label>
               <select
                 value={juzFilter || ''}
                 onChange={(e) => setJuzFilter(e.target.value ? Number(e.target.value) : undefined)}
-                className="w-full p-2 border rounded-lg bg-white dark:bg-gray-700"
+                className="w-full p-2 border rounded-lg"
+                style={{
+                  backgroundColor: 'var(--fixed-background)',
+                  borderColor: 'var(--color-border)',
+                  color: 'var(--fixed-text)'
+                }}
               >
                 <option value="">
                   {locale === 'en' ? 'All Juz' : 'Все джузы'}
@@ -292,8 +334,11 @@ function SearchContent() {
 
       {/* Search Results Summary */}
       {searchResults.length > 0 && (
-        <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
-          <p className="text-blue-700 dark:text-blue-300">
+        <div className="p-3 rounded-lg" style={{
+          backgroundColor: 'var(--verse-background)',
+          borderLeft: '4px solid var(--color-primary)'
+        }}>
+          <p style={{ color: 'var(--color-primary)' }}>
             {locale === 'en' 
               ? `Found ${totalResults} result${totalResults !== 1 ? 's' : ''} for "${debouncedQuery}"`
               : `Найдено ${totalResults} результат${totalResults === 1 ? '' : totalResults < 5 ? 'а' : 'ов'} по запросу "${debouncedQuery}"`
@@ -305,8 +350,8 @@ function SearchContent() {
       {/* Loading State */}
       {isLoading && (
         <div className="text-center py-8">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 mx-auto" style={{ borderColor: 'var(--color-primary)' }}></div>
+          <p className="mt-2" style={{ color: 'var(--fixed-text-secondary)' }}>
             {locale === 'en' ? 'Searching...' : 'Поиск...'}
           </p>
         </div>

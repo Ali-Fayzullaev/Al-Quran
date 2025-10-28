@@ -74,6 +74,11 @@ export interface QuranState {
   siteColorTheme: string;
   quranTextColorScheme: string;
 
+  // Custom user colors
+  customButtonColor: string | null; // Пользовательский цвет кнопок
+  customQuranTextColor: string | null; // Пользовательский цвет текста Корана
+  customQuranTranslationColor: string | null; // Пользовательский цвет перевода
+
   // Reading preferences
   arabicFontFamily: string;
   translationFontFamily: string;
@@ -125,6 +130,9 @@ export interface QuranState {
   setCrashReportingEnabled: (enabled: boolean) => void;
   setSiteColorTheme: (theme: string) => void;
   setQuranTextColorScheme: (scheme: string) => void;
+  setCustomButtonColor: (color: string | null) => void;
+  setCustomQuranTextColor: (color: string | null) => void;
+  setCustomQuranTranslationColor: (color: string | null) => void;
 }
 
 export const useQuranStore = create<QuranState>()(
@@ -154,6 +162,11 @@ export const useQuranStore = create<QuranState>()(
       nightMode: false,
       siteColorTheme: "green",
       quranTextColorScheme: "classic",
+
+      // Custom user colors
+      customButtonColor: null,
+      customQuranTextColor: null,
+      customQuranTranslationColor: null,
 
       // Reading preferences
       arabicFontFamily: "amiri",
@@ -329,6 +342,18 @@ export const useQuranStore = create<QuranState>()(
       setQuranTextColorScheme: (scheme: string) => {
         set({ quranTextColorScheme: scheme });
       },
+
+      setCustomButtonColor: (color: string | null) => {
+        set({ customButtonColor: color });
+      },
+
+      setCustomQuranTextColor: (color: string | null) => {
+        set({ customQuranTextColor: color });
+      },
+
+      setCustomQuranTranslationColor: (color: string | null) => {
+        set({ customQuranTranslationColor: color });
+      },
     }),
     {
       name: "quran-storage",
@@ -360,6 +385,9 @@ export const useQuranStore = create<QuranState>()(
         crashReportingEnabled: state.crashReportingEnabled,
         siteColorTheme: state.siteColorTheme,
         quranTextColorScheme: state.quranTextColorScheme,
+        customButtonColor: state.customButtonColor,
+        customQuranTextColor: state.customQuranTextColor,
+        customQuranTranslationColor: state.customQuranTranslationColor,
       }),
     }
   )

@@ -35,9 +35,16 @@ import { cn } from "@/lib/utils";
 interface QuranReaderProps {
   surahNumber: number;
   initialVerse?: number;
+  customQuranTextColor?: string | null;
+  customQuranTranslationColor?: string | null;
 }
 
-export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranReaderProps) {
+export default function QuranReader({ 
+  surahNumber, 
+  initialVerse = 1,
+  customQuranTextColor,
+  customQuranTranslationColor
+}: QuranReaderProps) {
   const { locale } = useLocale();
   const {
     fontSize,
@@ -59,7 +66,17 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
     setAutoPlay,
     addBookmark,
     removeBookmark,
+    customButtonColor,
   } = useQuranStore();
+
+  // Используем пропсы для кастомных цветов, если они переданы, иначе берем из store
+  const { 
+    customQuranTextColor: storeTextColor, 
+    customQuranTranslationColor: storeTranslationColor 
+  } = useQuranStore();
+  
+  const effectiveTextColor = customQuranTextColor ?? storeTextColor;
+  const effectiveTranslationColor = customQuranTranslationColor ?? storeTranslationColor;
 
   const [currentVerse, setCurrentVerse] = useState(initialVerse);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -348,7 +365,7 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: 'var(--color-primary)' }}></div>
           <p className="text-gray-600 dark:text-gray-300">
             {locale === 'en' ? 'Loading Surah...' : 'Загрузка суры...'}
           </p>
@@ -372,14 +389,14 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
       <audio ref={audioRef} preload="metadata" />
       
       {/* Header - Адаптивный */}
-      <div className="text-center mb-6 sm:mb-8 p-4 sm:p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl sm:rounded-2xl">
-        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-800 dark:text-green-200 mb-2 font-amiri" dir="rtl">
+      <div className="text-center mb-6 sm:mb-8 p-4 sm:p-6 rounded-xl sm:rounded-2xl" style={{ backgroundColor: 'var(--verse-background)' }}>
+        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-2 font-amiri" style={{ color: 'var(--color-primary)' }} dir="rtl">
           {arabicSurah.name}
         </h1>
-        <p className="text-sm sm:text-base lg:text-lg text-gray-600 dark:text-gray-300">
+        <p className="text-sm sm:text-base lg:text-lg" style={{ color: 'var(--fixed-text-secondary)' }}>
           {arabicSurah.englishName} - {arabicSurah.englishNameTranslation}
         </p>
-        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 mt-1">
+        <p className="text-xs sm:text-sm mt-1" style={{ color: 'var(--fixed-text-secondary)', opacity: 0.8 }}>
           {arabicSurah.numberOfAyahs} {locale === 'en' ? 'verses' : 'аятов'} • {arabicSurah.revelationType}
         </p>
       </div>
@@ -430,7 +447,11 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
             variant="outline"
             size="sm"
             onClick={toggleTranslation}
-            className={cn(showTranslation && "bg-green-100 dark:bg-green-900")}
+            style={showTranslation ? { 
+              backgroundColor: 'var(--color-primary)', 
+              color: 'white',
+              borderColor: 'var(--color-primary)'
+            } : undefined}
           >
             <Languages className="h-4 w-4" />
             <span className="hidden sm:inline ml-1">{locale === 'en' ? 'Translation' : 'Перевод'}</span>
@@ -468,12 +489,13 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="mb-4 sm:mb-6 bg-gray-50 dark:bg-gray-800 rounded-xl overflow-hidden"
+            className="mb-4 sm:mb-6 rounded-xl overflow-hidden"
+            style={{ backgroundColor: 'var(--fixed-background)' }}
           >
             <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
               {/* Header with close button */}
-              <div className="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-700">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
+              <div className="flex items-center justify-between pb-2 border-b" style={{ borderColor: 'var(--color-border)' }}>
+                <h3 className="text-base sm:text-lg font-semibold" style={{ color: 'var(--fixed-text)' }}>
                   {locale === 'en' ? 'Settings' : 'Настройки'}
                 </h3>
                 <Button
@@ -511,29 +533,33 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
 
               {/* Translation Selection - Улучшенный и адаптивный */}
               <div className="space-y-3">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-white">
+                <label className="flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--fixed-text)' }}>
                   <Globe className="w-4 h-4" />
                   {locale === 'en' ? 'Select Translations' : 'Выбрать переводы'}
                 </label>
-                <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto border border-gray-200 dark:border-gray-600 rounded-lg p-2">
+                <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto border rounded-lg p-2" style={{ borderColor: 'var(--color-border)' }}>
                   {availableTranslations
                     .filter(t => t.type === 'translation')
                     .map((translation) => (
                       <label
                         key={translation.id}
-                        className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+                        className="flex items-center space-x-3 p-2 rounded-lg cursor-pointer transition-colors hover:opacity-80"
+                        style={{ backgroundColor: 'var(--verse-background)' }}
                       >
                         <input
                           type="checkbox"
                           checked={selectedTranslations.includes(translation.id)}
                           onChange={(e) => handleTranslationChange(translation.id, e.target.checked)}
-                          className="rounded border-gray-300 text-green-600 focus:ring-green-500 w-4 h-4"
+                          className="rounded w-4 h-4"
+                          style={{
+                            accentColor: 'var(--color-primary)'
+                          }}
                         />
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                          <div className="text-sm font-medium truncate" style={{ color: 'var(--fixed-text)' }}>
                             {translation.name}
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                          <div className="text-xs" style={{ color: 'var(--fixed-text-secondary)' }}>
                             {translation.language}
                           </div>
                         </div>
@@ -655,8 +681,12 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                 "p-4 sm:p-6 rounded-xl border transition-all duration-300",
                 isCurrentVerse 
                   ? "quran-highlight theme-border-primary shadow-lg" 
-                  : "bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+                  : "hover:opacity-90"
               )}
+              style={{
+                backgroundColor: isCurrentVerse ? undefined : 'var(--verse-background)',
+                borderColor: isCurrentVerse ? undefined : 'var(--color-border)'
+              }}
               layout
             >
               {/* Verse Header с улучшенными иконками */}
@@ -678,7 +708,8 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                         <motion.div
                           animate={{ rotate: 360 }}
                           transition={{ repeat: Infinity, duration: 1 }}
-                          className="w-3 h-3 border-2 border-green-500 border-t-transparent rounded-full"
+                          className="w-3 h-3 border-2 border-t-transparent rounded-full"
+                          style={{ borderColor: 'var(--color-primary)', borderTopColor: 'transparent' }}
                         />
                       )}
                     </div>
@@ -716,10 +747,12 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                     size="sm"
                     onClick={() => playVerseAudio(verseNumber)}
                     disabled={isLoadingAudio && currentVerse === verseNumber}
-                    className={cn(
-                      "p-2 transition-all duration-200",
-                      isCurrentVerse && isPlaying && "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20"
-                    )}
+                    className="p-2 transition-all duration-200"
+                    style={isCurrentVerse && isPlaying ? {
+                      color: 'var(--color-primary)',
+                      backgroundColor: 'var(--verse-background)',
+                      opacity: 0.9
+                    } : undefined}
                   >
                     {getAudioIcon(verseNumber)}
                   </Button>
@@ -729,7 +762,10 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
               {/* Arabic Text - Адаптивный размер */}
               <div 
                 className="text-right mb-4 leading-loose font-amiri px-2 quran-arabic-text"
-                style={{ fontSize: `${fontSize + 2}px` }}
+                style={{ 
+                  fontSize: `${fontSize + 2}px`,
+                  color: effectiveTextColor || 'var(--quran-arabic-color)'
+                }}
                 dir="rtl"
               >
                 <p>
@@ -745,33 +781,46 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                     animate={{ opacity: 1, height: 'auto', y: 0 }}
                     exit={{ opacity: 0, height: 0, y: -20 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="mb-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 p-4 rounded-xl border border-green-200 dark:border-green-700 overflow-hidden"
+                    className="mb-4 p-4 rounded-xl border overflow-hidden"
+                    style={{
+                      backgroundColor: 'var(--verse-background)',
+                      borderColor: 'var(--color-primary)',
+                      opacity: 0.95
+                    }}
                   >
                     {/* Прогресс-бар */}
                     <div className="mb-3">
-                      <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-300 mb-2">
+                      <div className="flex items-center justify-between text-xs mb-2" style={{ color: 'var(--fixed-text-secondary)' }}>
                         <span className="flex items-center gap-2">
                           <motion.div
                             animate={{ scale: isCurrentlyPlaying ? [1, 1.1, 1] : 1 }}
                             transition={{ repeat: isCurrentlyPlaying ? Infinity : 0, duration: 1.5 }}
-                            className="w-2 h-2 bg-green-500 rounded-full"
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: 'var(--color-primary)' }}
                           />
                           {formatTime(audioCurrentTime)}
                         </span>
-                        <span className="text-green-600 dark:text-green-400 font-medium px-2 py-1 bg-white dark:bg-gray-800 rounded-full text-xs">
+                        <span className="font-medium px-2 py-1 rounded-full text-xs" style={{ 
+                          color: 'var(--color-primary)',
+                          backgroundColor: 'var(--fixed-background)'
+                        }}>
                           {locale === 'en' ? 'Verse' : 'Аят'} {currentVerse}
                         </span>
                         <span>{formatTime(audioDuration)}</span>
                       </div>
-                      <div className="relative h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                      <div className="relative h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--color-border)' }}>
                         <motion.div 
-                          className="absolute left-0 top-0 h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full"
-                          style={{ width: `${audioProgress}%` }}
+                          className="absolute left-0 top-0 h-full rounded-full"
+                          style={{ 
+                            width: `${audioProgress}%`,
+                            backgroundColor: 'var(--color-primary)'
+                          }}
                           transition={{ duration: 0.1 }}
                         />
                         {isBuffering && (
                           <motion.div 
-                            className="absolute inset-0 bg-gray-300 dark:bg-gray-600 rounded-full"
+                            className="absolute inset-0 rounded-full opacity-50"
+                            style={{ backgroundColor: 'var(--color-border)' }}
                             animate={{ opacity: [0.3, 0.7, 0.3] }}
                             transition={{ repeat: Infinity, duration: 1.5 }}
                           />
@@ -816,7 +865,10 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                         variant="default"
                         size="sm"
                         onClick={toggleAudio}
-                        className="px-4 bg-green-600 hover:bg-green-700 text-white shadow-lg"
+                        className="px-4 text-white shadow-lg"
+                        style={{
+                          backgroundColor: 'var(--color-primary)'
+                        }}
                         disabled={isLoadingAudio}
                       >
                         {getAudioIcon()}
@@ -851,12 +903,14 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                       <motion.div 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="mt-2 text-center text-xs text-gray-500 dark:text-gray-400 flex items-center justify-center gap-2"
+                        className="mt-2 text-center text-xs flex items-center justify-center gap-2"
+                        style={{ color: 'var(--fixed-text-secondary)' }}
                       >
                         <motion.div
                           animate={{ rotate: 360 }}
                           transition={{ repeat: Infinity, duration: 1 }}
-                          className="w-3 h-3 border-2 border-green-500 border-t-transparent rounded-full"
+                          className="w-3 h-3 border-2 border-t-transparent rounded-full"
+                          style={{ borderColor: 'var(--color-primary)', borderTopColor: 'transparent' }}
                         />
                         {locale === 'en' ? 'Buffering...' : 'Буферизация...'}
                       </motion.div>
@@ -895,17 +949,25 @@ export default function QuranReader({ surahNumber, initialVerse = 1 }: QuranRead
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -10 }}
                           transition={{ delay: tIndex * 0.1 }}
-                          className="mb-3 last:mb-0 px-2 py-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg border-l-4 border-green-200 dark:border-green-700"
+                          className="mb-3 last:mb-0 px-2 py-3 rounded-lg border-l-4"
+                          style={{
+                            backgroundColor: 'var(--verse-background)',
+                            borderLeftColor: 'var(--color-primary)',
+                            opacity: 0.95
+                          }}
                         >
                           <p 
-                            className="quran-translation-text leading-relaxed text-gray-700 dark:text-gray-200"
-                            style={{ fontSize: `${fontSize - 2}px` }}
+                            className="quran-translation-text leading-relaxed"
+                            style={{ 
+                              fontSize: `${fontSize - 2}px`,
+                              color: effectiveTranslationColor || 'var(--quran-translation-color)'
+                            }}
                           >
                             {translationVerse.text}
                           </p>
                           {translationInfo && (
-                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 flex items-center gap-2">
-                              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                            <p className="text-xs mt-2 flex items-center gap-2" style={{ color: 'var(--fixed-text-secondary)' }}>
+                              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }}></span>
                               {translationInfo.name}
                             </p>
                           )}

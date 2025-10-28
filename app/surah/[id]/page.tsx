@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import QuranReader from "@/components/quran/QuranReader";
 import { useSurah } from "@/lib/hooks";
 import { useLocale } from "@/context/LocaleContext";
+import { useQuranStore } from "@/lib/store";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Home, Book } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
   const resolvedSearchParams = use(searchParams);
   
   const { locale } = useLocale();
+  const { customQuranTextColor, customQuranTranslationColor } = useQuranStore();
   const surahId = parseInt(resolvedParams.id);
   const initialVerse = resolvedSearchParams.verse ? parseInt(resolvedSearchParams.verse) : 1;
   
@@ -35,8 +37,8 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto mb-4" style={{ borderColor: 'var(--color-primary)' }}></div>
+          <p style={{ color: 'var(--fixed-text-secondary)' }}>
             {locale === 'en' ? 'Loading Surah...' : 'Загрузка суры...'}
           </p>
         </div>
@@ -45,7 +47,7 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-green-900/20 relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: 'var(--fixed-background)' }}>
       
       {/* Декоративные элементы */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -54,7 +56,11 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
       </div>
 
       {/* Navigation Header */}
-      <div className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-lg">
+      <div className="sticky top-0 z-10 backdrop-blur-xl border-b shadow-lg" style={{ 
+        backgroundColor: 'var(--fixed-background)',
+        borderColor: 'var(--color-border)',
+        opacity: 0.95
+      }}>
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             
@@ -77,7 +83,10 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
 
             {/* Center - Surah Info */}
             {surahInfo && (
-              <div className="text-center bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700">
+              <div className="text-center p-4 rounded-xl shadow-xl border" style={{
+                backgroundColor: 'var(--fixed-background)',
+                borderColor: 'var(--color-border)'
+              }}>
                 <div className="flex items-center justify-center gap-3 mb-2">
                   <div className="w-2 h-2 theme-dot-animated rounded-full"></div>
                   <h1 className="font-bold text-xl gradient-text-primary">
@@ -85,7 +94,7 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
                   </h1>
                   <div className="w-2 h-2 theme-dot-animated rounded-full"></div>
                 </div>
-                <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">
+                <p className="text-sm font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>
                   {locale === 'en' ? 'Surah' : 'Сура'} {surahId} • {surahInfo.numberOfAyahs} {locale === 'en' ? 'verses' : 'аятов'}
                 </p>
                 <div className="mt-2 h-1 gradient-primary rounded-full w-20 mx-auto opacity-60"></div>
@@ -130,13 +139,16 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
           {/* Previous Surah */}
           {surahId > 1 && (
             <Link href={`/surah/${surahId - 1}`} className="group">
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl group-hover:shadow-2xl transition-all duration-500 border border-gray-200 dark:border-gray-700 hover:theme-border-primary">
+              <div className="p-6 rounded-2xl shadow-xl group-hover:shadow-2xl transition-all duration-500 border hover:theme-border-primary" style={{
+                backgroundColor: 'var(--fixed-background)',
+                borderColor: 'var(--color-border)'
+              }}>
                 <div className="flex items-center gap-4">
                   <div className="theme-bg-primary w-12 h-12 rounded-full flex items-center justify-center group-hover:animate-pulse">
                     <ChevronLeft className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 font-medium mb-1">
+                    <p className="text-sm font-medium mb-1" style={{ color: 'var(--fixed-text-secondary)' }}>
                       {locale === 'en' ? 'Previous Surah' : 'Предыдущая сура'}
                     </p>
                     <p className="font-bold theme-text-primary text-lg">
@@ -151,14 +163,17 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
           
           {/* Back to List */}
           <Link href="/surahs" className="group md:col-start-2">
-            <div className="p-6 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:theme-border-primary hover:shadow-2xl transition-all duration-500 text-center group-hover:scale-105 group-hover:-translate-y-1">
+            <div className="p-6 rounded-2xl border hover:theme-border-primary hover:shadow-2xl transition-all duration-500 text-center group-hover:scale-105 group-hover:-translate-y-1" style={{
+              backgroundColor: 'var(--fixed-background)',
+              borderColor: 'var(--color-border)'
+            }}>
               <div className="theme-bg-primary w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
                 <Book className="w-6 h-6 text-white" />
               </div>
               <p className="font-bold theme-text-primary text-lg">
                 {locale === 'en' ? 'All Surahs' : 'Все суры'}
               </p>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+              <p className="text-sm mt-1" style={{ color: 'var(--fixed-text-secondary)' }}>
                 {locale === 'en' ? 'Browse all chapters' : 'Просмотреть все главы'}
               </p>
             </div>
@@ -167,10 +182,13 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
           {/* Next Surah */}
           {surahId < 114 && (
             <Link href={`/surah/${surahId + 1}`} className="group">
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl group-hover:shadow-2xl transition-all duration-500 text-right border border-gray-200 dark:border-gray-700 hover:theme-border-primary">
+              <div className="p-6 rounded-2xl shadow-xl group-hover:shadow-2xl transition-all duration-500 text-right border hover:theme-border-primary" style={{
+                backgroundColor: 'var(--fixed-background)',
+                borderColor: 'var(--color-border)'
+              }}>
                 <div className="flex items-center gap-4 justify-end">
                   <div>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 font-medium mb-1">
+                    <p className="text-sm font-medium mb-1" style={{ color: 'var(--fixed-text-secondary)' }}>
                       {locale === 'en' ? 'Next Surah' : 'Следующая сура'}
                     </p>
                     <p className="font-bold theme-text-primary text-lg">
@@ -188,7 +206,12 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
         </div>
 
         {/* Quran Reader Component */}
-        <QuranReader surahNumber={surahId} initialVerse={initialVerse} />
+        <QuranReader 
+          surahNumber={surahId} 
+          initialVerse={initialVerse}
+          customQuranTextColor={customQuranTextColor}
+          customQuranTranslationColor={customQuranTranslationColor}
+        />
       </div>
     </div>
   );

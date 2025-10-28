@@ -55,6 +55,9 @@ export default function JuzPage({ params }: JuzPageProps) {
     toggleTranslation,
     addBookmark,
     removeBookmark,
+    customButtonColor,
+    customQuranTextColor,
+    customQuranTranslationColor,
   } = useQuranStore();
 
   const [currentVerse, setCurrentVerse] = useState<number | null>(null);
@@ -425,7 +428,7 @@ export default function JuzPage({ params }: JuzPageProps) {
   }
 
   return (
-    <div className="min-h-screen theme-gradient-bg relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: 'var(--fixed-background)' }}>
       <audio ref={audioRef} preload="metadata" />
       
       {/* Викторина */}
@@ -510,7 +513,11 @@ export default function JuzPage({ params }: JuzPageProps) {
       </div>
       
       {/* Navigation Header */}
-      <div className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border-b border-gray-200 dark:border-gray-700 shadow-lg">
+      <div className="sticky top-0 z-10 backdrop-blur-xl border-b shadow-lg" style={{ 
+        backgroundColor: 'var(--fixed-background)',
+        borderColor: 'var(--color-border)',
+        opacity: 0.95
+      }}>
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             
@@ -532,7 +539,10 @@ export default function JuzPage({ params }: JuzPageProps) {
             </div>
 
             {/* Center - Juz Info */}
-            <div className="text-center bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700">
+            <div className="text-center p-4 rounded-xl shadow-xl border" style={{
+              backgroundColor: 'var(--fixed-background)',
+              borderColor: 'var(--color-border)'
+            }}>
               <div className="flex items-center justify-center gap-3 mb-2">
                 <div className="w-2 h-2 theme-dot-animated rounded-full"></div>
                 <h1 className="font-bold text-xl gradient-text-primary">
@@ -540,7 +550,7 @@ export default function JuzPage({ params }: JuzPageProps) {
                 </h1>
                 <div className="w-2 h-2 theme-dot-animated rounded-full"></div>
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">
+              <p className="text-sm font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>
                 {juzData.ayahs?.length} {t('verses')}
               </p>
               <div className="mt-2 h-1 gradient-primary rounded-full w-20 mx-auto opacity-60"></div>
@@ -635,7 +645,10 @@ export default function JuzPage({ params }: JuzPageProps) {
       <div className="max-w-4xl mx-auto px-4 py-8">
         
         {/* Header */}
-        <div className="text-center mb-8 theme-gradient-subtle p-8 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300">
+        <div className="text-center mb-8 p-8 rounded-3xl shadow-2xl border hover:shadow-xl transition-all duration-300" style={{
+          backgroundColor: 'var(--fixed-background)',
+          borderColor: 'var(--color-border)'
+        }}>
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="w-3 h-3 theme-dot-animated rounded-full"></div>
             <h1 className="text-4xl font-bold gradient-text-primary">
@@ -643,14 +656,18 @@ export default function JuzPage({ params }: JuzPageProps) {
             </h1>
             <div className="w-3 h-3 theme-dot-animated rounded-full"></div>
           </div>
-          <p className="text-lg text-gray-600 dark:text-gray-300 font-medium">
+          <p className="text-lg font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>
             {juzData.ayahs?.length} {t('versesFromMultipleSurahs')}
           </p>
           <div className="mt-4 h-2 gradient-primary rounded-full w-32 mx-auto opacity-70"></div>
         </div>
 
         {/* Controls */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm p-6 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8 backdrop-blur-sm p-6 rounded-2xl shadow-xl border" style={{
+          backgroundColor: 'var(--fixed-background)',
+          borderColor: 'var(--color-border)',
+          opacity: 0.9
+        }}>
           <div className="flex items-center gap-3">
             <Button
               variant="outline"
@@ -840,24 +857,25 @@ export default function JuzPage({ params }: JuzPageProps) {
                 {/* Arabic Text */}
                 <div 
                   className="text-right mb-8 leading-loose font-amiri"
-                  style={{ fontSize: `${fontSize + 6}px` }}
+                  style={{ 
+                    fontSize: `${fontSize + 6}px`,
+                  }}
                   dir="rtl"
                 >
-                  <div className={cn(
-                    "relative p-6 rounded-2xl transition-all duration-500 hover:scale-[1.01]",
-                    isCurrentVerse && isPlaying
-                      ? "text-green-900 dark:text-green-100 bg-gradient-to-br from-green-50/80 to-emerald-50/80 dark:from-green-900/20 dark:to-emerald-900/20 shadow-inner border border-green-200/50"
-                      : isRead
-                      ? "text-blue-900 dark:text-blue-100 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 dark:from-blue-900/10 dark:to-indigo-900/10"
-                      : "text-gray-900 dark:text-gray-100 hover:bg-gray-50/80 dark:hover:bg-gray-700/40"
-                  )}>
-                    <p className="leading-relaxed tracking-wide">
+                  <div 
+                    className={cn(
+                      "relative p-6 rounded-2xl transition-all duration-500 hover:scale-[1.01] hover:opacity-90"
+                    )}
+                    style={{
+                      backgroundColor: 'var(--verse-background)'
+                    }}
+                  >
+                    <p 
+                      className="leading-relaxed tracking-wide"
+                      style={{ color: customQuranTextColor || 'var(--quran-arabic-color)' }}
+                    >
                       {verse.text}
                     </p>
-                    
-                    {/* Decorative elements */}
-                    <div className="absolute top-4 left-4 w-2 h-2 theme-dot-animated rounded-full opacity-60"></div>
-                    <div className="absolute bottom-4 right-4 w-2 h-2 theme-dot-animated rounded-full opacity-60" style={{animationDelay: '1s'}}></div>
                   </div>
                 </div>
 
@@ -892,22 +910,32 @@ export default function JuzPage({ params }: JuzPageProps) {
 
                 {/* Translation */}
                 {showTranslation && (verse as any).translations && (
-                  <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-600">
+                  <div className="mt-6 pt-6 border-t" style={{ borderColor: 'var(--color-border)' }}>
                     {(verse as any).translations.map((translation: any, idx: number) => (
-                      <div key={idx} className="bg-gray-50/80 dark:bg-gray-700/40 p-4 rounded-xl mb-3 last:mb-0">
-                        <p className="text-gray-600 dark:text-gray-300 italic text-lg leading-relaxed">
+                      <div 
+                        key={idx} 
+                        className="p-4 rounded-xl mb-3 last:mb-0"
+                        style={{ backgroundColor: 'var(--verse-background)', opacity: 0.95 }}
+                      >
+                        <p 
+                          className="leading-relaxed"
+                          style={{ 
+                            fontSize: `${fontSize}px`,
+                            color: customQuranTranslationColor || 'var(--quran-translation-color)'
+                          }}
+                        >
                           {translation.text}
                         </p>
                         {translation.resource_name && (
-                          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                          <p className="text-sm mt-2" style={{ color: 'var(--fixed-text-secondary)' }}>
                             — {translation.resource_name}
                           </p>
                         )}
                       </div>
                     ))}
                     {(!(verse as any).translations || (verse as any).translations.length === 0) && (
-                      <div className="bg-gray-50/80 dark:bg-gray-700/40 p-4 rounded-xl">
-                        <p className="text-gray-600 dark:text-gray-300 italic text-lg leading-relaxed">
+                      <div className="p-4 rounded-xl" style={{ backgroundColor: 'var(--verse-background)' }}>
+                        <p className="italic text-lg leading-relaxed" style={{ color: 'var(--fixed-text-secondary)' }}>
                           {t('translationAvailableSoon')}
                         </p>
                       </div>

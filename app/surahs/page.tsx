@@ -58,10 +58,10 @@ export default function SurahsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--fixed-background)' }}>
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-green-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-300">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto mb-4" style={{ borderColor: 'var(--color-primary)' }}></div>
+          <p style={{ color: 'var(--fixed-text-secondary)' }}>
             {locale === 'en' ? 'Loading Surahs...' : 'Загрузка сур...'}
           </p>
         </div>
@@ -86,7 +86,7 @@ export default function SurahsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-green-900/20">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--fixed-background)' }}>
       <div className="max-w-7xl mx-auto px-4 py-8">
         
         {/* Header */}
@@ -95,10 +95,10 @@ export default function SurahsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: 'var(--color-primary)' }}>
             {locale === 'en' ? 'Surahs of the Holy Quran' : 'Суры Священного Корана'}
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="text-xl max-w-2xl mx-auto" style={{ color: 'var(--fixed-text-secondary)' }}>
             {locale === 'en' 
               ? 'Explore all 114 chapters of the Quran with translations, audio, and study tools'
               : 'Изучайте все 114 глав Корана с переводами, аудио и инструментами для изучения'}
@@ -110,18 +110,26 @@ export default function SurahsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 mb-8 shadow-lg"
+          className="backdrop-blur-sm rounded-2xl p-6 mb-8 shadow-lg"
+          style={{ backgroundColor: 'var(--verse-background)', opacity: 0.95 }}
         >
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5" style={{ color: 'var(--fixed-text-secondary)' }} />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={locale === 'en' ? 'Search surahs...' : 'Поиск сур...'}
-                className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 focus:border-green-500 focus:ring-0 focus:outline-none transition-colors"
+                className="w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:ring-0 focus:outline-none transition-colors"
+                style={{
+                  backgroundColor: 'var(--fixed-background)',
+                  borderColor: 'var(--color-border)',
+                  color: 'var(--fixed-text)'
+                }}
+                onFocus={(e) => e.target.style.borderColor = 'var(--color-primary)'}
+                onBlur={(e) => e.target.style.borderColor = 'var(--color-border)'}
               />
             </div>
 
@@ -152,15 +160,16 @@ export default function SurahsPage() {
               </Select>
 
               {/* View Mode Toggle */}
-              <div className="flex bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+              <div className="flex rounded-lg p-1" style={{ backgroundColor: 'var(--color-border)' }}>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => setViewMode('grid')}
-                  className={cn(
-                    "px-3 py-2",
-                    viewMode === 'grid' && "bg-white dark:bg-gray-600 shadow-sm"
-                  )}
+                  className="px-3 py-2"
+                  style={viewMode === 'grid' ? {
+                    backgroundColor: 'var(--fixed-background)',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                  } : undefined}
                 >
                   <Grid className="w-4 h-4" />
                 </Button>
@@ -168,10 +177,11 @@ export default function SurahsPage() {
                   variant="ghost"
                   size="sm"
                   onClick={() => setViewMode('list')}
-                  className={cn(
-                    "px-3 py-2",
-                    viewMode === 'list' && "bg-white dark:bg-gray-600 shadow-sm"
-                  )}
+                  className="px-3 py-2"
+                  style={viewMode === 'list' ? {
+                    backgroundColor: 'var(--fixed-background)',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.1)'
+                  } : undefined}
                 >
                   <List className="w-4 h-4" />
                 </Button>
@@ -180,19 +190,19 @@ export default function SurahsPage() {
           </div>
 
           {/* Stats */}
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
-            <p className="text-sm text-gray-600 dark:text-gray-300">
+          <div className="flex items-center justify-between mt-4 pt-4 border-t" style={{ borderColor: 'var(--color-border)' }}>
+            <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
               {locale === 'en' 
                 ? `Showing ${filteredAndSortedSurahs.length} of ${surahs.length} surahs`
                 : `Показано ${filteredAndSortedSurahs.length} из ${surahs.length} сур`}
             </p>
-            <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+            <div className="flex items-center gap-4 text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
               <span className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }}></div>
                 {locale === 'en' ? 'Meccan' : 'Мекканские'}
               </span>
               <span className="flex items-center gap-1">
-                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#3b82f6' }}></div>
                 {locale === 'en' ? 'Medinan' : 'Мединские'}
               </span>
             </div>
@@ -219,18 +229,28 @@ export default function SurahsPage() {
               transition={{ delay: 0.5 + index * 0.05 }}
             >
               <Link href={`/surah/${surah.number}`}>
-                <div className={cn(
-                  "group relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-green-300 dark:hover:border-green-600 transition-all duration-300 hover:shadow-xl hover:-translate-y-1",
-                  viewMode === 'list' && "flex items-center"
-                )}>
+                <div 
+                  className={cn(
+                    "group relative overflow-hidden rounded-2xl border transition-all duration-300 hover:shadow-xl hover:-translate-y-1",
+                    viewMode === 'list' && "flex items-center"
+                  )}
+                  style={{
+                    backgroundColor: 'var(--verse-background)',
+                    borderColor: 'var(--color-border)'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--color-primary)'}
+                  onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--color-border)'}
+                >
                   
                   {/* Revelation Type Indicator */}
-                  <div className={cn(
-                    "absolute top-0 right-0 w-4 h-4 rounded-bl-lg",
-                    surah.revelationType === 'Meccan' 
-                      ? "bg-green-500" 
-                      : "bg-blue-500"
-                  )}></div>
+                  <div 
+                    className="absolute top-0 right-0 w-4 h-4 rounded-bl-lg"
+                    style={{
+                      backgroundColor: surah.revelationType === 'Meccan' 
+                        ? 'var(--color-primary)' 
+                        : '#3b82f6'
+                    }}
+                  ></div>
 
                   <div className={cn(
                     "p-6",
@@ -242,8 +262,15 @@ export default function SurahsPage() {
                       viewMode === 'grid' && "text-center mb-6",
                       viewMode === 'list' && "flex-shrink-0"
                     )}>
-                      <div className="relative w-16 h-16 mx-auto bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-2xl flex items-center justify-center group-hover:from-green-200 group-hover:to-emerald-200 dark:group-hover:from-green-800/50 dark:group-hover:to-emerald-800/50 transition-all duration-300">
-                        <span className="text-2xl font-bold text-green-700 dark:text-green-300">
+                      <div 
+                        className="relative w-16 h-16 mx-auto rounded-2xl flex items-center justify-center transition-all duration-300"
+                        style={{
+                          backgroundColor: 'var(--verse-background)',
+                          border: '2px solid var(--color-primary)',
+                          opacity: 0.9
+                        }}
+                      >
+                        <span className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>
                           {surah.number}
                         </span>
                       </div>
@@ -255,26 +282,28 @@ export default function SurahsPage() {
                       viewMode === 'list' && "flex-1"
                     )}>
                       {/* Arabic Name */}
-                      <h3 className="text-2xl font-bold font-amiri text-gray-900 dark:text-white mb-2" dir="rtl">
+                      <h3 className="text-2xl font-bold font-amiri mb-2" dir="rtl" style={{ color: 'var(--fixed-text)' }}>
                         {surah.name}
                       </h3>
                       
                       {/* English Name */}
-                      <h4 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-1">
+                      <h4 className="text-xl font-semibold mb-1" style={{ color: 'var(--fixed-text)' }}>
                         {surah.englishName}
                       </h4>
                       
                       {/* Translation */}
-                      <p className="text-gray-600 dark:text-gray-300 mb-4">
+                      <p className="mb-4" style={{ color: 'var(--fixed-text-secondary)' }}>
                         {surah.englishNameTranslation}
                       </p>
 
                       {/* Stats */}
                       <div className={cn(
-                        "flex gap-4 text-sm text-gray-500 dark:text-gray-400",
+                        "flex gap-4 text-sm",
                         viewMode === 'grid' && "justify-center",
                         viewMode === 'list' && "justify-start"
-                      )}>
+                      )}
+                      style={{ color: 'var(--fixed-text-secondary)' }}
+                      >
                         <span className="flex items-center gap-1">
                           <BookOpen className="w-4 h-4" />
                           {surah.numberOfAyahs} {locale === 'en' ? 'verses' : 'аятов'}
@@ -291,7 +320,14 @@ export default function SurahsPage() {
                     {/* Action Button (List View) */}
                     {viewMode === 'list' && (
                       <div className="flex-shrink-0">
-                        <div className="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center text-green-600 dark:text-green-400 group-hover:bg-green-200 dark:group-hover:bg-green-800 transition-colors">
+                        <div 
+                          className="w-10 h-10 rounded-full flex items-center justify-center transition-colors"
+                          style={{
+                            backgroundColor: 'var(--verse-background)',
+                            color: 'var(--color-primary)',
+                            border: '2px solid var(--color-primary)'
+                          }}
+                        >
                           <Play className="w-5 h-5" />
                         </div>
                       </div>
@@ -299,7 +335,7 @@ export default function SurahsPage() {
                   </div>
 
                   {/* Hover Effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{ backgroundColor: 'var(--color-primary)', opacity: 0.05 }}></div>
                 </div>
               </Link>
             </motion.div>
@@ -313,11 +349,11 @@ export default function SurahsPage() {
             animate={{ opacity: 1 }}
             className="text-center py-16"
           >
-            <Book className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-300 mb-2">
+            <Book className="w-16 h-16 mx-auto mb-4" style={{ color: 'var(--fixed-text-secondary)' }} />
+            <h3 className="text-xl font-semibold mb-2" style={{ color: 'var(--fixed-text-secondary)' }}>
               {locale === 'en' ? 'No surahs found' : 'Суры не найдены'}
             </h3>
-            <p className="text-gray-500 dark:text-gray-400">
+            <p style={{ color: 'var(--fixed-text-secondary)', opacity: 0.7 }}>
               {locale === 'en' 
                 ? 'Try adjusting your search or filter criteria'
                 : 'Попробуйте изменить поиск или критерии фильтрации'}
