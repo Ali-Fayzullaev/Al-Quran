@@ -86,9 +86,7 @@ export default function SurahsPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{
-      background: `linear-gradient(135deg, var(--color-background) 0%, var(--color-secondary) 25%, var(--color-background-secondary) 50%, var(--color-secondary) 75%, var(--color-background) 100%)`
-    }}>
+    <div className="min-h-screen bg-white dark:bg-gray-950">
       <div className="max-w-7xl mx-auto px-4 py-8">
         
         {/* Header */}
@@ -97,15 +95,10 @@ export default function SurahsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 theme-gradient-text" style={{
-            background: `linear-gradient(135deg, var(--color-primary), var(--color-accent))`,
-            WebkitBackgroundClip: 'text',
-            backgroundClip: 'text',
-            WebkitTextFillColor: 'transparent'
-          }}>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900 dark:text-gray-100">
             {locale === 'en' ? 'Surahs of the Holy Quran' : 'Суры Священного Корана'}
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             {locale === 'en' 
               ? 'Explore all 114 chapters of the Quran with translations, audio, and study tools'
               : 'Изучайте все 114 глав Корана с переводами, аудио и инструментами для изучения'}
@@ -117,7 +110,7 @@ export default function SurahsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl p-6 mb-8 shadow-lg"
+          className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 mb-8 border border-gray-200 dark:border-gray-800"
         >
           <div className="flex flex-col lg:flex-row gap-4">
             {/* Search */}

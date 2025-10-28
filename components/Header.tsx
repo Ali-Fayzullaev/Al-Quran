@@ -1,16 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Book, Search, Navigation, Bookmark, Settings } from "lucide-react";
+import { Book, Search, Navigation, Bookmark, Settings, Palette } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
+import dynamic from "next/dynamic";
 import { useLocale } from "@/context/LocaleContext";
 import { useQuranStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
-export default function Header() {
+// Lazy load ThemeDrawer для лучшей производительности
+const ThemeDrawer = dynamic(() => import("./ThemeDrawer"), {
+  ssr: false,
+});
+
+const Header = memo(function Header() {
   const pathname = usePathname();
   const { locale, t, isLoading } = useLocale();
   const { bookmarks } = useQuranStore();
@@ -98,6 +104,12 @@ export default function Header() {
           <div className="flex items-center space-x-3">
             {/* Controls */}
             <div className="flex items-center space-x-2">
+              <ThemeDrawer>
+                <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300 hover:theme-text-primary transition-all duration-200 hover:scale-105"
+                        title="Настройки темы">
+                  <Palette className="h-5 w-5" />
+                </button>
+              </ThemeDrawer>
               <ThemeToggle />
               <LanguageToggle />
             </div>
@@ -111,10 +123,10 @@ export default function Header() {
       </div>
     </header>
   );
-}
+});
 
 // Мобильная навигация
-function MobileNav({ navigation, pathname }: { navigation: any[]; pathname: string }) {
+const MobileNav = memo(function MobileNav({ navigation, pathname }: { navigation: any[]; pathname: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useLocale();
 
@@ -195,4 +207,6 @@ function MobileNav({ navigation, pathname }: { navigation: any[]; pathname: stri
       )}
     </>
   );
-}
+});
+
+export default Header;

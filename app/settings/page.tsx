@@ -3,15 +3,11 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { 
-  Palette, 
   Volume2, 
   Languages, 
   Type, 
   Bookmark,
   Download,
-  Moon,
-  Sun,
-  Monitor,
   Play,
   Pause,
   RotateCcw,
@@ -33,8 +29,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import { RECITERS, TRANSLATIONS, getWorkingAudioUrl, getCachedWorkingAudioUrl, preloadAudio } from "@/lib/api";
 import ColorPicker from "@/components/ColorPicker";
-import SiteColorThemeSelector from "@/components/SiteColorThemeSelector";
-import { useTheme } from "next-themes";
 
 // Популярные чтецы для быстрого доступа
 const POPULAR_RECITERS = ['ar.alafasy', 'ar.abdulbasitmurattal', 'ar.abdurrahmaansudais', 'ar.mahermuaiqly'];
@@ -48,7 +42,6 @@ const QUICK_TRANSLATIONS = {
 
 export default function SettingsPage() {
   const { locale, t } = useLocale();
-  const { theme, setTheme } = useTheme();
   const {
     fontSize,
     showTranslation,
@@ -78,7 +71,7 @@ export default function SettingsPage() {
   const [reciterSearch, setReciterSearch] = useState('');
   const [translationSearch, setTranslationSearch] = useState('');
   const [showAllReciters, setShowAllReciters] = useState(false);
-  const [activeTab, setActiveTab] = useState('theme');
+  const [activeTab, setActiveTab] = useState('audio');
 
   // Фильтрация чтецов по поиску
   const filteredReciters = useMemo(() => {
@@ -189,9 +182,8 @@ export default function SettingsPage() {
     setAutoPlay(false);
     setSelectedTranslations(['en.sahih', 'ru.kuliev']);
     setAudioReciter('ar.alafasy');
-    setSiteColorTheme('emerald');
+    setSiteColorTheme('green');
     setQuranTextColorScheme('classic');
-    setTheme('system');
   };
 
   const setQuickTranslations = (language: string) => {
@@ -224,7 +216,6 @@ export default function SettingsPage() {
         <div className="bg-white dark:bg-gray-800 rounded-2xl p-2 shadow-lg border border-gray-200 dark:border-gray-700">
           <div className="flex gap-2">
             {[
-              { id: 'theme', icon: Palette, label: t('theme') },
               { id: 'audio', icon: Volume2, label: t('audio') },
               { id: 'translation', icon: Languages, label: t('translation') },
               { id: 'reading', icon: Type, label: locale === 'en' ? 'Reading' : 'Чтение' }
@@ -248,67 +239,7 @@ export default function SettingsPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Color Themes */}
-        {activeTab === 'theme' && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-gray-200 dark:border-gray-700"
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <Palette className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-                {locale === 'en' ? 'Appearance' : 'Внешний вид'}
-              </h2>
-            </div>
 
-            <div className="space-y-8">
-              {/* Dark Mode */}
-              <div>
-                <h3 className="text-lg font-medium mb-4 text-gray-900 dark:text-gray-100">
-                  {locale === 'en' ? 'Display Mode' : 'Режим отображения'}
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  {[
-                    { id: 'light', icon: Sun, label: t('lightMode') },
-                    { id: 'dark', icon: Moon, label: t('darkMode') },
-                    { id: 'system', icon: Monitor, label: t('systemMode') }
-                  ].map(({ id, icon: Icon, label }) => (
-                    <button
-                      key={id}
-                      onClick={() => setTheme(id)}
-                      className={cn(
-                        "flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-all border",
-                        theme === id
-                          ? "bg-green-500 text-white shadow-lg border-green-500"
-                          : "bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300"
-                      )}
-                    >
-                      <Icon size={18} />
-                      <span className="font-medium">{label}</span>
-                      {theme === id && <Check size={16} className="ml-auto" />}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Site Color Theme */}
-              <SiteColorThemeSelector
-                title={t('siteTheme') || 'Цветовая тема сайта'}
-                description="Выберите основную цветовую схему для интерфейса сайта"
-              />
-
-              {/* Quran Text Color Scheme */}
-              <div>
-                <ColorPicker
-                  type="quran"
-                  title={t('quranTextColor')}
-                  description="Настройте цвета для арабского текста и переводов Корана"
-                />
-              </div>
-            </div>
-          </motion.div>
-        )}
 
         {/* Audio Settings */}
         {activeTab === 'audio' && (

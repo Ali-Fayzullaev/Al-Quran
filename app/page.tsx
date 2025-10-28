@@ -8,7 +8,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useRandomAyah, useSurahs } from "@/lib/hooks";
 import { Button } from "@/components/ui/button";
-import CountUp from "react-countup";
+import dynamic from "next/dynamic";
+
+// Lazy loading для производительности
+const CountUp = dynamic(() => import("react-countup"), { 
+  ssr: false,
+  loading: () => <span>0</span>
+});
 
 export default function HomePage() {
   const { locale, t } = useLocale();
@@ -67,34 +73,23 @@ export default function HomePage() {
   ];
 
   return (
-    <main className="min-h-screen theme-gradient-main text-gray-900 dark:text-gray-100 transition-colors" style={{
-      background: `linear-gradient(135deg, var(--color-background) 0%, var(--color-secondary) 25%, var(--color-background-secondary) 50%, var(--color-secondary) 75%, var(--color-background) 100%)`
-    }}>
+    <main className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors">
       
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 px-6">
-        <div className="absolute inset-0 bg-[url('/islamic-pattern.svg')] opacity-5"></div>
-        <div className="relative max-w-6xl mx-auto">
+      <section className="relative py-20 px-6 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+        <div className="max-w-6xl mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="text-center"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6" style={{
-              backgroundColor: 'var(--color-secondary)',
-              color: 'var(--color-primary-dark)'
-            }}>
-              <Star className="w-4 h-4" />
-              {t("bestQuranExperience")}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium mb-6">
+              <Star className="w-4 h-4 text-primary" />
+              <span className="text-gray-700 dark:text-gray-300">{t("bestQuranExperience")}</span>
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 theme-gradient-text" style={{
-              background: `linear-gradient(135deg, var(--color-primary), var(--color-accent))`,
-              WebkitBackgroundClip: 'text',
-              backgroundClip: 'text',
-              WebkitTextFillColor: 'transparent'
-            }}>
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 text-gray-900 dark:text-gray-100">
               {t("title")}
             </h1>
             
@@ -105,7 +100,7 @@ export default function HomePage() {
             </p>
 
             {/* Search Bar */}
-            <motion.form 
+            <motion.form
               onSubmit={handleSearch}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -119,22 +114,11 @@ export default function HomePage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t("searchPlaceholder")}
-                  className="w-full pl-12 pr-6 py-4 text-lg border-2 rounded-2xl backdrop-blur-sm focus:ring-0 focus:outline-none transition-colors placeholder-gray-400"
-                  style={{
-                    borderColor: 'var(--color-border)',
-                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                    color: 'var(--color-text)'
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = 'var(--color-primary)';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = 'var(--color-border)';
-                  }}
+                  className="w-full pl-12 pr-6 py-4 text-lg bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all placeholder-gray-500"
                 />
                 <Button 
                   type="submit"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 search-button rounded-xl"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-primary hover:bg-primary/90 text-white rounded-lg"
                 >
                   {t("search")}
                 </Button>
@@ -145,9 +129,7 @@ export default function HomePage() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 px-6 backdrop-blur-sm" style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.6)'
-      }}>
+      <section className="py-16 px-6 bg-white dark:bg-gray-950">
         <div className="max-w-6xl mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -159,15 +141,13 @@ export default function HomePage() {
               const Icon = stat.icon;
               return (
                 <div key={index} className="text-center">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl shadow-lg mb-4" style={{
-                    background: `linear-gradient(135deg, var(--color-surface) 0%, var(--color-background-secondary) 100%)`
-                  }}>
-                    <Icon className="w-8 h-8" style={{ color: 'var(--color-primary)' }} />
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 mb-4">
+                    <Icon className="w-8 h-8 text-primary" />
                   </div>
                   <div className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
                     <CountUp end={stat.number} duration={2} />
                   </div>
-                  <div className="text-gray-600 dark:text-gray-300 font-medium">
+                  <div className="text-gray-600 dark:text-gray-400 font-medium">
                     {stat.label}
                   </div>
                 </div>
@@ -196,17 +176,10 @@ export default function HomePage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="p-8 md:p-12 rounded-3xl shadow-xl theme-gradient-primary-bg"
-              style={{
-                background: `linear-gradient(135deg, var(--color-secondary) 0%, var(--color-background-secondary) 50%, var(--color-secondary) 100%)`
-              }}
+              className="p-8 md:p-12 rounded-2xl bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800"
             >
               <div className="text-center mb-6">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
-                  style={{
-                    backgroundColor: 'var(--color-primary)',
-                    color: 'white'
-                  }}>
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium">
                   <Quote className="w-4 h-4" />
                   {locale === "en" ? `Verse ${randomAyah.numberInSurah}` : `Аят ${randomAyah.numberInSurah}`}
                 </div>
@@ -217,7 +190,7 @@ export default function HomePage() {
               </blockquote>
               
               <div className="text-center">
-                <p className="font-semibold" style={{ color: 'var(--color-primary-dark)' }}>
+                <p className="font-semibold text-primary">
                   {locale === "en" ? `Juz ${randomAyah.juz} • Page ${randomAyah.page}` : `Джуз ${randomAyah.juz} • Страница ${randomAyah.page}`}
                 </p>
               </div>

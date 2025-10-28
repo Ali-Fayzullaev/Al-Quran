@@ -8,7 +8,6 @@ import { LocaleProvider } from "@/context/LocaleContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Header from "@/components/Header";
-import { ColorThemeProvider } from "@/components/ColorThemeProvider";
 import { ForceColorApplication } from "@/components/ForceColorApplication";
 
 const inter = Inter({ 
@@ -43,13 +42,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             disableTransitionOnChange
           >
             <LocaleProvider>
-              <ColorThemeProvider>
-                <ForceColorApplication />
-                <div className="min-h-screen bg-background">
-                  <Header />
-                  <main>{children}</main>
-                </div>
-              </ColorThemeProvider>
+              <ForceColorApplication />
+              <div className="min-h-screen bg-background">
+                <Header />
+                <main>{children}</main>
+              </div>
             </LocaleProvider>
           </ThemeProvider>
         </QueryClientProvider>
