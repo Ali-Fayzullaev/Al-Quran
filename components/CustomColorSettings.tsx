@@ -251,15 +251,13 @@ export default function CustomColorSettings() {
     setCustomQuranTextColor(scheme.textColor);
     setCustomQuranTranslationColor(scheme.translationColor);
     
-    // Применяем в CSS переменные
+    // Применяем в CSS переменные - ТОЛЬКО цвета текста, БЕЗ фона
     if (typeof window !== "undefined") {
       const root = document.documentElement;
       root.style.setProperty('--color-primary', scheme.buttonColor);
       root.style.setProperty('--color-accent', scheme.buttonColor);
       root.style.setProperty('--quran-arabic-color', scheme.textColor);
       root.style.setProperty('--quran-translation-color', scheme.translationColor);
-      // Применяем фоновый цвет схемы для карточек аятов
-      root.style.setProperty('--verse-background', scheme.backgroundColor);
     }
   };
 
