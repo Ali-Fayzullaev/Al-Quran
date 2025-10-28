@@ -2,16 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Flag, Pause, Play } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Flag, Pause, Play, Circle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { QuestionCard } from './QuestionCard';
 import { useQuizStore } from '@/lib/quizStore';
 import { useLocale } from '@/context/LocaleContext';
+import { useQuranStore } from '@/lib/store';
 import type { UserAnswer } from '@/lib/quizTypes';
 
 export function Quiz() {
-  const { t } = useLocale();
+  const { locale } = useLocale();
+  const { customButtonColor } = useQuranStore();
   const {
     questions,
     currentQuestionIndex,
@@ -62,32 +63,58 @@ export function Quiz() {
   };
   
   return (
-    <div className="min-h-screen p-6">
+    <div className="min-h-screen py-8" style={{
+      backgroundColor: 'var(--fixed-background)',
+      color: 'var(--fixed-text)'
+    }}>
       {/* Progress Bar */}
-      <div className="max-w-3xl mx-auto mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <h2 className="text-lg font-semibold">
-            {t('quiz')}
-          </h2>
+      <div className="max-w-4xl mx-auto mb-8 px-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+              {locale === 'en' ? 'Quiz in Progress' : 'Викторина'}
+            </h2>
+            <p className="text-sm mt-1" style={{ color: 'var(--fixed-text-secondary)' }}>
+              {locale === 'en' ? 'Answer all questions to see your results' : 'Ответьте на все вопросы, чтобы увидеть результаты'}
+            </p>
+          </div>
           <Button
             variant="outline"
-            size="sm"
+            size="lg"
             onClick={isPaused ? resumeQuiz : pauseQuiz}
+            className="shadow-lg"
           >
             {isPaused ? (
               <>
-                <Play className="w-4 h-4 mr-2" />
-                {t('resumeQuiz')}
+                <Play className="w-5 h-5 mr-2" />
+                {locale === 'en' ? 'Resume' : 'Продолжить'}
               </>
             ) : (
               <>
-                <Pause className="w-4 h-4 mr-2" />
-                {t('pause')}
+                <Pause className="w-5 h-5 mr-2" />
+                {locale === 'en' ? 'Pause' : 'Пауза'}
               </>
             )}
           </Button>
         </div>
-        <Progress value={progress} className="h-2" />
+        
+        {/* Progress Bar */}
+        <div className="relative">
+          <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden shadow-inner">
+            <motion.div
+              className="h-full"
+              style={{ 
+                background: customButtonColor || 'linear-gradient(to right, #10b981, #14b8a6)',
+              }}
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+            />
+          </div>
+          <p className="text-xs font-medium mt-2 text-right" style={{ color: 'var(--fixed-text-secondary)' }}>
+            {currentQuestionIndex + 1} / {questions.length} {locale === 'en' ? 'completed' : 'завершено'}
+          </p>
+        </div>
       </div>
       
       {/* Pause Overlay */}
@@ -97,21 +124,46 @@ export function Quiz() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center"
+            className="fixed inset-0 bg-black/60 backdrop-blur-md z-50 flex items-center justify-center p-4"
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-background rounded-lg p-8 max-w-md mx-4"
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="rounded-3xl p-10 max-w-md mx-4 shadow-2xl text-center"
+              style={{
+                backgroundColor: 'var(--fixed-background)',
+              }}
             >
-              <h3 className="text-2xl font-bold mb-4">{t('quizPaused')}</h3>
-              <p className="text-muted-foreground mb-6">
-                {t('pauseMessage')}
+              <motion.div
+                initial={{ rotate: 0 }}
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+                className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6 shadow-xl"
+                style={{
+                  background: customButtonColor || 'linear-gradient(135deg, #10b981 0%, #14b8a6 100%)',
+                }}
+              >
+                <Pause className="w-10 h-10 text-white" />
+              </motion.div>
+              <h3 className="text-3xl font-bold mb-4" style={{ color: 'var(--fixed-text)' }}>
+                {locale === 'en' ? 'Quiz Paused' : 'Викторина на паузе'}
+              </h3>
+              <p className="mb-8 text-lg" style={{ color: 'var(--fixed-text-secondary)' }}>
+                {locale === 'en' 
+                  ? 'Take your time. Click resume when you\'re ready to continue.' 
+                  : 'Не торопитесь. Нажмите "Продолжить", когда будете готовы.'}
               </p>
-              <Button onClick={resumeQuiz} className="w-full">
-                <Play className="w-4 h-4 mr-2" />
-                {t('resumeQuiz')}
+              <Button 
+                onClick={resumeQuiz} 
+                size="lg"
+                className="w-full py-6 text-lg font-bold text-white shadow-xl hover:shadow-2xl transition-all"
+                style={{
+                  background: customButtonColor || 'linear-gradient(135deg, #10b981 0%, #14b8a6 100%)',
+                }}
+              >
+                <Play className="w-5 h-5 mr-2" />
+                {locale === 'en' ? 'Resume Quiz' : 'Продолжить викторину'}
               </Button>
             </motion.div>
           </motion.div>
@@ -119,66 +171,89 @@ export function Quiz() {
       </AnimatePresence>
       
       {/* Question Card */}
-      <AnimatePresence mode="wait">
-        <QuestionCard
-          key={currentQuestion.id}
-          question={currentQuestion}
-          questionNumber={currentQuestionIndex + 1}
-          totalQuestions={questions.length}
-          onAnswer={handleAnswer}
-          timeLimit={config.timePerQuestion}
-        />
-      </AnimatePresence>
+      <div className="mb-12">
+        <AnimatePresence mode="wait">
+          <QuestionCard
+            key={currentQuestion.id}
+            question={currentQuestion}
+            questionNumber={currentQuestionIndex + 1}
+            totalQuestions={questions.length}
+            onAnswer={handleAnswer}
+            timeLimit={config.timePerQuestion}
+          />
+        </AnimatePresence>
+      </div>
       
       {/* Navigation */}
-      <div className="max-w-3xl mx-auto mt-8 flex justify-between items-center">
-        <Button
-          variant="outline"
-          onClick={previousQuestion}
-          disabled={currentQuestionIndex === 0}
-        >
-          <ChevronLeft className="w-4 h-4 mr-2" />
-          {t('previous')}
-        </Button>
-        
-        <div className="flex items-center gap-2">
-          {questions.map((_, index) => (
-            <div
-              key={index}
-              className={`w-2 h-2 rounded-full transition-colors ${
-                index === currentQuestionIndex
-                  ? 'bg-emerald-500'
-                  : index < currentQuestionIndex
-                  ? 'bg-emerald-300'
-                  : 'bg-muted'
-              }`}
-            />
-          ))}
-        </div>
-        
-        {canProceed && (
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
+      <div className="max-w-4xl mx-auto px-4">
+        <div className="flex justify-between items-center gap-4">
+          <Button
+            variant="outline"
+            size="lg"
+            onClick={previousQuestion}
+            disabled={currentQuestionIndex === 0}
+            className="shadow-lg"
           >
-            <Button
-              onClick={handleNext}
-              className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white"
+            <ChevronLeft className="w-5 h-5 mr-2" />
+            {locale === 'en' ? 'Previous' : 'Назад'}
+          </Button>
+          
+          {/* Progress Dots */}
+          <div className="flex items-center gap-2 flex-wrap justify-center">
+            {questions.map((_, index) => (
+              <motion.div
+                key={index}
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <Circle
+                  className={`w-3 h-3 transition-all ${
+                    index === currentQuestionIndex
+                      ? 'fill-current scale-125'
+                      : index < currentQuestionIndex
+                      ? 'fill-current opacity-50'
+                      : ''
+                  }`}
+                  style={{ 
+                    color: index <= currentQuestionIndex 
+                      ? customButtonColor || '#10b981' 
+                      : 'var(--color-border)',
+                  }}
+                />
+              </motion.div>
+            ))}
+          </div>
+          
+          {canProceed && (
+            <motion.div
+              initial={{ opacity: 0, x: 20, scale: 0.8 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              transition={{ type: 'spring', stiffness: 300 }}
             >
-              {isLastQuestion ? (
-                <>
-                  <Flag className="w-4 h-4 mr-2" />
-                  {t('finishQuiz')}
-                </>
-              ) : (
-                <>
-                  {t('next')}
-                  <ChevronRight className="w-4 h-4 ml-2" />
-                </>
-              )}
-            </Button>
-          </motion.div>
-        )}
+              <Button
+                onClick={handleNext}
+                size="lg"
+                className="shadow-2xl hover:shadow-3xl transition-all font-bold text-white"
+                style={{
+                  background: customButtonColor || 'linear-gradient(135deg, #10b981 0%, #14b8a6 100%)',
+                }}
+              >
+                {isLastQuestion ? (
+                  <>
+                    <Flag className="w-5 h-5 mr-2" />
+                    {locale === 'en' ? 'Finish Quiz' : 'Завершить'}
+                  </>
+                ) : (
+                  <>
+                    {locale === 'en' ? 'Next' : 'Далее'}
+                    <ChevronRight className="w-5 h-5 ml-2" />
+                  </>
+                )}
+              </Button>
+            </motion.div>
+          )}
+        </div>
       </div>
     </div>
   );

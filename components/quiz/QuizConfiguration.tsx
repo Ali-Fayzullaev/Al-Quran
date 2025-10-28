@@ -15,7 +15,11 @@ import {
   BookMarked,
   ArrowRight,
   PenLine,
-  FileText
+  FileText,
+  CheckCircle2,
+  XCircle,
+  Zap,
+  Trophy
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLocale } from '@/context/LocaleContext';
@@ -38,16 +42,46 @@ interface QuizConfigurationProps {
 }
 
 export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { customButtonColor } = useQuranStore();
   const [selectedTypes, setSelectedTypes] = useState<string[]>(['guess-surah']);
   const [useTimer, setUseTimer] = useState(false);
 
-  const QUESTION_TYPES: Array<{ value: QuestionType; labelKey: string; icon: React.ComponentType<{ className?: string }> }> = [
-    { value: 'guess-surah', labelKey: 'guessSurah', icon: BookMarked },
-    { value: 'continue-ayah', labelKey: 'continueAyah', icon: ArrowRight },
-    { value: 'missing-word', labelKey: 'fillMissingWord', icon: PenLine },
-    { value: 'surah-description', labelKey: 'surahDescription', icon: FileText },
+  const QUESTION_TYPES: Array<{ 
+    value: QuestionType; 
+    labelKey: string; 
+    icon: React.ComponentType<{ className?: string }>;
+    color: string;
+    gradient: string;
+  }> = [
+    { 
+      value: 'guess-surah', 
+      labelKey: 'guessSurah', 
+      icon: BookMarked,
+      color: 'emerald',
+      gradient: 'from-emerald-500 to-teal-600'
+    },
+    { 
+      value: 'continue-ayah', 
+      labelKey: 'continueAyah', 
+      icon: ArrowRight,
+      color: 'blue',
+      gradient: 'from-blue-500 to-cyan-600'
+    },
+    { 
+      value: 'missing-word', 
+      labelKey: 'fillMissingWord', 
+      icon: PenLine,
+      color: 'purple',
+      gradient: 'from-purple-500 to-pink-600'
+    },
+    { 
+      value: 'surah-description', 
+      labelKey: 'surahDescription', 
+      icon: FileText,
+      color: 'orange',
+      gradient: 'from-orange-500 to-red-600'
+    },
   ];
   
   const {
@@ -89,206 +123,382 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
   };
   
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="w-full max-w-2xl mx-auto p-6"
-    >
-      <div className="text-center mb-8">
-        <motion.div
-          initial={{ scale: 0.8 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 200 }}
-          className="inline-block p-4 rounded-full bg-gradient-to-br theme-bg-primary mb-4"
-          style={{ backgroundColor: customButtonColor || undefined }}
-        >
-          <Brain className="w-12 h-12 text-white" />
-        </motion.div>
-        <h1 className="text-3xl font-bold mb-2">{t('quizTitle')}</h1>
-        <p className="text-muted-foreground">
-          {t('quizDescription')}
-        </p>
-      </div>
-      
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Question Count */}
-        <div className="space-y-3">
-          <label className="flex items-center gap-2 text-sm font-medium">
-            <BookOpen className="w-4 h-4" />
-            {t('numberOfQuestions')}
-          </label>
-          <div className="grid grid-cols-4 gap-2">
-            {(['1', '3', '5', '10'] as const).map((count) => (
-              <label key={count} className="relative cursor-pointer">
-                <input
-                  type="radio"
-                  value={count}
-                  {...register('questionCount')}
-                  className="peer sr-only"
-                />
-                <div 
-                  className="p-4 text-center rounded-lg border-2 border-border peer-checked:bg-emerald-50 dark:peer-checked:bg-emerald-950 transition-all hover:border-emerald-300"
-                  style={{
-                    borderColor: 'var(--color-border)',
-                  }}
-                >
-                  <span className="text-lg font-bold">{count}</span>
-                </div>
-              </label>
-            ))}
-          </div>
+    <div className="min-h-screen py-12 px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-4xl mx-auto"
+      >
+        {/* Header */}
+        <div className="text-center mb-12">
+          <motion.div
+            initial={{ scale: 0.8, rotate: -10 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: 'spring', stiffness: 200 }}
+            className="inline-flex items-center justify-center w-24 h-24 rounded-3xl mb-6 shadow-2xl"
+            style={{ 
+              background: customButtonColor || 'linear-gradient(135deg, #10b981 0%, #14b8a6 100%)',
+            }}
+          >
+            <Brain className="w-12 h-12 text-white" />
+          </motion.div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+            {locale === 'en' ? 'Quran Quiz' : 'Викторина по Корану'}
+          </h1>
+          <p className="text-lg" style={{ color: 'var(--fixed-text-secondary)' }}>
+            {locale === 'en' 
+              ? 'Test your knowledge of the Holy Quran' 
+              : 'Проверьте свои знания Священного Корана'}
+          </p>
         </div>
         
-        {/* Difficulty */}
-        <div className="space-y-3">
-          <label className="flex items-center gap-2 text-sm font-medium">
-            <Sparkles className="w-4 h-4" />
-            {t('difficultyLevel')}
-          </label>
-          <div className="grid grid-cols-3 gap-2">
-            {(['easy', 'medium', 'hard'] as const).map((level) => (
-              <label key={level} className="relative cursor-pointer">
-                <input
-                  type="radio"
-                  value={level}
-                  {...register('difficulty')}
-                  className="peer sr-only"
-                />
-                <div className="p-4 text-center rounded-lg border-2 border-border peer-checked:bg-emerald-50 dark:peer-checked:bg-emerald-950 transition-all hover:border-emerald-300">
-                  <div className="font-semibold capitalize">{t(level)}</div>
-                  <div className="text-xs text-muted-foreground mt-1">
-                    {level === 'easy' && `10 ${t('points')}`}
-                    {level === 'medium' && `20 ${t('points')}`}
-                    {level === 'hard' && `30 ${t('points')}`}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+          {/* Question Count */}
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="space-y-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900 dark:to-teal-900">
+                <BookOpen className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
+                {locale === 'en' ? 'Number of Questions' : 'Количество вопросов'}
+              </h3>
+            </div>
+            <div className="grid grid-cols-4 gap-3">
+              {(['1', '3', '5', '10'] as const).map((count) => (
+                <label key={count} className="relative cursor-pointer group">
+                  <input
+                    type="radio"
+                    value={count}
+                    {...register('questionCount')}
+                    className="peer sr-only"
+                  />
+                  <div 
+                    className="p-6 text-center rounded-2xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg peer-checked:border-emerald-500 peer-checked:shadow-xl peer-checked:scale-105"
+                    style={{
+                      backgroundColor: 'var(--fixed-background)',
+                      borderColor: 'var(--color-border)',
+                    }}
+                  >
+                    <span className="text-3xl font-bold bg-gradient-to-br from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+                      {count}
+                    </span>
+                    <CheckCircle2 className="w-5 h-5 mx-auto mt-2 text-emerald-500 opacity-0 peer-checked:opacity-100 transition-opacity" />
                   </div>
-                </div>
-              </label>
-            ))}
-          </div>
-        </div>
-        
-        {/* Question Types */}
-        <div className="space-y-3">
-          <label className="flex items-center gap-2 text-sm font-medium">
-            <Settings2 className="w-4 h-4" />
-            {t('questionTypes')}
-          </label>
-          <div className="grid grid-cols-2 gap-2">
-            {QUESTION_TYPES.map((type) => (
-              <label
-                key={type.value}
-                className="relative cursor-pointer"
+                </label>
+              ))}
+            </div>
+          </motion.div>
+          
+          {/* Difficulty */}
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="space-y-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900 dark:to-pink-900">
+                <Sparkles className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              </div>
+              <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
+                {locale === 'en' ? 'Difficulty Level' : 'Уровень сложности'}
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {(['easy', 'medium', 'hard'] as const).map((level) => (
+                <label key={level} className="relative cursor-pointer group">
+                  <input
+                    type="radio"
+                    value={level}
+                    {...register('difficulty')}
+                    className="peer sr-only"
+                  />
+                  <div className={`
+                    p-6 rounded-2xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg
+                    peer-checked:border-${level === 'easy' ? 'green' : level === 'medium' ? 'yellow' : 'red'}-500 
+                    peer-checked:shadow-xl peer-checked:scale-105
+                  `}
+                  style={{
+                    backgroundColor: 'var(--fixed-background)',
+                    borderColor: 'var(--color-border)',
+                  }}>
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-lg font-bold capitalize" style={{ color: 'var(--fixed-text)' }}>
+                        {locale === 'en' 
+                          ? level.charAt(0).toUpperCase() + level.slice(1)
+                          : level === 'easy' ? 'Легкий' : level === 'medium' ? 'Средний' : 'Сложный'}
+                      </span>
+                      <Trophy className={`w-6 h-6 ${
+                        level === 'easy' ? 'text-green-500' : 
+                        level === 'medium' ? 'text-yellow-500' : 
+                        'text-red-500'
+                      }`} />
+                    </div>
+                    <div className={`
+                      text-sm px-3 py-1 rounded-full inline-block font-semibold
+                      ${level === 'easy' ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300' : ''}
+                      ${level === 'medium' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300' : ''}
+                      ${level === 'hard' ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300' : ''}
+                    `}>
+                      {level === 'easy' && `10 ${locale === 'en' ? 'points' : 'очков'}`}
+                      {level === 'medium' && `20 ${locale === 'en' ? 'points' : 'очков'}`}
+                      {level === 'hard' && `30 ${locale === 'en' ? 'points' : 'очков'}`}
+                    </div>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </motion.div>
+          
+          {/* Question Types */}
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="space-y-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900 dark:to-cyan-900">
+                <Settings2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              </div>
+              <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
+                {locale === 'en' ? 'Question Types' : 'Типы вопросов'}
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {QUESTION_TYPES.map((type) => (
+                <label
+                  key={type.value}
+                  className="relative cursor-pointer group"
+                >
+                  <input
+                    type="checkbox"
+                    checked={selectedTypes.includes(type.value)}
+                    onChange={() => toggleQuestionType(type.value)}
+                    className="peer sr-only"
+                  />
+                  <div className={`
+                    p-6 rounded-2xl border-2 transition-all duration-300 hover:scale-105 hover:shadow-lg
+                    peer-checked:shadow-xl peer-checked:scale-105
+                  `}
+                  style={{
+                    backgroundColor: 'var(--fixed-background)',
+                    borderColor: selectedTypes.includes(type.value) ? customButtonColor || '#10b981' : 'var(--color-border)',
+                  }}>
+                    <div className="flex items-center gap-4">
+                      <div className={`p-3 rounded-xl bg-gradient-to-br ${type.gradient}`}>
+                        <type.icon className="w-8 h-8 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-lg" style={{ color: 'var(--fixed-text)' }}>
+                          {locale === 'en' 
+                            ? type.value.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+                            : type.labelKey === 'guessSurah' ? 'Угадай суру' :
+                              type.labelKey === 'continueAyah' ? 'Продолжи аят' :
+                              type.labelKey === 'fillMissingWord' ? 'Пропущенное слово' :
+                              'Описание суры'}
+                        </p>
+                      </div>
+                      {selectedTypes.includes(type.value) && (
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ type: 'spring', stiffness: 500 }}
+                        >
+                          <CheckCircle2 className="w-6 h-6" style={{ color: customButtonColor || '#10b981' }} />
+                        </motion.div>
+                      )}
+                    </div>
+                  </div>
+                </label>
+              ))}
+            </div>
+            {errors.questionTypes && (
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-sm text-red-500 flex items-center gap-2"
               >
+                <XCircle className="w-4 h-4" />
+                {errors.questionTypes.message}
+              </motion.p>
+            )}
+          </motion.div>
+          
+          {/* Timer Option */}
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            className="space-y-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-gradient-to-br from-orange-100 to-red-100 dark:from-orange-900 dark:to-red-900">
+                <Clock className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+              </div>
+              <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
+                {locale === 'en' ? 'Time Limit' : 'Ограничение времени'}
+              </h3>
+            </div>
+            <div className="p-6 rounded-2xl border-2" style={{
+              backgroundColor: 'var(--fixed-background)',
+              borderColor: 'var(--color-border)',
+            }}>
+              <label className="flex items-center gap-4 cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={selectedTypes.includes(type.value)}
-                  onChange={() => toggleQuestionType(type.value)}
-                  className="peer sr-only"
+                  checked={useTimer}
+                  onChange={(e) => setUseTimer(e.target.checked)}
+                  className="w-5 h-5 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
                 />
-                <div className="p-4 rounded-lg border-2 border-border peer-checked:bg-emerald-50 dark:peer-checked:bg-emerald-950 transition-all hover:border-emerald-300">
-                  <div className="flex items-center gap-2">
-                    <type.icon className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-                    <span className="text-sm font-medium">{t(type.labelKey)}</span>
-                  </div>
+                <div className="flex items-center gap-3">
+                  <Zap className="w-5 h-5 text-orange-500" />
+                  <span className="text-base font-medium" style={{ color: 'var(--fixed-text)' }}>
+                    {locale === 'en' ? 'Enable time limit per question' : 'Включить ограничение времени на вопрос'}
+                  </span>
                 </div>
               </label>
-            ))}
-          </div>
-          {errors.questionTypes && (
-            <p className="text-sm text-red-500">{errors.questionTypes.message}</p>
-          )}
-        </div>
-        
-        {/* Timer Option */}
-        <div className="space-y-3">
-          <label className="flex items-center gap-2 text-sm font-medium">
-            <Clock className="w-4 h-4" />
-            {t('timeLimit')}
-          </label>
-          <div className="space-y-2">
-            <label className="flex items-center gap-3 cursor-pointer">
+              {useTimer && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="mt-4"
+                >
+                  <input
+                    type="number"
+                    {...register('timePerQuestion', { valueAsNumber: true })}
+                    placeholder={locale === 'en' ? 'Seconds per question (10-120)' : 'Секунд на вопрос (10-120)'}
+                    min={10}
+                    max={120}
+                    defaultValue={30}
+                    className="w-full p-4 rounded-xl border-2 font-medium text-lg focus:outline-none focus:ring-2 transition-all"
+                    style={{
+                      backgroundColor: 'var(--fixed-background)',
+                      color: 'var(--fixed-text)',
+                      borderColor: 'var(--color-border)',
+                      '--tw-ring-color': customButtonColor || '#10b981',
+                    } as React.CSSProperties}
+                  />
+                </motion.div>
+              )}
+            </div>
+          </motion.div>
+          
+          {/* Translation Option */}
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5 }}
+            className="p-6 rounded-2xl border-2"
+            style={{
+              backgroundColor: 'var(--fixed-background)',
+              borderColor: 'var(--color-border)',
+            }}
+          >
+            <label className="flex items-center gap-4 cursor-pointer">
               <input
                 type="checkbox"
-                checked={useTimer}
-                onChange={(e) => setUseTimer(e.target.checked)}
-                className="w-4 h-4 rounded border-border text-emerald-500 focus:ring-emerald-500"
+                {...register('showTranslation')}
+                className="w-5 h-5 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
               />
-              <span className="text-sm">{t('enableTimeLimit')}</span>
+              <span className="text-base font-medium" style={{ color: 'var(--fixed-text)' }}>
+                {locale === 'en' ? 'Show translation in quiz' : 'Показывать перевод в викторине'}
+              </span>
             </label>
-            {useTimer && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-              >
-                <input
-                  type="number"
-                  {...register('timePerQuestion', { valueAsNumber: true })}
-                  placeholder={t('secondsPerQuestion')}
-                  min={10}
-                  max={120}
-                  className="w-full p-3 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
-              </motion.div>
-            )}
-          </div>
-        </div>
-        
-        {/* Translation Option */}
-        <div className="space-y-3">
-          <label className="flex items-center gap-3 cursor-pointer">
-            <input
-              type="checkbox"
-              {...register('showTranslation')}
-              className="w-4 h-4 rounded border-border text-emerald-500 focus:ring-emerald-500"
-            />
-            <span className="text-sm font-medium">{t('showTranslationInQuiz')}</span>
-          </label>
-        </div>
-        
-        {/* Summary */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="p-4 rounded-lg bg-emerald-50 dark:bg-emerald-950 border border-emerald-200 dark:border-emerald-800"
-        >
-          <h3 className="font-semibold mb-2 text-emerald-900 dark:text-emerald-100">
-            {t('quizSummary')}
-          </h3>
-          <ul className="text-sm space-y-1 text-emerald-800 dark:text-emerald-200">
-            <li>• {questionCount} {t('questions')}</li>
-            <li>• {t('difficulty')}: {t(difficulty)}</li>
-            <li>• {t('questionTypes')}: {selectedTypes.length}</li>
-            {useTimer && <li>• {t('timedQuizEnabled')}</li>}
-          </ul>
-        </motion.div>
-        
-        {/* Start Button */}
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="w-full py-6 text-lg font-semibold text-white"
-          style={{
-            background: customButtonColor || 'linear-gradient(to right, rgb(16 185 129), rgb(13 148 136))',
-          }}
-        >
-          {isLoading ? (
-            <span className="flex items-center gap-2">
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
-                className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
-              />
-              {t('generatingQuestions')}
-            </span>
-          ) : (
-            <span className="flex items-center gap-2">
-              <Play className="w-5 h-5" />
-              {t('startQuiz')}
-            </span>
-          )}
-        </Button>
-      </form>
-    </motion.div>
+          </motion.div>
+          
+          {/* Summary */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.6 }}
+            className="p-8 rounded-3xl border-2 shadow-2xl"
+            style={{
+              background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(20, 184, 166, 0.1) 100%)',
+              borderColor: customButtonColor || '#10b981',
+            }}
+          >
+            <h3 className="font-bold text-xl mb-4 flex items-center gap-2" style={{ color: 'var(--fixed-text)' }}>
+              <Sparkles className="w-6 h-6" style={{ color: customButtonColor || '#10b981' }} />
+              {locale === 'en' ? 'Quiz Summary' : 'Сводка викторины'}
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div>
+                <p className="text-sm mb-1" style={{ color: 'var(--fixed-text-secondary)' }}>
+                  {locale === 'en' ? 'Questions' : 'Вопросы'}
+                </p>
+                <p className="text-2xl font-bold" style={{ color: 'var(--fixed-text)' }}>
+                  {questionCount}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm mb-1" style={{ color: 'var(--fixed-text-secondary)' }}>
+                  {locale === 'en' ? 'Difficulty' : 'Сложность'}
+                </p>
+                <p className="text-2xl font-bold capitalize" style={{ color: 'var(--fixed-text)' }}>
+                  {locale === 'en' ? difficulty : 
+                    difficulty === 'easy' ? 'Легк.' : 
+                    difficulty === 'medium' ? 'Сред.' : 'Слож.'}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm mb-1" style={{ color: 'var(--fixed-text-secondary)' }}>
+                  {locale === 'en' ? 'Types' : 'Типы'}
+                </p>
+                <p className="text-2xl font-bold" style={{ color: 'var(--fixed-text)' }}>
+                  {selectedTypes.length}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm mb-1" style={{ color: 'var(--fixed-text-secondary)' }}>
+                  {locale === 'en' ? 'Timer' : 'Таймер'}
+                </p>
+                <p className="text-2xl font-bold" style={{ color: 'var(--fixed-text)' }}>
+                  {useTimer ? '✓' : '✗'}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+          
+          {/* Start Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+          >
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-8 text-xl font-bold text-white rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105"
+              style={{
+                background: customButtonColor || 'linear-gradient(135deg, #10b981 0%, #14b8a6 100%)',
+              }}
+            >
+              {isLoading ? (
+                <span className="flex items-center justify-center gap-3">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
+                    className="w-6 h-6 border-3 border-white border-t-transparent rounded-full"
+                  />
+                  {locale === 'en' ? 'Generating Questions...' : 'Генерация вопросов...'}
+                </span>
+              ) : (
+                <span className="flex items-center justify-center gap-3">
+                  <Play className="w-6 h-6" />
+                  {locale === 'en' ? 'Start Quiz' : 'Начать викторину'}
+                </span>
+              )}
+            </Button>
+          </motion.div>
+        </form>
+      </motion.div>
+    </div>
   );
 }

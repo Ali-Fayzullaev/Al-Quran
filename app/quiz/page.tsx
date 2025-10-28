@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { QuizConfiguration } from '@/components/quiz/QuizConfiguration';
 import { Quiz } from '@/components/quiz/Quiz';
 import { QuizResults } from '@/components/quiz/QuizResults';
@@ -61,23 +62,54 @@ export default function QuizPage() {
   }
   
   return (
-    <div className="min-h-screen">
-      {phase === 'config' && (
-        <QuizConfiguration
-          onStart={handleStartQuiz}
-          isLoading={isGenerating}
-        />
-      )}
-      
-      {phase === 'quiz' && <Quiz />}
-      
-      {phase === 'results' && currentResult && (
-        <QuizResults
-          result={currentResult}
-          onRetry={handleRetry}
-          onHome={handleHome}
-        />
-      )}
+    <div className="min-h-screen" style={{ 
+      backgroundColor: 'var(--fixed-background)',
+      color: 'var(--fixed-text)'
+    }}>
+      <AnimatePresence mode="wait">
+        {phase === 'config' && (
+          <motion.div
+            key="config"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.05 }}
+            transition={{ duration: 0.3 }}
+          >
+            <QuizConfiguration
+              onStart={handleStartQuiz}
+              isLoading={isGenerating}
+            />
+          </motion.div>
+        )}
+        
+        {phase === 'quiz' && (
+          <motion.div
+            key="quiz"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Quiz />
+          </motion.div>
+        )}
+        
+        {phase === 'results' && currentResult && (
+          <motion.div
+            key="results"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            transition={{ duration: 0.3 }}
+          >
+            <QuizResults
+              result={currentResult}
+              onRetry={handleRetry}
+              onHome={handleHome}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
