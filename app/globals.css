@@ -674,17 +674,29 @@ mark {
 /* Фоллбэки для color-mix() */
 .theme-bg-primary-10 {
   background-color: var(--color-secondary) !important; /* фоллбэк */
-  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--color-primary) 10%,
+    transparent
+  ) !important;
 }
 
 .theme-bg-primary-20 {
   background-color: var(--color-secondary) !important; /* фоллбэк */
-  background-color: color-mix(in srgb, var(--color-primary) 20%, transparent) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--color-primary) 20%,
+    transparent
+  ) !important;
 }
 
 .theme-bg-primary-soft {
   background-color: var(--color-secondary) !important; /* фоллбэк */
-  background-color: color-mix(in srgb, var(--color-primary) 10%, var(--color-background)) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--color-primary) 10%,
+    var(--color-background)
+  ) !important;
 }
 
 .theme-text-primary {
@@ -705,23 +717,39 @@ mark {
 
 .theme-hover-bg-soft:hover {
   background-color: var(--color-secondary) !important; /* фоллбэк */
-  background-color: color-mix(in srgb, var(--color-primary) 5%, var(--color-background)) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--color-primary) 5%,
+    var(--color-background)
+  ) !important;
 }
 
 .dark .theme-hover-bg-soft:hover {
   background-color: var(--color-secondary) !important; /* фоллбэк */
-  background-color: color-mix(in srgb, var(--color-primary) 15%, var(--color-background)) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--color-primary) 15%,
+    var(--color-background)
+  ) !important;
 }
 
 .theme-active-bg {
   background-color: var(--color-secondary) !important; /* фоллбэк */
-  background-color: color-mix(in srgb, var(--color-primary) 15%, var(--color-background)) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--color-primary) 15%,
+    var(--color-background)
+  ) !important;
   color: var(--color-primary) !important;
 }
 
 .dark .theme-active-bg {
   background-color: var(--color-secondary) !important; /* фоллбэк */
-  background-color: color-mix(in srgb, var(--color-primary) 25%, var(--color-background)) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--color-primary) 25%,
+    var(--color-background)
+  ) !important;
   color: var(--color-primary-light) !important;
 }
 
@@ -733,28 +761,48 @@ mark {
 
 /* Градиенты с динамическими цветами */
 .theme-gradient-subtle {
-  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-background) 100%) !important; /* фоллбэк */
-  background: linear-gradient(135deg, 
+  background: linear-gradient(
+    135deg,
+    var(--color-secondary) 0%,
+    var(--color-background) 100%
+  ) !important; /* фоллбэк */
+  background: linear-gradient(
+    135deg,
     color-mix(in srgb, var(--color-primary) 5%, var(--color-background)) 0%,
-    var(--color-background) 100%) !important;
+    var(--color-background) 100%
+  ) !important;
 }
 
 .dark .theme-gradient-subtle {
-  background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-background) 100%) !important; /* фоллбэк */
-  background: linear-gradient(135deg, 
+  background: linear-gradient(
+    135deg,
+    var(--color-secondary) 0%,
+    var(--color-background) 100%
+  ) !important; /* фоллбэк */
+  background: linear-gradient(
+    135deg,
     color-mix(in srgb, var(--color-primary) 10%, var(--color-background)) 0%,
-    var(--color-background) 100%) !important;
+    var(--color-background) 100%
+  ) !important;
 }
 
 /* Декоративные элементы */
 .theme-decoration {
   background-color: var(--color-secondary) !important; /* фоллбэк */
-  background-color: color-mix(in srgb, var(--color-primary) 8%, transparent) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--color-primary) 8%,
+    transparent
+  ) !important;
 }
 
 .dark .theme-decoration {
   background-color: var(--color-secondary) !important; /* фоллбэк */
-  background-color: color-mix(in srgb, var(--color-primary-light) 12%, transparent) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--color-primary-light) 12%,
+    transparent
+  ) !important;
 }
 
 /* Кнопки */
@@ -769,4 +817,4 @@ mark {
   border-color: var(--color-primary-dark) !important;
 }
 
-@import './theme-styles.css';
+@import "./theme-styles.css";
