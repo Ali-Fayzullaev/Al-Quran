@@ -86,7 +86,9 @@ export default function SurahsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 dark:from-gray-900 dark:via-gray-800 dark:to-green-900/20">
+    <div className="min-h-screen" style={{
+      background: `linear-gradient(135deg, var(--color-background) 0%, var(--color-secondary) 25%, var(--color-background-secondary) 50%, var(--color-secondary) 75%, var(--color-background) 100%)`
+    }}>
       <div className="max-w-7xl mx-auto px-4 py-8">
         
         {/* Header */}
@@ -95,7 +97,12 @@ export default function SurahsPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 theme-gradient-text" style={{
+            background: `linear-gradient(135deg, var(--color-primary), var(--color-accent))`,
+            WebkitBackgroundClip: 'text',
+            backgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
             {locale === 'en' ? 'Surahs of the Holy Quran' : 'Суры Священного Корана'}
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
@@ -242,7 +249,10 @@ export default function SurahsPage() {
                       viewMode === 'grid' && "text-center mb-6",
                       viewMode === 'list' && "flex-shrink-0"
                     )}>
-                      <div className="relative w-16 h-16 mx-auto bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-2xl flex items-center justify-center group-hover:from-green-200 group-hover:to-emerald-200 dark:group-hover:from-green-800/50 dark:group-hover:to-emerald-800/50 transition-all duration-300">
+                      <div className="relative w-16 h-16 mx-auto rounded-2xl flex items-center justify-center transition-all duration-300"
+                        style={{
+                          background: `linear-gradient(135deg, var(--color-secondary) 0%, var(--color-background-secondary) 100%)`
+                        }}>
                         <span className="text-2xl font-bold text-green-700 dark:text-green-300">
                           {surah.number}
                         </span>
@@ -299,7 +309,7 @@ export default function SurahsPage() {
                   </div>
 
                   {/* Hover Effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-green-500/5 to-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none theme-gradient-primary-bg"></div>
                 </div>
               </Link>
             </motion.div>
@@ -322,7 +332,7 @@ export default function SurahsPage() {
                 ? 'Try adjusting your search or filter criteria'
                 : 'Попробуйте изменить поиск или критерии фильтрации'}
             </p>
-          </div>
+          </motion.div>
         )}
       </div>
     </div>

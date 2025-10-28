@@ -38,14 +38,14 @@
   /* Шрифт для арабского текста */
   --font-arabic: "Amiri", "Scheherazade New", "Traditional Arabic", serif;
 
-  /* Динамические переменные цветовых тем */
+  /* Динамические переменные цветовых тем (зеленая по умолчанию) */
   --color-primary: #10b981;
   --color-primary-light: #34d399;
   --color-primary-dark: #047857;
   --color-secondary: #f0fdf4;
   --color-accent: #059669;
   --color-background: #ffffff;
-  --color-background-secondary: #f8fafc;
+  --color-background-secondary: #f9fafb;
   --color-surface: #ffffff;
   --color-text: #111827;
   --color-text-secondary: #6b7280;
@@ -85,7 +85,7 @@
   --chart-4: 280 65% 60%;
   --chart-5: 340 75% 55%;
 
-  /* Темная тема - переменные будут обновляться динамически через JS */
+  /* Темная тема - зеленая по умолчанию, переменные обновляются динамически через JS */
   --color-primary: #34d399;
   --color-primary-light: #6ee7b7;
   --color-primary-dark: #10b981;
@@ -93,10 +93,10 @@
   --color-accent: #10b981;
   --color-background: #0f172a;
   --color-background-secondary: #1e293b;
-  --color-surface: #334155;
+  --color-surface: #1f2937;
   --color-text: #f1f5f9;
   --color-text-secondary: #cbd5e1;
-  --color-border: #475569;
+  --color-border: #374151;
   --color-muted: #374151;
 
   /* Темная тема для текста Корана */

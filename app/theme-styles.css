@@ -92,6 +92,41 @@
   ) !important;
 }
 
+.theme-gradient-main {
+  background: linear-gradient(
+    135deg,
+    var(--color-background) 0%,
+    var(--color-secondary) 50%,
+    var(--color-background) 100%
+  ) !important;
+}
+
+.theme-gradient-card {
+  background: linear-gradient(
+    145deg,
+    var(--color-surface) 0%,
+    var(--color-background-secondary) 100%
+  ) !important;
+}
+
+.theme-gradient-primary-bg {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(from var(--color-primary) r g b / 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  ) !important;
+}
+
+.dark .theme-gradient-primary-bg {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(from var(--color-primary) r g b / 0.1) 50%,
+    rgba(0, 0, 0, 0.1) 100%
+  ) !important;
+}
+
 /* Тематические цвета для текста */
 .theme-text-primary {
   color: var(--color-primary) !important;
@@ -100,6 +135,22 @@
 /* Тематические фоны */
 .theme-bg-primary {
   background-color: var(--color-primary) !important;
+}
+
+.theme-bg-secondary {
+  background-color: var(--color-secondary) !important;
+}
+
+.theme-bg-surface {
+  background-color: var(--color-surface) !important;
+}
+
+.theme-bg-background {
+  background-color: var(--color-background) !important;
+}
+
+.theme-bg-background-secondary {
+  background-color: var(--color-background-secondary) !important;
 }
 
 .theme-bg-primary-dark {

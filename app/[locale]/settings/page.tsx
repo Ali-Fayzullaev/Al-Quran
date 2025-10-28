@@ -33,6 +33,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { cn } from "@/lib/utils";
 import { RECITERS, TRANSLATIONS, getWorkingAudioUrl, getCachedWorkingAudioUrl, preloadAudio } from "@/lib/api";
 import ColorPicker from "@/components/ColorPicker";
+import SiteColorThemeSelector from "@/components/SiteColorThemeSelector";
 import { useTheme } from "next-themes";
 
 // Популярные чтецы для быстрого доступа
@@ -292,13 +293,10 @@ export default function SettingsPage() {
               </div>
 
               {/* Site Color Theme */}
-              <div>
-                <ColorPicker
-                  type="site"
-                  title={t('siteTheme')}
-                  description="Выберите основную цветовую схему для интерфейса сайта"
-                />
-              </div>
+              <SiteColorThemeSelector
+                title={t('siteTheme') || 'Цветовая тема сайта'}
+                description="Выберите основную цветовую схему для интерфейса сайта"
+              />
 
               {/* Quran Text Color Scheme */}
               <div>
@@ -545,7 +543,7 @@ export default function SettingsPage() {
                         />
                         <div>
                           <p className="font-medium text-gray-900 dark:text-gray-100">{translation.name}</p>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">{translation.author}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">{translation.language}</p>
                         </div>
                       </label>
                     ))}

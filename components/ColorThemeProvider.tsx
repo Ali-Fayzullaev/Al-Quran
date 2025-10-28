@@ -36,12 +36,14 @@ export function ColorThemeProvider({ children }: { children: React.ReactNode }) 
       // Применяем цветовую схему сайта
       const siteTheme = getThemeByName(siteColorTheme);
       if (siteTheme) {
+        console.log('Applying site theme:', siteTheme.name, 'isDark:', isDark);
         applySiteColorTheme(siteTheme, isDark);
       }
 
       // Применяем цветовую схему текста Корана
       const quranScheme = getQuranColorSchemeByName(quranTextColorScheme);
       if (quranScheme) {
+        console.log('Applying Quran scheme:', quranScheme.name, 'isDark:', isDark);
         applyQuranTextColors(quranScheme, isDark);
       }
     };

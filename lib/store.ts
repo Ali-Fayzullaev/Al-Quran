@@ -152,7 +152,7 @@ export const useQuranStore = create<QuranState>()(
       colorTheme: "default",
       darkMode: "system",
       nightMode: false,
-      siteColorTheme: "emerald",
+      siteColorTheme: "green",
       quranTextColorScheme: "classic",
 
       // Reading preferences
