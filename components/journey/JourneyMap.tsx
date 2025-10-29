@@ -60,7 +60,6 @@ interface JourneyMapProps {
 
 export default function JourneyMap({ onStartQuiz }: JourneyMapProps) {
   const { locale } = useLocale();
-  const { customButtonColor } = useQuranStore();
   const { initializeJourney, getSurahStatus, stats, resetJourney } = useJourneyStore();
   
   const [filter, setFilter] = useState<FilterType>('all');
@@ -68,7 +67,7 @@ export default function JourneyMap({ onStartQuiz }: JourneyMapProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedJuz, setSelectedJuz] = useState<number | null>(null);
 
-  const primaryColor = customButtonColor || '#10b981';
+  const primaryColor = "var(--color-primary)";
 
   useEffect(() => {
     initializeJourney();

@@ -9,10 +9,10 @@ import { useEffect } from 'react';
 
 export default function JourneyStats() {
   const { locale } = useLocale();
-  const { customButtonColor } = useQuranStore();
+
   const { stats, streakDays, surahProgress } = useJourneyStore();
 
-  const primaryColor = customButtonColor || '#10b981';
+  const primaryColor = "var(--color-primary)";
 
   // Отладочная информация
   useEffect(() => {

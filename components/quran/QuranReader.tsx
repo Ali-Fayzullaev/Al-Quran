@@ -402,7 +402,10 @@ export default function QuranReader({
       </div>
 
       {/* УПРОЩЕННЫЕ Controls без общей аудио-панели */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 p-3 sm:p-4 bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 p-3 sm:p- rounded-xl shadow-sm" style={{
+                    background: `linear-gradient(135deg, var(--color-secondary) 0%, var(--color-background-secondary) 100%)`,
+                    borderColor: 'var(--color-primary)'
+                  }}>
         <div className="flex items-center justify-center sm:justify-start gap-2">
           <Button
             variant="outline"

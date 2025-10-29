@@ -12,7 +12,7 @@ import type { UserAnswer } from '@/lib/quizTypes';
 
 export function Quiz() {
   const { locale } = useLocale();
-  const { customButtonColor } = useQuranStore();
+  const customButtonColor = "var(--color-primary)";
   const {
     questions,
     currentQuestionIndex,

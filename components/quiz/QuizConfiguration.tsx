@@ -43,7 +43,7 @@ interface QuizConfigurationProps {
 
 export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps) {
   const { t, locale } = useLocale();
-  const { customButtonColor } = useQuranStore();
+  const customButtonColor = "var(--color-primary)";
   const [selectedTypes, setSelectedTypes] = useState<string[]>(['guess-surah']);
   const [useTimer, setUseTimer] = useState(false);
 
@@ -142,7 +142,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
           >
             <Brain className="w-12 h-12 text-white" />
           </motion.div>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r text-[var(--color-primary)] bg-clip-text ">
             {locale === 'en' ? 'Quran Quiz' : 'Викторина по Корану'}
           </h1>
           <p className="text-lg" style={{ color: 'var(--fixed-text-secondary)' }}>

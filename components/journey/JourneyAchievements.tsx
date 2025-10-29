@@ -8,10 +8,9 @@ import { cn } from '@/lib/utils';
 
 export default function JourneyAchievements() {
   const { locale } = useLocale();
-  const { customButtonColor } = useQuranStore();
   const { achievements, stats } = useJourneyStore();
 
-  const primaryColor = customButtonColor || '#10b981';
+  const primaryColor = 'var(--color-primary)';
 
   const achievementsList = Object.values(achievements);
   const unlockedCount = achievementsList.filter(a => a.unlockedAt).length;

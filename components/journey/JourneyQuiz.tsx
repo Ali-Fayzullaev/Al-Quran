@@ -17,7 +17,6 @@ interface JourneyQuizProps {
 
 export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
   const { locale } = useLocale();
-  const { customButtonColor } = useQuranStore();
   const { surahProgress, getCompletedSurahsInPriorityOrder, stats, completeSurahQuiz, initializeJourney } = useJourneyStore();
   const { 
     startJourneyQuiz, 
@@ -30,7 +29,7 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
   const [questionsCount, setQuestionsCount] = useState(10);
   const [showResults, setShowResults] = useState(false);
 
-  const primaryColor = customButtonColor || '#10b981';
+  const primaryColor = "var(--color-primary)";
 
   // Инициализируем journey при загрузке компонента
   useEffect(() => {

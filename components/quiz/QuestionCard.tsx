@@ -26,7 +26,7 @@ export function QuestionCard({
   timeLimit,
 }: QuestionCardProps) {
   const { locale } = useLocale();
-  const { customButtonColor } = useQuranStore();
+  const  customButtonColor  = "var(--color-primary)"
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [hasAnswered, setHasAnswered] = useState(false);
   const [timeSpent, setTimeSpent] = useState(0);

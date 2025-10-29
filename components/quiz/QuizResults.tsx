@@ -59,7 +59,7 @@ const MOTIVATIONS: Record<PerformanceLevel['level'], IslamicMotivation> = {
 
 export function QuizResults({ result, onRetry, onHome }: QuizResultsProps) {
   const { t } = useLocale();
-  const { customButtonColor } = useQuranStore();
+  const  customButtonColor  = "var(--color-primary)"
   const { score, totalPoints, percentage, timeSpent, performance, answers } = result;
   
   // Determine performance level

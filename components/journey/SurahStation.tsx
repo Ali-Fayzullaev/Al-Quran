@@ -30,7 +30,6 @@ export default function SurahStation({
   onStart,
 }: SurahStationProps) {
   const { locale } = useLocale();
-  const { customButtonColor } = useQuranStore();
   const { surahProgress, getSurahStatus } = useJourneyStore();
   
   const [isHovered, setIsHovered] = useState(false);
@@ -44,7 +43,7 @@ export default function SurahStation({
   const progress = isMounted ? surahProgress[surahNumber] : undefined;
   const status = isMounted ? getSurahStatus(surahNumber) : 'locked';
 
-  const primaryColor = customButtonColor || '#10b981';
+  const primaryColor = "var(--color-primary)";
 
   // Определяем стиль в зависимости от статуса
   const getStatusColor = () => {

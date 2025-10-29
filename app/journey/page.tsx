@@ -1,23 +1,23 @@
 "use client";
 
-import { useState } from 'react';
-import { useLocale } from '@/context/LocaleContext';
-import { useQuranStore } from '@/lib/store';
-import JourneyMap from '@/components/journey/JourneyMap';
-import JourneyStats from '@/components/journey/JourneyStats';
-import JourneyAchievements from '@/components/journey/JourneyAchievements';
-import JourneyQuiz from '@/components/journey/JourneyQuiz';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Map, BarChart3, Trophy, Brain } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { useLocale } from "@/context/LocaleContext";
+import { useQuranStore } from "@/lib/store";
+import JourneyMap from "@/components/journey/JourneyMap";
+import JourneyStats from "@/components/journey/JourneyStats";
+import JourneyAchievements from "@/components/journey/JourneyAchievements";
+import JourneyQuiz from "@/components/journey/JourneyQuiz";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Map, BarChart3, Trophy, Brain } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function JourneyPage() {
   const { locale } = useLocale();
   const router = useRouter();
-  const { customButtonColor } = useQuranStore();
-  const [activeTab, setActiveTab] = useState<'map' | 'stats' | 'achievements' | 'quiz'>('map');
+  const [activeTab, setActiveTab] = useState<
+    "map" | "stats" | "achievements" | "quiz"
+  >("map");
 
-  const primaryColor = customButtonColor || '#10b981';
 
   const handleStartQuiz = (surahNumber: number) => {
     // Перенаправляем на страницу квиза для конкретной суры
@@ -25,99 +25,118 @@ export default function JourneyPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: 'var(--fixed-background)' }}>
+    <div
+      className="min-h-screen"
+      style={{ backgroundColor: "var(--fixed-background)" }}
+    >
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Приветственный баннер */}
         <div
           className="mb-8 p-8 rounded-3xl border-2 relative overflow-hidden"
           style={{
-            backgroundColor: `${primaryColor}10`,
-            borderColor: primaryColor,
+            background: `linear-gradient(135deg, var(--color-secondary) 0%, var(--color-background-secondary) 100%)`,
+            borderColor: "var(--color-primary)",
           }}
         >
           <div
             className="absolute inset-0 opacity-5"
             style={{
-              background: `linear-gradient(135deg, ${primaryColor} 0%, ${primaryColor}80 100%)`,
+              background: `linear-gradient(135deg, var(--color-secondary) 0%, var(--color-background-secondary) 100%)`,
+              borderColor: "var(--color-primary)",
             }}
           />
-          
+
           <div className="relative z-10 text-center space-y-4">
             <div className="text-6xl mb-4">🗺️</div>
-            <h1 className="text-4xl md:text-5xl font-bold" style={{ color: 'var(--fixed-text)' }}>
-              {locale === 'en' ? 'Quran Journey' : 'Путешествие по Корану'}
+            <h1
+              className="text-4xl md:text-5xl font-bold"
+              style={{ color: "var(--fixed-text)" }}
+            >
+              {locale === "en" ? "Quran Journey" : "Путешествие по Корану"}
             </h1>
-            <p className="text-lg max-w-2xl mx-auto" style={{ color: 'var(--fixed-text-secondary)' }}>
-              {locale === 'en'
-                ? 'Embark on an interactive journey through all 114 surahs of the Holy Quran. Test your knowledge, unlock achievements, and track your progress!'
-                : 'Отправьтесь в интерактивное путешествие по всем 114 сурам Священного Корана. Проверьте свои знания, разблокируйте достижения и отслеживайте свой прогресс!'
-              }
+            <p
+              className="text-lg max-w-2xl mx-auto"
+              style={{ color: "var(--fixed-text-secondary)" }}
+            >
+              {locale === "en"
+                ? "Embark on an interactive journey through all 114 surahs of the Holy Quran. Test your knowledge, unlock achievements, and track your progress!"
+                : "Отправьтесь в интерактивное путешествие по всем 114 сурам Священного Корана. Проверьте свои знания, разблокируйте достижения и отслеживайте свой прогресс!"}
             </p>
           </div>
         </div>
 
         {/* Табы навигации */}
         <div className="mb-8">
-          <div className="flex gap-3 p-2 rounded-2xl border-2 bg-opacity-50" style={{ 
-            backgroundColor: 'var(--fixed-background-secondary)',
-            borderColor: 'var(--color-border)'
-          }}>
+          <div
+            className="flex gap-3 p-2 rounded-2xl border-2 bg-opacity-50"
+            style={{
+              backgroundColor: "var(--fixed-background-secondary)",
+              borderColor: "var(--color-border)",
+            }}
+          >
             <button
-              onClick={() => setActiveTab('map')}
+              onClick={() => setActiveTab("map")}
               className="flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-xl transition-all font-medium"
               style={{
-                backgroundColor: activeTab === 'map' ? primaryColor : 'transparent',
-                color: activeTab === 'map' ? 'white' : 'var(--fixed-text)',
+                backgroundColor:
+                  activeTab === "map" ? "var(--color-primary)" : "transparent",
+                color: activeTab === "map" ? "white" : "var(--fixed-text)",
               }}
             >
               <Map className="w-5 h-5" />
-              <span>{locale === 'en' ? 'Journey Map' : 'Карта'}</span>
-            </button>
-            
-            <button
-              onClick={() => setActiveTab('stats')}
-              className="flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-xl transition-all font-medium"
-              style={{
-                backgroundColor: activeTab === 'stats' ? primaryColor : 'transparent',
-                color: activeTab === 'stats' ? 'white' : 'var(--fixed-text)',
-              }}
-            >
-              <BarChart3 className="w-5 h-5" />
-              <span>{locale === 'en' ? 'Statistics' : 'Статистика'}</span>
-            </button>
-            
-            <button
-              onClick={() => setActiveTab('achievements')}
-              className="flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-xl transition-all font-medium"
-              style={{
-                backgroundColor: activeTab === 'achievements' ? primaryColor : 'transparent',
-                color: activeTab === 'achievements' ? 'white' : 'var(--fixed-text)',
-              }}
-            >
-              <Trophy className="w-5 h-5" />
-              <span>{locale === 'en' ? 'Achievements' : 'Достижения'}</span>
+              <span>{locale === "en" ? "Journey Map" : "Карта"}</span>
             </button>
 
             <button
-              onClick={() => setActiveTab('quiz')}
+              onClick={() => setActiveTab("stats")}
               className="flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-xl transition-all font-medium"
               style={{
-                backgroundColor: activeTab === 'quiz' ? primaryColor : 'transparent',
-                color: activeTab === 'quiz' ? 'white' : 'var(--fixed-text)',
+                backgroundColor:
+                  activeTab === "stats" ? "var(--color-primary)" : "transparent",
+                color: activeTab === "stats" ? "white" : "var(--fixed-text)",
+              }}
+            >
+              <BarChart3 className="w-5 h-5" />
+              <span>{locale === "en" ? "Statistics" : "Статистика"}</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab("achievements")}
+              className="flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-xl transition-all font-medium"
+              style={{
+                backgroundColor:
+                  activeTab === "achievements" ? "var(--color-primary)" : "transparent",
+                color:
+                  activeTab === "achievements" ? "white" : "var(--fixed-text)",
+              }}
+            >
+              <Trophy className="w-5 h-5" />
+              <span>{locale === "en" ? "Achievements" : "Достижения"}</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab("quiz")}
+              className="flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-xl transition-all font-medium"
+              style={{
+                backgroundColor:
+                  activeTab === "quiz" ? "var(--color-primary)" : "transparent",
+                color: activeTab === "quiz" ? "white" : "var(--fixed-text)",
               }}
             >
               <Brain className="w-5 h-5" />
-              <span>{locale === 'en' ? 'Quiz' : 'Викторина'}</span>
+              <span>{locale === "en" ? "Quiz" : "Викторина"}</span>
             </button>
           </div>
         </div>
 
         {/* Контент табов */}
         <div>
-          {activeTab === 'map' && <JourneyMap onStartQuiz={handleStartQuiz} />}
-          {activeTab === 'stats' && <JourneyStats />}
-          {activeTab === 'achievements' && <JourneyAchievements />}
-          {activeTab === 'quiz' && <JourneyQuiz onBack={() => setActiveTab('map')} />}
+          {activeTab === "map" && <JourneyMap onStartQuiz={handleStartQuiz} />}
+          {activeTab === "stats" && <JourneyStats />}
+          {activeTab === "achievements" && <JourneyAchievements />}
+          {activeTab === "quiz" && (
+            <JourneyQuiz onBack={() => setActiveTab("map")} />
+          )}
         </div>
       </div>
     </div>
