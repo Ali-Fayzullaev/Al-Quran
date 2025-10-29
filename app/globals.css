@@ -49,43 +49,69 @@
   --color-primary-dark: #047857;
   --color-secondary: #f0fdf4;
 
-  /* Основные переменные для светлой темы */
-  --color-accent: #059669;
-  --color-background: #ffffff;
-  --color-background-secondary: #f9fafb;
-  --color-surface: #ffffff;
-  --color-text: #1c1e21;
-  --color-text-secondary: #5a5d61;
-  --color-border: #e5e7eb;
-  --color-muted: #f3f4f6;
-
-  /* Переменные для текста Корана в светлой теме */
-  --quran-arabic-color: #1c1e21;
-  --quran-translation-color: #5a5d61;
-  --quran-verse-number-color: #10b981;
-  --quran-highlight-color: #fef3c7;
-  --verse-background: #ffffff;
-
-  /* Переменные для Мусхафа SVG */
-  --mushaf-bg: #fefefe;
-  --mushaf-page-bg: #f8f5f0;
-  --mushaf-text: #2d3748;
-  --mushaf-accent: #2b6cb0;
+  /* Переменные для системы тем Мусхафа */
+  --mushaf-bg: #ffffff;
+  --mushaf-page-bg: #fefefe;
+  --mushaf-text: #1a202c;
+  --mushaf-accent: #3182ce;
   --mushaf-border: #e2e8f0;
-  --mushaf-shadow: rgba(0, 0, 0, 0.1);
-  --mushaf-page-gradient: linear-gradient(135deg, #f8f5f0 0%, #e8dfca 100%);
-  --mushaf-page-radius: 8px;
-  --mushaf-shadow-blur: 20px;
-  --mushaf-perspective: 1200px;
+}
+
+/* Применение темы к контейнеру Мусхафа */
+.mushaf-container {
+  background-color: var(--mushaf-bg) !important;
+  color: var(--mushaf-text) !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.mushaf-container .mushaf-page-container {
+  background-color: var(--mushaf-page-bg) !important;
+  border-color: var(--mushaf-border) !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.mushaf-container button {
+  color: var(--mushaf-text) !important;
+}
+
+.mushaf-container .mushaf-accent {
+  color: var(--mushaf-accent) !important;
+}
+
+/* Принудительное применение фона страниц */
+.mushaf-container .mushaf-page-container,
+.mushaf-container [class*="mushaf-page"] {
+  background: var(--mushaf-page-bg) !important;
+  color: var(--mushaf-text) !important;
+}
+
+/* Дополнительная принудительная тематизация */
+.mushaf-container {
+  --tw-bg-opacity: 1 !important;
+}
+
+.mushaf-container * {
+  transition: background-color 0.3s ease !important;
+}
+
+/* Переопределение Tailwind классов */
+.mushaf-container .bg-gradient-to-br {
+  background: var(--mushaf-bg) !important;
+}
+
+.mushaf-container .from-amber-50,
+.mushaf-container .via-orange-50,
+.mushaf-container .to-red-50 {
+  background: var(--mushaf-bg) !important;
 }
 
 /* ============ ПРЕМИАЛЬНЫЕ СТИЛИ МУСХАФА ============ */
 
 /* Основные стили страниц */
 .mushaf-page-container {
-  background: var(--mushaf-page-gradient);
-  border-radius: var(--mushaf-page-radius);
-  box-shadow: 0 10px 30px var(--mushaf-shadow),
+  background: var(--mushaf-page-bg);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 -1px 0 rgba(0, 0, 0, 0.05);
   border: 1px solid var(--mushaf-border);
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -93,7 +119,7 @@
 
 .mushaf-page-container:hover {
   transform: translateY(-2px);
-  box-shadow: 0 15px 40px var(--mushaf-shadow),
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
 }
 
@@ -104,12 +130,12 @@
 }
 
 .mushaf-page-left .mushaf-page-inner {
-  transform: perspective(var(--mushaf-perspective)) rotateY(2deg);
+  transform: perspective(1200px) rotateY(2deg);
   transform-origin: right center;
 }
 
 .mushaf-page-right .mushaf-page-inner {
-  transform: perspective(var(--mushaf-perspective)) rotateY(-2deg);
+  transform: perspective(1200px) rotateY(-2deg);
   transform-origin: left center;
 }
 

@@ -6,17 +6,14 @@ import {
   Settings, 
   Maximize2, 
   Minimize2,
-  HelpCircle,
-  Award,
-  Bookmark,
   RotateCw
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import PageSpread from './PageSpread';
 import PremiumNavigation from './PremiumNavigation';
-import ThemeSystem from './ThemeSystem';
-import { useGestureControls, KeyboardShortcutsHelp } from './GestureControls';
+import ThemeSystem from './ThemeSystemSimple';
+
 import { 
   ViewMode,
   ZoomState,
@@ -25,7 +22,6 @@ import {
   MushafSettings,
   ReadingProgress,
   Achievement,
-  DEFAULT_THEMES,
   DEFAULT_ACHIEVEMENTS,
   MUSHAF_CONFIG 
 } from '@/lib/mushafTypes';
@@ -57,12 +53,30 @@ function useMushafState(initialPage: number = 1) {
     level: MUSHAF_CONFIG.DEFAULT_ZOOM,
     minZoom: MUSHAF_CONFIG.MIN_ZOOM,
     maxZoom: MUSHAF_CONFIG.MAX_ZOOM,
-    zoomLevels: MUSHAF_CONFIG.ZOOM_LEVELS,
+    zoomLevels: [...MUSHAF_CONFIG.ZOOM_LEVELS],
     position: { x: 0, y: 0 },
     isZooming: false
   });
 
-  const [currentTheme, setCurrentTheme] = useState<MushafTheme>(DEFAULT_THEMES[0]);
+  const [currentTheme, setCurrentTheme] = useState<MushafTheme>({
+    id: 'light',
+    name: 'Светлая',
+    nameArabic: 'فاتح',
+    icon: '☀️',
+    colors: {
+      background: '#ffffff',
+      pageBackground: '#fefefe',
+      pageShadow: '#e2e8f0',
+      text: '#1a202c',
+      accent: '#3182ce',
+      border: '#e2e8f0'
+    },
+    effects: {
+      pageRadius: '8px',
+      shadowBlur: '20px',
+      perspective: '1200px'
+    }
+  });
   
   const [settings, setSettings] = useState<MushafSettings>({
     viewMode: 'spread',
@@ -116,7 +130,12 @@ export default function QuranBook({
   initialPage = 1, 
   className 
 }: QuranBookProps) {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
+  
+  // Состояние для мобильной ориентации
+  const [isMobile, setIsMobile] = useState(false);
+  const [isPortrait, setIsPortrait] = useState(true);
+  const [showRotationMessage, setShowRotationMessage] = useState(false);
   const {
     navigationState,
     setNavigationState,
@@ -138,8 +157,6 @@ export default function QuranBook({
 
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [showAchievements, setShowAchievements] = useState(false);
-  const [showShortcuts, setShowShortcuts] = useState(false);
   const [isImmersiveMode, setIsImmersiveMode] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -285,8 +302,6 @@ export default function QuranBook({
       case 'exitMode':
         setIsImmersiveMode(false);
         setShowSettings(false);
-        setShowAchievements(false);
-        setShowShortcuts(false);
         break;
     }
   }, [
@@ -298,19 +313,14 @@ export default function QuranBook({
     navigationState.currentPage
   ]);
 
-  // Подключаем систему жестов
-  const { GestureControls } = useGestureControls(
-    handleSwipeLeft,
-    handleSwipeRight,
-    handlePinchIn,
-    handlePinchOut,
-    handleDoubleTap,
-    handleKeyboardShortcut,
-    {
-      isEnabled: true,
-      sensitivity: settings.touchSensitivity
-    }
-  );
+  // Подключаем систему жестов (упрощенная версия)
+  const gestureHandlers = {
+    onSwipeLeft: handleSwipeLeft,
+    onSwipeRight: handleSwipeRight,
+    onPinchIn: handlePinchIn,
+    onPinchOut: handlePinchOut,
+    onDoubleTap: handleDoubleTap
+  };
 
   // Обновление времени чтения
   useEffect(() => {
@@ -326,6 +336,33 @@ export default function QuranBook({
 
     return () => clearInterval(interval);
   }, []);
+
+  // Отслеживание ориентации экрана для мобильных устройств
+  useEffect(() => {
+    const checkScreenSize = () => {
+      const mobile = window.innerWidth <= MUSHAF_CONFIG.BREAKPOINTS.MOBILE;
+      const portrait = window.innerHeight > window.innerWidth;
+      
+      setIsMobile(mobile);
+      setIsPortrait(portrait);
+      
+      // Показать сообщение о повороте если:
+      // 1. Это мобильное устройство
+      // 2. Портретная ориентация 
+      // 3. Режим двух страниц
+      const shouldShowRotation = mobile && portrait && viewMode.type === 'spread';
+      setShowRotationMessage(shouldShowRotation);
+    };
+
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    window.addEventListener('orientationchange', checkScreenSize);
+
+    return () => {
+      window.removeEventListener('resize', checkScreenSize);
+      window.removeEventListener('orientationchange', checkScreenSize);
+    };
+  }, [viewMode.type]);
 
   // Проверка достижений
   useEffect(() => {
@@ -370,8 +407,7 @@ export default function QuranBook({
   }, [readingProgress, bookmarks]);
 
   const containerClasses = cn(
-    "relative w-full h-screen overflow-hidden",
-    "bg-gradient-to-br from-amber-50 via-orange-50 to-red-50",
+    "mushaf-container relative w-full h-screen overflow-hidden",
     {
       "cursor-none": isImmersiveMode
     },
@@ -380,8 +416,8 @@ export default function QuranBook({
 
   return (
     <div ref={containerRef} className={containerClasses}>
-      {/* Система жестов */}
-      <GestureControls />
+      {/* Система жестов - упрощенная версия */}
+      <div className="absolute inset-0 pointer-events-none z-0" />
 
       {/* Главная область просмотра */}
       <div className="relative w-full h-full flex flex-col">
@@ -422,24 +458,6 @@ export default function QuranBook({
 
                 {/* Правая группа */}
                 <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowAchievements(!showAchievements)}
-                    className="bg-white/80 hover:bg-white/90 shadow-md"
-                  >
-                    <Award className="w-4 h-4" />
-                  </Button>
-                  
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setShowShortcuts(!showShortcuts)}
-                    className="bg-white/80 hover:bg-white/90 shadow-md"
-                  >
-                    <HelpCircle className="w-4 h-4" />
-                  </Button>
-                  
                   <Button
                     variant="ghost"
                     size="sm"
@@ -498,7 +516,7 @@ export default function QuranBook({
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-gray-800">
-                  {locale === 'en' ? 'Settings' : 'الإعدادات'}
+                  {t('settings')}
                 </h2>
                 <Button
                   variant="ghost"
@@ -520,69 +538,39 @@ export default function QuranBook({
         )}
       </AnimatePresence>
 
-      {/* Панель достижений */}
+      {/* Сообщение о повороте экрана для мобильных устройств */}
       <AnimatePresence>
-        {showAchievements && (
+        {showRotationMessage && (
           <motion.div
-            initial={{ opacity: 0, x: 300 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 300 }}
-            className="absolute top-0 right-0 w-80 h-full bg-white shadow-2xl z-30 overflow-y-auto"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
           >
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-800">
-                  {locale === 'en' ? 'Achievements' : 'الإنجازات'}
-                </h2>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowAchievements(false)}
-                >
-                  ×
-                </Button>
-              </div>
-              
-              <div className="space-y-4">
-                {achievements.map(achievement => (
-                  <div
-                    key={achievement.id}
-                    className={cn(
-                      "p-4 rounded-lg border-2 transition-all",
-                      achievement.unlocked
-                        ? "bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-300"
-                        : "bg-gray-50 border-gray-200"
-                    )}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="text-2xl">{achievement.icon}</div>
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-gray-800">
-                          {achievement.title}
-                        </h4>
-                        <p className="text-sm text-gray-600">
-                          {achievement.description}
-                        </p>
-                        {achievement.unlocked && achievement.unlockedAt && (
-                          <p className="text-xs text-yellow-600 mt-1">
-                            {achievement.unlockedAt.toLocaleDateString()}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              className="bg-white rounded-lg p-6 text-center max-w-sm"
+            >
+              <div className="text-4xl mb-4">📱➡️📱</div>
+              <h3 className="text-lg font-bold mb-2">
+                {t('mushaf.rotateDevice')}
+              </h3>
+              <p className="text-gray-600 mb-4">
+                {t('mushaf.rotateDeviceMessage')}
+              </p>
+              <Button
+                onClick={() => setShowRotationMessage(false)}
+                className="w-full"
+              >
+                {t('mushaf.gotIt')}
+              </Button>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Справка по горячим клавишам */}
-      <KeyboardShortcutsHelp
-        isVisible={showShortcuts}
-        onClose={() => setShowShortcuts(false)}
-      />
     </div>
   );
 }

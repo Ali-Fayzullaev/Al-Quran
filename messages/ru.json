@@ -174,5 +174,28 @@
     "averageMessage": "Вы на правильном пути! Продолжайте изучать и практиковаться.",
     "needsImprovementTitle": "Продолжайте!",
     "needsImprovementMessage": "Каждое путешествие начинается с первого шага. Продолжайте учиться!",
-    "selectAtLeastOneType": "Выберите хотя бы один тип вопроса"
+    "selectAtLeastOneType": "Выберите хотя бы один тип вопроса",
+    
+    "mushaf": {
+        "title": "Цифровой Мусхаф",
+        "themes": "Темы",
+        "lightTheme": "Светлая",
+        "sepiaTheme": "Сепия", 
+        "darkTheme": "Тёмная",
+        "rotateDevice": "Поверните устройство",
+        "rotateDeviceMessage": "Для лучшего просмотра двух страниц поверните устройство в альбомную ориентацию",
+        "gotIt": "Понятно",
+        "zoomIn": "Увеличить",
+        "zoomOut": "Уменьшить",
+        "fullscreen": "Полный экран",
+        "exitFullscreen": "Выйти из полного экрана", 
+        "nextPage": "Следующая страница",
+        "previousPage": "Предыдущая страница",
+        "goToPage": "Перейти к странице",
+        "pageOf": "Страница {current} из {total}",
+        "loading": "Загрузка...",
+        "viewModes": "Режимы просмотра",
+        "singlePage": "Одна страница",
+        "doublePage": "Две страницы"
+    }
 }

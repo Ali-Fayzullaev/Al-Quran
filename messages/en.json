@@ -1,3 +1,4 @@
+
 {
   "title": "Al-Quran AI",
   "welcome": "Welcome to Al-Quran AI",
@@ -174,5 +175,28 @@
   "averageMessage": "You're on the right track! Keep studying and practicing.",
   "needsImprovementTitle": "Keep Going!",
   "needsImprovementMessage": "Every journey starts with a single step. Keep learning!",
-  "selectAtLeastOneType": "Select at least one question type"
+  "selectAtLeastOneType": "Select at least one question type",
+  
+  "mushaf": {
+    "title": "Digital Mushaf",
+    "themes": "Themes", 
+    "lightTheme": "Light",
+    "sepiaTheme": "Sepia",
+    "darkTheme": "Dark",
+    "rotateDevice": "Rotate Your Device",
+    "rotateDeviceMessage": "For better two-page viewing, rotate your device to landscape orientation",
+    "gotIt": "Got it",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out", 
+    "fullscreen": "Fullscreen",
+    "exitFullscreen": "Exit Fullscreen",
+    "nextPage": "Next Page",
+    "previousPage": "Previous Page",
+    "goToPage": "Go to Page",
+    "pageOf": "Page {current} of {total}",
+    "loading": "Loading...",
+    "viewModes": "View Modes",
+    "singlePage": "Single Page",
+    "doublePage": "Double Page"
+  }
 }
