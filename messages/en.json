@@ -1,4 +1,3 @@
-
 {
   "title": "Al-Quran AI",
   "welcome": "Welcome to Al-Quran AI",
@@ -183,6 +182,9 @@
     "lightTheme": "Light",
     "sepiaTheme": "Sepia",
     "darkTheme": "Dark",
+    "greenTheme": "Nature",
+    "blueTheme": "Sky",
+    "oledTheme": "OLED Black",
     "rotateDevice": "Rotate Your Device",
     "rotateDeviceMessage": "For better two-page viewing, rotate your device to landscape orientation",
     "gotIt": "Got it",
