@@ -441,8 +441,14 @@ export default function QuranReader({
           </Button>
         </div>
 
-        <div className="flex items-center justify-between sm:justify-end gap-2">
-          <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">
+        <div className="flex items-center justify-between sm:justify-end gap-2" >
+          <span className=" text-xs sm:text-sm px-2 py-1 rounded"
+          style={showTranslation ? { 
+              backgroundColor: 'var(--color-primary)', 
+              color: 'white',
+              borderColor: 'var(--color-primary)'
+            } : undefined} 
+            >
             {currentVerse} / {arabicSurah.numberOfAyahs}
           </span>
           
@@ -1000,7 +1006,7 @@ export default function QuranReader({
             </span>
           </Button>
           
-          <span className="px-3 sm:px-4 py-2 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs sm:text-sm font-medium">
+          <span className="px-3 sm:px-4 py-2 bg-[var(--color-primary)] rounded-lg text-xs sm:text-sm font-medium ">
             {currentVerse} / {arabicSurah.numberOfAyahs}
           </span>
           
