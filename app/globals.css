@@ -48,21 +48,302 @@
   --color-primary-light: #34d399;
   --color-primary-dark: #047857;
   --color-secondary: #f0fdf4;
+
+  /* Основные переменные для светлой темы */
   --color-accent: #059669;
-  --color-background: #ffffff; /* Используем фиксированный цвет */
+  --color-background: #ffffff;
   --color-background-secondary: #f9fafb;
   --color-surface: #ffffff;
-  --color-text: #1c1e21; /* Используем фиксированный цвет */
+  --color-text: #1c1e21;
   --color-text-secondary: #5a5d61;
   --color-border: #e5e7eb;
   --color-muted: #f3f4f6;
 
-  /* Переменные для текста Корана - по умолчанию используют стандартные цвета */
+  /* Переменные для текста Корана в светлой теме */
   --quran-arabic-color: #1c1e21;
   --quran-translation-color: #5a5d61;
   --quran-verse-number-color: #10b981;
   --quran-highlight-color: #fef3c7;
   --verse-background: #ffffff;
+
+  /* Переменные для Мусхафа SVG */
+  --mushaf-bg: #fefefe;
+  --mushaf-page-bg: #f8f5f0;
+  --mushaf-text: #2d3748;
+  --mushaf-accent: #2b6cb0;
+  --mushaf-border: #e2e8f0;
+  --mushaf-shadow: rgba(0, 0, 0, 0.1);
+  --mushaf-page-gradient: linear-gradient(135deg, #f8f5f0 0%, #e8dfca 100%);
+  --mushaf-page-radius: 8px;
+  --mushaf-shadow-blur: 20px;
+  --mushaf-perspective: 1200px;
+}
+
+/* ============ ПРЕМИАЛЬНЫЕ СТИЛИ МУСХАФА ============ */
+
+/* Основные стили страниц */
+.mushaf-page-container {
+  background: var(--mushaf-page-gradient);
+  border-radius: var(--mushaf-page-radius);
+  box-shadow: 0 10px 30px var(--mushaf-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--mushaf-border);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.mushaf-page-container:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px var(--mushaf-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9), inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Эффект перспективы для страниц */
+.mushaf-page-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.mushaf-page-left .mushaf-page-inner {
+  transform: perspective(var(--mushaf-perspective)) rotateY(2deg);
+  transform-origin: right center;
+}
+
+.mushaf-page-right .mushaf-page-inner {
+  transform: perspective(var(--mushaf-perspective)) rotateY(-2deg);
+  transform-origin: left center;
+}
+
+/* Эффекты переплета */
+.mushaf-binding {
+  background: linear-gradient(
+    to bottom,
+    #8b4513 0%,
+    #a0522d 25%,
+    #8b4513 50%,
+    #654321 75%,
+    #8b4513 100%
+  );
+  box-shadow: inset 2px 0 4px rgba(0, 0, 0, 0.3),
+    inset -2px 0 4px rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.mushaf-binding::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 10px,
+    rgba(0, 0, 0, 0.1) 11px,
+    rgba(0, 0, 0, 0.1) 12px
+  );
+}
+
+/* Анимации перелистывания */
+@keyframes page-turn-right {
+  0% {
+    transform: perspective(1200px) rotateY(0deg);
+  }
+  50% {
+    transform: perspective(1200px) rotateY(-90deg);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+  }
+  100% {
+    transform: perspective(1200px) rotateY(-180deg);
+  }
+}
+
+@keyframes page-turn-left {
+  0% {
+    transform: perspective(1200px) rotateY(0deg);
+  }
+  50% {
+    transform: perspective(1200px) rotateY(90deg);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+  }
+  100% {
+    transform: perspective(1200px) rotateY(180deg);
+  }
+}
+
+.page-turning-right {
+  animation: page-turn-right 0.6s ease-in-out;
+}
+
+.page-turning-left {
+  animation: page-turn-left 0.6s ease-in-out;
+}
+
+/* Утилитарные классы для перспективы */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.perspective-1500 {
+  perspective: 1500px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+/* Градиенты для создания глубины */
+.mushaf-page-shadow-left {
+  background: linear-gradient(
+    to left,
+    rgba(0, 0, 0, 0.15) 0%,
+    rgba(0, 0, 0, 0.05) 20%,
+    transparent 40%
+  );
+}
+
+.mushaf-page-shadow-right {
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.15) 0%,
+    rgba(0, 0, 0, 0.05) 20%,
+    transparent 40%
+  );
+}
+
+/* Стили для зума */
+.mushaf-zoom-container {
+  transition: transform 0.3s ease-out;
+  cursor: grab;
+}
+
+.mushaf-zoom-container:active {
+  cursor: grabbing;
+}
+
+.mushaf-zoom-container.zoomed {
+  transform-origin: center;
+}
+
+/* Стили прогресса загрузки */
+.mushaf-loading-animation {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: loading-shimmer 1.5s infinite;
+}
+
+@keyframes loading-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Стили для тем */
+.theme-light {
+  --mushaf-bg: #fefefe;
+  --mushaf-page-bg: #f8f5f0;
+  --mushaf-text: #2d3748;
+  --mushaf-accent: #2b6cb0;
+  --mushaf-border: #e2e8f0;
+  --mushaf-shadow: rgba(0, 0, 0, 0.1);
+  --mushaf-page-gradient: linear-gradient(135deg, #f8f5f0 0%, #e8dfca 100%);
+}
+
+.theme-sepia {
+  --mushaf-bg: #f8f0e0;
+  --mushaf-page-bg: #e8dfca;
+  --mushaf-text: #5c4b37;
+  --mushaf-accent: #8b4513;
+  --mushaf-border: #d4af8c;
+  --mushaf-shadow: rgba(139, 69, 19, 0.2);
+  --mushaf-page-gradient: linear-gradient(135deg, #e8dfca 0%, #d4c4a0 100%);
+}
+
+.theme-dark {
+  --mushaf-bg: #1a202c;
+  --mushaf-page-bg: #2d3748;
+  --mushaf-text: #e2e8f0;
+  --mushaf-accent: #63b3ed;
+  --mushaf-border: #4a5568;
+  --mushaf-shadow: rgba(0, 0, 0, 0.4);
+  --mushaf-page-gradient: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+}
+
+/* Адаптивные стили */
+@media (max-width: 768px) {
+  .mushaf-page-container {
+    border-radius: 6px;
+  }
+
+  .mushaf-page-left .mushaf-page-inner,
+  .mushaf-page-right .mushaf-page-inner {
+    transform: none; /* Убираем 3D эффекты на мобильных */
+  }
+}
+
+/* Улучшенные тени для мобильных устройств */
+@media (hover: none) and (pointer: coarse) {
+  .mushaf-page-container {
+    box-shadow: 0 4px 15px var(--mushaf-shadow);
+  }
+
+  .mushaf-page-container:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease-out;
+  }
+}
+
+/* Анимации входа и выхода */
+.mushaf-page-enter {
+  opacity: 0;
+  transform: scale(0.95) rotateY(45deg);
+}
+
+.mushaf-page-enter-active {
+  opacity: 1;
+  transform: scale(1) rotateY(0deg);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.mushaf-page-exit {
+  opacity: 1;
+  transform: scale(1) rotateY(0deg);
+}
+
+.mushaf-page-exit-active {
+  opacity: 0;
+  transform: scale(0.95) rotateY(-45deg);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Стили для контролов */
+.mushaf-controls {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Стили для навигации */
+.mushaf-nav-button {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-out;
+}
+
+.mushaf-nav-button:hover {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
 }
 
 .dark {
@@ -104,6 +385,18 @@
   --color-accent: #10b981;
   --color-background: #1b1b1d; /* Используем фиксированный цвет */
   --color-background-secondary: #252527;
+  --color-surface: #1f1f23;
+  --color-text: #e3e3e3; /* Используем фиксированный цвет */
+  --color-text-secondary: #b0b0b0;
+  --color-border: #374151;
+  --color-muted: #1f2937;
+
+  /* Переменные для текста Корана в темной теме */
+  --quran-arabic-color: #e3e3e3;
+  --quran-translation-color: #b0b0b0;
+  --quran-verse-number-color: #34d399;
+  --quran-highlight-color: #fbbf24;
+  --verse-background: #1f1f23;
   --color-surface: #2a2a2c;
   --color-text: #e3e3e3; /* Используем фиксированный цвет */
   --color-text-secondary: #b0b0b0;

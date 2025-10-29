@@ -11,6 +11,14 @@ import { useLocale } from "@/context/LocaleContext";
 import { useQuranStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
+interface NavigationItem {
+  name: string;
+  href: string;
+  icon: any;
+  badge?: number;
+  isPremium?: boolean;
+}
+
 // Lazy load ThemeDrawer для лучшей производительности
 const ThemeDrawer = dynamic(() => import("./ThemeDrawer"), {
   ssr: false,
@@ -26,6 +34,12 @@ const Header = memo(function Header() {
       name: t('home'),
       href: '/',
       icon: Book,
+    },
+    {
+      name: locale === 'en' ? 'Mushaf' : 'Мусхаф',
+      href: '/mushaf',
+      icon: Book,
+      isPremium: true
     },
     {
       name: t('surahs'),
@@ -120,6 +134,11 @@ const Header = memo(function Header() {
                 >
                   <Icon className="h-4 w-4" />
                   <span>{item.name}</span>
+                  {item.isPremium && (
+                    <span className="ml-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs px-1 py-0.5 rounded-full font-bold">
+                      ★
+                    </span>
+                  )}
                   {item.badge && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
                       {item.badge > 99 ? '99+' : item.badge}
@@ -254,6 +273,11 @@ const MobileNav = memo(function MobileNav({ navigation, pathname }: { navigation
                   >
                     <Icon className="h-5 w-5" />
                     <span className="flex-1">{item.name}</span>
+                    {item.isPremium && (
+                      <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                        ★
+                      </span>
+                    )}
                     {item.badge && (
                       <span className="bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse">
                         {item.badge > 99 ? '99+' : item.badge}

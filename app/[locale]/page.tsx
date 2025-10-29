@@ -214,6 +214,48 @@ export default function HomePage() {
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Премиальный Мусхаф SVG */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.1 }}
+            >
+              <Link href="/mushaf" className="group block">
+                <div className="relative p-8 rounded-3xl bg-gradient-to-br from-amber-100 via-orange-100 to-red-100 dark:from-amber-900/30 dark:via-orange-900/30 dark:to-red-900/30 border-2 border-amber-300 dark:border-amber-700 transition-all duration-300 group-hover:shadow-2xl group-hover:scale-105 overflow-hidden">
+                  {/* Премиум индикатор */}
+                  <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-2 py-1 rounded-full text-xs font-bold z-20">
+                    {locale === "en" ? "PREMIUM" : "ПРЕМИУМ"}
+                  </div>
+                  
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-amber-200 dark:bg-amber-800 rounded-full -translate-y-16 translate-x-16 opacity-20"></div>
+                  
+                  {/* Иконка книги с эффектом */}
+                  <div className="relative mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
+                      <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                      </svg>
+                    </div>
+                  </div>
+                  
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 relative z-10">
+                    {locale === "en" ? "Digital Mushaf" : "Цифровой Мусхаф"}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-6 relative z-10">
+                    {locale === "en"
+                      ? "Experience the Quran like never before with crystal-clear SVG pages, realistic book effects, and premium features."
+                      : "Познавайте Коран как никогда раньше с кристально четкими SVG-страницами, реалистичными книжными эффектами и премиальными функциями."}
+                  </p>
+                  <div className="flex items-center gap-2 text-amber-600 dark:text-amber-400 font-semibold relative z-10">
+                    <span>{locale === "en" ? "Open Mushaf" : "Открыть Мусхаф"}</span>
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M5 13l4 4L19 7"/>
+                    </svg>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
