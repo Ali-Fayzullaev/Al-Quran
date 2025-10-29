@@ -61,7 +61,7 @@ interface JourneyMapProps {
 export default function JourneyMap({ onStartQuiz }: JourneyMapProps) {
   const { locale } = useLocale();
   const { customButtonColor } = useQuranStore();
-  const { initializeJourney, getSurahStatus, stats } = useJourneyStore();
+  const { initializeJourney, getSurahStatus, stats, resetJourney } = useJourneyStore();
   
   const [filter, setFilter] = useState<FilterType>('all');
   const [viewMode, setViewMode] = useState<ViewMode>('grid');

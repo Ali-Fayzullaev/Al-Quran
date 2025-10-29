@@ -6,15 +6,16 @@ import { useQuranStore } from '@/lib/store';
 import JourneyMap from '@/components/journey/JourneyMap';
 import JourneyStats from '@/components/journey/JourneyStats';
 import JourneyAchievements from '@/components/journey/JourneyAchievements';
+import JourneyQuiz from '@/components/journey/JourneyQuiz';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Map, BarChart3, Trophy } from 'lucide-react';
+import { Map, BarChart3, Trophy, Brain } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export default function JourneyPage() {
   const { locale } = useLocale();
   const router = useRouter();
   const { customButtonColor } = useQuranStore();
-  const [activeTab, setActiveTab] = useState<'map' | 'stats' | 'achievements'>('map');
+  const [activeTab, setActiveTab] = useState<'map' | 'stats' | 'achievements' | 'quiz'>('map');
 
   const primaryColor = customButtonColor || '#10b981';
 
@@ -96,6 +97,18 @@ export default function JourneyPage() {
               <Trophy className="w-5 h-5" />
               <span>{locale === 'en' ? 'Achievements' : 'Достижения'}</span>
             </button>
+
+            <button
+              onClick={() => setActiveTab('quiz')}
+              className="flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-xl transition-all font-medium"
+              style={{
+                backgroundColor: activeTab === 'quiz' ? primaryColor : 'transparent',
+                color: activeTab === 'quiz' ? 'white' : 'var(--fixed-text)',
+              }}
+            >
+              <Brain className="w-5 h-5" />
+              <span>{locale === 'en' ? 'Quiz' : 'Викторина'}</span>
+            </button>
           </div>
         </div>
 
@@ -104,6 +117,7 @@ export default function JourneyPage() {
           {activeTab === 'map' && <JourneyMap onStartQuiz={handleStartQuiz} />}
           {activeTab === 'stats' && <JourneyStats />}
           {activeTab === 'achievements' && <JourneyAchievements />}
+          {activeTab === 'quiz' && <JourneyQuiz onBack={() => setActiveTab('map')} />}
         </div>
       </div>
     </div>

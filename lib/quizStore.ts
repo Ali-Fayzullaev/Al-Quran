@@ -5,8 +5,18 @@ import type {
   Question, 
   UserAnswer, 
   QuizResult, 
-  QuizStats 
+  QuizStats,
+  Difficulty 
 } from './quizTypes';
+import { generateQuizQuestions, generateJourneyQuizQuestions } from './quizGenerator';
+
+interface JourneyQuizConfig {
+  surahNumbers: number[];
+  questionsPerSurah: number;
+  totalQuestions: number;
+  difficulty: Difficulty;
+  timeLimit: number;
+}
 
 interface QuizState {
   // Configuration
@@ -29,6 +39,7 @@ interface QuizState {
   // Actions
   setConfig: (config: QuizConfig) => void;
   startQuiz: (questions: Question[]) => void;
+  startJourneyQuiz: (config: JourneyQuizConfig) => Promise<void>;
   nextQuestion: () => void;
   previousQuestion: () => void;
   goToQuestion: (index: number) => void;
@@ -81,6 +92,37 @@ export const useQuizStore = create<QuizState>()(
         isPaused: false,
         currentResult: null,
       }),
+
+      // Start journey quiz with custom config
+      startJourneyQuiz: async (journeyConfig) => {
+        // Сначала сбросим текущее состояние
+        get().resetQuiz();
+        
+        const config: QuizConfig = {
+          questionCount: Math.min(journeyConfig.totalQuestions, 10) as 1 | 3 | 5 | 10,
+          difficulty: journeyConfig.difficulty,
+          questionTypes: ['continue-ayah', 'missing-word'],
+          timePerQuestion: journeyConfig.timeLimit,
+          specificSurahs: journeyConfig.surahNumbers,
+          showTranslation: true,
+        };
+
+        set({ config });
+        
+        try {
+          console.log('Journey quiz config:', config);
+          const questions = await generateJourneyQuizQuestions(
+            journeyConfig.surahNumbers,
+            journeyConfig.totalQuestions,
+            journeyConfig.difficulty
+          );
+          console.log('Generated journey questions:', questions.map(q => ({ type: q.type, id: q.id })));
+          
+          get().startQuiz(questions);
+        } catch (error) {
+          console.error('Failed to generate journey quiz questions:', error);
+        }
+      },
       
       // Navigate to next question
       nextQuestion: () => {

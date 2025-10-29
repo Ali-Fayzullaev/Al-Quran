@@ -91,10 +91,12 @@ interface JourneyStore {
   completeSurahQuiz: (result: QuizResult) => void;
   getSurahStatus: (surahNumber: number) => SurahStatus;
   getUnlockedSurahs: () => number[];
+  getCompletedSurahsInPriorityOrder: () => number[];
   unlockAchievement: (achievementId: AchievementId) => void;
   checkAchievements: () => void;
   updateStreak: () => void;
   resetJourney: () => void;
+  unlockAllSurahsForTesting: () => void;
 }
 
 export const useJourneyStore = create<JourneyStore>()(
@@ -125,8 +127,8 @@ export const useJourneyStore = create<JourneyStore>()(
         if (Object.keys(surahProgress).length === 0) {
           const initialProgress: Record<number, SurahProgress> = {};
           
-          // Первые 5 сур открыты сразу (Аль-Фатиха + 4 короткие)
-          const initialUnlockedSurahs = [1, 109, 110, 111, 112];
+          // Начинаем с Аль-Фатихи и самых маленьких сур
+          const initialUnlockedSurahs = [1, 114];
           
           for (let i = 1; i <= 114; i++) {
             initialProgress[i] = {
@@ -180,12 +182,49 @@ export const useJourneyStore = create<JourneyStore>()(
 
         // Разблокируем следующие суры
         if (isCompleted) {
-          // Разблокируем следующую суру
-          if (surahNumber < 114 && surahProgress[surahNumber + 1]?.status === 'locked') {
-            updatedSurahProgress[surahNumber + 1] = {
-              ...updatedSurahProgress[surahNumber + 1],
+          const surahsToUnlock: number[] = [];
+          
+          // Логика для маленьких сур (114 -> 113 -> 112 -> ... -> 77)
+          if (surahNumber >= 77 && surahNumber <= 114) {
+            const nextSmallSurah = surahNumber - 1;
+            if (nextSmallSurah >= 77 && surahProgress[nextSmallSurah]?.status === 'locked') {
+              surahsToUnlock.push(nextSmallSurah);
+            }
+          }
+          
+          // Логика для больших сур (1 -> 2 -> 3 -> ... -> 76)
+          if (surahNumber >= 1 && surahNumber <= 76) {
+            const nextBigSurah = surahNumber + 1;
+            if (nextBigSurah <= 76 && surahProgress[nextBigSurah]?.status === 'locked') {
+              surahsToUnlock.push(nextBigSurah);
+            }
+          }
+          
+          // Специальная логика: когда завершена Аль-Фатиха (1), открываем суру 2 и суру 113
+          if (surahNumber === 1) {
+            if (surahProgress[2]?.status === 'locked') {
+              surahsToUnlock.push(2);
+            }
+            if (surahProgress[113]?.status === 'locked') {
+              surahsToUnlock.push(113);
+            }
+          }
+          
+          // Когда завершена сура 114, открываем суру 113
+          if (surahNumber === 114 && surahProgress[113]?.status === 'locked') {
+            surahsToUnlock.push(113);
+          }
+          
+          // Разблокируем все найденные суры
+          surahsToUnlock.forEach(surahNum => {
+            updatedSurahProgress[surahNum] = {
+              ...updatedSurahProgress[surahNum],
               status: 'available',
             };
+          });
+          
+          if (surahsToUnlock.length > 0) {
+            console.log(`Разблокированы суры: ${surahsToUnlock.join(', ')}`);
           }
         }
 
@@ -235,7 +274,43 @@ export const useJourneyStore = create<JourneyStore>()(
         return Object.values(surahProgress)
           .filter(p => p.status !== 'locked')
           .map(p => p.surahNumber)
-          .sort((a, b) => a - b);
+          .sort((a, b) => {
+            // Сортируем по тому же принципу: малые суры сначала, потом большие
+            const isSmallA = a >= 77;
+            const isSmallB = b >= 77;
+            
+            if (isSmallA && isSmallB) return b - a; // 114, 113, 112...
+            if (isSmallA && !isSmallB) return -1;   // Малые раньше больших
+            if (!isSmallA && isSmallB) return 1;
+            return a - b; // 1, 2, 3... для больших
+          });
+      },
+
+      getCompletedSurahsInPriorityOrder: () => {
+        const { surahProgress } = get();
+        return Object.values(surahProgress)
+          .filter(p => p.status === 'completed' || p.status === 'perfect')
+          .map(p => p.surahNumber)
+          .sort((a, b) => {
+            // Приоритет малых сур (114-77) и больших (1-76)
+            const isSmallA = a >= 77;
+            const isSmallB = b >= 77;
+            const isBigA = a <= 76;
+            const isBigB = b <= 76;
+            
+            // Малые суры имеют высший приоритет (в убывающем порядке: 114, 113, 112... 77)
+            if (isSmallA && isSmallB) return b - a;
+            if (isSmallA && !isSmallB) return -1;
+            if (!isSmallA && isSmallB) return 1;
+            
+            // Большие суры имеют второй приоритет (в возрастающем порядке: 1, 2, 3... 76)
+            if (isBigA && isBigB) return a - b;
+            if (isBigA && !isBigB) return -1;
+            if (!isBigA && isBigB) return 1;
+            
+            // Остальные суры в обычном порядке (не должно быть)
+            return a - b;
+          });
       },
 
       unlockAchievement: (achievementId: AchievementId) => {
@@ -324,6 +399,23 @@ export const useJourneyStore = create<JourneyStore>()(
           streakDays: 0,
         });
         get().initializeJourney();
+      },
+
+      // Функция для тестирования - разблокировать все суры
+      unlockAllSurahsForTesting: () => {
+        const { surahProgress } = get();
+        const updatedProgress = { ...surahProgress };
+        
+        for (let i = 1; i <= 114; i++) {
+          if (updatedProgress[i]) {
+            updatedProgress[i] = {
+              ...updatedProgress[i],
+              status: 'available',
+            };
+          }
+        }
+        
+        set({ surahProgress: updatedProgress });
       },
     }),
     {

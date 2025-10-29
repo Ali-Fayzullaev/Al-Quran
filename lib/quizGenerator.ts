@@ -336,6 +336,53 @@ async function generateQuestion(
 }
 
 /**
+ * Generate questions specifically for Journey Quiz - only continue-ayah and missing-word
+ */
+export async function generateJourneyQuizQuestions(
+  surahNumbers: number[],
+  questionCount: number,
+  difficulty: Difficulty
+): Promise<Question[]> {
+  const questions: Question[] = [];
+  const types: QuestionType[] = ['continue-ayah', 'missing-word'];
+  
+  console.log('Journey quiz generator - using only:', types);
+  
+  const questionsPerType = Math.floor(questionCount / types.length);
+  const remainder = questionCount % types.length;
+  
+  for (let i = 0; i < types.length; i++) {
+    const type = types[i];
+    const count = questionsPerType + (i < remainder ? 1 : 0);
+    
+    for (let j = 0; j < count; j++) {
+      try {
+        const question = await generateQuestion(type, difficulty, surahNumbers);
+        questions.push(question);
+      } catch (error) {
+        console.error(`Failed to generate ${type} question:`, error);
+        // Try with the other allowed type
+        try {
+          const otherType = type === 'continue-ayah' ? 'missing-word' : 'continue-ayah';
+          const fallbackQuestion = await generateQuestion(otherType, difficulty, surahNumbers);
+          questions.push(fallbackQuestion);
+        } catch (fallbackError) {
+          console.error('Journey fallback question generation failed:', fallbackError);
+        }
+      }
+    }
+  }
+  
+  // Double check - filter out any unwanted types
+  const filteredQuestions = questions.filter(q => 
+    q.type === 'continue-ayah' || q.type === 'missing-word'
+  );
+  
+  console.log('Journey quiz generated questions:', filteredQuestions.map(q => q.type));
+  return shuffleArray(filteredQuestions);
+}
+
+/**
  * Main function to generate quiz questions based on config
  */
 export async function generateQuizQuestions(config: QuizConfig): Promise<Question[]> {
@@ -345,7 +392,9 @@ export async function generateQuizQuestions(config: QuizConfig): Promise<Questio
   // Проверяем наличие questionTypes и устанавливаем значения по умолчанию
   const types: QuestionType[] = questionTypes && questionTypes.length > 0 
     ? questionTypes 
-    : ['guess-surah', 'continue-ayah', 'missing-word', 'surah-description'];
+    : ['continue-ayah', 'missing-word'];
+  
+  console.log('Quiz generator - using question types:', types);
   
   // Distribute questions across types
   const typesCount = types.length;
@@ -362,10 +411,19 @@ export async function generateQuizQuestions(config: QuizConfig): Promise<Questio
         questions.push(question);
       } catch (error) {
         console.error(`Failed to generate ${type} question:`, error);
-        // Try with a fallback type
+        // Try with a fallback type from allowed types
         try {
-          const fallbackQuestion = await generateGuessSurahQuestion(difficulty, specificSurahs);
-          questions.push(fallbackQuestion);
+          // Use the first available type as fallback, but not guess-surah
+          const fallbackTypes = types.filter(t => t !== 'guess-surah' && t !== type);
+          if (fallbackTypes.length > 0) {
+            const fallbackType = fallbackTypes[0];
+            const fallbackQuestion = await generateQuestion(fallbackType, difficulty, specificSurahs);
+            questions.push(fallbackQuestion);
+          } else {
+            // If no other types available, try continue-ayah as safe fallback
+            const fallbackQuestion = await generateContinueAyahQuestion(difficulty, specificSurahs);
+            questions.push(fallbackQuestion);
+          }
         } catch (fallbackError) {
           console.error('Fallback question generation failed:', fallbackError);
         }

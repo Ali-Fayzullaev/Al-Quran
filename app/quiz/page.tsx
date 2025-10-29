@@ -39,7 +39,7 @@ export default function QuizPage() {
         difficulty: 'medium',
         questionCount: 5,
         specificSurahs: [parseInt(surahNumber)],
-        questionTypes: ['guess-surah', 'continue-ayah', 'missing-word'],
+        questionTypes: ['continue-ayah', 'missing-word'],
         showTranslation: true,
       };
       handleStartQuiz(journeyConfig);
