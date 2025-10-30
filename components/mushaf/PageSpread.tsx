@@ -285,62 +285,7 @@ export default function PageSpread({
         </motion.div>
       </motion.div>
 
-      {/* Мобильные навигационные кнопки */}
-      <div className="absolute bottom-4 left-0 right-0 flex justify-between px-4 md:hidden">
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={goToPrevious}
-          disabled={!navigationState.canGoBack || isTransitioning}
-          className="bg-white/90 shadow-lg"
-        >
-          <ChevronLeft className="w-4 h-4 mr-1" />
-          السابق
-        </Button>
 
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={toggleViewMode}
-          className="bg-white/90 shadow-lg"
-        >
-          {viewMode.type === 'single' ? (
-            <BookOpen className="w-4 h-4" />
-          ) : (
-            <Book className="w-4 h-4" />
-          )}
-        </Button>
-
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={goToNext}
-          disabled={!navigationState.canGoForward || isTransitioning}
-          className="bg-white/90 shadow-lg"
-        >
-          التالي
-          <ChevronRight className="w-4 h-4 ml-1" />
-        </Button>
-      </div>
-
-      {/* Информационная панель */}
-      <div className="absolute top-4 left-1/2 transform -translate-x-1/2">
-        <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
-          <div className="flex items-center gap-4 text-sm">
-            <span className="font-medium text-amber-800">
-              الصفحة {navigationState.currentPage}
-            </span>
-            <div className="w-1 h-1 bg-amber-600 rounded-full" />
-            <span className="text-amber-700">
-              {Math.round((navigationState.currentPage / navigationState.totalPages) * 100)}%
-            </span>
-            <div className="w-1 h-1 bg-amber-600 rounded-full" />
-            <span className="text-amber-600">
-              {viewMode.type === 'single' ? 'صفحة واحدة' : 'صفحتان'}
-            </span>
-          </div>
-        </div>
-      </div>
 
       {/* Индикатор зума */}
       {zoomState.level > 1 && (

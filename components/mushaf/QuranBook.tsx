@@ -2,7 +2,14 @@
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Settings, Maximize2, Minimize2, RotateCw } from "lucide-react";
+import {
+  Settings,
+  Maximize2,
+  Minimize2,
+  RotateCw,
+  Book,
+  BookOpen,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import PageSpread from "./PageSpread";
@@ -21,9 +28,9 @@ import {
   MUSHAF_CONFIG,
 } from "@/lib/mushafTypes";
 import { useLocale } from "@/context/LocaleContext";
-import { useTheme } from 'next-themes';
-import { useQuranStore } from '@/lib/store';
-import { useColorTheme } from '@/lib/useColorTheme';
+import { useTheme } from "next-themes";
+import { useQuranStore } from "@/lib/store";
+import { useColorTheme } from "@/lib/useColorTheme";
 
 interface QuranBookProps {
   initialPage?: number;
@@ -41,10 +48,23 @@ function useMushafState(initialPage: number = 1) {
     canGoForward: initialPage < MUSHAF_CONFIG.TOTAL_PAGES,
   });
 
-  const [viewMode, setViewMode] = useState<ViewMode>({
-    type: "spread",
-    zoom: 1,
-    position: { x: 0, y: 0 },
+  const [viewMode, setViewMode] = useState<ViewMode>(() => {
+    // Определяем начальный режим в зависимости от размера экрана
+    if (typeof window !== "undefined") {
+      const isMobileInit =
+        window.innerWidth <= MUSHAF_CONFIG.BREAKPOINTS.MOBILE;
+      return {
+        type: isMobileInit ? "single" : "spread",
+        zoom: 1,
+        position: { x: 0, y: 0 },
+      };
+    }
+    // Fallback для SSR
+    return {
+      type: "spread",
+      zoom: 1,
+      position: { x: 0, y: 0 },
+    };
   });
 
   const [zoomState, setZoomState] = useState<ZoomState>({
@@ -136,22 +156,22 @@ export default function QuranBook({
 }: QuranBookProps) {
   const { locale, t } = useLocale();
   const { theme } = useTheme();
-  const { 
-    siteColorTheme, 
-    mushafPageSize, 
-    mushafShowSizeControls, 
-    mushafAutoFitToScreen 
+  const {
+    siteColorTheme,
+    mushafPageSize,
+    mushafShowSizeControls,
+    mushafAutoFitToScreen,
   } = useQuranStore();
   const { applyCurrentColors } = useColorTheme();
-  
+
   // Отладка тем
-  console.log('QuranBook render:', { theme, siteColorTheme });
-  
+  console.log("QuranBook render:", { theme, siteColorTheme });
+
   // Принудительное применение темной темы в самом начале
   useEffect(() => {
-    console.log('QuranBook mounted with theme:', theme);
-    if (typeof window !== 'undefined') {
-      document.body.setAttribute('data-mushaf-theme', theme || 'light');
+    console.log("QuranBook mounted with theme:", theme);
+    if (typeof window !== "undefined") {
+      document.body.setAttribute("data-mushaf-theme", theme || "light");
     }
   }, [theme]);
 
@@ -295,12 +315,14 @@ export default function QuranBook({
 
   // Обработчики жестов
   const handleSwipeLeft = useCallback(() => {
-    if (!isImmersiveMode) goToNextPage();
-  }, [goToNextPage, isImmersiveMode]);
+    // На мобильных всегда работают свайпы, на десктопе только если не иммерсивный режим
+    if (isMobile || !isImmersiveMode) goToNextPage();
+  }, [goToNextPage, isImmersiveMode, isMobile]);
 
   const handleSwipeRight = useCallback(() => {
-    if (!isImmersiveMode) goToPreviousPage();
-  }, [goToPreviousPage, isImmersiveMode]);
+    // На мобильных всегда работают свайпы, на десктопе только если не иммерсивный режим
+    if (isMobile || !isImmersiveMode) goToPreviousPage();
+  }, [goToPreviousPage, isImmersiveMode, isMobile]);
 
   const handlePinchIn = useCallback(() => {
     zoomOut();
@@ -377,7 +399,7 @@ export default function QuranBook({
     return () => clearInterval(interval);
   }, []);
 
-  // Отслеживание ориентации экрана для мобильных устройств
+  // Отслеживание размера экрана для адаптивности
   useEffect(() => {
     const checkScreenSize = () => {
       const mobile = window.innerWidth <= MUSHAF_CONFIG.BREAKPOINTS.MOBILE;
@@ -386,13 +408,17 @@ export default function QuranBook({
       setIsMobile(mobile);
       setIsPortrait(portrait);
 
-      // Показать сообщение о повороте если:
-      // 1. Это мобильное устройство
-      // 2. Портретная ориентация
-      // 3. Режим двух страниц
-      const shouldShowRotation =
-        mobile && portrait && viewMode.type === "spread";
-      setShowRotationMessage(shouldShowRotation);
+      // Автоматическое переключение режимов в зависимости от размера экрана
+      if (mobile) {
+        // На мобильных устройствах всегда одна страница
+        if (viewMode.type === "spread") {
+          setViewMode({ ...viewMode, type: "single" });
+        }
+      }
+      // На десктопе пользователь может выбирать режим вручную, не принуждаем
+
+      // Больше не показываем сообщение о повороте экрана
+      setShowRotationMessage(false);
     };
 
     checkScreenSize();
@@ -403,19 +429,19 @@ export default function QuranBook({
       window.removeEventListener("resize", checkScreenSize);
       window.removeEventListener("orientationchange", checkScreenSize);
     };
-  }, [viewMode.type]);
+  }, [viewMode.type, setViewMode]);
 
   // Обработка клавиш для выхода из иммерсивного режима
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isImmersiveMode) {
+      if (event.key === "Escape" && isImmersiveMode) {
         setIsImmersiveMode(false);
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isImmersiveMode]);
 
@@ -423,72 +449,146 @@ export default function QuranBook({
   useEffect(() => {
     const applyDarkThemeAggressively = () => {
       const currentTheme = getCurrentTheme();
-      console.log('Applying theme aggressively:', currentTheme);
-      
-      if (currentTheme === 'dark') {
+      console.log("Applying theme aggressively:", currentTheme);
+
+      if (currentTheme === "dark") {
         const container = containerRef.current;
         if (container) {
           // Определяем цвета на основе темы
           let darkColors;
           switch (siteColorTheme) {
-            case 'blue':
-              darkColors = { bg: '#0f1629', text: '#e2e8f0', accent: '#60a5fa' };
+            case "blue":
+              darkColors = {
+                bg: "#0f1629",
+                text: "#e2e8f0",
+                accent: "#60a5fa",
+              };
               break;
-            case 'green':
-              darkColors = { bg: '#0a1f14', text: '#e2f5e2', accent: '#34d399' };
+            case "green":
+              darkColors = {
+                bg: "#0a1f14",
+                text: "#e2f5e2",
+                accent: "#34d399",
+              };
               break;
-            case 'purple':
-              darkColors = { bg: '#1a0d2e', text: '#f0e6ff', accent: '#a78bfa' };
+            case "purple":
+              darkColors = {
+                bg: "#1a0d2e",
+                text: "#f0e6ff",
+                accent: "#a78bfa",
+              };
               break;
-            case 'amber':
-              darkColors = { bg: '#1f1611', text: '#fef3c7', accent: '#fbbf24' };
+            case "amber":
+              darkColors = {
+                bg: "#1f1611",
+                text: "#fef3c7",
+                accent: "#fbbf24",
+              };
               break;
-            case 'pink':
-              darkColors = { bg: '#1f0b19', text: '#fce7f3', accent: '#f472b6' };
+            case "pink":
+              darkColors = {
+                bg: "#1f0b19",
+                text: "#fce7f3",
+                accent: "#f472b6",
+              };
               break;
-            case 'sepia':
-              darkColors = { bg: '#1c140a', text: '#f5e6d3', accent: '#d2b48c' };
+            case "sepia":
+              darkColors = {
+                bg: "#1c140a",
+                text: "#f5e6d3",
+                accent: "#d2b48c",
+              };
               break;
-            case 'orange':
-              darkColors = { bg: '#1c0f06', text: '#fed7aa', accent: '#fb923c' };
+            case "orange":
+              darkColors = {
+                bg: "#1c0f06",
+                text: "#fed7aa",
+                accent: "#fb923c",
+              };
               break;
-            case 'teal':
-              darkColors = { bg: '#042f2e', text: '#a7f3d0', accent: '#2dd4bf' };
+            case "teal":
+              darkColors = {
+                bg: "#042f2e",
+                text: "#a7f3d0",
+                accent: "#2dd4bf",
+              };
               break;
-            case 'indigo':
-              darkColors = { bg: '#1e1b4b', text: '#e0e7ff', accent: '#818cf8' };
+            case "indigo":
+              darkColors = {
+                bg: "#1e1b4b",
+                text: "#e0e7ff",
+                accent: "#818cf8",
+              };
               break;
-            case 'red':
-              darkColors = { bg: '#450a0a', text: '#fecaca', accent: '#ef4444' };
+            case "red":
+              darkColors = {
+                bg: "#450a0a",
+                text: "#fecaca",
+                accent: "#ef4444",
+              };
               break;
-            case 'yellow':
-              darkColors = { bg: '#1f1611', text: '#fef3c7', accent: '#facc15' };
+            case "yellow":
+              darkColors = {
+                bg: "#1f1611",
+                text: "#fef3c7",
+                accent: "#facc15",
+              };
               break;
-            case 'gray':
-              darkColors = { bg: '#111827', text: '#f9fafb', accent: '#9ca3af' };
+            case "gray":
+              darkColors = {
+                bg: "#111827",
+                text: "#f9fafb",
+                accent: "#9ca3af",
+              };
               break;
             default:
-              darkColors = { bg: '#064e3b', text: '#d1fae5', accent: '#34d399' };
+              darkColors = {
+                bg: "#064e3b",
+                text: "#d1fae5",
+                accent: "#34d399",
+              };
           }
-          
+
           // Применяем стили к контейнеру
-          container.style.setProperty('background-color', darkColors.bg, 'important');
-          container.style.setProperty('color', darkColors.text, 'important');
-          
+          container.style.setProperty(
+            "background-color",
+            darkColors.bg,
+            "important"
+          );
+          container.style.setProperty("color", darkColors.text, "important");
+
           // Принудительно применяем к ВСЕМ элементам
-          const allElements = container.querySelectorAll('*:not(button):not(svg):not(path)');
-          allElements.forEach(element => {
+          const allElements = container.querySelectorAll(
+            "*:not(button):not(svg):not(path)"
+          );
+          allElements.forEach((element) => {
             const htmlElement = element as HTMLElement;
-            htmlElement.style.setProperty('color', darkColors.text, 'important');
-            htmlElement.style.setProperty('background-color', 'transparent', 'important');
+            htmlElement.style.setProperty(
+              "color",
+              darkColors.text,
+              "important"
+            );
+            htmlElement.style.setProperty(
+              "background-color",
+              "transparent",
+              "important"
+            );
           });
-          
+
           // Специально для кнопок - делаем их цветными
-          const buttons = container.querySelectorAll('button');
-          buttons.forEach(button => {
-            button.style.setProperty('color', darkColors.text, 'important');
-            button.style.setProperty('background', `${darkColors.accent}20`, 'important');
-            button.style.setProperty('border', `1px solid ${darkColors.accent}40`, 'important');
+          const buttons = container.querySelectorAll("button");
+          buttons.forEach((button) => {
+            button.style.setProperty("color", darkColors.text, "important");
+            button.style.setProperty(
+              "background",
+              `${darkColors.accent}20`,
+              "important"
+            );
+            button.style.setProperty(
+              "border",
+              `1px solid ${darkColors.accent}40`,
+              "important"
+            );
           });
         }
       }
@@ -498,10 +598,10 @@ export default function QuranBook({
       applyCurrentColors();
       applyDarkThemeAggressively();
     }, 100);
-    
+
     // Повторяем каждые 500ms для гарантии
     const interval = setInterval(applyDarkThemeAggressively, 500);
-    
+
     return () => {
       clearTimeout(timeout);
       clearInterval(interval);
@@ -556,239 +656,241 @@ export default function QuranBook({
 
   // Определяем текущую тему
   const getCurrentTheme = () => {
-    console.log('Current theme check:', { theme, siteColorTheme });
-    if (theme === 'system') {
-      const isDarkSystem = typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      console.log('System theme is dark:', isDarkSystem);
-      return isDarkSystem ? 'dark' : 'light';
+    console.log("Current theme check:", { theme, siteColorTheme });
+    if (theme === "system") {
+      const isDarkSystem =
+        typeof window !== "undefined" &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+      console.log("System theme is dark:", isDarkSystem);
+      return isDarkSystem ? "dark" : "light";
     }
-    const finalTheme = theme || 'light';
-    console.log('Final theme:', finalTheme);
+    const finalTheme = theme || "light";
+    console.log("Final theme:", finalTheme);
     return finalTheme;
   };
 
   const getThemeClass = () => {
     const currentTheme = getCurrentTheme();
-    if (currentTheme === 'dark') return 'theme-dark';
-    if (siteColorTheme === 'sepia') return 'theme-sepia';
-    return 'theme-light';
+    if (currentTheme === "dark") return "theme-dark";
+    if (siteColorTheme === "sepia") return "theme-sepia";
+    return "theme-light";
   };
 
   // Определяем inline стили для гарантированного применения цветов
   const getContainerStyles = () => {
     const currentTheme = getCurrentTheme();
-    const isDark = currentTheme === 'dark';
-    
-    console.log('Getting container styles, isDark:', isDark);
-    
+    const isDark = currentTheme === "dark";
+
+    console.log("Getting container styles, isDark:", isDark);
+
     if (isDark) {
       // Определяем цвета для темной темы на основе выбранной схемы
       let darkColors;
       switch (siteColorTheme) {
-        case 'blue':
+        case "blue":
           darkColors = {
-            bg: '#0f1629',
-            text: '#e2e8f0',
-            accent: '#60a5fa',
+            bg: "#0f1629",
+            text: "#e2e8f0",
+            accent: "#60a5fa",
           };
           break;
-        case 'green':
+        case "green":
           darkColors = {
-            bg: '#0a1f14',
-            text: '#e2f5e2',
-            accent: '#34d399',
+            bg: "#0a1f14",
+            text: "#e2f5e2",
+            accent: "#34d399",
           };
           break;
-        case 'purple':
+        case "purple":
           darkColors = {
-            bg: '#1a0d2e',
-            text: '#f0e6ff',
-            accent: '#a78bfa',
+            bg: "#1a0d2e",
+            text: "#f0e6ff",
+            accent: "#a78bfa",
           };
           break;
-        case 'amber':
+        case "amber":
           darkColors = {
-            bg: '#1f1611',
-            text: '#fef3c7',
-            accent: '#fbbf24',
+            bg: "#1f1611",
+            text: "#fef3c7",
+            accent: "#fbbf24",
           };
           break;
-        case 'pink':
+        case "pink":
           darkColors = {
-            bg: '#1f0b19',
-            text: '#fce7f3',
-            accent: '#f472b6',
+            bg: "#1f0b19",
+            text: "#fce7f3",
+            accent: "#f472b6",
           };
           break;
-        case 'sepia':
+        case "sepia":
           darkColors = {
-            bg: '#1c140a',
-            text: '#f5e6d3',
-            accent: '#d2b48c',
+            bg: "#1c140a",
+            text: "#f5e6d3",
+            accent: "#d2b48c",
           };
           break;
-        case 'orange':
+        case "orange":
           darkColors = {
-            bg: '#1c0f06',
-            text: '#fed7aa',
-            accent: '#fb923c',
+            bg: "#1c0f06",
+            text: "#fed7aa",
+            accent: "#fb923c",
           };
           break;
-        case 'teal':
+        case "teal":
           darkColors = {
-            bg: '#042f2e',
-            text: '#a7f3d0',
-            accent: '#2dd4bf',
+            bg: "#042f2e",
+            text: "#a7f3d0",
+            accent: "#2dd4bf",
           };
           break;
-        case 'indigo':
+        case "indigo":
           darkColors = {
-            bg: '#1e1b4b',
-            text: '#e0e7ff',
-            accent: '#818cf8',
+            bg: "#1e1b4b",
+            text: "#e0e7ff",
+            accent: "#818cf8",
           };
           break;
-        case 'red':
+        case "red":
           darkColors = {
-            bg: '#450a0a',
-            text: '#fecaca',
-            accent: '#ef4444',
+            bg: "#450a0a",
+            text: "#fecaca",
+            accent: "#ef4444",
           };
           break;
-        case 'yellow':
+        case "yellow":
           darkColors = {
-            bg: '#1f1611',
-            text: '#fef3c7',
-            accent: '#facc15',
+            bg: "#1f1611",
+            text: "#fef3c7",
+            accent: "#facc15",
           };
           break;
-        case 'gray':
+        case "gray":
           darkColors = {
-            bg: '#111827',
-            text: '#f9fafb',
-            accent: '#9ca3af',
+            bg: "#111827",
+            text: "#f9fafb",
+            accent: "#9ca3af",
           };
           break;
         default:
           darkColors = {
-            bg: '#064e3b',
-            text: '#d1fae5',
-            accent: '#34d399',
+            bg: "#064e3b",
+            text: "#d1fae5",
+            accent: "#34d399",
           };
       }
-      
+
       return {
         backgroundColor: darkColors.bg,
         color: darkColors.text,
-        '--mushaf-bg': darkColors.bg,
-        '--mushaf-page-bg': darkColors.bg,
-        '--mushaf-text': darkColors.text,
-        '--mushaf-accent': darkColors.accent,
-        '--mushaf-border': darkColors.accent,
-        '--mushaf-shadow': `rgba(0, 0, 0, 0.4)`,
-        minHeight: '100vh',
-        width: '100%',
+        "--mushaf-bg": darkColors.bg,
+        "--mushaf-page-bg": darkColors.bg,
+        "--mushaf-text": darkColors.text,
+        "--mushaf-accent": darkColors.accent,
+        "--mushaf-border": darkColors.accent,
+        "--mushaf-shadow": `rgba(0, 0, 0, 0.4)`,
+        minHeight: "100vh",
+        width: "100%",
       } as React.CSSProperties;
     } else {
       // Определяем цвета для светлой темы на основе выбранной схемы
       let lightColors;
       switch (siteColorTheme) {
-        case 'sepia':
+        case "sepia":
           lightColors = {
-            bg: '#f8f0e0',
-            text: '#4a4a4a',
-            accent: '#8b4513',
+            bg: "#f8f0e0",
+            text: "#4a4a4a",
+            accent: "#8b4513",
           };
           break;
-        case 'blue':
+        case "blue":
           lightColors = {
-            bg: '#f0f9ff',
-            text: '#1e3a8a',
-            accent: '#3b82f6',
+            bg: "#f0f9ff",
+            text: "#1e3a8a",
+            accent: "#3b82f6",
           };
           break;
-        case 'purple':
+        case "purple":
           lightColors = {
-            bg: '#faf5ff',
-            text: '#581c87',
-            accent: '#8b5cf6',
+            bg: "#faf5ff",
+            text: "#581c87",
+            accent: "#8b5cf6",
           };
           break;
-        case 'amber':
+        case "amber":
           lightColors = {
-            bg: '#fffbeb',
-            text: '#92400e',
-            accent: '#f59e0b',
+            bg: "#fffbeb",
+            text: "#92400e",
+            accent: "#f59e0b",
           };
           break;
-        case 'orange':
+        case "orange":
           lightColors = {
-            bg: '#fff7ed',
-            text: '#9a3412',
-            accent: '#ea580c',
+            bg: "#fff7ed",
+            text: "#9a3412",
+            accent: "#ea580c",
           };
           break;
-        case 'teal':
+        case "teal":
           lightColors = {
-            bg: '#f0fdfa',
-            text: '#134e4a',
-            accent: '#14b8a6',
+            bg: "#f0fdfa",
+            text: "#134e4a",
+            accent: "#14b8a6",
           };
           break;
-        case 'indigo':
+        case "indigo":
           lightColors = {
-            bg: '#eef2ff',
-            text: '#3730a3',
-            accent: '#6366f1',
+            bg: "#eef2ff",
+            text: "#3730a3",
+            accent: "#6366f1",
           };
           break;
-        case 'red':
+        case "red":
           lightColors = {
-            bg: '#fef2f2',
-            text: '#7f1d1d',
-            accent: '#dc2626',
+            bg: "#fef2f2",
+            text: "#7f1d1d",
+            accent: "#dc2626",
           };
           break;
-        case 'yellow':
+        case "yellow":
           lightColors = {
-            bg: '#fefce8',
-            text: '#713f12',
-            accent: '#eab308',
+            bg: "#fefce8",
+            text: "#713f12",
+            accent: "#eab308",
           };
           break;
-        case 'gray':
+        case "gray":
           lightColors = {
-            bg: '#f9fafb',
-            text: '#374151',
-            accent: '#6b7280',
+            bg: "#f9fafb",
+            text: "#374151",
+            accent: "#6b7280",
           };
           break;
-        case 'pink':
+        case "pink":
           lightColors = {
-            bg: '#fdf2f8',
-            text: '#831843',
-            accent: '#ec4899',
+            bg: "#fdf2f8",
+            text: "#831843",
+            accent: "#ec4899",
           };
           break;
         default: // green
           lightColors = {
-            bg: '#f0fdf4',
-            text: '#1a202c',
-            accent: '#10b981',
+            bg: "#f0fdf4",
+            text: "#1a202c",
+            accent: "#10b981",
           };
       }
-      
+
       return {
         backgroundColor: lightColors.bg,
         color: lightColors.text,
-        '--mushaf-bg': lightColors.bg,
-        '--mushaf-page-bg': '#fefefe',
-        '--mushaf-text': lightColors.text,
-        '--mushaf-accent': lightColors.accent,
-        '--mushaf-border': lightColors.accent,
-        '--mushaf-shadow': 'rgba(0, 0, 0, 0.1)',
-        minHeight: '100vh',
-        width: '100%',
+        "--mushaf-bg": lightColors.bg,
+        "--mushaf-page-bg": "#fefefe",
+        "--mushaf-text": lightColors.text,
+        "--mushaf-accent": lightColors.accent,
+        "--mushaf-border": lightColors.accent,
+        "--mushaf-shadow": "rgba(0, 0, 0, 0.1)",
+        minHeight: "100vh",
+        width: "100%",
       } as React.CSSProperties;
     }
   };
@@ -803,9 +905,9 @@ export default function QuranBook({
   );
 
   return (
-    <div 
-      ref={containerRef} 
-      className={containerClasses} 
+    <div
+      ref={containerRef}
+      className={containerClasses}
       style={getContainerStyles()}
       data-theme={getCurrentTheme()}
       data-color-theme={siteColorTheme}
@@ -822,41 +924,98 @@ export default function QuranBook({
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="absolute top-0 left-0 right-0 z-20 p-4"
+              className={cn(
+                "absolute top-0 left-0 right-0 z-20",
+                isMobile ? "p-2" : "p-4"
+              )}
             >
-              <div className="flex items-center justify-between">
-                {/* Левая группа */}
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={toggleFullscreen}
-                    className="bg-white/80 hover:bg-white/90 shadow-md"
-                    title="Полноэкранный режим"
-                  >
-                    {isFullscreen ? (
-                      <Minimize2 className="w-4 h-4" />
-                    ) : (
-                      <Maximize2 className="w-4 h-4" />
-                    )}
-                  </Button>
-                </div>
+              <div
+                className={cn(
+                  "flex items-center",
+                  isMobile ? "justify-center gap-1" : "justify-between"
+                )}
+              >
+                {/* Мобильная компактная панель */}
+                {isMobile ? (
+                  <div className="flex items-center gap-1 bg-black/20 backdrop-blur-sm rounded-full px-3 py-2">
+                    {/* Кнопка скрытия header на мобильных */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsImmersiveMode(true)}
+                      className="bg-white/90 hover:bg-white shadow-sm rounded-full h-8 w-8 p-0"
+                      title="Скрыть панель управления"
+                    >
+                      <Maximize2 className="w-3.5 h-3.5" />
+                    </Button>
 
-                {/* Центральная группа - размер страниц */}
-                <PageSizeControls />
+                    <div className="h-4 w-px bg-white/30 mx-1" />
 
-                {/* Правая группа */}
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsImmersiveMode(true)}
-                    className="bg-white/80 hover:bg-white/90 shadow-md"
-                    title="Режим чтения без интерфейса"
-                  >
-                    <Maximize2 className="w-4 h-4" />
-                  </Button>
-                </div>
+                    <PageSizeControls />
+                  </div>
+                ) : (
+                  <>
+                    {/* Левая группа */}
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={toggleFullscreen}
+                        className="bg-white/80 hover:bg-white/90 shadow-md"
+                        title="Полноэкранный режим"
+                      >
+                        {isFullscreen ? (
+                          <Minimize2 className="w-4 h-4" />
+                        ) : (
+                          <Maximize2 className="w-4 h-4" />
+                        )}
+                      </Button>
+
+                      {/* Переключатель режима просмотра - только для десктопа */}
+                      {!isMobile && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() =>
+                            setViewMode((prev) => ({
+                              ...prev,
+                              type:
+                                prev.type === "single" ? "spread" : "single",
+                            }))
+                          }
+                          className="bg-white/80 hover:bg-white/90 shadow-md"
+                          title={
+                            viewMode.type === "single"
+                              ? "Две страницы"
+                              : "Одна страница"
+                          }
+                        >
+                          {viewMode.type === "single" ? (
+                            <BookOpen className="w-4 h-4" />
+                          ) : (
+                            <Book className="w-4 h-4" />
+                          )}
+                        </Button>
+                      )}
+                    </div>
+
+                    {/* Центральная группа - размер страниц */}
+                    <PageSizeControls />
+
+                    {/* Правая группа */}
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setIsImmersiveMode(true)}
+                        className="bg-white/80 hover:bg-white/90 shadow-md"
+                        title="Режим чтения без интерфейса"
+                      >
+                        <Maximize2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </>
+                )}
               </div>
             </motion.div>
           )}
@@ -885,14 +1044,32 @@ export default function QuranBook({
         </AnimatePresence>
 
         {/* Основная область со страницами */}
-        <div 
-          className="flex-1 flex items-center justify-center px-4 py-8"
-          style={{ 
+        <div
+          className="flex-1 flex items-center justify-center px-4 py-8 relative"
+          style={{
             transform: `scale(${MUSHAF_CONFIG.PAGE_SIZES[mushafPageSize].scale})`,
-            transformOrigin: 'center center',
-            transition: 'transform 0.3s ease-in-out'
+            transformOrigin: "center center",
+            transition: "transform 0.3s ease-in-out",
           }}
         >
+          {/* Мобильные зоны касания для навигации */}
+          {isMobile && (
+            <>
+              {/* Левая зона - предыдущая страница */}
+              <div
+                className="absolute left-0 top-0 w-1/4 h-full z-10 cursor-pointer"
+                onClick={goToPreviousPage}
+                style={{ backgroundColor: 'transparent' }}
+              />
+              {/* Правая зона - следующая страница */}
+              <div
+                className="absolute right-0 top-0 w-1/4 h-full z-10 cursor-pointer"
+                onClick={goToNextPage}
+                style={{ backgroundColor: 'transparent' }}
+              />
+            </>
+          )}
+
           <PageSpread
             navigationState={navigationState}
             viewMode={viewMode}
@@ -911,51 +1088,22 @@ export default function QuranBook({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              className="absolute bottom-0 left-0 right-0 z-20 p-4"
+              className={cn(
+                "absolute bottom-0 left-0 right-0 z-20",
+                isMobile ? "p-2" : "p-4"
+              )}
             >
               <PremiumNavigation
                 navigationState={navigationState}
                 onNavigationChange={handleNavigationChange}
                 bookmarks={bookmarks}
                 onBookmarkToggle={handleBookmarkToggle}
+                isMobile={isMobile}
               />
             </motion.div>
           )}
         </AnimatePresence>
       </div>
-
-      {/* Сообщение о повороте экрана для мобильных устройств */}
-      <AnimatePresence>
-        {showRotationMessage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              className="bg-white rounded-lg p-6 text-center max-w-sm"
-            >
-              <div className="text-4xl mb-4">📱➡️📱</div>
-              <h3 className="text-lg font-bold mb-2">
-                {t("mushaf.rotateDevice")}
-              </h3>
-              <p className="text-gray-600 mb-4">
-                {t("mushaf.rotateDeviceMessage")}
-              </p>
-              <Button
-                onClick={() => setShowRotationMessage(false)}
-                className="w-full"
-              >
-                {t("mushaf.gotIt")}
-              </Button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

@@ -1670,4 +1670,173 @@ mark {
   line-height: 2;
 }
 
+/* ========================================
+   УНИВЕРСАЛЬНЫЕ СТИЛИ ДЛЯ СТРАНИЦ КОРАНА
+   ======================================== */
+
+/* Основной контейнер страницы Корана */
+.quran-page {
+  width: 100% !important;
+  height: auto !important;
+  margin: 0 auto !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Контейнер изображения страницы */
+.quran-page-image {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  display: block !important;
+  margin: 0 auto !important;
+}
+
+/* Унифицированные стили для всех SVG страниц */
+.quran-page img,
+.quran-page svg {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+  display: block !important;
+  margin: 0 auto !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  /* Обеспечиваем полную видимость всего содержимого */
+  overflow: visible !important;
+  /* Единые пропорции для всех страниц */
+  aspect-ratio: 510.236 / 729.448 !important;
+  /* Убираем любые внешние стили */
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Контейнер с едиными отступами */
+.quran-page-container {
+  padding: 30px 40px !important;
+  background: white !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 8px !important;
+  margin: 0 auto !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Контент страницы с едиными пропорциями */
+.quran-page-content {
+  width: 90% !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+  position: relative !important;
+}
+
+/* Обеспечиваем единообразие для четных и нечетных страниц */
+.quran-page.even-page,
+.quran-page.odd-page,
+.quran-page[data-page] {
+  /* Одинаковые стили для всех страниц независимо от номера */
+  box-sizing: border-box !important;
+  display: block !important;
+}
+
+/* Адаптивные стили для мобильных устройств */
+@media (max-width: 768px) {
+  .quran-page-container {
+    padding: 20px !important;
+  }
+
+  .quran-page-content {
+    width: 95% !important;
+  }
+}
+
+/* Стили для zoom режима */
+.quran-page.zoomed {
+  overflow: auto !important;
+}
+
+.quran-page.zoomed img,
+.quran-page.zoomed svg {
+  transform-origin: center center !important;
+}
+
+/* Исправление для WebKit браузеров */
+@supports (-webkit-appearance: none) {
+  .quran-page img,
+  .quran-page svg {
+    -webkit-transform: translateZ(0) !important;
+    transform: translateZ(0) !important;
+  }
+}
+
+/* Исправление для Firefox */
+@-moz-document url-prefix() {
+  .quran-page img,
+  .quran-page svg {
+    image-rendering: -moz-crisp-edges !important;
+    image-rendering: crisp-edges !important;
+  }
+}
+
+/* Дополнительные стили для полного отображения содержимого */
+.quran-page img[src$=".svg"],
+.quran-page svg {
+  /* Обеспечиваем полное отображение SVG содержимого */
+  min-width: 100% !important;
+  min-height: 100% !important;
+  /* Убираем любые ограничения размера */
+  max-width: none !important;
+  max-height: none !important;
+  /* Предотвращаем обрезание */
+  overflow: visible !important;
+  /* Правильное позиционирование */
+  vertical-align: top !important;
+}
+
+/* Специальные стили для четных страниц */
+.quran-page.even-page img,
+.quran-page[data-page="2"] img,
+.quran-page[data-page="4"] img,
+.quran-page[data-page="6"] img {
+  /* Те же стили, что и для нечетных - полное единообразие */
+  object-fit: contain !important;
+  object-position: center !important;
+  width: 100% !important;
+  height: auto !important;
+}
+
+/* Принудительные стили для всех изображений страниц */
+.quran-page-image,
+.quran-page img {
+  /* Убираем все возможные ограничения */
+  min-width: 0 !important;
+  min-height: 0 !important;
+  flex-shrink: 0 !important;
+  /* Обеспечиваем правильное масштабирование */
+  image-rendering: auto !important;
+  image-rendering: -webkit-optimize-contrast !important;
+  image-rendering: optimize-contrast !important;
+}
+
+/* Контейнер для правильного центрирования */
+.quran-page-content {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 100% !important;
+}
+
+/* Исправляем возможные проблемы с flexbox */
+.quran-page-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+}
+
 @import "./theme-styles.css";

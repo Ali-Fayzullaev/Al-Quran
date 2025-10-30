@@ -259,13 +259,18 @@ export default function QuranPage({
   }, [side]);
 
   const pageClasses = cn(
+    // Базовые стили для всех страниц
+    "quran-page",
     "relative overflow-hidden rounded-lg shadow-xl transition-all duration-300",
     "hover:shadow-2xl hover:-translate-y-1",
+    // Унифицированные CSS классы для всех страниц
+    pageNumber % 2 === 0 ? "even-page" : "odd-page",
     {
       "cursor-zoom-in": zoomState.level === MUSHAF_CONFIG.DEFAULT_ZOOM,
       "cursor-zoom-out": zoomState.level > MUSHAF_CONFIG.DEFAULT_ZOOM,
       "opacity-90": !isActive,
-      "ring-2 ring-blue-500 ring-offset-2": isActive && zoomState.level > 1
+      "ring-2 ring-blue-500 ring-offset-2": isActive && zoomState.level > 1,
+      "zoomed": zoomState.level > 1
     },
     className
   );
@@ -275,6 +280,8 @@ export default function QuranPage({
       ref={containerRef}
       className={pageClasses}
       style={getPageTransform()}
+      data-page={pageNumber}
+      data-side={side}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
@@ -288,7 +295,7 @@ export default function QuranPage({
     >
       {/* Контейнер изображения */}
       <motion.div
-        className="relative w-full h-full bg-gradient-to-br from-amber-50 to-orange-100"
+        className="quran-page-container relative w-full h-full bg-gradient-to-br from-amber-50 to-orange-100"
         drag={zoomState.level > 1}
         dragMomentum={false}
         onPan={handlePan}
@@ -304,22 +311,31 @@ export default function QuranPage({
           duration: MUSHAF_CONFIG.ANIMATION_DURATION.ZOOM / 1000
         }}
       >
-        {/* Изображение страницы */}
+        {/* Изображение страницы с унифицированными стилями */}
         {imageState.src && (
-          <img
-            ref={imageRef}
-            src={imageState.src}
-            alt={`Quran Page ${pageNumber}`}
-            className="w-full h-full object-contain select-none"
-            draggable={false}
-            loading={priority ? "eager" : "lazy"}
-            onLoad={handleImageLoad}
-            onError={handleImageError}
-            style={{
-              opacity: imageState.isLoaded ? 1 : 0,
-              transition: 'opacity 0.3s ease-in-out'
-            }}
-          />
+          <div className="quran-page-content">
+            <img
+              ref={imageRef}
+              src={imageState.src}
+              alt={`Quran Page ${pageNumber}`}
+              className="quran-page-image w-full h-auto object-contain select-none"
+              draggable={false}
+              loading={priority ? "eager" : "lazy"}
+              onLoad={handleImageLoad}
+              onError={handleImageError}
+              data-page={pageNumber}
+              style={{
+                opacity: imageState.isLoaded ? 1 : 0,
+                transition: 'opacity 0.3s ease-in-out',
+                // Гарантируем единообразное отображение всех страниц
+                width: '100%',
+                height: 'auto',
+                maxWidth: '100%',
+                display: 'block',
+                margin: '0 auto'
+              }}
+            />
+          </div>
         )}
         
         {/* Состояние загрузки */}

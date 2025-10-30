@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Maximize2, Minimize2, Monitor, Smartphone, Tablet, MonitorSpeaker, Tv, EyeOff, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,14 +13,16 @@ interface PageSizeControlsProps {
   className?: string;
 }
 
-const getSizeIcon = (size: PageSizeType) => {
+const getSizeIcon = (size: PageSizeType, isMobile = false) => {
+  const iconClass = isMobile ? "w-3.5 h-3.5" : "w-4 h-4";
+  
   switch (size) {
-    case 'minimal': return <Minimize2 className="w-4 h-4" />;
-    case 'small': return <Smartphone className="w-4 h-4" />;
-    case 'medium': return <Monitor className="w-4 h-4" />;
-    case 'large': return <MonitorSpeaker className="w-4 h-4" />;
-    case 'maximum': return <Tv className="w-4 h-4" />;
-    default: return <Monitor className="w-4 h-4" />;
+    case 'minimal': return <Minimize2 className={iconClass} />;
+    case 'small': return <Smartphone className={iconClass} />;
+    case 'medium': return <Monitor className={iconClass} />;
+    case 'large': return <MonitorSpeaker className={iconClass} />;
+    case 'maximum': return <Tv className={iconClass} />;
+    default: return <Monitor className={iconClass} />;
   }
 };
 
@@ -32,6 +34,21 @@ export default function PageSizeControls({ className }: PageSizeControlsProps) {
     setMushafPageSize, 
     setMushafShowSizeControls 
   } = useQuranStore();
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= MUSHAF_CONFIG.BREAKPOINTS.MOBILE);
+    };
+
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+
+    return () => {
+      window.removeEventListener('resize', checkIsMobile);
+    };
+  }, []);
 
   const sizeOptions = Object.entries(MUSHAF_CONFIG.PAGE_SIZES) as [PageSizeType, typeof MUSHAF_CONFIG.PAGE_SIZES.medium][];
 
@@ -46,10 +63,13 @@ export default function PageSizeControls({ className }: PageSizeControlsProps) {
           variant="outline"
           size="sm"
           onClick={() => setMushafShowSizeControls(true)}
-          className="rounded-full p-2"
+          className={cn(
+            "rounded-full",
+            isMobile ? "h-8 w-8 p-0" : "p-2"
+          )}
           title="Показать элементы управления размером"
         >
-          <Eye className="w-4 h-4" />
+          <Eye className={cn(isMobile ? "w-3.5 h-3.5" : "w-4 h-4")} />
         </Button>
       </motion.div>
     );
@@ -61,7 +81,10 @@ export default function PageSizeControls({ className }: PageSizeControlsProps) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       className={cn(
-        "flex items-center gap-2 p-2 bg-background/80 backdrop-blur-sm border rounded-lg shadow-lg",
+        "flex items-center",
+        isMobile 
+          ? "gap-1" // Компактная мобильная версия
+          : "gap-2 p-2 bg-background/80 backdrop-blur-sm border rounded-lg shadow-lg", // Полная десктопная версия
         className
       )}
     >
@@ -70,16 +93,19 @@ export default function PageSizeControls({ className }: PageSizeControlsProps) {
         variant="ghost"
         size="sm"
         onClick={() => setMushafShowSizeControls(false)}
-        className="p-1.5 h-auto opacity-60 hover:opacity-100"
+        className={cn(
+          "opacity-60 hover:opacity-100",
+          isMobile ? "h-8 w-8 p-0 bg-white/90 rounded-full" : "p-1.5 h-auto"
+        )}
         title="Скрыть элементы управления размером"
       >
-        <EyeOff className="w-3 h-3" />
+        <EyeOff className={cn(isMobile ? "w-3 h-3" : "w-3 h-3")} />
       </Button>
 
-      <div className="w-px h-6 bg-border mx-1" />
+      {!isMobile && <div className="w-px h-6 bg-border mx-1" />}
 
       {/* Кнопки размеров */}
-      <div className="flex items-center gap-1">
+      <div className={cn("flex items-center", isMobile ? "gap-0.5" : "gap-1")}>
         {sizeOptions.map(([sizeKey, sizeConfig]) => (
           <Button
             key={sizeKey}
@@ -87,46 +113,64 @@ export default function PageSizeControls({ className }: PageSizeControlsProps) {
             size="sm"
             onClick={() => setMushafPageSize(sizeKey)}
             className={cn(
-              "p-2 h-auto min-w-0 relative group",
-              mushafPageSize === sizeKey && "bg-primary text-primary-foreground shadow-md"
+              "relative group min-w-0",
+              isMobile 
+                ? "h-8 w-8 p-0 bg-white/90 rounded-full" 
+                : "p-2 h-auto",
+              mushafPageSize === sizeKey && (
+                isMobile 
+                  ? "bg-primary/90 text-primary-foreground shadow-md" 
+                  : "bg-primary text-primary-foreground shadow-md"
+              )
             )}
             title={locale === 'ar' ? sizeConfig.nameArabic : sizeConfig.name}
           >
-            <div className="flex items-center gap-1">
-              <span className="text-sm" title={sizeConfig.icon}>
-                {getSizeIcon(sizeKey)}
-              </span>
-              <span className="text-xs font-medium">
-                {(sizeConfig.scale * 100).toFixed(0)}%
-              </span>
-            </div>
+            {isMobile ? (
+              // Мобильная версия - только иконка
+              getSizeIcon(sizeKey, true)
+            ) : (
+              // Десктопная версия - иконка + процент
+              <div className="flex items-center gap-1">
+                <span className="text-sm" title={sizeConfig.icon}>
+                  {getSizeIcon(sizeKey, false)}
+                </span>
+                <span className="text-xs font-medium">
+                  {(sizeConfig.scale * 100).toFixed(0)}%
+                </span>
+              </div>
+            )}
             
-            {/* Tooltip */}
-            <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 whitespace-nowrap">
-              {locale === 'ar' ? sizeConfig.nameArabic : sizeConfig.name}
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
-            </div>
+            {/* Tooltip - только для десктопа */}
+            {!isMobile && (
+              <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 whitespace-nowrap">
+                {locale === 'ar' ? sizeConfig.nameArabic : sizeConfig.name}
+                <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+              </div>
+            )}
           </Button>
         ))}
       </div>
 
-      <div className="w-px h-6 bg-border mx-1" />
-
-      {/* Индикатор текущего размера */}
-      <div className="flex items-center gap-2 px-2">
-        <span className="text-xs text-muted-foreground">
-          {locale === 'ar' ? 'الحجم' : 'Размер'}:
-        </span>
-        <span className="text-sm font-medium text-primary">
-          {locale === 'ar' 
-            ? MUSHAF_CONFIG.PAGE_SIZES[mushafPageSize].nameArabic 
-            : MUSHAF_CONFIG.PAGE_SIZES[mushafPageSize].name
-          }
-        </span>
-        <span className="text-xs text-muted-foreground">
-          ({(MUSHAF_CONFIG.PAGE_SIZES[mushafPageSize].scale * 100).toFixed(0)}%)
-        </span>
-      </div>
+      {/* Индикатор текущего размера - только для десктопа */}
+      {!isMobile && (
+        <>
+          <div className="w-px h-6 bg-border mx-1" />
+          <div className="flex items-center gap-2 px-2">
+            <span className="text-xs text-muted-foreground">
+              {locale === 'ar' ? 'الحجم' : 'Размер'}:
+            </span>
+            <span className="text-sm font-medium text-primary">
+              {locale === 'ar' 
+                ? MUSHAF_CONFIG.PAGE_SIZES[mushafPageSize].nameArabic 
+                : MUSHAF_CONFIG.PAGE_SIZES[mushafPageSize].name
+              }
+            </span>
+            <span className="text-xs text-muted-foreground">
+              ({(MUSHAF_CONFIG.PAGE_SIZES[mushafPageSize].scale * 100).toFixed(0)}%)
+            </span>
+          </div>
+        </>
+      )}
     </motion.div>
   );
 }

@@ -36,6 +36,7 @@ interface PremiumNavigationProps {
   onNavigationChange: (navigation: Partial<NavigationState>) => void;
   bookmarks: number[];
   onBookmarkToggle: (page: number) => void;
+  isMobile?: boolean;
   className?: string;
 }
 
@@ -62,6 +63,7 @@ export default function PremiumNavigation({
   onNavigationChange,
   bookmarks,
   onBookmarkToggle,
+  isMobile = false,
   className
 }: PremiumNavigationProps) {
   const { locale } = useLocale();
@@ -131,101 +133,145 @@ export default function PremiumNavigation({
   )?.[0];
 
   return (
-    <div className={cn("flex flex-col gap-4", className)}>
+    <div className={cn("flex flex-col", isMobile ? "gap-2" : "gap-4", className)}>
       {/* Основная навигационная панель */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between p-4 bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border border-amber-200"
+        className={cn(
+          "flex items-center bg-white/90 backdrop-blur-sm shadow-lg border border-amber-200",
+          isMobile 
+            ? "justify-center p-2 rounded-xl gap-1" 
+            : "justify-between p-4 rounded-2xl"
+        )}
       >
-        {/* Левая группа кнопок */}
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={goToFirst}
-            disabled={navigationState.currentPage === 1}
-            className="text-amber-700 hover:bg-amber-100"
-          >
-            <SkipBack className="w-4 h-4" />
-            <span className="hidden sm:inline ml-1">
-              {locale === 'en' ? 'First' : 'الأولى'}
-            </span>
-          </Button>
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleCurrentBookmark}
-            className={cn(
-              "transition-colors",
-              isBookmarked 
-                ? "text-yellow-600 hover:bg-yellow-100" 
-                : "text-gray-600 hover:bg-gray-100"
-            )}
-          >
-            <Bookmark className={cn("w-4 h-4", isBookmarked && "fill-current")} />
-          </Button>
-        </div>
+        {isMobile ? (
+          // Мобильная компактная версия - только закладки
+          <>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={toggleCurrentBookmark}
+              className={cn(
+                "h-9 w-9 p-0 rounded-full transition-colors",
+                isBookmarked 
+                  ? "text-yellow-600 hover:bg-yellow-100" 
+                  : "text-gray-600 hover:bg-gray-100"
+              )}
+            >
+              <Bookmark className={cn("w-4 h-4", isBookmarked && "fill-current")} />
+            </Button>
 
-        {/* Центральная информация */}
-        <div className="flex items-center gap-4">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-amber-800">
-              {navigationState.currentPage}
+            {/* Простая информация о странице - без лишних деталей */}
+            <div className="flex items-center px-3 py-1 bg-amber-50 rounded-full mx-1">
+              <span className="text-lg font-bold text-amber-800">
+                {navigationState.currentPage}
+              </span>
             </div>
-            <div className="text-xs text-amber-600">
-              من {navigationState.totalPages}
+
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowQuickJump(!showQuickJump)}
+              className="h-9 w-9 p-0 text-blue-700 hover:bg-blue-100 rounded-full"
+            >
+              <Navigation className="w-4 h-4" />
+            </Button>
+          </>
+        ) : (
+          // Десктопная версия
+          <>
+            {/* Левая группа кнопок */}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={goToFirst}
+                disabled={navigationState.currentPage === 1}
+                className="text-amber-700 hover:bg-amber-100"
+              >
+                <SkipBack className="w-4 h-4" />
+                <span className="hidden sm:inline ml-1">
+                  {locale === 'en' ? 'First' : 'الأولى'}
+                </span>
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleCurrentBookmark}
+                className={cn(
+                  "transition-colors",
+                  isBookmarked 
+                    ? "text-yellow-600 hover:bg-yellow-100" 
+                    : "text-gray-600 hover:bg-gray-100"
+                )}
+              >
+                <Bookmark className={cn("w-4 h-4", isBookmarked && "fill-current")} />
+              </Button>
             </div>
-          </div>
-          
-          {currentJuz && (
-            <div className="text-center px-3 py-1 bg-amber-100 rounded-full">
-              <div className="text-sm font-medium text-amber-800">
-                {locale === 'en' ? `Juz ${currentJuz}` : `الجزء ${currentJuz}`}
+
+            {/* Центральная информация - только для десктопа */}
+            <div className="flex items-center gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-amber-800">
+                  {navigationState.currentPage}
+                </div>
+                <div className="text-xs text-amber-600">
+                  من {navigationState.totalPages}
+                </div>
               </div>
+              
+              {currentJuz && (
+                <div className="text-center px-3 py-1 bg-amber-100 rounded-full">
+                  <div className="text-sm font-medium text-amber-800">
+                    {locale === 'en' ? `Juz ${currentJuz}` : `الجزء ${currentJuz}`}</div>
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        {/* Правая группа кнопок */}
-        <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowQuickJump(!showQuickJump)}
-            className="text-blue-700 hover:bg-blue-100"
-          >
-            <Navigation className="w-4 h-4" />
-            <span className="hidden sm:inline ml-1">
-              {locale === 'en' ? 'Jump' : 'انتقال'}
-            </span>
-          </Button>
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={goToLast}
-            disabled={navigationState.currentPage === navigationState.totalPages}
-            className="text-amber-700 hover:bg-amber-100"
-          >
-            <span className="hidden sm:inline mr-1">
-              {locale === 'en' ? 'Last' : 'الأخيرة'}
-            </span>
-            <SkipForward className="w-4 h-4" />
-          </Button>
-        </div>
+            {/* Правая группа кнопок - только для десктопа */}
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowQuickJump(!showQuickJump)}
+                className="text-blue-700 hover:bg-blue-100"
+              >
+                <Navigation className="w-4 h-4" />
+                <span className="hidden sm:inline ml-1">
+                  {locale === 'en' ? 'Jump' : 'انتقال'}
+                </span>
+              </Button>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={goToLast}
+                disabled={navigationState.currentPage === navigationState.totalPages}
+                className="text-amber-700 hover:bg-amber-100"
+              >
+                <span className="hidden sm:inline mr-1">
+                  {locale === 'en' ? 'Last' : 'الأخيرة'}
+                </span>
+                <SkipForward className="w-4 h-4" />
+              </Button>
+            </div>
+          </>
+        )}
       </motion.div>
 
-      {/* Прогресс-бар */}
-      <div className="w-full bg-amber-100 rounded-full h-2 overflow-hidden">
-        <motion.div
-          className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full"
-          initial={{ width: 0 }}
-          animate={{ width: `${(navigationState.currentPage / navigationState.totalPages) * 100}%` }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        />
-      </div>
+      {/* Прогресс-бар - только на десктопе */}
+      {!isMobile && (
+        <div className="w-full bg-amber-100 rounded-full h-2 overflow-hidden">
+          <motion.div
+            className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full"
+            initial={{ width: 0 }}
+            animate={{ width: `${(navigationState.currentPage / navigationState.totalPages) * 100}%` }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          />
+        </div>
+      )}
 
       {/* Быстрая навигация */}
       <AnimatePresence>
@@ -237,13 +283,19 @@ export default function PremiumNavigation({
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-amber-200 overflow-hidden"
           >
-            <div className="p-6">
-              <h3 className="text-lg font-bold text-amber-800 mb-4 flex items-center gap-2">
-                <MapPin className="w-5 h-5" />
+            <div className={cn(isMobile ? "p-4" : "p-6")}>
+              <h3 className={cn(
+                "font-bold text-amber-800 mb-4 flex items-center gap-2",
+                isMobile ? "text-base" : "text-lg"
+              )}>
+                <MapPin className={cn(isMobile ? "w-4 h-4" : "w-5 h-5")} />
                 {locale === 'en' ? 'Quick Navigation' : 'التنقل السريع'}
               </h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className={cn(
+                "grid gap-4",
+                isMobile ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+              )}>
                 {/* Поиск по номеру страницы */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-amber-700 flex items-center gap-2">
