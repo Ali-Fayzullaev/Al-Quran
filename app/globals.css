@@ -456,7 +456,8 @@ html.dark .mushaf-container *:not(button):not(svg):not(path),
   background-color: #eef2ff !important;
   color: #3730a3 !important;
   border: 2px solid #4338ca !important;
-  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
 }
 
 .mushaf-container[data-theme="light"][data-color-theme="indigo"]
@@ -469,7 +470,8 @@ html.dark .mushaf-container *:not(button):not(svg):not(path),
   background-color: #fef2f2 !important;
   color: #7f1d1d !important;
   border: 2px solid #b91c1c !important;
-  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.15), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
 }
 
 .mushaf-container[data-theme="light"][data-color-theme="red"]
@@ -482,7 +484,8 @@ html.dark .mushaf-container *:not(button):not(svg):not(path),
   background-color: #fefce8 !important;
   color: #713f12 !important;
   border: 2px solid #a16207 !important;
-  box-shadow: 0 4px 20px rgba(234, 179, 8, 0.15), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+  box-shadow: 0 4px 20px rgba(234, 179, 8, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
 }
 
 .mushaf-container[data-theme="light"][data-color-theme="yellow"]
@@ -495,7 +498,8 @@ html.dark .mushaf-container *:not(button):not(svg):not(path),
   background-color: #f9fafb !important;
   color: #374151 !important;
   border: 2px solid #4b5563 !important;
-  box-shadow: 0 4px 20px rgba(107, 114, 128, 0.15), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+  box-shadow: 0 4px 20px rgba(107, 114, 128, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
 }
 
 .mushaf-container[data-theme="light"][data-color-theme="gray"]
@@ -508,7 +512,8 @@ html.dark .mushaf-container *:not(button):not(svg):not(path),
   background-color: #fdf2f8 !important;
   color: #831843 !important;
   border: 2px solid #be185d !important;
-  box-shadow: 0 4px 20px rgba(236, 72, 153, 0.15), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+  box-shadow: 0 4px 20px rgba(236, 72, 153, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
 }
 
 .mushaf-container[data-theme="light"][data-color-theme="pink"]
@@ -521,7 +526,8 @@ html.dark .mushaf-container *:not(button):not(svg):not(path),
   background-color: #f0fdf4 !important;
   color: #1a202c !important;
   border: 2px solid #047857 !important;
-  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
 }
 
 .mushaf-container[data-theme="light"][data-color-theme="green"]
@@ -534,7 +540,8 @@ html.dark .mushaf-container *:not(button):not(svg):not(path),
   background-color: #f8f0e0 !important;
   color: #4a4a4a !important;
   border: 2px solid #8b4513 !important;
-  box-shadow: 0 4px 20px rgba(139, 69, 19, 0.2), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+  box-shadow: 0 4px 20px rgba(139, 69, 19, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
 }
 
 .mushaf-container[data-theme="light"][data-color-theme="sepia"]
