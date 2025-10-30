@@ -403,6 +403,70 @@ export const SITE_COLOR_THEMES: ColorTheme[] = [
       muted: '#374151',
     },
   },
+  {
+    id: 'sepia',
+    name: 'Сепия',
+    lightMode: {
+      primary: '#8b4513',
+      primaryLight: '#a0522d',
+      primaryDark: '#654321',
+      secondary: '#f8f0e0',
+      accent: '#8b4513',
+      background: '#f8f0e0',
+      backgroundSecondary: '#f4f1e8',
+      surface: '#f4f1e8',
+      text: '#4a4a4a',
+      textSecondary: '#5c4b37',
+      border: '#d4c5a1',
+      muted: '#e8dfca',
+    },
+    darkMode: {
+      primary: '#d2b48c',
+      primaryLight: '#daa520',
+      primaryDark: '#8b4513',
+      secondary: '#3e2723',
+      accent: '#daa520',
+      background: '#2e1a0f',
+      backgroundSecondary: '#3e2723',
+      surface: '#4e342e',
+      text: '#e8dfca',
+      textSecondary: '#d4c5a1',
+      border: '#5d4037',
+      muted: '#4e342e',
+    },
+  },
+  {
+    id: 'amber',
+    name: 'Янтарный',
+    lightMode: {
+      primary: '#d97706',
+      primaryLight: '#f59e0b',
+      primaryDark: '#b45309',
+      secondary: '#fffbeb',
+      accent: '#d97706',
+      background: '#fffbeb',
+      backgroundSecondary: '#fef3c7',
+      surface: '#fefefe',
+      text: '#1e293b',
+      textSecondary: '#64748b',
+      border: '#fed7aa',
+      muted: '#fef3c7',
+    },
+    darkMode: {
+      primary: '#fbbf24',
+      primaryLight: '#fcd34d',
+      primaryDark: '#f59e0b',
+      secondary: '#451a03',
+      accent: '#fbbf24',
+      background: '#1c1917',
+      backgroundSecondary: '#292524',
+      surface: '#44403c',
+      text: '#fef3c7',
+      textSecondary: '#fed7aa',
+      border: '#78716c',
+      muted: '#57534e',
+    },
+  },
 ];
 
 // Цветовые схемы для текста Корана
@@ -577,6 +641,303 @@ export function applyQuranTextColors(scheme: QuranTextColorScheme, isDark: boole
   root.style.setProperty('--quran-highlight-color', colors.highlightColor);
 }
 
+// Применить тему Mushaf на основе выбранной цветовой темы сайта
+export function applyMushafTheme(siteThemeId: string, isDark: boolean = false) {
+  if (typeof window === 'undefined') return;
+  
+  const siteTheme = getThemeByName(siteThemeId);
+  if (!siteTheme) return;
+  
+  const colors = isDark ? siteTheme.darkMode : siteTheme.lightMode;
+  const root = document.documentElement;
+  
+  console.log('Applying Mushaf theme:', siteThemeId, 'isDark:', isDark);
+  
+  // Определяем цвета для Mushaf на основе цветовой схемы сайта
+  let mushafColors;
+  
+  if (isDark) {
+    // Темная тема Mushaf с цветовыми акцентами на основе выбранной схемы (ЕЩЕ ЯРЧЕ + КНИЖНЫЕ ГРАНИЦЫ!)
+    switch (siteThemeId) {
+      case 'blue':
+        mushafColors = {
+          bg: '#2a3a5a', // ЕЩЕ ярче темно-синий
+          pageBg: '#3a4a6a', // ЕЩЕ ярче синевато-серый
+          text: '#ffffff', // Чисто белый текст
+          accent: '#60a5fa',
+          border: '#4f46e5', // Книжная граница
+          shadow: '0 4px 20px rgba(59, 130, 246, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)', // Книжная тень
+        };
+        break;
+      case 'green':
+        mushafColors = {
+          bg: '#2a4538', // ЕЩЕ ярче темно-зеленый
+          pageBg: '#3a5548', // ЕЩЕ ярче зеленый фон
+          text: '#ffffff', // Чисто белый текст
+          accent: '#34d399',
+          border: '#059669', // Книжная граница
+          shadow: '0 4px 20px rgba(16, 185, 129, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)', // Книжная тень
+        };
+        break;
+      case 'purple':
+        mushafColors = {
+          bg: '#3d2b5e', // ЕЩЕ ярче темно-фиолетовый
+          pageBg: '#4d3b73', // ЕЩЕ ярче фиолетовый фон
+          text: '#ffffff', // Чисто белый текст
+          accent: '#a78bfa',
+          border: '#7c3aed', // Книжная граница
+          shadow: '0 4px 20px rgba(139, 92, 246, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)', // Книжная тень
+        };
+        break;
+      case 'amber':
+        mushafColors = {
+          bg: '#4d3827', // ЕЩЕ ярче темно-янтарный
+          pageBg: '#5d4837', // ЕЩЕ ярче янтарный фон
+          text: '#ffffff', // Чисто белый текст
+          accent: '#fbbf24',
+          border: '#d97706', // Книжная граница
+          shadow: '0 4px 20px rgba(245, 158, 11, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)', // Книжная тень
+        };
+        break;
+      case 'pink':
+        mushafColors = {
+          bg: '#4d2739', // ЕЩЕ ярче темно-розовый
+          pageBg: '#5d3749', // ЕЩЕ ярче розовый фон
+          text: '#ffffff', // Чисто белый текст
+          accent: '#f472b6',
+          border: '#db2777', // Книжная граница
+          shadow: '0 4px 20px rgba(236, 72, 153, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)', // Книжная тень
+        };
+        break;
+      case 'sepia':
+        mushafColors = {
+          bg: '#4d3f2a', // ЕЩЕ ярче темно-коричневый сепия
+          pageBg: '#5d4f36', // ЕЩЕ ярче сепия фон
+          text: '#ffffff', // Чисто белый текст
+          accent: '#d2b48c',
+          border: '#a0522d', // Книжная граница
+          shadow: '0 4px 20px rgba(139, 69, 19, 0.4), inset 0 1px 0 rgba(255,255,255,0.1)', // Книжная тень
+        };
+        break;
+      case 'orange':
+        mushafColors = {
+          bg: '#4d2f1c', // ЕЩЕ ярче темно-оранжевый
+          pageBg: '#5d3f25', // ЕЩЕ ярче оранжевый фон
+          text: '#ffffff', // Чисто белый текст
+          accent: '#fb923c',
+          border: '#c2410c', // Книжная граница
+          shadow: '0 4px 20px rgba(234, 88, 12, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)', // Книжная тень
+        };
+        break;
+      case 'teal':
+        mushafColors = {
+          bg: '#235e5a', // ЕЩЕ ярче темно-бирюзовый
+          pageBg: '#2f7b76', // ЕЩЕ ярче бирюзовый фон
+          text: '#ffffff', // Чисто белый текст
+          accent: '#2dd4bf',
+          border: '#0f766e', // Книжная граница
+          shadow: '0 4px 20px rgba(20, 184, 166, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)', // Книжная тень
+        };
+        break;
+      case 'indigo':
+        mushafColors = {
+          bg: '#413e91', // ЕЩЕ ярче темно-индиго
+          pageBg: '#514ccb', // ЕЩЕ ярче индиго фон
+          text: '#ffffff', // Чисто белый текст
+          accent: '#818cf8',
+          border: '#4338ca', // Книжная граница
+          shadow: '0 4px 20px rgba(99, 102, 241, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)', // Книжная тень
+        };
+        break;
+      case 'red':
+        mushafColors = {
+          bg: '#8f2d2d', // ЕЩЕ ярче темно-красный
+          pageBg: '#a93d3d', // ЕЩЕ ярче красный фон
+          text: '#ffffff', // Чисто белый текст
+          accent: '#ef4444',
+          border: '#b91c1c', // Книжная граница
+          shadow: '0 4px 20px rgba(220, 38, 38, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)', // Книжная тень
+        };
+        break;
+      case 'yellow':
+        mushafColors = {
+          bg: '#4d3827', // ЕЩЕ ярче темно-желтый
+          pageBg: '#5d4f22', // ЕЩЕ ярче желтый фон
+          text: '#ffffff', // Чисто белый текст
+          accent: '#facc15',
+          border: '#ca8a04', // Книжная граница
+          shadow: '0 4px 20px rgba(234, 179, 8, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)', // Книжная тень
+        };
+        break;
+      case 'gray':
+        mushafColors = {
+          bg: '#2f3f47', // ЕЩЕ ярче темно-серый
+          pageBg: '#475161', // ЕЩЕ ярче серый фон
+          text: '#ffffff', // Чисто белый текст
+          accent: '#9ca3af',
+          border: '#4b5563', // Книжная граница
+          shadow: '0 4px 20px rgba(107, 114, 128, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)', // Книжная тень
+        };
+        break;
+      default: // 'emerald' и другие зеленые
+        mushafColors = {
+          bg: '#165e4b', // ЕЩА ярче изумрудно-темный
+          pageBg: '#1f6f56', // ЕЩЁ ярче
+          text: '#ffffff', // Чисто белый текст
+          accent: '#34d399',
+          border: '#047857', // Книжная граница
+          shadow: '0 4px 20px rgba(16, 185, 129, 0.3), inset 0 1px 0 rgba(255,255,255,0.1)', // Книжная тень
+        };
+    }
+  } else {
+    // Светлая тема Mushaf с мягкими оттенками для чтения + КНИЖНЫЕ ГРАНИЦЫ!
+    switch (siteThemeId) {
+      case 'sepia':
+        mushafColors = {
+          bg: '#f8f0e0',
+          pageBg: '#f4f1e8',
+          text: '#4a4a4a', 
+          accent: '#8b4513',
+          border: '#8b4513', // Темная книжная граница
+          shadow: '0 4px 20px rgba(139, 69, 19, 0.2), inset 0 1px 0 rgba(255,255,255,0.8)', // Книжная тень
+        };
+        break;
+      case 'blue':
+        mushafColors = {
+          bg: '#f0f9ff', // Светло-голубой фон
+          pageBg: '#fefefe',
+          text: '#1e3a8a', // Темно-синий текст
+          accent: colors.primary,
+          border: '#1e40af', // Темная книжная граница
+          shadow: '0 4px 20px rgba(59, 130, 246, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)', // Книжная тень
+        };
+        break;
+      case 'purple':
+        mushafColors = {
+          bg: '#faf5ff', // Светло-фиолетовый фон
+          pageBg: '#fefefe',
+          text: '#581c87', // Темно-фиолетовый текст
+          accent: colors.primary,
+          border: '#6b21a8', // Темная книжная граница
+          shadow: '0 4px 20px rgba(147, 51, 234, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)', // Книжная тень
+        };
+        break;
+      case 'amber':
+        mushafColors = {
+          bg: '#fffbeb', // Светло-янтарный фон
+          pageBg: '#fefefe',
+          text: '#92400e', // Темно-янтарный текст
+          accent: colors.primary,
+          border: '#b45309', // Темная книжная граница
+          shadow: '0 4px 20px rgba(245, 158, 11, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)', // Книжная тень
+        };
+        break;
+      case 'orange':
+        mushafColors = {
+          bg: '#fff7ed', // Светло-оранжевый фон
+          pageBg: '#fefefe',
+          text: '#9a3412', // Темно-оранжевый текст
+          accent: colors.primary,
+          border: '#c2410c', // Темная книжная граница
+          shadow: '0 4px 20px rgba(234, 88, 12, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)', // Книжная тень
+        };
+        break;
+      case 'teal':
+        mushafColors = {
+          bg: '#f0fdfa', // Светло-бирюзовый фон
+          pageBg: '#fefefe',
+          text: '#134e4a', // Темно-бирюзовый текст
+          accent: colors.primary,
+          border: '#0f766e', // Темная книжная граница
+          shadow: '0 4px 20px rgba(20, 184, 166, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)', // Книжная тень
+        };
+        break;
+      case 'indigo':
+        mushafColors = {
+          bg: '#eef2ff', // Светло-индиго фон
+          pageBg: '#fefefe',
+          text: '#3730a3', // Темно-индиго текст
+          accent: colors.primary,
+          border: '#4338ca', // Темная книжная граница
+          shadow: '0 4px 20px rgba(99, 102, 241, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)', // Книжная тень
+        };
+        break;
+      case 'red':
+        mushafColors = {
+          bg: '#fef2f2', // Светло-красный фон
+          pageBg: '#fefefe',
+          text: '#7f1d1d', // Темно-красный текст
+          accent: colors.primary,
+          border: '#b91c1c', // Темная книжная граница
+          shadow: '0 4px 20px rgba(220, 38, 38, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)', // Книжная тень
+        };
+        break;
+      case 'yellow':
+        mushafColors = {
+          bg: '#fefce8', // Светло-желтый фон
+          pageBg: '#fefefe',
+          text: '#713f12', // Темно-желтый текст
+          accent: colors.primary,
+          border: '#a16207', // Темная книжная граница
+          shadow: '0 4px 20px rgba(234, 179, 8, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)', // Книжная тень
+        };
+        break;
+      case 'gray':
+        mushafColors = {
+          bg: '#f9fafb', // Светло-серый фон
+          pageBg: '#fefefe',
+          text: '#374151', // Темно-серый текст
+          accent: colors.primary,
+          border: '#4b5563', // Темная книжная граница
+          shadow: '0 4px 20px rgba(107, 114, 128, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)', // Книжная тень
+        };
+        break;
+      case 'pink':
+        mushafColors = {
+          bg: '#fdf2f8', // Светло-розовый фон
+          pageBg: '#fefefe',
+          text: '#831843', // Темно-розовый текст
+          accent: colors.primary,
+          border: '#be185d', // Темная книжная граница
+          shadow: '0 4px 20px rgba(236, 72, 153, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)', // Книжная тень
+        };
+        break;
+      default: // green и другие
+        mushafColors = {
+          bg: '#f0fdf4',
+          pageBg: '#fefefe',
+          text: '#1a202c',
+          accent: colors.primary,
+          border: '#047857', // Темная книжная граница
+          shadow: '0 4px 20px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255,255,255,0.8)', // Книжная тень
+        };
+    }
+  }
+  
+  // Применяем переменные для Mushaf
+  root.style.setProperty('--mushaf-bg', mushafColors.bg);
+  root.style.setProperty('--mushaf-page-bg', mushafColors.pageBg);
+  root.style.setProperty('--mushaf-text', mushafColors.text);
+  root.style.setProperty('--mushaf-accent', mushafColors.accent);
+  root.style.setProperty('--mushaf-border', mushafColors.border);
+  root.style.setProperty('--mushaf-shadow', mushafColors.shadow);
+  
+  // Обновляем CSS класс для темы
+  document.body.classList.remove('theme-light', 'theme-sepia', 'theme-dark', 'theme-green', 'theme-blue', 'theme-purple', 'theme-amber');
+  
+  if (isDark) {
+    document.body.classList.add('theme-dark');
+  } else {
+    switch (siteThemeId) {
+      case 'sepia':
+        document.body.classList.add('theme-sepia');
+        break;
+      default:
+        document.body.classList.add('theme-light');
+    }
+  }
+}
+
 // Диагностическая функция для проверки CSS переменных
 export function debugCSSVariables() {
   if (typeof window === 'undefined') return;
@@ -595,6 +956,12 @@ export function debugCSSVariables() {
     '--quran-arabic-color': computedStyle.getPropertyValue('--quran-arabic-color'),
     '--quran-translation-color': computedStyle.getPropertyValue('--quran-translation-color'),
     '--quran-verse-number-color': computedStyle.getPropertyValue('--quran-verse-number-color'),
+  });
+  console.log('Mushaf colors:', {
+    '--mushaf-bg': computedStyle.getPropertyValue('--mushaf-bg'),
+    '--mushaf-page-bg': computedStyle.getPropertyValue('--mushaf-page-bg'),
+    '--mushaf-text': computedStyle.getPropertyValue('--mushaf-text'),
+    '--mushaf-accent': computedStyle.getPropertyValue('--mushaf-accent'),
   });
   console.log('========================');
 }

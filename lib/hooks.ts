@@ -90,7 +90,7 @@ export function useSearchQuran(query: string, surah?: number) {
 export function useAyah(ayahNumber: number, edition: string = 'quran-uthmani') {
   return useQuery({
     queryKey: QUERY_KEYS.ayah(ayahNumber, edition),
-    queryFn: () => getAyah(ayahNumber, edition),
+    queryFn: () => getAyah(ayahNumber.toString(), [edition]),
     enabled: ayahNumber > 0 && ayahNumber <= 6236,
     staleTime: 30 * 60 * 1000,
   });

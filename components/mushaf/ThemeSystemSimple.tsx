@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Palette, Sun, Moon, Check, X, BookOpen, Sparkles, Leaf, Eye } from 'lucide-react';
+import { Palette, Sun, Moon, Check, X, BookOpen, Sparkles, Leaf, Eye, Monitor } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { 
@@ -15,6 +15,10 @@ import {
 } from "@/components/ui/sheet";
 import { MushafTheme, MushafSettings } from '@/lib/mushafTypes';
 import { useLocale } from '@/context/LocaleContext';
+import { useTheme } from 'next-themes';
+import { useQuranStore } from '@/lib/store';
+import { useColorTheme } from '@/lib/useColorTheme';
+import { SITE_COLOR_THEMES } from '@/lib/colorThemes';
 
 interface ThemeSystemProps {
   currentTheme: MushafTheme;
@@ -307,27 +311,20 @@ export default function ThemeSystem({
 }: ThemeSystemProps) {
   const [isOpen, setIsOpen] = useState(false);
   const { locale, t } = useLocale();
-  
-  // Создаем темы с переводами
-  const SIMPLE_THEMES: MushafTheme[] = SIMPLE_THEMES_BASE.map(theme => {
-    const translatedName = t(`mushaf.${theme.nameKey}`) || theme.nameKey;
-    return {
-      ...theme,
-      name: translatedName
-    };
-  });
+  const { theme, setTheme } = useTheme();
+  const { siteColorTheme, setSiteColorTheme } = useQuranStore();
+  const { applySiteTheme } = useColorTheme();
 
-  // Применить тему при загрузке
-  React.useEffect(() => {
-    if (currentTheme) {
-      const root = document.documentElement;
-      root.style.setProperty('--mushaf-bg', currentTheme.colors.background);
-      root.style.setProperty('--mushaf-page-bg', currentTheme.colors.pageBackground);
-      root.style.setProperty('--mushaf-text', currentTheme.colors.text);
-      root.style.setProperty('--mushaf-accent', currentTheme.colors.accent);
-      root.style.setProperty('--mushaf-border', currentTheme.colors.border);
-    }
-  }, [currentTheme]);
+  // Функция для применения темы
+  const handleThemeChange = (themeId: string) => {
+    setSiteColorTheme(themeId);
+    applySiteTheme(themeId);
+  };
+
+  // Функция для изменения режима темы
+  const handleModeChange = (mode: 'light' | 'dark' | 'system') => {
+    setTheme(mode);
+  };
 
   const handleThemeSelect = (theme: MushafTheme) => {
     onThemeChange(theme);
@@ -362,227 +359,122 @@ export default function ThemeSystem({
           variant="ghost"
           size="sm"
           className={cn(
-            "bg-white/90 hover:bg-white shadow-lg backdrop-blur-sm border border-white/20",
+            "bg-white/90 hover:bg-white shadow-lg backdrop-blur-sm",
             className
           )}
         >
-          <Palette className="w-4 h-4 mr-2" />
-          <span className="hidden sm:inline">
-            {locale === 'en' ? 'Themes' : 'Темы'}
-          </span>
+          <Palette className="w-4 h-4" />
         </Button>
       </SheetTrigger>
       
       <SheetContent 
-        side="right" 
-        className="w-full sm:max-w-lg overflow-y-auto border-l-0"
-        style={{ 
-          backgroundColor: currentTheme.colors.background,
-          borderColor: currentTheme.colors.border 
+        className="w-80 border-l"
+        style={{
+          backgroundColor: 'var(--fixed-background)',
+          borderColor: 'var(--color-border)'
         }}
       >
-        <SheetHeader className="mb-8">
-          <SheetTitle 
-            className="flex items-center gap-3 text-2xl font-bold"
-            style={{ color: currentTheme.colors.text }}
-          >
-            <div className="p-2 rounded-xl" style={{ backgroundColor: `${currentTheme.colors.accent}15` }}>
-              <BookOpen className="w-6 h-6" style={{ color: currentTheme.colors.accent }} />
-            </div>
-            {locale === 'en' ? 'Reading Themes' : 'Темы для чтения'}
+        <SheetHeader className="pb-6">
+          <SheetTitle className="flex items-center gap-2 text-left" style={{ color: 'var(--fixed-text)' }}>
+            <Palette className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+            Настройки темы
           </SheetTitle>
-          <SheetDescription 
-            className="text-base"
-            style={{ color: `${currentTheme.colors.text}CC` }}
-          >
-            {locale === 'en' 
-              ? 'Choose a comfortable theme for reading the Holy Quran' 
-              : 'Выберите удобную тему для чтения Священного Корана'}
-          </SheetDescription>
         </SheetHeader>
 
-        {/* Превью текущей темы */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8 p-6 rounded-2xl border-2 relative overflow-hidden"
-          style={{ 
-            backgroundColor: `${currentTheme.colors.accent}08`,
-            borderColor: currentTheme.colors.accent 
-          }}
-        >
-          <div className="relative z-10">
-            <div className="text-sm font-medium mb-4 opacity-70" style={{ color: currentTheme.colors.text }}>
-              {locale === 'en' ? 'Current Theme:' : 'Текущая тема:'}
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="text-4xl">{currentTheme.icon}</div>
-              <div>
-                <div className="font-bold text-xl mb-1" style={{ color: currentTheme.colors.text }}>
-                  {currentTheme.name}
-                </div>
-                <div 
-                  className="text-sm font-medium opacity-60" 
-                  style={{ color: currentTheme.colors.text }}
-                >
-                  {currentTheme.nameArabic}
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Декоративный фоновый элемент */}
-          <div 
-            className="absolute top-0 right-0 w-32 h-32 rounded-full opacity-5 -mr-16 -mt-16"
-            style={{ backgroundColor: currentTheme.colors.accent }}
-          />
-        </motion.div>
-
-        {/* Сетка тем с превью */}
-        <div className="space-y-8">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5" style={{ color: currentTheme.colors.accent }} />
-            <h3 
-              className="font-bold text-lg"
-              style={{ color: currentTheme.colors.text }}
-            >
-              {locale === 'en' ? 'Available Themes' : 'Доступные темы'}
+        <div className="space-y-6">
+          {/* Режим отображения */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-medium" style={{ color: 'var(--fixed-text)' }}>
+              Режим отображения
             </h3>
-            <div 
-              className="px-2 py-1 rounded-full text-xs font-medium"
-              style={{ 
-                backgroundColor: `${currentTheme.colors.accent}20`,
-                color: currentTheme.colors.accent 
-              }}
-            >
-              {SIMPLE_THEMES.length}
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 gap-6">
-            {SIMPLE_THEMES.map((theme, index) => {
-              const isActive = currentTheme.id === theme.id;
-              
-              return (
-                <motion.div
-                  key={theme.id}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => handleThemeSelect(theme)}
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { id: 'light', label: 'Светлый', icon: Sun },
+                { id: 'dark', label: 'Темный', icon: Moon },
+                { id: 'system', label: 'Авто', icon: Monitor },
+              ].map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => handleModeChange(id as 'light' | 'dark' | 'system')}
                   className={cn(
-                    "cursor-pointer rounded-2xl p-5 border-2 transition-all duration-300 relative overflow-hidden",
-                    isActive 
-                      ? "shadow-2xl" 
-                      : "hover:shadow-xl"
+                    "flex flex-col items-center gap-2 p-3 rounded-lg border transition-all",
+                    theme === id
+                      ? "border-current shadow-sm"
+                      : "border-transparent hover:border-gray-300"
                   )}
                   style={{
-                    backgroundColor: isActive 
-                      ? `${theme.colors.accent}10` 
-                      : 'transparent',
-                    borderColor: isActive 
-                      ? theme.colors.accent 
-                      : `${currentTheme.colors.border}60`
+                    backgroundColor: theme === id ? 'var(--color-primary-light)' : 'var(--color-muted)',
+                    color: theme === id ? 'white' : 'var(--fixed-text)',
+                    borderColor: theme === id ? 'var(--color-primary)' : 'var(--color-border)'
                   }}
                 >
-                  {/* Заголовок темы */}
-                  <div className="flex items-center justify-between mb-5">
-                    <div className="flex items-center gap-3">
-                      <div className="text-2xl">{theme.icon}</div>
-                      <div>
-                        <div className="font-bold text-lg" style={{ color: currentTheme.colors.text }}>
-                          {theme.name}
-                        </div>
-                        <div 
-                          className="text-sm opacity-60" 
-                          style={{ color: currentTheme.colors.text }}
-                        >
-                          {theme.nameArabic}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {isActive && (
-                      <motion.div
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        className="p-2 rounded-full"
-                        style={{ backgroundColor: theme.colors.accent }}
-                      >
-                        <Check className="w-4 h-4 text-white" />
-                      </motion.div>
-                    )}
-                  </div>
+                  <Icon className="w-4 h-4" />
+                  <span className="text-xs font-medium">{label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
 
-                  {/* SVG превью */}
-                  <div className="flex justify-center mb-5">
-                    <ThemePreviewSVG theme={theme} isActive={isActive} />
-                  </div>
-
-                  {/* Цветовая палитра */}
-                  <div className="flex gap-2 justify-center">
-                    <div
-                      className="w-10 h-10 rounded-xl border-2 border-white shadow-lg flex items-center justify-center"
-                      style={{ backgroundColor: theme.colors.background }}
-                      title={locale === 'en' ? 'Background' : 'Фон'}
-                    >
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: theme.colors.text, opacity: 0.3 }} />
-                    </div>
-                    <div
-                      className="w-10 h-10 rounded-xl border-2 border-white shadow-lg"
-                      style={{ backgroundColor: theme.colors.pageBackground }}
-                      title={locale === 'en' ? 'Page' : 'Страница'}
-                    />
-                    <div
-                      className="w-10 h-10 rounded-xl border-2 border-white shadow-lg"
-                      style={{ backgroundColor: theme.colors.text }}
-                      title={locale === 'en' ? 'Text' : 'Текст'}
-                    />
-                    <div
-                      className="w-10 h-10 rounded-xl border-2 border-white shadow-lg"
-                      style={{ backgroundColor: theme.colors.accent }}
-                      title={locale === 'en' ? 'Accent' : 'Акцент'}
-                    />
-                  </div>
-
-                  {/* Декоративные элементы */}
-                  {isActive && (
-                    <div 
-                      className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-10 -mr-12 -mt-12"
-                      style={{ backgroundColor: theme.colors.accent }}
-                    />
+          {/* Цветовые темы */}
+          <div className="space-y-3">
+            <h3 className="text-sm font-medium" style={{ color: 'var(--fixed-text)' }}>
+              Цветовые темы
+            </h3>
+            <div className="space-y-2">
+              {SITE_COLOR_THEMES.map((colorTheme) => (
+                <button
+                  key={colorTheme.id}
+                  onClick={() => handleThemeChange(colorTheme.id)}
+                  className={cn(
+                    "w-full flex items-center gap-3 p-3 rounded-lg border transition-all text-left",
+                    siteColorTheme === colorTheme.id
+                      ? "border-current shadow-sm"
+                      : "border-transparent hover:border-gray-300"
                   )}
-                </motion.div>
-              );
-            })}
+                  style={{
+                    backgroundColor: siteColorTheme === colorTheme.id ? 'var(--color-primary-light)' : 'var(--color-muted)',
+                    color: siteColorTheme === colorTheme.id ? 'white' : 'var(--fixed-text)',
+                    borderColor: siteColorTheme === colorTheme.id ? 'var(--color-primary)' : 'var(--color-border)'
+                  }}
+                >
+                  <div className="flex gap-1">
+                    <div 
+                      className="w-3 h-3 rounded-full border border-white/20"
+                      style={{ backgroundColor: colorTheme.lightMode.primary }}
+                    />
+                    <div 
+                      className="w-3 h-3 rounded-full border border-white/20"
+                      style={{ backgroundColor: colorTheme.lightMode.secondary }}
+                    />
+                    <div 
+                      className="w-3 h-3 rounded-full border border-white/20"
+                      style={{ backgroundColor: colorTheme.lightMode.accent }}
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-medium">{colorTheme.name}</div>
+                  </div>
+                  {siteColorTheme === colorTheme.id && (
+                    <Check className="w-4 h-4" />
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-
-        {/* Дополнительная информация */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-10 p-6 rounded-2xl text-center relative overflow-hidden"
-          style={{ 
-            backgroundColor: `${currentTheme.colors.pageBackground}AA`,
-            border: `1px solid ${currentTheme.colors.border}`
-          }}
-        >
-          <Eye className="w-6 h-6 mx-auto mb-3" style={{ color: currentTheme.colors.accent }} />
-          <p className="text-sm leading-relaxed" style={{ color: currentTheme.colors.text }}>
-            {locale === 'en' 
-              ? '💡 Choose a theme that provides comfort for your eyes during extended reading sessions of the Holy Quran'
-              : '💡 Выберите тему, которая обеспечивает комфорт для ваших глаз во время длительного чтения Священного Корана'}
+        
+        {/* Информация о темах */}
+        <div className="mt-6 p-4 rounded-lg" style={{ backgroundColor: 'var(--color-muted)' }}>
+          <div className="flex items-center gap-2 mb-2">
+            <Eye className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
+            <span className="text-sm font-medium" style={{ color: 'var(--fixed-text)' }}>
+              Комфорт чтения
+            </span>
+          </div>
+          <p className="text-xs" style={{ color: 'var(--fixed-text-secondary)' }}>
+            Выберите тему, которая обеспечивает комфорт для глаз во время длительного чтения Корана
           </p>
-          
-          <div 
-            className="absolute inset-0 rounded-2xl opacity-5"
-            style={{ backgroundColor: currentTheme.colors.accent }}
-          />
-        </motion.div>
+        </div>
       </SheetContent>
     </Sheet>
   );

@@ -5,6 +5,7 @@ import { Inter, Amiri } from "next/font/google";
 import { useState } from "react";
 import { ThemeProvider } from "next-themes";
 import { LocaleProvider } from "@/context/LocaleContext";
+import { ColorThemeProvider } from "@/context/ColorThemeContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Header from "@/components/Header";
@@ -42,11 +43,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             disableTransitionOnChange
           >
             <LocaleProvider>
-              <ForceColorApplication />
-              <div className="min-h-screen bg-background">
-                <Header />
-                <main>{children}</main>
-              </div>
+              <ColorThemeProvider>
+                <ForceColorApplication />
+                <div className="min-h-screen bg-background">
+                  <Header />
+                  <main>{children}</main>
+                </div>
+              </ColorThemeProvider>
             </LocaleProvider>
           </ThemeProvider>
         </QueryClientProvider>

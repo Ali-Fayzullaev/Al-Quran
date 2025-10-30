@@ -88,21 +88,502 @@
 /* Дополнительная принудительная тематизация */
 .mushaf-container {
   --tw-bg-opacity: 1 !important;
+  transition: background-color 0.4s ease, color 0.4s ease;
+  color: var(--mushaf-text) !important;
 }
 
 .mushaf-container * {
-  transition: background-color 0.3s ease !important;
+  transition: background-color 0.4s ease, color 0.4s ease,
+    border-color 0.4s ease !important;
+}
+
+/* Принудительно применяем цвета текста */
+.mushaf-container p,
+.mushaf-container span,
+.mushaf-container div:not(button),
+.mushaf-container h1,
+.mushaf-container h2,
+.mushaf-container h3,
+.mushaf-container h4,
+.mushaf-container h5,
+.mushaf-container h6,
+.mushaf-container label,
+.mushaf-container .text-center,
+.mushaf-container .font-medium,
+.mushaf-container .text-amber-700 {
+  color: var(--mushaf-text) !important;
+}
+
+/* Специальные стили для темной темы - максимальный приоритет */
+.mushaf-container.theme-dark,
+.mushaf-container.theme-dark * {
+  color: #e2e8f0 !important;
+}
+
+.mushaf-container.theme-dark button {
+  color: #e2e8f0 !important;
+  background: rgba(58, 56, 56, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Специальные стили для анимации загрузки */
+.mushaf-container .animate-spin {
+  border-color: var(--mushaf-accent) transparent transparent transparent !important;
+}
+
+/* Переопределение всех возможных цветовых классов Tailwind */
+.mushaf-container.theme-dark .text-amber-700,
+.mushaf-container.theme-dark .text-gray-600,
+.mushaf-container.theme-dark .text-gray-700,
+.mushaf-container.theme-dark .text-gray-800,
+.mushaf-container.theme-dark .text-gray-900,
+.mushaf-container.theme-dark .text-black {
+  color: #e2e8f0 !important;
+}
+
+/* СУПЕР АГРЕССИВНЫЕ ПРАВИЛА ДЛЯ ТЕМНОЙ ТЕМЫ */
+div[data-theme="dark"],
+div[data-theme="dark"] *,
+div[data-theme="dark"] p,
+div[data-theme="dark"] span,
+div[data-theme="dark"] div,
+div[data-theme="dark"] h1,
+div[data-theme="dark"] h2,
+div[data-theme="dark"] h3,
+div[data-theme="dark"] label {
+  color: #e2e8f0 !important;
+  background-color: transparent !important;
+}
+
+div[data-theme="dark"] {
+  background-color: #1a202c !important;
+  color: #e2e8f0 !important;
+}
+
+div[data-theme="dark"] button {
+  color: #e2e8f0 !important;
+  background: rgba(209, 192, 192, 0.15) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Максимальная специфичность для темного режима */
+.mushaf-container[data-theme="dark"],
+.mushaf-container[data-theme="dark"] *:not(button):not(svg):not(path) {
+  color: #e2e8f0 !important;
+}
+
+.mushaf-container[data-theme="dark"] {
+  background-color: #1a202c !important;
+}
+
+/* Правила для body атрибута */
+body[data-mushaf-theme="dark"] .mushaf-container,
+body[data-mushaf-theme="dark"] .mushaf-container * {
+  color: #e2e8f0 !important;
+}
+
+body[data-mushaf-theme="dark"] .mushaf-container {
+  background-color: #1a202c !important;
+}
+
+/* Цветные темные темы для разных схем */
+/* Синяя темная тема - ЕЩЁ ЯРЧЕ + КНИЖНЫЕ ГРАНИЦЫ! */
+.mushaf-container[data-theme="dark"][data-color-theme="blue"] {
+  background-color: #2a3a5a !important;
+  color: #ffffff !important;
+  border: 2px solid #4f46e5 !important;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.mushaf-container[data-theme="dark"][data-color-theme="blue"]
+  *:not(button):not(svg):not(path) {
+  color: #ffffff !important;
+}
+
+/* Зеленая темная тема - ЕЩЁ ЯРЧЕ + КНИЖНЫЕ ГРАНИЦЫ! */
+.mushaf-container[data-theme="dark"][data-color-theme="green"] {
+  background-color: #2a4538 !important;
+  color: #ffffff !important;
+  border: 2px solid #059669 !important;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.mushaf-container[data-theme="dark"][data-color-theme="green"]
+  *:not(button):not(svg):not(path) {
+  color: #ffffff !important;
+}
+
+/* Фиолетовая темная тема - ЕЩЁ ЯРЧЕ + КНИЖНЫЕ ГРАНИЦЫ! */
+.mushaf-container[data-theme="dark"][data-color-theme="purple"] {
+  background-color: #3d2b5e !important;
+  color: #ffffff !important;
+  border: 2px solid #7c3aed !important;
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.mushaf-container[data-theme="dark"][data-color-theme="purple"]
+  *:not(button):not(svg):not(path) {
+  color: #ffffff !important;
+}
+
+/* Янтарная темная тема - ЕЩЁ ЯРЧЕ + КНИЖНЫЕ ГРАНИЦЫ! */
+.mushaf-container[data-theme="dark"][data-color-theme="amber"] {
+  background-color: #4d3827 !important;
+  color: #ffffff !important;
+  border: 2px solid #d97706 !important;
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.mushaf-container[data-theme="dark"][data-color-theme="amber"]
+  *:not(button):not(svg):not(path) {
+  color: #ffffff !important;
+}
+
+/* Розовая темная тема - ЕЩЁ ЯРЧЕ + КНИЖНЫЕ ГРАНИЦЫ! */
+.mushaf-container[data-theme="dark"][data-color-theme="pink"] {
+  background-color: #4d2739 !important;
+  color: #ffffff !important;
+  border: 2px solid #db2777 !important;
+  box-shadow: 0 4px 20px rgba(236, 72, 153, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.mushaf-container[data-theme="dark"][data-color-theme="pink"]
+  *:not(button):not(svg):not(path) {
+  color: #ffffff !important;
+}
+
+/* Сепия темная тема - ЕЩЁ ЯРЧЕ + КНИЖНЫЕ ГРАНИЦЫ! */
+.mushaf-container[data-theme="dark"][data-color-theme="sepia"] {
+  background-color: #4d3f2a !important;
+  color: #ffffff !important;
+  border: 2px solid #a0522d !important;
+  box-shadow: 0 4px 20px rgba(139, 69, 19, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.mushaf-container[data-theme="dark"][data-color-theme="sepia"]
+  *:not(button):not(svg):not(path) {
+  color: #faf5ef !important;
+}
+
+/* Оранжевая темная тема - ЕЩЁ ЯРЧЕ + КНИЖНЫЕ ГРАНИЦЫ! */
+.mushaf-container[data-theme="dark"][data-color-theme="orange"] {
+  background-color: #4d2f1c !important;
+  color: #ffffff !important;
+  border: 2px solid #c2410c !important;
+  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.mushaf-container[data-theme="dark"][data-color-theme="orange"]
+  *:not(button):not(svg):not(path) {
+  color: #ffffff !important;
+}
+
+/* Бирюзовая темная тема - ЕЩЁ ЯРЧЕ + КНИЖНЫЕ ГРАНИЦЫ! */
+.mushaf-container[data-theme="dark"][data-color-theme="teal"] {
+  background-color: #235e5a !important;
+  color: #ffffff !important;
+  border: 2px solid #0f766e !important;
+  box-shadow: 0 4px 20px rgba(20, 184, 166, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.mushaf-container[data-theme="dark"][data-color-theme="teal"]
+  *:not(button):not(svg):not(path) {
+  color: #ffffff !important;
+}
+
+/* Индиго темная тема - ЕЩЁ ЯРЧЕ + КНИЖНЫЕ ГРАНИЦЫ! */
+.mushaf-container[data-theme="dark"][data-color-theme="indigo"] {
+  background-color: #413e91 !important;
+  color: #ffffff !important;
+  border: 2px solid #4338ca !important;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.mushaf-container[data-theme="dark"][data-color-theme="indigo"]
+  *:not(button):not(svg):not(path) {
+  color: #ffffff !important;
+}
+
+/* Красная темная тема - ЕЩЁ ЯРЧЕ + КНИЖНЫЕ ГРАНИЦЫ! */
+.mushaf-container[data-theme="dark"][data-color-theme="red"] {
+  background-color: #8f2d2d !important;
+  color: #ffffff !important;
+  border: 2px solid #b91c1c !important;
+  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.mushaf-container[data-theme="dark"][data-color-theme="red"]
+  *:not(button):not(svg):not(path) {
+  color: #ffffff !important;
+}
+
+/* Желтая темная тема - ЕЩЁ ЯРЧЕ + КНИЖНЫЕ ГРАНИЦЫ! */
+.mushaf-container[data-theme="dark"][data-color-theme="yellow"] {
+  background-color: #4d3827 !important;
+  color: #ffffff !important;
+  border: 2px solid #ca8a04 !important;
+  box-shadow: 0 4px 20px rgba(234, 179, 8, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.mushaf-container[data-theme="dark"][data-color-theme="yellow"]
+  *:not(button):not(svg):not(path) {
+  color: #ffffff !important;
+}
+
+/* Серая темная тема - ЕЩЁ ЯРЧЕ + КНИЖНЫЕ ГРАНИЦЫ! */
+.mushaf-container[data-theme="dark"][data-color-theme="gray"] {
+  background-color: #2f3f47 !important;
+  color: #ffffff !important;
+  border: 2px solid #4b5563 !important;
+  box-shadow: 0 4px 20px rgba(107, 114, 128, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.mushaf-container[data-theme="dark"][data-color-theme="gray"]
+  *:not(button):not(svg):not(path) {
+  color: #ffffff !important;
+}
+
+/* Изумрудная и другие (по умолчанию) */
+.mushaf-container[data-theme="dark"] {
+  background-color: #064e3b !important;
+  color: #d1fae5 !important;
+}
+
+.mushaf-container[data-theme="dark"] *:not(button):not(svg):not(path) {
+  color: #d1fae5 !important;
+}
+
+/* Универсальные правила для старых браузеров */
+html[class*="dark"] .mushaf-container,
+html.dark .mushaf-container,
+.dark .mushaf-container {
+  background-color: #064e3b !important;
+  color: #d1fae5 !important;
+}
+
+html[class*="dark"] .mushaf-container *:not(button):not(svg):not(path),
+html.dark .mushaf-container *:not(button):not(svg):not(path),
+.dark .mushaf-container *:not(button):not(svg):not(path) {
+  color: #d1fae5 !important;
+}
+
+/* ===== ЦВЕТНЫЕ СВЕТЛЫЕ ТЕМЫ + КНИЖНЫЕ ГРАНИЦЫ! ===== */
+
+/* Синяя светлая тема + КНИЖНЫЕ ГРАНИЦЫ */
+.mushaf-container[data-theme="light"][data-color-theme="blue"] {
+  background-color: #f0f9ff !important;
+  color: #1e3a8a !important;
+  border: 2px solid #1e40af !important;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.mushaf-container[data-theme="light"][data-color-theme="blue"]
+  *:not(button):not(svg):not(path) {
+  color: #1e3a8a !important;
+}
+
+/* Фиолетовая светлая тема + КНИЖНЫЕ ГРАНИЦЫ */
+.mushaf-container[data-theme="light"][data-color-theme="purple"] {
+  background-color: #faf5ff !important;
+  color: #581c87 !important;
+  border: 2px solid #6b21a8 !important;
+  box-shadow: 0 4px 20px rgba(147, 51, 234, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.mushaf-container[data-theme="light"][data-color-theme="purple"]
+  *:not(button):not(svg):not(path) {
+  color: #581c87 !important;
+}
+
+/* Янтарная светлая тема + КНИЖНЫЕ ГРАНИЦЫ */
+.mushaf-container[data-theme="light"][data-color-theme="amber"] {
+  background-color: #fffbeb !important;
+  color: #92400e !important;
+  border: 2px solid #b45309 !important;
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.mushaf-container[data-theme="light"][data-color-theme="amber"]
+  *:not(button):not(svg):not(path) {
+  color: #92400e !important;
+}
+
+/* Оранжевая светлая тема + КНИЖНЫЕ ГРАНИЦЫ */
+.mushaf-container[data-theme="light"][data-color-theme="orange"] {
+  background-color: #fff7ed !important;
+  color: #9a3412 !important;
+  border: 2px solid #c2410c !important;
+  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.mushaf-container[data-theme="light"][data-color-theme="orange"]
+  *:not(button):not(svg):not(path) {
+  color: #9a3412 !important;
+}
+
+/* Бирюзовая светлая тема + КНИЖНЫЕ ГРАНИЦЫ */
+.mushaf-container[data-theme="light"][data-color-theme="teal"] {
+  background-color: #f0fdfa !important;
+  color: #134e4a !important;
+  border: 2px solid #0f766e !important;
+  box-shadow: 0 4px 20px rgba(20, 184, 166, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.mushaf-container[data-theme="light"][data-color-theme="teal"]
+  *:not(button):not(svg):not(path) {
+  color: #134e4a !important;
+}
+
+/* Индиго светлая тема + КНИЖНЫЕ ГРАНИЦЫ */
+.mushaf-container[data-theme="light"][data-color-theme="indigo"] {
+  background-color: #eef2ff !important;
+  color: #3730a3 !important;
+  border: 2px solid #4338ca !important;
+  box-shadow: 0 4px 20px rgba(99, 102, 241, 0.15), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+}
+
+.mushaf-container[data-theme="light"][data-color-theme="indigo"]
+  *:not(button):not(svg):not(path) {
+  color: #3730a3 !important;
+}
+
+/* Красная светлая тема + КНИЖНЫЕ ГРАНИЦЫ */
+.mushaf-container[data-theme="light"][data-color-theme="red"] {
+  background-color: #fef2f2 !important;
+  color: #7f1d1d !important;
+  border: 2px solid #b91c1c !important;
+  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.15), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+}
+
+.mushaf-container[data-theme="light"][data-color-theme="red"]
+  *:not(button):not(svg):not(path) {
+  color: #7f1d1d !important;
+}
+
+/* Желтая светлая тема + КНИЖНЫЕ ГРАНИЦЫ */
+.mushaf-container[data-theme="light"][data-color-theme="yellow"] {
+  background-color: #fefce8 !important;
+  color: #713f12 !important;
+  border: 2px solid #a16207 !important;
+  box-shadow: 0 4px 20px rgba(234, 179, 8, 0.15), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+}
+
+.mushaf-container[data-theme="light"][data-color-theme="yellow"]
+  *:not(button):not(svg):not(path) {
+  color: #713f12 !important;
+}
+
+/* Серая светлая тема + КНИЖНЫЕ ГРАНИЦЫ */
+.mushaf-container[data-theme="light"][data-color-theme="gray"] {
+  background-color: #f9fafb !important;
+  color: #374151 !important;
+  border: 2px solid #4b5563 !important;
+  box-shadow: 0 4px 20px rgba(107, 114, 128, 0.15), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+}
+
+.mushaf-container[data-theme="light"][data-color-theme="gray"]
+  *:not(button):not(svg):not(path) {
+  color: #374151 !important;
+}
+
+/* Розовая светлая тема + КНИЖНЫЕ ГРАНИЦЫ */
+.mushaf-container[data-theme="light"][data-color-theme="pink"] {
+  background-color: #fdf2f8 !important;
+  color: #831843 !important;
+  border: 2px solid #be185d !important;
+  box-shadow: 0 4px 20px rgba(236, 72, 153, 0.15), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+}
+
+.mushaf-container[data-theme="light"][data-color-theme="pink"]
+  *:not(button):not(svg):not(path) {
+  color: #831843 !important;
+}
+
+/* Зеленая светлая тема + КНИЖНЫЕ ГРАНИЦЫ */
+.mushaf-container[data-theme="light"][data-color-theme="green"] {
+  background-color: #f0fdf4 !important;
+  color: #1a202c !important;
+  border: 2px solid #047857 !important;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+}
+
+.mushaf-container[data-theme="light"][data-color-theme="green"]
+  *:not(button):not(svg):not(path) {
+  color: #1a202c !important;
+}
+
+/* Сепия светлая тема + КНИЖНЫЕ ГРАНИЦЫ */
+.mushaf-container[data-theme="light"][data-color-theme="sepia"] {
+  background-color: #f8f0e0 !important;
+  color: #4a4a4a !important;
+  border: 2px solid #8b4513 !important;
+  box-shadow: 0 4px 20px rgba(139, 69, 19, 0.2), inset 0 1px 0 rgba(255,255,255,0.8) !important;
+}
+
+.mushaf-container[data-theme="light"][data-color-theme="sepia"]
+  *:not(button):not(svg):not(path) {
+  color: #4a4a4a !important;
 }
 
 /* Переопределение Tailwind классов */
-.mushaf-container .bg-gradient-to-br {
+.mushaf-container .bg-gradient-to-br,
+.mushaf-container .from-amber-50,
+.mushaf-container .via-orange-50,
+.mushaf-container .to-red-50,
+.mushaf-container .bg-white,
+.mushaf-container .bg-gray-50,
+.mushaf-container .bg-gray-100 {
   background: var(--mushaf-bg) !important;
 }
 
-.mushaf-container .from-amber-50,
-.mushaf-container .via-orange-50,
-.mushaf-container .to-red-50 {
-  background: var(--mushaf-bg) !important;
+/* Улучшенные стили для кнопок */
+.mushaf-container button {
+  color: var(--mushaf-text) !important;
+  border: 1px solid var(--mushaf-border) !important;
+  backdrop-filter: blur(10px);
+}
+
+/* Стили кнопок для светлой темы */
+.mushaf-container.theme-light button,
+.mushaf-container.theme-sepia button {
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+
+.mushaf-container.theme-light button:hover,
+.mushaf-container.theme-sepia button:hover {
+  background: rgba(255, 255, 255, 0.95) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Стили кнопок для темной темы */
+.mushaf-container.theme-dark button {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #e2e8f0 !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.mushaf-container.theme-dark button:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 /* ============ ПРЕМИАЛЬНЫЕ СТИЛИ МУСХАФА ============ */
@@ -115,6 +596,32 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 -1px 0 rgba(0, 0, 0, 0.05);
   border: 1px solid var(--mushaf-border);
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Улучшенные стили для изображений Корана в темной теме */
+.theme-dark .mushaf-page-container img[src*="quran-img-pages"] {
+  filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(1.1) !important;
+  background: var(--mushaf-page-bg) !important;
+  border-radius: 8px;
+}
+
+/* Принудительно делаем текст внутри SVG белым в ночной теме */
+.theme-dark .mushaf-page-container svg text,
+.theme-dark .mushaf-page-container svg tspan {
+  fill: var(--mushaf-text) !important;
+  stroke: none !important;
+}
+
+/* Улучшения для темы сепии */
+.theme-sepia .mushaf-page-container img[src*="quran-img-pages"] {
+  filter: sepia(0.3) brightness(0.98) contrast(1.02) !important;
+  background: var(--mushaf-page-bg) !important;
+}
+
+/* Стандартная светлая тема */
+.theme-light .mushaf-page-container img[src*="quran-img-pages"] {
+  background: var(--mushaf-page-bg) !important;
+  filter: brightness(1) contrast(1) !important;
 }
 
 .mushaf-page-container:hover {
@@ -272,35 +779,30 @@
   }
 }
 
-/* Стили для тем */
+/* Стили для тем Mushaf */
 .theme-light {
-  --mushaf-bg: #fefefe;
-  --mushaf-page-bg: #f8f5f0;
-  --mushaf-text: #2d3748;
-  --mushaf-accent: #2b6cb0;
-  --mushaf-border: #e2e8f0;
-  --mushaf-shadow: rgba(0, 0, 0, 0.1);
-  --mushaf-page-gradient: linear-gradient(135deg, #f8f5f0 0%, #e8dfca 100%);
+  --mushaf-page-gradient: linear-gradient(135deg, #fefefe 0%, #f8f5f0 100%);
 }
 
 .theme-sepia {
-  --mushaf-bg: #f8f0e0;
-  --mushaf-page-bg: #e8dfca;
-  --mushaf-text: #5c4b37;
-  --mushaf-accent: #8b4513;
-  --mushaf-border: #d4af8c;
-  --mushaf-shadow: rgba(139, 69, 19, 0.2);
-  --mushaf-page-gradient: linear-gradient(135deg, #e8dfca 0%, #d4c4a0 100%);
+  --mushaf-page-gradient: linear-gradient(135deg, #f4f1e8 0%, #e8dfca 100%);
 }
 
 .theme-dark {
-  --mushaf-bg: #1a202c;
-  --mushaf-page-bg: #2d3748;
-  --mushaf-text: #e2e8f0;
-  --mushaf-accent: #63b3ed;
-  --mushaf-border: #4a5568;
-  --mushaf-shadow: rgba(0, 0, 0, 0.4);
   --mushaf-page-gradient: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+}
+
+/* Дополнительные стили для улучшенного чтения */
+.mushaf-container.theme-light {
+  background: var(--mushaf-bg);
+}
+
+.mushaf-container.theme-sepia {
+  background: var(--mushaf-bg);
+}
+
+.mushaf-container.theme-dark {
+  background: var(--mushaf-bg);
 }
 
 /* Адаптивные стили */

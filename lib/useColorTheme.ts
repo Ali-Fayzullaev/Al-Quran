@@ -6,6 +6,7 @@ import { useQuranStore } from "@/lib/store";
 import { 
   applySiteColorTheme, 
   applyQuranTextColors, 
+  applyMushafTheme,
   getThemeByName, 
   getQuranColorSchemeByName 
 } from "@/lib/colorThemes";
@@ -38,6 +39,9 @@ export function useColorTheme() {
     if (quranScheme) {
       applyQuranTextColors(quranScheme, isDark);
     }
+
+    // Применяем тему для Mushaf на основе основной темы сайта
+    applyMushafTheme(siteColorTheme, isDark);
   };
 
   const applySiteTheme = (themeId: string) => {
@@ -49,6 +53,8 @@ export function useColorTheme() {
     
     if (themeData) {
       applySiteColorTheme(themeData, isDark);
+      // Также применяем тему Mushaf при изменении основной темы
+      applyMushafTheme(themeId, isDark);
     }
   };
 
