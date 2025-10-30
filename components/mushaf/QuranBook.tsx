@@ -179,7 +179,6 @@ export default function QuranBook({
   } = useMushafState(initialPage);
 
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
   const [isImmersiveMode, setIsImmersiveMode] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -341,7 +340,6 @@ export default function QuranBook({
           break;
         case "exitMode":
           setIsImmersiveMode(false);
-          setShowSettings(false);
           break;
       }
     },
@@ -406,6 +404,20 @@ export default function QuranBook({
       window.removeEventListener("orientationchange", checkScreenSize);
     };
   }, [viewMode.type]);
+
+  // Обработка клавиш для выхода из иммерсивного режима
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isImmersiveMode) {
+        setIsImmersiveMode(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isImmersiveMode]);
 
   // Применение тем при их изменении
   useEffect(() => {
@@ -818,16 +830,9 @@ export default function QuranBook({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => setShowSettings(!showSettings)}
-                    className="bg-white/80 hover:bg-white/90 shadow-md"
-                  >
-                    <Settings className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
                     onClick={toggleFullscreen}
                     className="bg-white/80 hover:bg-white/90 shadow-md"
+                    title="Полноэкранный режим"
                   >
                     {isFullscreen ? (
                       <Minimize2 className="w-4 h-4" />
@@ -845,13 +850,36 @@ export default function QuranBook({
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => setIsImmersiveMode(!isImmersiveMode)}
+                    onClick={() => setIsImmersiveMode(true)}
                     className="bg-white/80 hover:bg-white/90 shadow-md"
+                    title="Режим чтения без интерфейса"
                   >
-                    <RotateCw className="w-4 h-4" />
+                    <Maximize2 className="w-4 h-4" />
                   </Button>
                 </div>
               </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Скрытая кнопка выхода из иммерсивного режима */}
+        <AnimatePresence>
+          {isImmersiveMode && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed top-4 right-4 z-50"
+            >
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsImmersiveMode(false)}
+                className="bg-black/50 hover:bg-black/70 text-white shadow-lg opacity-50 hover:opacity-100 transition-opacity"
+                title="Выйти из полноэкранного режима (нажмите ESC)"
+              >
+                <Minimize2 className="w-4 h-4" />
+              </Button>
             </motion.div>
           )}
         </AnimatePresence>
@@ -895,33 +923,6 @@ export default function QuranBook({
           )}
         </AnimatePresence>
       </div>
-
-      {/* Боковые панели */}
-      <AnimatePresence>
-        {showSettings && (
-          <motion.div
-            initial={{ opacity: 0, x: -300 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -300 }}
-            className="absolute top-0 left-0 w-80 h-full bg-white shadow-2xl z-30 overflow-y-auto"
-          >
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-gray-800">
-                  {t("settings")}
-                </h2>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowSettings(false)}
-                >
-                  ×
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Сообщение о повороте экрана для мобильных устройств */}
       <AnimatePresence>
