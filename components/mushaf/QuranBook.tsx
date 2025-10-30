@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import PageSpread from "./PageSpread";
 import PremiumNavigation from "./PremiumNavigation";
+import PageSizeControls from "./PageSizeControls";
 
 import {
   ViewMode,
@@ -86,6 +87,11 @@ function useMushafState(initialPage: number = 1) {
     showProgress: true,
     enableSounds: false,
     keyboardShortcuts: [],
+    pageSize: {
+      currentSize: "medium",
+      showSizeControls: true,
+      autoFitToScreen: false,
+    },
   });
 
   const [bookmarks, setBookmarks] = useState<number[]>([]);
@@ -130,7 +136,12 @@ export default function QuranBook({
 }: QuranBookProps) {
   const { locale, t } = useLocale();
   const { theme } = useTheme();
-  const { siteColorTheme } = useQuranStore();
+  const { 
+    siteColorTheme, 
+    mushafPageSize, 
+    mushafShowSizeControls, 
+    mushafAutoFitToScreen 
+  } = useQuranStore();
   const { applyCurrentColors } = useColorTheme();
   
   // Отладка тем
@@ -826,6 +837,9 @@ export default function QuranBook({
                   </Button>
                 </div>
 
+                {/* Центральная группа - размер страниц */}
+                <PageSizeControls />
+
                 {/* Правая группа */}
                 <div className="flex items-center gap-2">
                   <Button
@@ -843,7 +857,14 @@ export default function QuranBook({
         </AnimatePresence>
 
         {/* Основная область со страницами */}
-        <div className="flex-1 flex items-center justify-center px-4 py-8">
+        <div 
+          className="flex-1 flex items-center justify-center px-4 py-8"
+          style={{ 
+            transform: `scale(${MUSHAF_CONFIG.PAGE_SIZES[mushafPageSize].scale})`,
+            transformOrigin: 'center center',
+            transition: 'transform 0.3s ease-in-out'
+          }}
+        >
           <PageSpread
             navigationState={navigationState}
             viewMode={viewMode}
@@ -851,6 +872,7 @@ export default function QuranBook({
             onNavigationChange={handleNavigationChange}
             onZoomChange={handleZoomChange}
             onViewModeChange={handleViewModeChange}
+            pageSize={mushafPageSize}
           />
         </div>
 

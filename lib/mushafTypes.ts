@@ -128,6 +128,21 @@ export interface KeyboardShortcut {
   description: string;
 }
 
+export type PageSizeType = 'minimal' | 'small' | 'medium' | 'large' | 'maximum';
+
+export interface PageSizeConfig {
+  scale: number;
+  name: string;
+  nameArabic: string;
+  icon: string;
+}
+
+export interface PageSizeSettings {
+  currentSize: PageSizeType;
+  showSizeControls: boolean;
+  autoFitToScreen: boolean;
+}
+
 export interface MushafSettings {
   viewMode: 'single' | 'spread';
   theme: string;
@@ -139,6 +154,7 @@ export interface MushafSettings {
   showProgress: boolean;
   enableSounds: boolean;
   keyboardShortcuts: KeyboardShortcut[];
+  pageSize: PageSizeSettings;
 }
 
 export interface PageAnimation {
@@ -169,6 +185,16 @@ export const MUSHAF_CONFIG = {
   DEFAULT_ZOOM: 1,
   MIN_ZOOM: 1,
   MAX_ZOOM: 5,
+  
+  // Размеры страниц
+  PAGE_SIZES: {
+    minimal: { scale: 0.6, name: 'Минимальный', nameArabic: 'أدنى', icon: '🤏' },
+    small: { scale: 0.8, name: 'Маленький', nameArabic: 'صغير', icon: '📱' },
+    medium: { scale: 1.0, name: 'Средний', nameArabic: 'متوسط', icon: '💻' },
+    large: { scale: 1.2, name: 'Большой', nameArabic: 'كبير', icon: '🖥️' },
+    maximum: { scale: 1.6, name: 'Максимальный', nameArabic: 'أقصى', icon: '🖼️' }
+  },
+  DEFAULT_PAGE_SIZE: 'medium' as const,
   
   ANIMATION_DURATION: {
     PAGE_TURN: 400,

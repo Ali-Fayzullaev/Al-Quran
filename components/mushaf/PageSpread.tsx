@@ -20,6 +20,7 @@ interface PageSpreadProps {
   onNavigationChange: (navigation: Partial<NavigationState>) => void;
   onZoomChange: (zoomState: Partial<ZoomState>) => void;
   onViewModeChange: (viewMode: Partial<ViewMode>) => void;
+  pageSize?: 'minimal' | 'small' | 'medium' | 'large' | 'maximum';
   className?: string;
 }
 
@@ -30,6 +31,7 @@ export default function PageSpread({
   onNavigationChange,
   onZoomChange,
   onViewModeChange,
+  pageSize = 'medium',
   className
 }: PageSpreadProps) {
   const [spreadPages, setSpreadPages] = useState<[number, number] | [number]>([1]);
