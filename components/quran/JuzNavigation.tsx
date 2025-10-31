@@ -19,16 +19,8 @@ export default function JuzNavigation({ currentJuz = 1 }: JuzNavigationProps) {
   const { locale } = useLocale();
   const { readingSessions } = useQuranStore();
   const [selectedJuz, setSelectedJuz] = useState(currentJuz);
-  const [progressUpdateTrigger, setProgressUpdateTrigger] = useState(0);
 
-  // Обновляем прогресс каждые 2 секунды
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setProgressUpdateTrigger(prev => prev + 1);
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, []);
+  // Убираем ненужный interval - прогресс будет обновляться через store
 
   // Создаем список всех 30 джузов
   const juzList = Array.from({ length: 30 }, (_, i) => i + 1);

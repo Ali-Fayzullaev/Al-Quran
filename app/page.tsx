@@ -16,6 +16,12 @@ const CountUp = dynamic(() => import("react-countup"), {
   loading: () => <span>0</span>
 });
 
+// Lazy loading больших компонентов
+const MotionDiv = dynamic(() => 
+  import("framer-motion").then(mod => ({ default: mod.motion.div })), 
+  { ssr: false }
+);
+
 export default function HomePage() {
   const { locale, t } = useLocale();
   const router = useRouter();

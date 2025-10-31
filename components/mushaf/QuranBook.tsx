@@ -594,17 +594,14 @@ export default function QuranBook({
       }
     };
 
+    // Применяем цвета один раз при изменении темы
     const timeout = setTimeout(() => {
       applyCurrentColors();
       applyDarkThemeAggressively();
     }, 100);
 
-    // Повторяем каждые 500ms для гарантии
-    const interval = setInterval(applyDarkThemeAggressively, 500);
-
     return () => {
       clearTimeout(timeout);
-      clearInterval(interval);
     };
   }, [theme, siteColorTheme, applyCurrentColors]);
 

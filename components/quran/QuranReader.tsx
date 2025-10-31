@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Play, 
@@ -114,15 +114,19 @@ export default function QuranReader({
     return surahData.slice(1) || [];
   }, [surahData, showTranslation]);
 
-  // Автоскролл к текущему аяту
-  useEffect(() => {
-    if (verseRefs.current[currentVerse]) {
-      verseRefs.current[currentVerse]?.scrollIntoView({
+  // Автоскролл к текущему аяту - оптимизировано
+  const scrollToVerse = useCallback((verseNumber: number) => {
+    if (verseRefs.current[verseNumber]) {
+      verseRefs.current[verseNumber]?.scrollIntoView({
         behavior: 'smooth',
         block: 'center'
       });
     }
-  }, [currentVerse]);
+  }, []);
+
+  useEffect(() => {
+    scrollToVerse(currentVerse);
+  }, [currentVerse, scrollToVerse]);
 
   // УЛУЧШЕННАЯ обработка аудио с прогрессом
   useEffect(() => {

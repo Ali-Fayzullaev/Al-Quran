@@ -3,9 +3,33 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { QuizConfiguration } from '@/components/quiz/QuizConfiguration';
-import { Quiz } from '@/components/quiz/Quiz';
-import { QuizResults } from '@/components/quiz/QuizResults';
+import dynamic from 'next/dynamic';
+import { Suspense } from 'react';
+
+// Lazy loading компонентов квиза для лучшей производительности
+const QuizConfiguration = dynamic(() => 
+  import('@/components/quiz/QuizConfiguration').then(mod => ({ default: mod.QuizConfiguration })),
+  { 
+    loading: () => <div className="flex items-center justify-center p-8">Загрузка настроек квиза...</div>,
+    ssr: false 
+  }
+);
+
+const Quiz = dynamic(() => 
+  import('@/components/quiz/Quiz').then(mod => ({ default: mod.Quiz })),
+  { 
+    loading: () => <div className="flex items-center justify-center p-8">Загрузка квиза...</div>,
+    ssr: false 
+  }
+);
+
+const QuizResults = dynamic(() => 
+  import('@/components/quiz/QuizResults').then(mod => ({ default: mod.QuizResults })),
+  { 
+    loading: () => <div className="flex items-center justify-center p-8">Загрузка результатов...</div>,
+    ssr: false 
+  }
+);
 import { useQuizStore } from '@/lib/quizStore';
 import { useJourneyStore } from '@/lib/journeyStore';
 import { generateQuizQuestions } from '@/lib/quizGenerator';

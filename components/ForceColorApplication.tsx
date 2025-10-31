@@ -11,28 +11,15 @@ export function ForceColorApplication() {
   const { applyCurrentColors } = useColorTheme();
 
   useEffect(() => {
-    // Принудительно применяем цвета при первой загрузке
-    const applyColorsWithDelay = () => {
-      setTimeout(() => {
-        applyCurrentColors();
-      }, 100);
-    };
-
-    // Применяем сразу и через небольшой интервал
+    // Применяем цвета только при изменении темы/схем, без постоянного interval
     applyCurrentColors();
-    applyColorsWithDelay();
-
-    // Применяем при изменении темы или цветовых схем
-    const interval = setInterval(() => {
+    
+    // Одна дополнительная проверка через небольшую задержку
+    const timeout = setTimeout(() => {
       applyCurrentColors();
-    }, 1000);
+    }, 100);
 
-    // Очищаем интервал через 5 секунд
-    setTimeout(() => {
-      clearInterval(interval);
-    }, 5000);
-
-    return () => clearInterval(interval);
+    return () => clearTimeout(timeout);
   }, [theme, systemTheme, siteColorTheme, quranTextColorScheme, applyCurrentColors]);
 
   return null;

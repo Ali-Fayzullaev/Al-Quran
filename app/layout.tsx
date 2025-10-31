@@ -25,8 +25,12 @@ const amiri = Amiri({
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
+      staleTime: 30 * 60 * 1000, // 30 minutes - дольше кешируем Коран данные 
+      gcTime: 60 * 60 * 1000, // 1 hour - дольше держим в памяти
+      refetchOnWindowFocus: false, // Не перезагружаем при фокусе
+      refetchOnMount: false, // Не перезагружаем при монтировании если есть кеш
+      retry: 1, // Меньше попыток повторения
+      retryDelay: 1000, // Быстрая задержка между попытками
     },
   },
 });

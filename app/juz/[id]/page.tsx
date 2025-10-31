@@ -32,7 +32,7 @@ import {
   Minimize2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { getWorkingAudioUrl } from "@/lib/api";
 import { cn } from "@/lib/utils";
 
@@ -109,8 +109,8 @@ export default function JuzPage({ params }: JuzPageProps) {
     }
   }, [juzId]);
 
-  // Сохранение прогресса в localStorage
-  useEffect(() => {
+  // Оптимизированное сохранение прогресса - только при значительных изменениях
+  const saveProgress = useCallback(() => {
     if (versesRead.size > 0 || readingStreak > 0 || readingTime > 0) {
       const progressData = {
         versesRead: Array.from(versesRead),
@@ -120,6 +120,12 @@ export default function JuzPage({ params }: JuzPageProps) {
       localStorage.setItem(`juz-${juzId}-progress`, JSON.stringify(progressData));
     }
   }, [versesRead, readingStreak, readingTime, juzId]);
+
+  // Дебаунсированное сохранение прогресса
+  useEffect(() => {
+    const timeoutId = setTimeout(saveProgress, 2000); // Сохраняем через 2 секунды после последнего изменения
+    return () => clearTimeout(timeoutId);
+  }, [saveProgress]);
 
   // Получаем данные джуза
   const { data: juzData, isLoading, error } = useJuz(juzId);

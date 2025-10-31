@@ -1,6 +1,25 @@
 "use client";
 
-import QuranBook from "@/components/mushaf/QuranBook";
+import dynamic from 'next/dynamic';
+
+// Lazy loading мусхафа для быстрой загрузки страницы  
+const QuranBook = dynamic(() => import("@/components/mushaf/QuranBook"), {
+  loading: () => (
+    <div className="min-h-screen mushaf-container theme-light flex items-center justify-center"
+         style={{ 
+           backgroundColor: '#ffffff',
+           background: '#ffffff',
+           color: '#1a202c'
+         }}>
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4"
+             style={{ borderColor: '#3182ce' }}></div>
+        <p className="font-medium" style={{ color: '#1a202c' }}>تحميل المصحف...</p>
+      </div>
+    </div>
+  ),
+  ssr: false
+});
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { useEffect } from 'react';

@@ -52,7 +52,9 @@ export function useSurahMultipleEditions(surahNumber: number, editions: string[]
     queryKey: ['surah', surahNumber, 'multiple', editions.sort().join(',')],
     queryFn: () => getSurahMultipleEditions(surahNumber, editions),
     enabled: !!surahNumber && editions.length > 0,
-    staleTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 30 * 60 * 1000, // 30 minutes - увеличиваем кеш
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 }
 
@@ -63,6 +65,8 @@ export function useJuz(juzNumber: number, edition: string = 'quran-uthmani') {
     queryFn: () => getJuz(juzNumber, edition),
     enabled: juzNumber > 0 && juzNumber <= 30,
     staleTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 }
 
@@ -73,6 +77,8 @@ export function usePage(pageNumber: number, edition: string = 'quran-uthmani') {
     queryFn: () => getPage(pageNumber, edition),
     enabled: pageNumber > 0 && pageNumber <= 604,
     staleTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 }
 
