@@ -2,13 +2,12 @@
 
 import "./globals.css";
 import { Inter, Amiri } from "next/font/google";
-import { useState } from "react";
 import { ThemeProvider } from "next-themes";
 import { LocaleProvider } from "@/context/LocaleContext";
 import { ColorThemeProvider } from "@/context/ColorThemeContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import Header from "@/components/Header";
+import Sidebar from "@/components/Sidebar";
 import { ForceColorApplication } from "@/components/ForceColorApplication";
 
 const inter = Inter({ 
@@ -50,8 +49,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <ColorThemeProvider>
                 <ForceColorApplication />
                 <div className="min-h-screen bg-background">
-                  <Header />
-                  <main>{children}</main>
+                  {/* Sidebar Navigation */}
+                  <Sidebar />
+                  
+                  {/* Main Content Area - используем CSS переменную */}
+                  <div 
+                    className="transition-all duration-300"
+                    style={{ 
+                      marginLeft: 'var(--sidebar-width, 256px)' 
+                    }}
+                  >
+                    {/* Mobile spacing for mobile header */}
+                    <div className="lg:hidden h-16"></div>
+                    
+                    {/* Main content */}
+                    <main className="min-h-screen">
+                      {children}
+                    </main>
+                  </div>
                 </div>
               </ColorThemeProvider>
             </LocaleProvider>
