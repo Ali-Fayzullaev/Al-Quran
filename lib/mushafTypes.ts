@@ -176,7 +176,7 @@ export interface SearchResult {
 // Константы для конфигурации
 export const MUSHAF_CONFIG = {
   TOTAL_PAGES: 604,
-  IMAGE_PATH_TEMPLATE: '/quran-img-pages/{pageNumber}.svg',
+  IMAGE_PATH_TEMPLATE: '/quran-png-master/{pageNumber}.png',
   PAGE_NUMBER_PADDING: 3, // для формата 001, 002, 003...
   PRELOAD_ADJACENT_PAGES: 2,
   MAX_CACHED_PAGES: 10,
