@@ -188,11 +188,9 @@ export const MUSHAF_CONFIG = {
   
   // Размеры страниц
   PAGE_SIZES: {
-    minimal: { scale: 0.6, name: 'Минимальный', nameArabic: 'أدنى', icon: '🤏' },
-    small: { scale: 0.8, name: 'Маленький', nameArabic: 'صغير', icon: '📱' },
-    medium: { scale: 1.0, name: 'Средний', nameArabic: 'متوسط', icon: '💻' },
-    large: { scale: 1.2, name: 'Большой', nameArabic: 'كبير', icon: '🖥️' },
-    maximum: { scale: 1.6, name: 'Максимальный', nameArabic: 'أقصى', icon: '🖼️' }
+    small: { scale: 0.7, name: 'Маленький', nameArabic: 'صغير', icon: '📱' },
+    medium: { scale: 0.9, name: 'Средний', nameArabic: 'متوسط', icon: '💻' },
+    large: { scale: 1.1, name: 'Большой', nameArabic: 'كبير', icon: '🖥️' },
   },
   DEFAULT_PAGE_SIZE: 'medium' as const,
   
@@ -293,7 +291,7 @@ export const DEFAULT_ACHIEVEMENTS: Achievement[] = [
     id: 'page-10',
     title: 'قارئ مبتدئ',
     titleArabic: 'القارئ المبتدئ',
-    description: 'قرأت 10 صفحات',
+    description: 'قرأت 10 страниц',
     icon: '🌱',
     unlocked: false
   },
@@ -317,7 +315,7 @@ export const DEFAULT_ACHIEVEMENTS: Achievement[] = [
     id: 'fast-reader',
     title: 'قارئ سريع',
     titleArabic: 'القارئ السريع',
-    description: 'قرأت 30 صفحة في جلسة واحدة',
+    description: 'قرأت 30 صفحة в جلسة واحدة',
     icon: '⚡',
     unlocked: false
   },
