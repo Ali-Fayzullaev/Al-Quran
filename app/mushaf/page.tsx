@@ -2,8 +2,8 @@
 
 import dynamic from 'next/dynamic';
 
-// Lazy loading мусхафа для быстрой загрузки страницы  
-const QuranBook = dynamic(() => import("@/components/mushaf/QuranBook"), {
+// Lazy loading компонента бесконечной прокрутки для быстрой загрузки страницы  
+const QuranInfiniteScroll = dynamic(() => import("@/components/mushaf/QuranInfiniteScroll"), {
   loading: () => (
     <div className="min-h-screen mushaf-container theme-light flex items-center justify-center"
          style={{ 
@@ -20,6 +20,7 @@ const QuranBook = dynamic(() => import("@/components/mushaf/QuranBook"), {
   ),
   ssr: false
 });
+
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import { useEffect } from 'react';
@@ -48,7 +49,7 @@ function MushafPageContent() {
            backgroundColor: 'var(--mushaf-bg)',
            background: 'var(--mushaf-bg)'
          }}>
-      <QuranBook initialPage={initialPage} />
+      <QuranInfiniteScroll initialPage={initialPage} />
     </div>
   );
 }
