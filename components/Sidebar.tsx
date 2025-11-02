@@ -20,7 +20,8 @@ import {
   EyeOff,
   Minimize2,
   Maximize2,
-  Square
+  Square,
+  Bot
 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
@@ -113,6 +114,13 @@ const Sidebar = memo(function Sidebar() {
     },
     
     // Инструменты
+    {
+      name: locale === 'en' ? 'AI Helper' : 'AI Помощник',
+      href: '/ai-helper',
+      icon: Bot,
+      isPremium: true,
+      category: 'tools'
+    },
     {
       name: t('search'),
       href: '/search',

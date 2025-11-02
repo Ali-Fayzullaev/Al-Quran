@@ -35,7 +35,7 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
         {children}
       </SheetTrigger>
       <SheetContent 
-        className="w-80 border-l"
+        className="w-80 border-l  overflow-y-auto"
         style={{
           backgroundColor: 'var(--fixed-background)',
           borderColor: 'var(--color-border)'
