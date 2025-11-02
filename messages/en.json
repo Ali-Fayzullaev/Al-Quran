@@ -200,5 +200,30 @@
     "viewModes": "View Modes",
     "singlePage": "Single Page",
     "doublePage": "Double Page"
+  },
+
+  "aiHelper": {
+    "title": "Smart Quran Assistant",
+    "arabicTitle": "مساعد القرآن الذكي", 
+    "subtitle": "Ask questions about Quran, Islam and religious practices. Get wise answers with references to sacred texts.",
+    "popularQuestions": "Popular Questions:",
+    "startConversation": "Start a conversation by asking a question or selecting one of the suggested ones",
+    "askQuestion": "Ask your question about Quran or Islam...",
+    "send": "Send",
+    "clearChat": "Clear Chat",
+    "thinking": "Thinking...",
+    "disclaimer": "This AI assistant provides information for educational purposes. For important religious questions, consult qualified scholars.",
+    "errorMessage": "Sorry, an error occurred. Please try again.",
+    "fallbackResponse": "Sorry, I can't answer your question right now. Please try again later.",
+    "presetQuestions": [
+      "What does Al-Fatiha mean?",
+      "How to perform prayer correctly?",
+      "What is the wisdom of fasting in Ramadan?",
+      "What does the Quran say about patience?",
+      "Explain the meaning of 99 names of Allah",
+      "What is Tawhid in Islam?",
+      "What duas are recommended to recite daily?",
+      "Tell me about Prophet Muhammad (peace be upon him)"
+    ]
   }
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useLocale } from "@/context/LocaleContext";
 
 interface Message {
   id: string;
@@ -15,24 +16,20 @@ const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-
 const MAX_QUESTION_LENGTH = 500;
 const MAX_RESPONSE_LENGTH = 2000;
 
-const PRESET_QUESTIONS = [
-  "Что означает Аль-Фатиха?",
-  "Как правильно читать намаз?",
-  "В чем мудрость поста в Рамадан?",
-  "Что говорит Коран о терпении?",
-  "Объясни смысл 99 имен Аллаха",
-  "Что такое таухид в исламе?",
-  "Какие дуа рекомендуется читать ежедневно?",
-  "Расскажи о пророке Мухаммаде (мир ему)"
-];
-
 export default function AIHelperPage() {
+  const { locale } = useLocale();
   const [messages, setMessages] = useState<Message[]>([]);
   const [question, setQuestion] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isRateLimited, setIsRateLimited] = useState(false);
+  const [rateLimitEndTime, setRateLimitEndTime] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const lastRequestTime = useRef<number>(0);
+
+  // Минимальная задержка между запросами (в миллисекундах)
+  const MIN_REQUEST_DELAY = 2000; // 2 секунды
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -42,76 +39,68 @@ export default function AIHelperPage() {
     scrollToBottom();
   }, [messages]);
 
+  // Проверка и обновление статуса rate limit
+  useEffect(() => {
+    if (isRateLimited && rateLimitEndTime) {
+      const timer = setInterval(() => {
+        if (Date.now() >= rateLimitEndTime) {
+          setIsRateLimited(false);
+          setRateLimitEndTime(null);
+          setError("");
+        }
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [isRateLimited, rateLimitEndTime]);
+
   const generateSystemPrompt = () => {
-    return `Ты - знающий исламский ученый и помощник по Корану. Отвечай на вопросы о Коране, исламе и религиозной практике с мудростью и пониманием. 
+    if (locale === 'en') {
+      return `You are a knowledgeable Islamic scholar and Quran assistant. Answer questions about the Quran, Islam, and religious practices with wisdom and understanding.
 
-**Основная идентичность:**
-- Ты виртуальный хафиз и алим с глубокими знаниями Корана
-- Твоя цель - направлять к истине с милосердием
-- Говори языком, понятным и новичкам, и знающим мусульманам
+Rules:
+1. Always respond with respect and kindness
+2. Reference Quranic verses when appropriate
+3. Give practical advice on Islamic life
+4. Avoid controversial topics and extremism
+5. Encourage learning and reflection
+6. Respond in English
+7. Limit your response to ${MAX_RESPONSE_LENGTH} characters
+8. If the question is not related to Islam, politely redirect the conversation to Islamic topics
 
-**Правила ответов:**
-1. Всегда отвечай с уважением и добротой, как подобает мусульманину
-2. Ссылайся на конкретные аяты Корана (с указанием суры и аята) когда это уместно
-3. Приводи краткие тафсиры (толкования) сложных аятов
-4. Давай практические советы по исламской жизни и поклонению
-5. В сложных вопросах подчеркивай важность консультации с местными учеными
-6. Избегай фатв по конкретным ситуациям - направляй к специалистам
+Remember: knowledge comes from Allah, and we are all learners.`;
+    } else {
+      return `Ты - знающий исламский ученый и помощник по Корану. Отвечай на вопросы о Коране, исламе и религиозной практике с мудростью и пониманием.
 
-**Структура ответов:**
-- Начинай с приветствия "Ас-саляму алейкум" для мусульман
-- Давай краткий, но содержательный ответ (до ${MAX_RESPONSE_LENGTH} символов)
-- Используй маркированные списки для сложных тем
-- Заканчивай вдохновляющей исламской мудростью или дуа
+Правила:
+1. Всегда отвечай с уважением и добротой
+2. Ссылайся на аяты из Корана когда это уместно
+3. Давай практические советы по исламской жизни
+4. Избегай спорных тем и фанатизма
+5. Поощряй изучение и размышление
+6. Отвечай на русском языке
+7. Ограничь ответ до ${MAX_RESPONSE_LENGTH} символов
+8. Если вопрос не связан с исламом, вежливо перенаправь разговор на исламские темы
 
-**Темы для углубления:**
-- Тафсир Корана и причины ниспослания (асбаб ан-нузуль)
-- Жизнь Пророка Мухаммада ﷺ (сира)
-- Исламская этика (ахляк) и духовность
-- Фикх повседневных вопросов (с оговоркой о мазхабах)
-- Истории пророков и праведников
-
-**Ограничения:**
-- Не давай фетв по конкретным правовым ситуациям
-- При вопросах о различиях мазхабов подчеркивай уважение ко всем
-- В спорных темах сохраняй нейтралитет и призывай к единству
-- Если вопрос вне компетенции, вежливо направляй к реальным ученым
-- На неуместные вопросы отвечай: "Я специализируюсь на вопросах Корана и ислама"
-
-Помни: "Кого Аллах ведет по прямому пути, того никто не введет в заблуждение" (Коран 7:178)
-**При вопросах о аятах:**
-- Указывай суру и аят: "Как сказано в суре Аль-Бакара, аят 186..."
-- Объясняй контекст ниспослания кратко
-- Покажи практическое применение аята сегодня
-
-**При вопросах о практике:**
-- Разделяй на обязательные (фард) и желательные (сунна) действия
-- Учитывай возможные обстоятельства человека
-- Подчеркивай легкость и милость в религии
-
-**Тон общения:**
-- Говори как старший мудрый брат/сестра
-- Проявляй сострадание к трудностям
-- Вдохновляй на благие дела
-- Напоминай о милости Аллаха в каждой ситуации
-
-"Ас-саляму алейкум! Прекрасный вопрос о милосердии в Исламе.
-
-Аллах говорит в Коране: "Воистину, милость Моя объемлет всякую вещь" (7:156). 
-
-Практические проявления милосердия:
-• К родителям - даже словом "уф" не обижать
-• К сиротам - помощь и забота
-• К животным - не причинять вред
-• К себе - не впадать в отчаяние
-
-Пусть Аллах сделает нас проводниками Его милости! Амин."
-
-`;
+Помни: знание приходит от Аллаха, и мы все учимся.`;
+    }
   };
 
   const sendQuestion = async (questionText: string) => {
-    if (!questionText.trim() || isLoading) return;
+    if (!questionText.trim() || isLoading || isRateLimited) return;
+
+    // Проверяем задержку между запросами
+    const now = Date.now();
+    const timeSinceLastRequest = now - lastRequestTime.current;
+    
+    if (timeSinceLastRequest < MIN_REQUEST_DELAY) {
+      const waitTime = MIN_REQUEST_DELAY - timeSinceLastRequest;
+      setError(locale === 'en' 
+        ? `Please wait ${Math.ceil(waitTime / 1000)} seconds before sending another question.`
+        : `Пожалуйста, подождите ${Math.ceil(waitTime / 1000)} секунд перед отправкой следующего вопроса.`
+      );
+      return;
+    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -124,6 +113,7 @@ export default function AIHelperPage() {
     setQuestion("");
     setIsLoading(true);
     setError("");
+    lastRequestTime.current = now;
 
     try {
       const response = await fetch(`${API_URL}?key=${API_KEY}`, {
@@ -134,7 +124,7 @@ export default function AIHelperPage() {
         body: JSON.stringify({
           contents: [{
             parts: [{
-              text: `${generateSystemPrompt()}\n\nВопрос пользователя: ${questionText}`
+              text: `${generateSystemPrompt()}\n\n${locale === 'en' ? 'User question' : 'Вопрос пользователя'}: ${questionText}`
             }]
           }],
           generationConfig: {
@@ -157,13 +147,26 @@ export default function AIHelperPage() {
       });
 
       if (!response.ok) {
+        if (response.status === 429) {
+          // Rate limit exceeded
+          const retryAfter = response.headers.get('Retry-After');
+          const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : 60000; // По умолчанию 1 минута
+          
+          setIsRateLimited(true);
+          setRateLimitEndTime(Date.now() + waitTime);
+          
+          throw new Error(locale === 'en' 
+            ? `Rate limit exceeded. Please wait ${Math.ceil(waitTime / 1000)} seconds before trying again.`
+            : `Превышен лимит запросов. Пожалуйста, подождите ${Math.ceil(waitTime / 1000)} секунд перед повторной попыткой.`
+          );
+        }
         throw new Error(`API Error: ${response.status}`);
       }
 
       const data = await response.json();
       
       if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-        throw new Error("Неполный ответ от API");
+        throw new Error("Incomplete API response");
       }
 
       let aiResponse = data.candidates[0].content.parts[0].text;
@@ -183,16 +186,21 @@ export default function AIHelperPage() {
       setMessages(prev => [...prev, aiMessage]);
       
     } catch (err) {
-      console.error("Ошибка API:", err);
-      setError("Извините, произошла ошибка. Попробуйте еще раз.");
+      console.error("API Error:", err);
+      const errorMessage = err instanceof Error ? err.message : (
+        locale === 'en' ? 'Sorry, an error occurred. Please try again.' : 'Извините, произошла ошибка. Попробуйте еще раз.'
+      );
+      setError(errorMessage);
       
-      const errorMessage: Message = {
+      const fallbackMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: "Извините, сейчас я не могу ответить на ваш вопрос. Попробуйте позже.",
+        content: locale === 'en' 
+          ? "Sorry, I can't answer your question right now. This might be due to high demand. Please try again in a few moments."
+          : "Извините, сейчас я не могу ответить на ваш вопрос. Возможно, это связано с высокой нагрузкой. Попробуйте через несколько минут.",
         type: 'ai',
         timestamp: new Date()
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages(prev => [...prev, fallbackMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -212,6 +220,58 @@ export default function AIHelperPage() {
     setError("");
   };
 
+  // Прямые переводы без зависимости от системы локализации
+  const translations = {
+    en: {
+      title: "Smart Quran Assistant",
+      arabicTitle: "مساعد القرآن الذكي",
+      subtitle: "Ask questions about Quran, Islam and religious practices. Get wise answers with references to sacred texts.",
+      popularQuestions: "Popular Questions:",
+      startConversation: "Start a conversation by asking a question or selecting one of the suggested ones",
+      askQuestion: "Ask your question about Quran or Islam...",
+      send: "Send",
+      clearChat: "Clear Chat", 
+      thinking: "Thinking...",
+      disclaimer: "This AI assistant provides information for educational purposes. For important religious questions, consult qualified scholars.",
+      presetQuestions: [
+        "What does Al-Fatiha mean?",
+        "How to perform prayer correctly?",
+        "What is the wisdom of fasting in Ramadan?",
+        "What does the Quran say about patience?",
+        "Explain the meaning of 99 names of Allah",
+        "What is Tawhid in Islam?",
+        "What duas are recommended to recite daily?",
+        "Tell me about Prophet Muhammad (peace be upon him)"
+      ]
+    },
+    ru: {
+      title: "Умный помощник по Корану",
+      arabicTitle: "مساعد القرآن الذكي",
+      subtitle: "Задавайте вопросы о Коране, исламе и религиозной практике. Получайте мудрые ответы с ссылками на священные тексты.",
+      popularQuestions: "Популярные вопросы:",
+      startConversation: "Начните разговор, задав вопрос или выбрав один из предложенных",
+      askQuestion: "Задайте ваш вопрос о Коране или исламе...",
+      send: "Отправить",
+      clearChat: "Очистить чат",
+      thinking: "Размышляю...",
+      disclaimer: "Этот AI помощник предоставляет информацию в образовательных целях. Для важных религиозных вопросов обращайтесь к квалифицированным ученым.",
+      presetQuestions: [
+        "Что означает Аль-Фатиха?",
+        "Как правильно читать намаз?",
+        "В чем мудрость поста в Рамадан?",
+        "Что говорит Коран о терпении?",
+        "Объясни смысл 99 имен Аллаха",
+        "Что такое таухид в исламе?",
+        "Какие дуа рекомендуется читать ежедневно?",
+        "Расскажи о пророке Мухаммаде (мир ему)"
+      ]
+    }
+  };
+
+  // Получаем текущие переводы
+  const currentTranslations = translations[locale as keyof typeof translations] || translations.en;
+  const presetQuestions = currentTranslations.presetQuestions;
+
   return (
     <div className="ai-helper-container min-h-screen islamic-pattern bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 dark:from-emerald-950 dark:via-green-950 dark:to-gray-900">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -224,15 +284,15 @@ export default function AIHelperPage() {
           </div>
           
           <h1 className="text-4xl font-bold arabic-calligraphy text-gray-800 dark:text-white mb-3 islamic-gradient-gold bg-clip-text text-transparent">
-            مساعد القرآن الذكي
+            {currentTranslations.arabicTitle}
           </h1>
           
           <p className="text-xl text-gray-600 dark:text-gray-300 mb-4 font-medium">
-            Умный помощник по Корану
+            {currentTranslations.title}
           </p>
           
           <p className="text-sm text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            Задавайте вопросы о Коране, исламе и религиозной практике. Получайте мудрые ответы с ссылками на священные тексты.
+            {currentTranslations.subtitle}
           </p>
         </div>
 
@@ -240,10 +300,10 @@ export default function AIHelperPage() {
         {messages.length === 0 && (
           <div className="mb-8 ai-message-appear" style={{ animationDelay: '0.2s' }}>
             <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-6 text-center">
-              Популярные вопросы:
+              {currentTranslations.popularQuestions}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {PRESET_QUESTIONS.map((presetQ, index) => (
+              {presetQuestions.map((presetQ, index) => (
                 <button
                   key={index}
                   onClick={() => handlePresetQuestion(presetQ)}
@@ -272,7 +332,7 @@ export default function AIHelperPage() {
                   </svg>
                 </div>
                 <p className="text-gray-500 dark:text-gray-400 text-lg">
-                  Начните разговор, задав вопрос или выбрав один из предложенных
+                  {currentTranslations.startConversation}
                 </p>
                 <div className="islamic-pattern w-32 h-1 mx-auto mt-4 opacity-30"></div>
               </div>
@@ -296,7 +356,7 @@ export default function AIHelperPage() {
                         <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                         </svg>
-                        {message.timestamp.toLocaleTimeString('ru-RU', { 
+                        {message.timestamp.toLocaleTimeString(locale === 'en' ? 'en-US' : 'ru-RU', { 
                           hour: '2-digit', 
                           minute: '2-digit' 
                         })}
@@ -315,7 +375,7 @@ export default function AIHelperPage() {
                           <div className="w-2 h-2 bg-current rounded-full ai-bounce" style={{ animationDelay: '0.2s' }}></div>
                           <div className="w-2 h-2 bg-current rounded-full ai-bounce" style={{ animationDelay: '0.4s' }}></div>
                         </div>
-                        <span className="text-sm ml-2 ai-typing-indicator">Размышляю...</span>
+                        <span className="text-sm ml-2 ai-typing-indicator">{currentTranslations.thinking}</span>
                       </div>
                     </div>
                   </div>
@@ -334,7 +394,7 @@ export default function AIHelperPage() {
                 ref={inputRef}
                 value={question}
                 onChange={(e) => setQuestion(e.target.value.slice(0, MAX_QUESTION_LENGTH))}
-                placeholder="Задайте ваш вопрос о Коране или исламе..."
+                placeholder={currentTranslations.askQuestion}
                 className="w-full p-4 pr-16 border border-emerald-200 dark:border-emerald-700 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700/50 dark:text-white resize-none ai-transition-smooth backdrop-blur-sm"
                 rows={3}
                 disabled={isLoading}
@@ -367,7 +427,7 @@ export default function AIHelperPage() {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
-                  Очистить чат
+                  {currentTranslations.clearChat}
                 </div>
               </button>
               
@@ -379,11 +439,11 @@ export default function AIHelperPage() {
                 {isLoading ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full ai-spin"></div>
-                    <span>Думаю...</span>
+                    <span>{currentTranslations.thinking}</span>
                   </>
                 ) : (
                   <>
-                    <span>Отправить</span>
+                    <span>{currentTranslations.send}</span>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
@@ -400,8 +460,7 @@ export default function AIHelperPage() {
           <p className="text-xs text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
             <span className="arabic-calligraphy text-emerald-600 dark:text-emerald-400">بِسْمِ اللَّهِ</span>
             <br />
-            Этот AI помощник предоставляет информацию в образовательных целях. 
-            Для важных религиозных вопросов обращайтесь к квалифицированным ученым.
+            {currentTranslations.disclaimer}
           </p>
           <div className="islamic-pattern w-16 h-16 mx-auto mt-4 opacity-10 islamic-pattern-animated"></div>
         </div>
