@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { PageLoader } from "@/components/PageLoader";
 
 function SearchContent() {
   const { locale } = useLocale();
@@ -655,6 +656,21 @@ function SearchContent() {
 }
 
 export default function SearchPage() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Симулируем загрузку поисковых данных
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <PageLoader type="search" message="Подготавливаем поисковую систему..." />;
+  }
+
   return (
     <Suspense
       fallback={

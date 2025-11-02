@@ -19,8 +19,13 @@ export default function JuzNavigation({ currentJuz = 1 }: JuzNavigationProps) {
   const { locale } = useLocale();
   const { readingSessions } = useQuranStore();
   const [selectedJuz, setSelectedJuz] = useState(currentJuz);
+  const [isClient, setIsClient] = useState(false);
+  const [juzProgress, setJuzProgress] = useState<Record<number, number>>({});
 
-  // Убираем ненужный interval - прогресс будет обновляться через store
+  // Проверяем, что мы на клиенте
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Создаем список всех 30 джузов
   const juzList = Array.from({ length: 30 }, (_, i) => i + 1);
@@ -32,32 +37,79 @@ export default function JuzNavigation({ currentJuz = 1 }: JuzNavigationProps) {
     21: 147, 22: 170, 23: 154, 24: 172, 25: 177, 26: 146, 27: 170, 28: 139, 29: 170, 30: 564
   };
 
-  // Вычисляем прогресс чтения для каждого джуза
+  // Загружаем прогресс только на клиенте
+  useEffect(() => {
+    if (!isClient) return;
+
+    const loadProgress = () => {
+      const progressData: Record<number, number> = {};
+      
+      juzList.forEach(juzNumber => {
+        try {
+          const savedProgress = localStorage.getItem(`juz-${juzNumber}-progress`);
+          if (!savedProgress) {
+            progressData[juzNumber] = 0;
+            return;
+          }
+          
+          const { versesRead } = JSON.parse(savedProgress);
+          if (!versesRead || !Array.isArray(versesRead)) {
+            progressData[juzNumber] = 0;
+            return;
+          }
+          
+          const totalVerses = juzVerseCounts[juzNumber as keyof typeof juzVerseCounts] || 150;
+          const readVersesCount = versesRead.length;
+          const percentage = Math.min(100, (readVersesCount / totalVerses) * 100);
+          
+          progressData[juzNumber] = percentage;
+        } catch (error) {
+          console.error(`Ошибка при получении прогресса джуза ${juzNumber}:`, error);
+          progressData[juzNumber] = 0;
+        }
+      });
+      
+      setJuzProgress(progressData);
+    };
+
+    loadProgress();
+  }, [isClient]);
+
+  // Получаем прогресс джуза (безопасно)
   const getJuzProgress = (juzNumber: number) => {
-    try {
-      // Получаем сохраненный прогресс из localStorage
-      const savedProgress = localStorage.getItem(`juz-${juzNumber}-progress`);
-      if (!savedProgress) {
-        return 0;
-      }
-      
-      const { versesRead } = JSON.parse(savedProgress);
-      if (!versesRead || !Array.isArray(versesRead)) {
-        return 0;
-      }
-      
-      // Используем точное количество аятов для данного джуза
-      const totalVerses = juzVerseCounts[juzNumber as keyof typeof juzVerseCounts] || 150;
-      
-      const readVersesCount = versesRead.length;
-      const percentage = Math.min(100, (readVersesCount / totalVerses) * 100);
-      
-      return percentage;
-    } catch (error) {
-      console.error(`Ошибка при получении прогресса джуза ${juzNumber}:`, error);
-      return 0;
-    }
+    return juzProgress[juzNumber] || 0;
   };
+
+  // Показываем скелетон пока не загрузились данные
+  if (!isClient) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="text-center mb-12">
+          <div className="h-12 bg-gray-200 dark:bg-gray-700 rounded-lg mb-4 animate-pulse max-w-md mx-auto"></div>
+          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse max-w-2xl mx-auto"></div>
+        </div>
+        
+        <div className="rounded-2xl p-6 mb-8 border bg-gray-100 dark:bg-gray-800 animate-pulse">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded-lg mb-2 w-32"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded-lg w-48"></div>
+            </div>
+            <div className="text-right">
+              <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full w-32 mb-2"></div>
+              <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-40"></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-6 gap-4">
+          {juzList.map((juzNumber) => (
+            <div key={juzNumber} className="aspect-square rounded-2xl bg-gray-200 dark:bg-gray-700 animate-pulse"></div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -195,10 +247,10 @@ export default function JuzNavigation({ currentJuz = 1 }: JuzNavigationProps) {
 
       {/* Quick Actions */}
       <div className="mt-12 flex flex-wrap gap-4 justify-center">
-        <Link href="/surahs">
+        <Link href="/quran">
           <Button variant="outline" className="gap-2">
             <BookOpen className="w-4 h-4" />
-            {locale === 'en' ? 'Browse by Surahs' : 'Просмотр по сурам'}
+            {locale === 'en' ? 'Other Reading Modes' : 'Другие режимы чтения'}
           </Button>
         </Link>
         

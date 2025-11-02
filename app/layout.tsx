@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Sidebar from "@/components/Sidebar";
 import { ForceColorApplication } from "@/components/ForceColorApplication";
+import { LoadingBar } from "@/components/LoadingBar";
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <LocaleProvider>
               <ColorThemeProvider>
                 <ForceColorApplication />
+                <LoadingBar />
                 <div className="min-h-screen bg-background">
                   {/* Sidebar Navigation */}
                   <Sidebar />

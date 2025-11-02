@@ -32,7 +32,6 @@ export function LanguageToggle() {
       >
         🇷🇺 RU
       </Button>
-      <Globe className="w-4 h-4 text-muted-foreground ml-1" />
     </div>
   )
 }

@@ -91,25 +91,11 @@ const Sidebar = memo(function Sidebar() {
       category: 'main'
     },
     {
-      name: locale === 'en' ? 'Mushaf' : 'Мусхаф',
-      href: '/mushaf',
+      name: locale === 'en' ? 'Quran Reading' : 'Чтение Корана',
+      href: '/quran',
       icon: Book,
       isPremium: true,
       category: 'main'
-    },
-    
-    // Чтение
-    {
-      name: t('surahs'),
-      href: '/surahs',
-      icon: Book,
-      category: 'reading'
-    },
-    {
-      name: t('juz'),
-      href: '/juz',
-      icon: Navigation,
-      category: 'reading'
     },
     
     // Обучение
@@ -152,7 +138,6 @@ const Sidebar = memo(function Sidebar() {
 
   const categories = {
     main: locale === 'en' ? 'Main' : 'Основное',
-    reading: locale === 'en' ? 'Reading' : 'Чтение',
     learning: locale === 'en' ? 'Learning' : 'Обучение',
     tools: locale === 'en' ? 'Tools' : 'Инструменты',
     settings: locale === 'en' ? 'Settings' : 'Настройки'

@@ -36,20 +36,10 @@ const Header = memo(function Header() {
       icon: Book,
     },
     {
-      name: locale === 'en' ? 'Mushaf' : 'Мусхаф',
-      href: '/mushaf',
+      name: locale === 'en' ? 'Quran Reading' : 'Чтение Корана',
+      href: '/quran',
       icon: Book,
       isPremium: true
-    },
-    {
-      name: t('surahs'),
-      href: '/surahs',
-      icon: Book,
-    },
-    {
-      name: t('juz'),
-      href: '/juz',
-      icon: Navigation,
     },
     {
       name: locale === 'en' ? 'Journey' : 'Путешествие',

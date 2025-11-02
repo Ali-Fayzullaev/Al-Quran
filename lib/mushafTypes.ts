@@ -188,9 +188,11 @@ export const MUSHAF_CONFIG = {
   
   // Размеры страниц
   PAGE_SIZES: {
+    minimal: { scale: 0.5, name: 'Минимальный', nameArabic: 'أصغر', icon: '📱' },
     small: { scale: 0.7, name: 'Маленький', nameArabic: 'صغير', icon: '📱' },
     medium: { scale: 0.9, name: 'Средний', nameArabic: 'متوسط', icon: '💻' },
     large: { scale: 1.1, name: 'Большой', nameArabic: 'كبير', icon: '🖥️' },
+    maximum: { scale: 1.3, name: 'Максимальный', nameArabic: 'أكبر', icon: '🖥️' },
   },
   DEFAULT_PAGE_SIZE: 'medium' as const,
   

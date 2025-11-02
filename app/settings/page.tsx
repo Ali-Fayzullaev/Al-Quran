@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
 import { RECITERS, TRANSLATIONS, getWorkingAudioUrl, getCachedWorkingAudioUrl, preloadAudio } from "@/lib/api";
 import ColorPicker from "@/components/ColorPicker";
 import CustomColorSettings from "@/components/CustomColorSettings";
+import { PageLoader } from "@/components/PageLoader";
 
 // Популярные чтецы для быстрого доступа
 const POPULAR_RECITERS = ['ar.alafasy', 'ar.abdulbasitmurattal', 'ar.abdurrahmaansudais', 'ar.mahermuaiqly'];
@@ -42,6 +43,17 @@ const QUICK_TRANSLATIONS = {
 };
 
 export default function SettingsPage() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Симулируем загрузку настроек
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   const { locale, t } = useLocale();
   const {
     fontSize,
@@ -73,6 +85,10 @@ export default function SettingsPage() {
   const [translationSearch, setTranslationSearch] = useState('');
   const [showAllReciters, setShowAllReciters] = useState(false);
   const [activeTab, setActiveTab] = useState('audio');
+
+  if (isLoading) {
+    return <PageLoader type="settings" message="Загружаем ваши настройки..." />;
+  }
 
   // Фильтрация чтецов по поиску
   const filteredReciters = useMemo(() => {
