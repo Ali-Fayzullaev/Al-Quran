@@ -66,7 +66,7 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
             
             {/* Left Navigation */}
             <div className="flex items-center gap-4">
-              <Link href="/">
+              <Link href="/quran">
                 <Button variant="ghost" size="sm" className="gap-2">
                   <Home className="w-4 h-4" />
                   {locale === 'en' ? 'Home' : 'Главная'}

@@ -1,3 +1,4 @@
+// app/api/send-question/route.ts
 export async function POST(request: Request) {
   try {
     const { contact, question } = await request.json();
@@ -9,7 +10,7 @@ export async function POST(request: Request) {
     const greenApiUrl = 'https://7107.api.green-api.com';
     const idInstance = '7107367218';
     const apiTokenInstance = '69dc47a0bd194690af704944038bd257b7fce4e4f5754b72a8';
-    const chatId = '120363422929798374@g.us';
+    const chatId = '120363422831194293@g.us'; // Обновленный chat ID
     
     const message = `📩 Новый вопрос от пользователя:
 
@@ -19,6 +20,8 @@ export async function POST(request: Request) {
 ${question}
 
 ⏰ Время: ${new Date().toLocaleString('ru-RU')}`;
+
+    console.log('Отправляем сообщение:', { chatId, message });
 
     const response = await fetch(`${greenApiUrl}/waInstance${idInstance}/sendMessage/${apiTokenInstance}`, {
       method: 'POST',
@@ -31,11 +34,16 @@ ${question}
       }),
     });
 
+    console.log('Ответ от Green API:', response.status, response.statusText);
+
     if (!response.ok) {
-      throw new Error('Ошибка отправки сообщения');
+      const errorText = await response.text();
+      console.error('Green API error response:', errorText);
+      throw new Error(`Ошибка отправки сообщения: ${response.status} ${response.statusText}`);
     }
 
     const result = await response.json();
+    console.log('Результат от Green API:', result);
     
     return Response.json({ 
       success: true, 

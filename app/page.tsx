@@ -255,7 +255,7 @@ export default function HomePage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1.2 }}
             >
-              <Link href="/surahs" className="group block">
+              <Link href="/quran" className="group block">
                 <div className="relative p-8 rounded-3xl transition-all duration-300 group-hover:shadow-2xl group-hover:scale-105 overflow-hidden theme-card-elegant"
                   style={{
                     background: `linear-gradient(135deg, var(--color-secondary) 0%, var(--color-background-secondary) 100%)`,

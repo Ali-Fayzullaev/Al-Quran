@@ -374,20 +374,30 @@ Remember: knowledge comes from Allah, and we are all learners.`;
     setIsSubmittingComplex(true);
 
     try {
-      // Временная заглушка для API endpoint
-      // В реальном приложении здесь должен быть ваш API route
-      console.log("Sending complex question:", {
-        contact: contact.trim(),
-        question: complexQuestion.trim(),
+      const response = await fetch('/api/send-question', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contact: contact.trim(),
+          question: complexQuestion.trim(),
+        }),
       });
 
-      // Имитация успешной отправки
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Ошибка отправки');
+      }
+
+      const result = await response.json();
+      console.log('Вопрос успешно отправлен:', result);
 
       setComplexFormSuccess(true);
       setContact("");
       setComplexQuestion("");
     } catch (error) {
+      console.error('Ошибка отправки вопроса:', error);
       setError(
         locale === "en"
           ? "Failed to send question. Please try again."
