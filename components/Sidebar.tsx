@@ -19,7 +19,8 @@ import {
   Minimize2,
   Maximize2,
   Square,
-  Bot
+  Bot,
+  MessageSquare
 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
@@ -149,6 +150,12 @@ const Sidebar = memo(function Sidebar() {
       icon: Bookmark,
       badge: bookmarks.length > 0 ? bookmarks.length : undefined,
       category: 'tools'
+    },
+    {
+      name: locale === 'en' ? 'Feedback' : 'Обратная связь',
+      href: '/feedback',
+      icon: MessageSquare,
+      category: 'settings'
     },
     {
       name: t('settings'),
