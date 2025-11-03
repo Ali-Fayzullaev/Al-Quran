@@ -1,36 +1,54 @@
 "use client";
 
-import "./globals.css";
+import "./globals-optimized.css";
 import { Inter, Amiri } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { LocaleProvider } from "@/context/LocaleContext";
 import { ColorThemeProvider } from "@/context/ColorThemeContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import dynamic from "next/dynamic";
+import { CriticalResourcePreloader } from "@/lib/critical-preloader";
 
-import Sidebar from "@/components/Sidebar";
-import { ForceColorApplication } from "@/components/ForceColorApplication";
-import { LoadingBar } from "@/components/LoadingBar";
+// Ленивая загрузка компонентов для ускорения
+const Sidebar = dynamic(() => import("@/components/Sidebar"), { 
+  ssr: false,
+  loading: () => <div className="w-64 h-screen bg-gray-100"></div>
+});
+
+const ForceColorApplication = dynamic(() => 
+  import("@/components/ForceColorApplication").then(mod => ({ default: mod.ForceColorApplication })), 
+  { ssr: false }
+);
+
+const LoadingBar = dynamic(() => 
+  import("@/components/LoadingBar").then(mod => ({ default: mod.LoadingBar })), 
+  { ssr: false }
+);
 
 const inter = Inter({ 
   subsets: ["latin"],
-  variable: "--font-inter"
+  variable: "--font-inter",
+  display: "swap"
 });
 
 const amiri = Amiri({ 
   subsets: ["arabic", "latin"], 
   weight: ["400", "700"],
-  variable: "--font-amiri"
+  variable: "--font-amiri",
+  display: "swap"
 });
 
+// Еще более агрессивная оптимизация QueryClient
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 30 * 60 * 1000, // 30 minutes - дольше кешируем Коран данные 
-      gcTime: 60 * 60 * 1000, // 1 hour - дольше держим в памяти
-      refetchOnWindowFocus: false, // Не перезагружаем при фокусе
-      refetchOnMount: false, // Не перезагружаем при монтировании если есть кеш
-      retry: 1, // Меньше попыток повторения
-      retryDelay: 1000, // Быстрая задержка между попытками
+      staleTime: 10 * 60 * 1000, // 10 минут - дольше кеш
+      gcTime: 15 * 60 * 1000, // 15 минут в памяти
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      refetchOnReconnect: false, // Не перезагружаем при восстановлении сети
+      retry: false, // Отключаем retry для скорости
+      networkMode: 'online',
     },
   },
 });
@@ -38,33 +56,50 @@ const queryClient = new QueryClient({
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={`${inter.variable} ${amiri.variable}`}>
+      <head>
+        {/* Критические предзагрузки */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="preconnect" href="https://api.alquran.cloud" />
+        <link rel="dns-prefetch" href="https://api.alquran.cloud" />
+        
+        {/* Предзагрузка критических ресурсов */}
+        <link 
+          rel="preload" 
+          href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap" 
+          as="style" 
+        />
+        
+        {/* Мета-теги для производительности */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+      </head>
       <body className={inter.className}>
+        {/* Критический предзагрузчик - запускается первым */}
+        <CriticalResourcePreloader />
+        
         <QueryClientProvider client={queryClient}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
-            disableTransitionOnChange
+            disableTransitionOnChange={true}
           >
             <LocaleProvider>
               <ColorThemeProvider>
                 <ForceColorApplication />
                 <LoadingBar />
                 <div className="min-h-screen bg-background">
-                  {/* Sidebar Navigation */}
                   <Sidebar />
                   
-                  {/* Main Content Area - используем CSS переменную */}
+                  {/* Убираем все transition для максимальной скорости */}
                   <div 
-                    className="transition-all duration-300"
+                    className="ml-64 lg:ml-64"
                     style={{ 
                       marginLeft: 'var(--sidebar-width, 256px)' 
                     }}
                   >
-                    {/* Mobile spacing for mobile header */}
                     <div className="lg:hidden h-16"></div>
-                    
-                    {/* Main content */}
                     <main className="min-h-screen">
                       {children}
                     </main>

@@ -30,7 +30,7 @@ import { cn } from "@/lib/utils";
 import { RECITERS, TRANSLATIONS, getWorkingAudioUrl, getCachedWorkingAudioUrl, preloadAudio } from "@/lib/api";
 import ColorPicker from "@/components/ColorPicker";
 import CustomColorSettings from "@/components/CustomColorSettings";
-import { PageLoader } from "@/components/PageLoader";
+import { SettingsLoader } from "@/components/PageLoader";
 
 // Популярные чтецы для быстрого доступа
 const POPULAR_RECITERS = ['ar.alafasy', 'ar.abdulbasitmurattal', 'ar.abdurrahmaansudais', 'ar.mahermuaiqly'];
@@ -49,7 +49,7 @@ export default function SettingsPage() {
     // Симулируем загрузку настроек
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1500);
+    }, 800); // Уменьшаем время загрузки до 800ms
 
     return () => clearTimeout(timer);
   }, []);
@@ -87,7 +87,7 @@ export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState('audio');
 
   if (isLoading) {
-    return <PageLoader type="settings" message="Загружаем ваши настройки..." />;
+    return <SettingsLoader message="Загружаем ваши настройки..." />;
   }
 
   // Фильтрация чтецов по поиску

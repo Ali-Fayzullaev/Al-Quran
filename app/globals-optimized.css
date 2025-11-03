@@ -1,0 +1,103 @@
+@import url("https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import "tailwindcss";
+
+/* КРИТИЧЕСКИ ВАЖНЫЕ СТИЛИ - ТОЛЬКО ОСНОВНЫЕ */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --primary: 222.2 47.4% 11.2%;
+  --primary-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --radius: 0.5rem;
+
+  /* Основные цвета приложения */
+  --color-primary: #10b981;
+  --color-primary-dark: #047857;
+  --color-secondary: #f0fdf4;
+  --font-arabic: "Amiri", "Traditional Arabic", serif;
+  --sidebar-width: 256px;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+  --color-primary: #34d399;
+  --color-primary-dark: #10b981;
+  --color-secondary: #064e3b;
+}
+
+/* БАЗОВЫЕ СТИЛИ БЕЗ ТЯЖЕЛЫХ АНИМАЦИЙ */
+* {
+  border-color: hsl(var(--border));
+  box-sizing: border-box;
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  /* Убираем медленный transition */
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+}
+
+/* ТОЛЬКО НЕОБХОДИМЫЕ УТИЛИТЫ */
+.font-arabic {
+  font-family: var(--font-arabic);
+}
+
+.loader {
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-primary);
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* МИНИМАЛЬНЫЕ СТИЛИ ДЛЯ МУСХАФА */
+.mushaf-container {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.mushaf-page-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ОПТИМИЗИРОВАННЫЙ СКРОЛЛ */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+
+/* ОТКЛЮЧАЕМ ТЯЖЕЛЫЕ АНИМАЦИИ НА МОБИЛЬНЫХ */
+@media (hover: none) and (pointer: coarse) {
+  * {
+    animation-duration: 0.1s !important;
+    transition-duration: 0.1s !important;
+  }
+}
+
+/* УБИРАЕМ АНИМАЦИИ ПРИ НАСТРОЙКЕ ACCESSIBILITY */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
