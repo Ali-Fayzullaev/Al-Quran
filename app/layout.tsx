@@ -15,16 +15,6 @@ const Sidebar = dynamic(() => import("@/components/Sidebar"), {
   loading: () => <div className="w-64 h-screen bg-gray-100"></div>
 });
 
-const ForceColorApplication = dynamic(() => 
-  import("@/components/ForceColorApplication").then(mod => ({ default: mod.ForceColorApplication })), 
-  { ssr: false }
-);
-
-const LoadingBar = dynamic(() => 
-  import("@/components/LoadingBar").then(mod => ({ default: mod.LoadingBar })), 
-  { ssr: false }
-);
-
 const inter = Inter({ 
   subsets: ["latin"],
   variable: "--font-inter",
@@ -87,8 +77,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             <LocaleProvider>
               <ColorThemeProvider>
-                <ForceColorApplication />
-                <LoadingBar />
                 <div className="min-h-screen bg-background">
                   <Sidebar />
                   

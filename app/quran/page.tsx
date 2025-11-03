@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Book, BookOpen, Volume2, Grid3X3, ArrowRight, Play, Settings } from "lucide-react";
+import { Book, BookOpen, ArrowRight, Play, Settings } from "lucide-react";
 import { useLocale } from "@/context/LocaleContext";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -28,15 +28,6 @@ const SurahsLoader = () => (
   </div>
 );
 
-const JuzLoader = () => (
-  <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--fixed-background)' }}>
-    <div className="text-center">
-      <div className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto mb-4" style={{ borderColor: '#8b5cf6' }}></div>
-      <p style={{ color: 'var(--fixed-text)' }}>Загружаем джузы для изучения...</p>
-    </div>
-  </div>
-);
-
 // Lazy loading компонентов для оптимизации
 const QuranInfiniteScroll = dynamic(() => import("@/components/mushaf/QuranInfiniteScroll"), {
   loading: MushafLoader,
@@ -48,12 +39,7 @@ const SurahsContent = dynamic(() => import("@/components/surahs/SurahsList"), {
   ssr: false
 });
 
-const JuzNavigation = dynamic(() => import("@/components/quran/JuzNavigation"), {
-  loading: JuzLoader,
-  ssr: false
-});
-
-type ReadingMode = 'selection' | 'mushaf' | 'surahs' | 'juz';
+type ReadingMode = 'selection' | 'mushaf' | 'surahs';
 
 interface ReadingModeConfig {
   id: ReadingMode;
@@ -72,8 +58,7 @@ function ReadingModeLoader({ mode }: { mode: string }) {
   
   const modeNames = {
     mushaf: locale === 'en' ? 'Mushaf Reader' : 'Мусхаф',
-    surahs: locale === 'en' ? 'Surah Reader' : 'Чтение сур',
-    juz: locale === 'en' ? 'Juz Reader' : 'Чтение по джузам'
+    surahs: locale === 'en' ? 'Surah Reader' : 'Чтение сур'
   };
 
   return (
@@ -131,23 +116,6 @@ export default function QuranReadingPage() {
         locale === 'en' ? '📚 Surah information' : '📚 Информация о сурах'
       ],
       bgGradient: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
-    },
-    {
-      id: 'juz',
-      title: locale === 'en' ? 'Juz Reading (Khatm)' : 'Чтение по джузам (Хатм)',
-      titleArabic: 'قراءة الأجزاء - ختم القرآن',
-      description: locale === 'en'
-        ? 'Complete the Quran in 30 parts with translations and audio. Perfect for structured reading plan.'
-        : 'Завершите Коран за 30 частей с переводами и аудио. Идеально для структурированного плана чтения.',
-      icon: <Grid3X3 className="w-8 h-8" />,
-      color: '#8b5cf6',
-      features: [
-        locale === 'en' ? '📅 30-day reading plan' : '📅 30-дневный план чтения',
-        locale === 'en' ? '🎵 Full audio support' : '🎵 Полная поддержка аудио',
-        locale === 'en' ? '📊 Progress tracking' : '📊 Отслеживание прогресса',
-        locale === 'en' ? '🏆 Completion rewards' : '🏆 Награды за завершение'
-      ],
-      bgGradient: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)'
     }
   ];
 
@@ -190,18 +158,6 @@ export default function QuranReadingPage() {
               transition={{ duration: 0.3 }}
             >
               <SurahsContent />
-            </motion.div>
-          )}
-          
-          {currentMode === 'juz' && (
-            <motion.div
-              key="juz"
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -100 }}
-              transition={{ duration: 0.3 }}
-            >
-              <JuzNavigation />
             </motion.div>
           )}
         </AnimatePresence>
@@ -263,7 +219,7 @@ export default function QuranReadingPage() {
 
         {/* Reading Modes */}
         <div className="max-w-6xl mx-auto px-4 pb-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {readingModes.map((mode, index) => (
               <motion.div
                 key={mode.id}
