@@ -92,18 +92,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div className="min-h-screen bg-background">
                   <Sidebar />
                   
-                  {/* Убираем все transition для максимальной скорости */}
-                  <div 
-                    className="ml-64 lg:ml-64"
-                    style={{ 
-                      marginLeft: 'var(--sidebar-width, 256px)' 
-                    }}
-                  >
-                    <div className="lg:hidden h-16"></div>
-                    <main className="min-h-screen">
-                      {children}
-                    </main>
-                  </div>
+                  {/* Убираем margin-left так как sidebar теперь overlay */}
+                  <main className="min-h-screen">
+                    {children}
+                  </main>
                 </div>
               </ColorThemeProvider>
             </LocaleProvider>

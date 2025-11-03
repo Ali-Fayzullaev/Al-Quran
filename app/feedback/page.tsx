@@ -27,7 +27,7 @@ export default function FeedbackPage() {
       title: "Feedback & Support",
       arabicTitle: "الملاحظات والدعم",
       subtitle: "Help us improve by reporting bugs or suggesting new features",
-      bugReport: "🐛 Bug Report",
+      bugReport: "❗ Bug Report",
       featureRequest: "✨ Feature Request", 
       improvement: "🔧 Improvement",
       other: "💬 Other",
