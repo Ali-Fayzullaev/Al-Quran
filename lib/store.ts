@@ -74,11 +74,6 @@ export interface QuranState {
   siteColorTheme: string;
   quranTextColorScheme: string;
 
-  // Mushaf page size settings
-  mushafPageSize: 'minimal' | 'small' | 'medium' | 'large' | 'maximum';
-  mushafShowSizeControls: boolean;
-  mushafAutoFitToScreen: boolean;
-
   // Custom user colors
   customButtonColor: string | null; // Пользовательский цвет кнопок
   customQuranTextColor: string | null; // Пользовательский цвет текста Корана
@@ -135,9 +130,6 @@ export interface QuranState {
   setCrashReportingEnabled: (enabled: boolean) => void;
   setSiteColorTheme: (theme: string) => void;
   setQuranTextColorScheme: (scheme: string) => void;
-  setMushafPageSize: (size: 'minimal' | 'small' | 'medium' | 'large' | 'maximum') => void;
-  setMushafShowSizeControls: (show: boolean) => void;
-  setMushafAutoFitToScreen: (autoFit: boolean) => void;
   setCustomButtonColor: (color: string | null) => void;
   setCustomQuranTextColor: (color: string | null) => void;
   setCustomQuranTranslationColor: (color: string | null) => void;
@@ -170,11 +162,6 @@ export const useQuranStore = create<QuranState>()(
       nightMode: false,
       siteColorTheme: "green",
       quranTextColorScheme: "classic",
-
-      // Mushaf page size settings
-      mushafPageSize: "medium",
-      mushafShowSizeControls: true,
-      mushafAutoFitToScreen: false,
 
       // Custom user colors
       customButtonColor: null,
@@ -354,18 +341,6 @@ export const useQuranStore = create<QuranState>()(
 
       setQuranTextColorScheme: (scheme: string) => {
         set({ quranTextColorScheme: scheme });
-      },
-
-      setMushafPageSize: (size: 'minimal' | 'small' | 'medium' | 'large' | 'maximum') => {
-        set({ mushafPageSize: size });
-      },
-
-      setMushafShowSizeControls: (show: boolean) => {
-        set({ mushafShowSizeControls: show });
-      },
-
-      setMushafAutoFitToScreen: (autoFit: boolean) => {
-        set({ mushafAutoFitToScreen: autoFit });
       },
 
       setCustomButtonColor: (color: string | null) => {

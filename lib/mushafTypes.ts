@@ -128,7 +128,7 @@ export interface KeyboardShortcut {
   description: string;
 }
 
-export type PageSizeType = 'minimal' | 'small' | 'medium' | 'large' | 'maximum';
+export type PageSizeType = 'tiny' | 'minimal' | 'small' | 'medium' | 'large' | 'maximum';
 
 export interface PageSizeConfig {
   scale: number;
@@ -186,15 +186,8 @@ export const MUSHAF_CONFIG = {
   MIN_ZOOM: 1,
   MAX_ZOOM: 5,
   
-  // Размеры страниц
-  PAGE_SIZES: {
-    minimal: { scale: 0.5, name: 'Минимальный', nameArabic: 'أصغر', icon: '📱' },
-    small: { scale: 0.7, name: 'Маленький', nameArabic: 'صغير', icon: '📱' },
-    medium: { scale: 0.9, name: 'Средний', nameArabic: 'متوسط', icon: '💻' },
-    large: { scale: 1.1, name: 'Большой', nameArabic: 'كبير', icon: '🖥️' },
-    maximum: { scale: 1.3, name: 'Максимальный', nameArabic: 'أكبر', icon: '🖥️' },
-  },
-  DEFAULT_PAGE_SIZE: 'medium' as const,
+  // Фиксированный размер страниц (без вариантов)
+  DEFAULT_PAGE_SCALE: 0.6, // Один фиксированный размер для всех
   
   ANIMATION_DURATION: {
     PAGE_TURN: 400,

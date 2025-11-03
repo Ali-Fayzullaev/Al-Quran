@@ -2,11 +2,19 @@
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronUp, Search, Maximize2, Minimize2, ArrowUp, BookOpen, Loader2 } from "lucide-react";
+import {
+  ChevronUp,
+  Search,
+  Maximize2,
+  Minimize2,
+  ArrowUp,
+  BookOpen,
+  Loader2,
+  Navigation,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import QuranPage from "./QuranPage";
-import PageSizeControls from "./PageSizeControls";
 import { MUSHAF_CONFIG } from "@/lib/mushafTypes";
 import { useLocale } from "@/context/LocaleContext";
 import { useTheme } from "next-themes";
@@ -20,8 +28,8 @@ interface QuranInfiniteScrollProps {
 
 // Константы для оптимизации
 const PAGES_PER_BLOCK = 15; // Загружаем по 15 страниц за раз
-const PRELOAD_BLOCKS = 2;    // Предзагружаем 2 блока вперед
-const VISIBLE_BUFFER = 3;    // Буфер видимых страниц
+const PRELOAD_BLOCKS = 2; // Предзагружаем 2 блока вперед
+const VISIBLE_BUFFER = 3; // Буфер видимых страниц
 
 // Быстрый скелетон
 const FastSkeleton = () => (
@@ -29,11 +37,20 @@ const FastSkeleton = () => (
     <div className="p-8 space-y-6 h-full relative">
       <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-2/3 mx-auto"></div>
       {Array.from({ length: 15 }).map((_, i) => (
-        <div key={i} className={cn(
-          "h-3 bg-gray-300 dark:bg-gray-600 rounded",
-          i % 4 === 0 ? "w-5/6" : i % 4 === 1 ? "w-full" : i % 4 === 2 ? "w-4/5" : "w-3/4",
-          "mx-auto"
-        )}></div>
+        <div
+          key={i}
+          className={cn(
+            "h-3 bg-gray-300 dark:bg-gray-600 rounded",
+            i % 4 === 0
+              ? "w-5/6"
+              : i % 4 === 1
+              ? "w-full"
+              : i % 4 === 2
+              ? "w-4/5"
+              : "w-3/4",
+            "mx-auto"
+          )}
+        ></div>
       ))}
       <div className="absolute bottom-4 left-4 right-4">
         <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-1/4 mx-auto"></div>
@@ -43,29 +60,33 @@ const FastSkeleton = () => (
 );
 
 // Улучшенная форма поиска
-const FastPageJump = ({ onJumpToPage, currentPage, totalPages }: {
+const FastPageJump = ({
+  onJumpToPage,
+  currentPage,
+  totalPages,
+}: {
   onJumpToPage: (page: number) => void;
   currentPage: number;
   totalPages: number;
 }) => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isJumping, setIsJumping] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const pageNum = parseInt(inputValue);
-    
+
     if (pageNum >= 1 && pageNum <= totalPages && !isJumping) {
       setIsJumping(true);
       setIsOpen(false);
-      
+
       // Принудительно переходим к странице
       await onJumpToPage(pageNum);
-      
+
       setTimeout(() => {
         setIsJumping(false);
-        setInputValue('');
+        setInputValue("");
       }, 1500);
     }
   };
@@ -93,15 +114,10 @@ const FastPageJump = ({ onJumpToPage, currentPage, totalPages }: {
         className="bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm border border-white/20"
         title="Быстрый переход"
       >
-        {isJumping ? (
-          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-        ) : (
-          <BookOpen className="w-4 h-4 mr-2" />
-        )}
-        <span className="hidden sm:inline">Стр. {currentPage}</span>
-        <span className="sm:hidden">{currentPage}</span>
+        <Search className="w-4 h-4 " />
+        <Navigation className="w-4 h-4 "/>
       </Button>
-      
+
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -114,7 +130,7 @@ const FastPageJump = ({ onJumpToPage, currentPage, totalPages }: {
               <h3 className="font-bold text-gray-900 dark:text-white text-lg">
                 Быстрый переход 🚀
               </h3>
-              
+
               <form onSubmit={handleSubmit} className="space-y-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -131,37 +147,18 @@ const FastPageJump = ({ onJumpToPage, currentPage, totalPages }: {
                     autoFocus
                   />
                 </div>
-                <Button type="submit" size="sm" className="w-full" disabled={!inputValue}>
+                <Button
+                  type="submit"
+                  size="sm"
+                  className="w-full bg-[var(--color-primary)]"
+                  disabled={!inputValue}
+                >
                   Перейти к странице
                 </Button>
               </form>
-
-              <div>
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-                  Популярные переходы:
-                </p>
-                <div className="grid grid-cols-3 gap-2">
-                  {quickPages.map(({ page, label }) => (
-                    <Button
-                      key={page}
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        onJumpToPage(page);
-                        setIsOpen(false);
-                      }}
-                      className="text-xs h-10 flex flex-col"
-                      disabled={isJumping}
-                    >
-                      <span className="font-bold">{page}</span>
-                      <span className="text-[10px] opacity-70">{label}</span>
-                    </Button>
-                  ))}
-                </div>
-              </div>
-
               <div className="text-xs text-gray-500 dark:text-gray-400 pt-3 border-t border-gray-200 dark:border-gray-600 text-center">
-                Сейчас: страница <span className="font-bold text-primary">{currentPage}</span>
+                Сейчас: страница{" "}
+                <span className="font-bold text-primary">{currentPage}</span>
               </div>
             </div>
           </motion.div>
@@ -183,8 +180,14 @@ class PageBlockManager {
 
   getBlockPages(blockNumber: number): number[] {
     const startPage = (blockNumber - 1) * PAGES_PER_BLOCK + 1;
-    const endPage = Math.min(startPage + PAGES_PER_BLOCK - 1, MUSHAF_CONFIG.TOTAL_PAGES);
-    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+    const endPage = Math.min(
+      startPage + PAGES_PER_BLOCK - 1,
+      MUSHAF_CONFIG.TOTAL_PAGES
+    );
+    return Array.from(
+      { length: endPage - startPage + 1 },
+      (_, i) => startPage + i
+    );
   }
 
   isBlockLoaded(blockNumber: number): boolean {
@@ -206,14 +209,16 @@ class PageBlockManager {
   markBlockAsLoaded(blockNumber: number): void {
     this.loadingBlocks.delete(blockNumber);
     this.loadedBlocks.add(blockNumber);
-    
+
     // Отмечаем все страницы блока как загруженные
     const pages = this.getBlockPages(blockNumber);
-    pages.forEach(page => this.pages.set(page, true));
+    pages.forEach((page) => this.pages.set(page, true));
   }
 
   getLoadedPages(): number[] {
-    return Array.from(this.pages.keys()).filter(page => this.pages.get(page) === true);
+    return Array.from(this.pages.keys()).filter(
+      (page) => this.pages.get(page) === true
+    );
   }
 
   reset(): void {
@@ -224,16 +229,16 @@ class PageBlockManager {
 }
 
 // Local storage helper
-const STORAGE_KEY = 'quran-last-page';
+const STORAGE_KEY = "quran-last-page";
 
 const saveLastPage = (page: number) => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     localStorage.setItem(STORAGE_KEY, page.toString());
   }
 };
 
 const getLastPage = (): number => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     const saved = localStorage.getItem(STORAGE_KEY);
     return saved ? parseInt(saved) : 1;
   }
@@ -246,7 +251,7 @@ export default function QuranInfiniteScroll({
 }: QuranInfiniteScrollProps) {
   const { locale, t } = useLocale();
   const { theme } = useTheme();
-  const { siteColorTheme, mushafPageSize } = useQuranStore();
+  const { siteColorTheme } = useQuranStore();
   const { applyCurrentColors } = useColorTheme();
 
   const startPage = initialPage || getLastPage();
@@ -270,8 +275,10 @@ export default function QuranInfiniteScroll({
   // Определяем текущую тему
   const getCurrentTheme = () => {
     if (theme === "system") {
-      return typeof window !== "undefined" && 
-        window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      return typeof window !== "undefined" &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
     }
     return theme || "light";
   };
@@ -284,13 +291,26 @@ export default function QuranInfiniteScroll({
     if (isDark) {
       let darkColors;
       switch (siteColorTheme) {
-        case "blue": darkColors = { bg: "#0f1629", text: "#e2e8f0", accent: "#60a5fa" }; break;
-        case "green": darkColors = { bg: "#0a1f14", text: "#e2f5e2", accent: "#34d399" }; break;
-        case "purple": darkColors = { bg: "#1a0d2e", text: "#f0e6ff", accent: "#a78bfa" }; break;
-        case "amber": darkColors = { bg: "#1f1611", text: "#fef3c7", accent: "#fbbf24" }; break;
-        case "pink": darkColors = { bg: "#1f0b19", text: "#fce7f3", accent: "#f472b6" }; break;
-        case "sepia": darkColors = { bg: "#1c140a", text: "#f5e6d3", accent: "#d2b48c" }; break;
-        default: darkColors = { bg: "#064e3b", text: "#d1fae5", accent: "#34d399" };
+        case "blue":
+          darkColors = { bg: "#0f1629", text: "#e2e8f0", accent: "#60a5fa" };
+          break;
+        case "green":
+          darkColors = { bg: "#0a1f14", text: "#e2f5e2", accent: "#34d399" };
+          break;
+        case "purple":
+          darkColors = { bg: "#1a0d2e", text: "#f0e6ff", accent: "#a78bfa" };
+          break;
+        case "amber":
+          darkColors = { bg: "#1f1611", text: "#fef3c7", accent: "#fbbf24" };
+          break;
+        case "pink":
+          darkColors = { bg: "#1f0b19", text: "#fce7f3", accent: "#f472b6" };
+          break;
+        case "sepia":
+          darkColors = { bg: "#1c140a", text: "#f5e6d3", accent: "#d2b48c" };
+          break;
+        default:
+          darkColors = { bg: "#064e3b", text: "#d1fae5", accent: "#34d399" };
       }
       return {
         backgroundColor: darkColors.bg,
@@ -302,10 +322,17 @@ export default function QuranInfiniteScroll({
     } else {
       let lightColors;
       switch (siteColorTheme) {
-        case "sepia": lightColors = { bg: "#f8f0e0", text: "#4a4a4a", accent: "#8b4513" }; break;
-        case "blue": lightColors = { bg: "#f0f9ff", text: "#1e3a8a", accent: "#3b82f6" }; break;
-        case "purple": lightColors = { bg: "#faf5ff", text: "#581c87", accent: "#8b5cf6" }; break;
-        default: lightColors = { bg: "#f0fdf4", text: "#1a202c", accent: "#10b981" };
+        case "sepia":
+          lightColors = { bg: "#f8f0e0", text: "#4a4a4a", accent: "#8b4513" };
+          break;
+        case "blue":
+          lightColors = { bg: "#f0f9ff", text: "#1e3a8a", accent: "#3b82f6" };
+          break;
+        case "purple":
+          lightColors = { bg: "#faf5ff", text: "#581c87", accent: "#8b5cf6" };
+          break;
+        default:
+          lightColors = { bg: "#f0fdf4", text: "#1a202c", accent: "#10b981" };
       }
       return {
         backgroundColor: lightColors.bg,
@@ -319,86 +346,94 @@ export default function QuranInfiniteScroll({
 
   // Быстрая загрузка блока
   const loadBlock = useCallback(async (blockNumber: number) => {
-    if (blockManager.current.isBlockLoaded(blockNumber) || 
-        blockManager.current.isBlockLoading(blockNumber)) {
+    if (
+      blockManager.current.isBlockLoaded(blockNumber) ||
+      blockManager.current.isBlockLoading(blockNumber)
+    ) {
       return;
     }
 
     blockManager.current.markBlockAsLoading(blockNumber);
-    setLoadingBlocks(prev => new Set([...prev, blockNumber]));
+    setLoadingBlocks((prev) => new Set([...prev, blockNumber]));
 
     // Симуляция быстрой загрузки
     return new Promise<void>((resolve) => {
       setTimeout(() => {
         blockManager.current.markBlockAsLoaded(blockNumber);
         const newLoadedPages = blockManager.current.getLoadedPages();
-        
+
         setLoadedPages(new Set(newLoadedPages));
-        setLoadingBlocks(prev => {
+        setLoadingBlocks((prev) => {
           const newSet = new Set(prev);
           newSet.delete(blockNumber);
           return newSet;
         });
-        
+
         resolve();
       }, 400 + Math.random() * 200); // 400-600ms быстрая загрузка
     });
   }, []);
 
   // Предзагрузка соседних блоков
-  const preloadNearbyBlocks = useCallback((currentPageNum: number) => {
-    const currentBlock = blockManager.current.getBlockNumber(currentPageNum);
-    
-    // Загружаем текущий и несколько следующих блоков
-    for (let i = 0; i <= PRELOAD_BLOCKS; i++) {
-      const blockToLoad = currentBlock + i;
-      const maxBlock = Math.ceil(MUSHAF_CONFIG.TOTAL_PAGES / PAGES_PER_BLOCK);
-      
-      if (blockToLoad <= maxBlock) {
-        loadBlock(blockToLoad);
+  const preloadNearbyBlocks = useCallback(
+    (currentPageNum: number) => {
+      const currentBlock = blockManager.current.getBlockNumber(currentPageNum);
+
+      // Загружаем текущий и несколько следующих блоков
+      for (let i = 0; i <= PRELOAD_BLOCKS; i++) {
+        const blockToLoad = currentBlock + i;
+        const maxBlock = Math.ceil(MUSHAF_CONFIG.TOTAL_PAGES / PAGES_PER_BLOCK);
+
+        if (blockToLoad <= maxBlock) {
+          loadBlock(blockToLoad);
+        }
       }
-    }
-  }, [loadBlock]);
+    },
+    [loadBlock]
+  );
 
   // Улучшенный переход к странице
-  const jumpToPage = useCallback(async (pageNumber: number) => {
-    if (pageNumber < 1 || pageNumber > MUSHAF_CONFIG.TOTAL_PAGES || isJumping) return;
+  const jumpToPage = useCallback(
+    async (pageNumber: number) => {
+      if (pageNumber < 1 || pageNumber > MUSHAF_CONFIG.TOTAL_PAGES || isJumping)
+        return;
 
-    setIsJumping(true);
-    
-    try {
-      // Загружаем блок с нужной страницей
-      const targetBlock = blockManager.current.getBlockNumber(pageNumber);
-      await loadBlock(targetBlock);
-      
-      // Предзагружаем соседние блоки
-      preloadNearbyBlocks(pageNumber);
-      
-      // Ждем короткую паузу для загрузки
-      await new Promise(resolve => setTimeout(resolve, 200));
-      
-      // Прокручиваем к странице
-      setTimeout(() => {
-        const pageElement = pageRefs.current.get(pageNumber);
-        if (pageElement) {
-          const offset = window.innerHeight * 0.15;
-          const elementTop = pageElement.offsetTop - offset;
-          
-          window.scrollTo({ 
-            top: elementTop, 
-            behavior: 'smooth' 
-          });
-          
-          setCurrentPage(pageNumber);
-        }
+      setIsJumping(true);
+
+      try {
+        // Загружаем блок с нужной страницей
+        const targetBlock = blockManager.current.getBlockNumber(pageNumber);
+        await loadBlock(targetBlock);
+
+        // Предзагружаем соседние блоки
+        preloadNearbyBlocks(pageNumber);
+
+        // Ждем короткую паузу для загрузки
+        await new Promise((resolve) => setTimeout(resolve, 200));
+
+        // Прокручиваем к странице
+        setTimeout(() => {
+          const pageElement = pageRefs.current.get(pageNumber);
+          if (pageElement) {
+            const offset = window.innerHeight * 0.15;
+            const elementTop = pageElement.offsetTop - offset;
+
+            window.scrollTo({
+              top: elementTop,
+              behavior: "smooth",
+            });
+
+            setCurrentPage(pageNumber);
+          }
+          setIsJumping(false);
+        }, 100);
+      } catch (error) {
+        console.error("Error jumping to page:", error);
         setIsJumping(false);
-      }, 100);
-      
-    } catch (error) {
-      console.error('Error jumping to page:', error);
-      setIsJumping(false);
-    }
-  }, [isJumping, loadBlock, preloadNearbyBlocks]);
+      }
+    },
+    [isJumping, loadBlock, preloadNearbyBlocks]
+  );
 
   // Intersection Observer
   useEffect(() => {
@@ -406,7 +441,9 @@ export default function QuranInfiniteScroll({
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const pageNumber = parseInt(entry.target.getAttribute('data-page') || '1');
+            const pageNumber = parseInt(
+              entry.target.getAttribute("data-page") || "1"
+            );
             setCurrentPage(pageNumber);
             preloadNearbyBlocks(pageNumber);
           }
@@ -414,7 +451,7 @@ export default function QuranInfiniteScroll({
       },
       {
         threshold: 0.3,
-        rootMargin: '100px 0px 500px 0px',
+        rootMargin: "100px 0px 500px 0px",
       }
     );
 
@@ -426,17 +463,19 @@ export default function QuranInfiniteScroll({
     const handleScroll = () => {
       const scrollY = window.scrollY;
       setShowScrollToTop(scrollY > 800);
-      
+
       // Автозагрузка при приближении к концу
       const windowHeight = window.innerHeight;
       const documentHeight = document.documentElement.scrollHeight;
-      
+
       if (scrollY + windowHeight > documentHeight - 1500) {
         const currentBlock = blockManager.current.getBlockNumber(currentPage);
         const nextBlocks = [currentBlock + 1, currentBlock + 2];
-        
-        nextBlocks.forEach(block => {
-          const maxBlock = Math.ceil(MUSHAF_CONFIG.TOTAL_PAGES / PAGES_PER_BLOCK);
+
+        nextBlocks.forEach((block) => {
+          const maxBlock = Math.ceil(
+            MUSHAF_CONFIG.TOTAL_PAGES / PAGES_PER_BLOCK
+          );
           if (block <= maxBlock) {
             loadBlock(block);
           }
@@ -444,8 +483,8 @@ export default function QuranInfiniteScroll({
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [currentPage, loadBlock]);
 
   // Определение мобильного устройства
@@ -455,8 +494,8 @@ export default function QuranInfiniteScroll({
     };
 
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   // Инициальная загрузка
@@ -477,40 +516,39 @@ export default function QuranInfiniteScroll({
     saveLastPage(currentPage);
   }, [currentPage]);
 
-  // Динамические отступы
+  // Динамические отступы (упрощенные)
   const getPageSpacing = () => {
-    const scale = MUSHAF_CONFIG.PAGE_SIZES[mushafPageSize]?.scale || 0.9;
-    if (scale <= 0.7) return 'space-y-6';
-    if (scale <= 0.9) return 'space-y-8';
-    return 'space-y-12';
+    return "space-y-8"; // Фиксированные отступы
   };
 
   // Генерация страниц для отображения
   const generatePagesToShow = () => {
     const allPages: { page: number; isLoading: boolean }[] = [];
-    
+
     // Добавляем загруженные страницы
-    Array.from(loadedPages).sort((a, b) => a - b).forEach(page => {
-      allPages.push({ page, isLoading: false });
-    });
-    
+    Array.from(loadedPages)
+      .sort((a, b) => a - b)
+      .forEach((page) => {
+        allPages.push({ page, isLoading: false });
+      });
+
     // Добавляем загружающиеся блоки
-    Array.from(loadingBlocks).forEach(blockNum => {
+    Array.from(loadingBlocks).forEach((blockNum) => {
       const blockPages = blockManager.current.getBlockPages(blockNum);
-      blockPages.forEach(page => {
+      blockPages.forEach((page) => {
         if (!loadedPages.has(page)) {
           allPages.push({ page, isLoading: true });
         }
       });
     });
-    
+
     return allPages.sort((a, b) => a.page - b.page);
   };
 
   const pagesToShow = generatePagesToShow();
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -532,15 +570,11 @@ export default function QuranInfiniteScroll({
           >
             <div className="flex items-center justify-between p-4">
               <div className="flex items-center gap-2">
-                <FastPageJump 
+                <FastPageJump
                   onJumpToPage={jumpToPage}
                   currentPage={currentPage}
                   totalPages={MUSHAF_CONFIG.TOTAL_PAGES}
                 />
-              </div>
-
-              <div className="flex-1 flex justify-center">
-                <PageSizeControls />
               </div>
 
               <div className="flex items-center gap-2">
@@ -559,7 +593,7 @@ export default function QuranInfiniteScroll({
         )}
       </AnimatePresence>
 
-      {/* Кнопка выхода из иммерсивного режима */}
+      {/* Кнопка выхода из иммерсивного режима - теперь всегда видна */}
       <AnimatePresence>
         {isImmersiveMode && (
           <motion.button
@@ -567,18 +601,25 @@ export default function QuranInfiniteScroll({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsImmersiveMode(false)}
-            className="fixed top-4 right-4 z-50 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full shadow-lg opacity-50 hover:opacity-100 transition-opacity"
+            className="fixed top-4 right-4 z-[9999] p-3 bg-black/70 hover:bg-black/90 text-white rounded-full shadow-2xl border-2 border-white/20 backdrop-blur-sm"
+            style={{
+              position: "fixed",
+              top: "16px",
+              right: "16px",
+              zIndex: 9999,
+            }}
           >
-            <Minimize2 className="w-5 h-5" />
+            <Minimize2 className="w-6 h-6" />
+            <span className="sr-only">Выйти из полноэкранного режима</span>
           </motion.button>
         )}
       </AnimatePresence>
 
-      {/* Основной контент - оптимизированные страницы */}
+      {/* Основной контент - фиксированный размер */}
       <div className={cn("py-6", getPageSpacing())}>
         {pagesToShow.map(({ page: pageNumber, isLoading }, index) => {
-          const scale = MUSHAF_CONFIG.PAGE_SIZES[mushafPageSize]?.scale || 1;
-          
+          const scale = MUSHAF_CONFIG.DEFAULT_PAGE_SCALE; // Используем фиксированный размер
+
           return (
             <motion.div
               key={pageNumber}
@@ -599,9 +640,6 @@ export default function QuranInfiniteScroll({
                 transform: `scale(${scale})`,
                 transformOrigin: "center center",
                 transition: "transform 0.3s ease-out",
-                marginTop: scale > 1 ? `${(scale - 1) * 80}px` : '0',
-                marginBottom: scale > 1 ? `${(scale - 1) * 80}px` : '0',
-                minHeight: `${500 * scale}px`,
               }}
             >
               {isLoading ? (
@@ -617,7 +655,7 @@ export default function QuranInfiniteScroll({
                     maxZoom: 3,
                     zoomLevels: [1, 1.5, 2, 3],
                     position: { x: 0, y: 0 },
-                    isZooming: false
+                    isZooming: false,
                   }}
                   onZoomChange={() => {}}
                   priority={pageNumber <= startPage + 5}
@@ -640,7 +678,9 @@ export default function QuranInfiniteScroll({
             <div className="flex items-center gap-3">
               <Loader2 className="w-6 h-6 animate-spin" />
               <span className="font-medium">
-                {isJumping ? `Переход к странице ${currentPage}...` : 'Загрузка страниц...'}
+                {isJumping
+                  ? `Переход к странице ${currentPage}...`
+                  : "Загрузка страниц..."}
               </span>
             </div>
           </motion.div>
@@ -664,7 +704,7 @@ export default function QuranInfiniteScroll({
       </AnimatePresence>
 
       {/* Продвинутый индикатор страницы */}
-      <motion.div 
+      <motion.div
         className="fixed bottom-4 left-4 z-40 bg-black/70 text-white px-4 py-2 rounded-full text-sm font-bold backdrop-blur-sm border border-white/20 shadow-xl"
         animate={{ scale: [1, 1.05, 1] }}
         transition={{ duration: 0.3, times: [0, 0.5, 1] }}
@@ -672,11 +712,15 @@ export default function QuranInfiniteScroll({
       >
         <div className="flex items-center gap-2">
           <BookOpen className="w-4 h-4" />
-          <span>{currentPage} / {MUSHAF_CONFIG.TOTAL_PAGES}</span>
+          <span>
+            {currentPage} / {MUSHAF_CONFIG.TOTAL_PAGES}
+          </span>
           <div className="w-16 h-1 bg-white/30 rounded-full overflow-hidden">
-            <div 
+            <div
               className="h-full bg-primary rounded-full transition-all duration-300"
-              style={{ width: `${(currentPage / MUSHAF_CONFIG.TOTAL_PAGES) * 100}%` }}
+              style={{
+                width: `${(currentPage / MUSHAF_CONFIG.TOTAL_PAGES) * 100}%`,
+              }}
             />
           </div>
         </div>

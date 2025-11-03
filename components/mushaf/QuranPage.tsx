@@ -442,8 +442,8 @@ export default function QuranPage({
           )}
         </AnimatePresence>
 
-        {/* Номер страницы */}
-        <div className="absolute top-2 right-2 bg-black/20 text-white px-2 py-1 rounded text-xs font-bold">
+        {/* Номер страницы - перемещен вниз */}
+        <div className="absolute bottom-2 right-2 bg-black/20 text-white px-2 py-1 rounded text-xs font-bold">
           {pageNumber}
         </div>
 

@@ -413,7 +413,7 @@ Remember: knowledge comes from Allah, and we are all learners.`;
       backgroundColor: 'var(--color-background)',
       color: 'var(--color-text)'
     }}>
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-8 max-w-4xl bb">
         {/* Заголовок */}
         <div className="text-center mb-8">
           <div 
