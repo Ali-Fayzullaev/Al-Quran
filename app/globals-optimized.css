@@ -48,7 +48,7 @@ body {
 .loader {
   width: 24px;
   height: 24px;
-  border: 2px solid var(--color-primary);
+  border: 2px solid #10b981;
   border-bottom-color: transparent;
   border-radius: 50%;
   display: inline-block;
