@@ -63,115 +63,78 @@ function SearchContent() {
       addToSearchHistory(debouncedQuery.trim());
     } else {
       setSearchResults([]);
+      setTotalResults(0);
     }
   }, [debouncedQuery, surahFilter, searchMode, translationLanguage, juzFilter]);
 
   const performSearch = async (searchQuery: string) => {
     setIsLoading(true);
     setError(null);
+    
+    console.log('Начинаем поиск:', searchQuery, 'Режим:', searchMode);
 
     try {
-      let results: any[] = [];
-
-      // Search in Arabic text
-      if (searchMode === "arabic" || searchMode === "both") {
-        const arabicResponse = await fetch(
-          `https://api.alquran.cloud/v1/search/${encodeURIComponent(
-            searchQuery
-          )}/quran-uthmani`
-        );
-        if (arabicResponse.ok) {
-          const arabicData = await arabicResponse.json();
-          if (arabicData.data?.matches) {
-            results.push(
-              ...arabicData.data.matches.map((match: any) => ({
-                ...match,
-                source: "arabic",
-                surahName:
-                  match.surah?.englishName ||
-                  `Surah ${match.surah?.number || 0}`,
-                surahNameArabic: match.surah?.name || "",
-              }))
-            );
-          }
-        }
-      }
-
-      // Search in translation
-      if (searchMode === "translation" || searchMode === "both") {
-        const translationResponse = await fetch(
-          `https://api.alquran.cloud/v1/search/${encodeURIComponent(
-            searchQuery
-          )}/${translationLanguage}`
-        );
-        if (translationResponse.ok) {
-          const translationData = await translationResponse.json();
-          if (translationData.data?.matches) {
-            results.push(
-              ...translationData.data.matches.map((match: any) => ({
-                ...match,
-                source: "translation",
-                surahName:
-                  match.surah?.englishName ||
-                  `Surah ${match.surah?.number || 0}`,
-                surahNameArabic: match.surah?.name || "",
-              }))
-            );
-          }
-        }
-      }
-
-      // Remove duplicates and clean up results
-      const uniqueResults = results.reduce((acc: any[], current: any) => {
-        const exists = acc.find(
-          (item) =>
-            item.number === current.number &&
-            item.surah?.number === current.surah?.number
-        );
-        if (!exists) {
-          acc.push({
-            ...current,
-            // Ensure text fields are strings, not objects
-            text:
-              typeof current.text === "string"
-                ? current.text
-                : current.text?.arabic || "",
-            translation:
-              typeof current.translation === "string"
-                ? current.translation
-                : "",
-            surahName:
-              current.surah?.englishName ||
-              `Surah ${current.surah?.number || 0}`,
-            surahNameArabic: current.surah?.name || "",
-          });
-        } else if (current.source === "translation" && current.text) {
-          // Add translation to existing Arabic result
-          exists.translation =
-            typeof current.text === "string"
-              ? current.text
-              : current.text?.arabic || "";
-        }
-        return acc;
-      }, []);
-
-      // Apply filters
-      const filteredResults = uniqueResults.filter((match: any) => {
-        if (surahFilter && match.surah?.number !== surahFilter) return false;
-        if (juzFilter && match.juz !== juzFilter) return false;
-        return true;
+      // Используем локальный API вместо внешнего
+      const params = new URLSearchParams({
+        q: searchQuery,
+        mode: searchMode,
+        lang: locale === 'ru' ? 'ru' : 'en'
       });
 
-      setSearchResults(filteredResults);
-      setTotalResults(filteredResults.length);
+      if (surahFilter) {
+        params.append('surah', surahFilter.toString());
+      }
+
+      if (juzFilter) {
+        params.append('juz', juzFilter.toString());
+      }
+
+      const apiUrl = `/api/search?${params.toString()}`;
+      console.log('Поиск через локальный API:', apiUrl);
+
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+
+      console.log('Ответ API:', response.status, response.ok);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Данные поиска:', data);
+
+      if (data.success && data.data?.matches) {
+        const results = data.data.matches.map((match: any) => ({
+          ...match,
+          source: 'local',
+          surahName: match.surahName || match.surah?.englishName || `Surah ${match.surah?.number || 0}`,
+          surahNameArabic: match.surahNameArabic || match.surah?.name || "",
+        }));
+
+        console.log('Обработанные результаты:', results.length);
+        setSearchResults(results);
+        setTotalResults(results.length);
+      } else {
+        console.log('Нет результатов от API');
+        setSearchResults([]);
+        setTotalResults(0);
+      }
+      
     } catch (searchError) {
       console.error("Search error:", searchError);
       setError(
         locale === "en"
-          ? "Search failed. Please try again."
-          : "Поиск не удался. Попробуйте снова."
+          ? "Search failed. Please try again later."
+          : "Поиск не удался. Попробуйте позже."
       );
       setSearchResults([]);
+      setTotalResults(0);
     } finally {
       setIsLoading(false);
     }
