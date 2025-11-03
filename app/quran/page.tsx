@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import dynamic from 'next/dynamic';
 import { PageLoader } from "@/components/PageLoader";
+import MotivationalQuotes from "@/components/quran/MotivationalQuotes";
 
 // Lazy loading компонентов для оптимизации
 const QuranInfiniteScroll = dynamic(() => import("@/components/mushaf/QuranInfiniteScroll"), {
@@ -221,6 +222,16 @@ export default function QuranReadingPage() {
               ? 'Choose your preferred reading experience. Each mode is designed for different purposes and preferences.'
               : 'Выберите предпочитаемый способ чтения. Каждый режим разработан для разных целей и предпочтений.'}
           </p>
+        </motion.div>
+
+        {/* Motivational Quotes Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="max-w-6xl mx-auto px-4 mb-16"
+        >
+          <MotivationalQuotes />
         </motion.div>
 
         {/* Reading Modes */}

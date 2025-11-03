@@ -16,6 +16,7 @@ import {
   X,
   Bot,
   MessageSquare,
+  Star,
 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
@@ -72,9 +73,7 @@ const NavigationItem = memo(({
       
       <span className="flex-1">{item.name}</span>
       {item.isPremium && (
-        <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
-          PRO
-        </span>
+        <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
       )}
     </Link>
   );
@@ -87,6 +86,12 @@ const Sidebar = memo(function Sidebar() {
   const { locale, t } = useLocale();
   const { bookmarks } = useQuranStore();
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Монтируем компонент только на клиенте
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   // Навигационные элементы
   const navigation = useMemo(() => [
@@ -208,6 +213,19 @@ const Sidebar = memo(function Sidebar() {
     };
   }, [isOpen]);
 
+  // Если не монтирован, не рендерим sidebar (только кнопку)
+  if (!isMounted) {
+    return (
+      <button
+        id="sidebar-toggle"
+        className="fixed top-4 left-4 z-50 p-3 rounded-xl shadow-lg border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-emerald-600 dark:text-emerald-400"
+        title={locale === "en" ? "Open menu" : "Открыть меню"}
+      >
+        <Menu className="h-5 w-5" />
+      </button>
+    );
+  }
+
   return (
     <>
       {/* Кнопка меню */}
@@ -249,7 +267,7 @@ const Sidebar = memo(function Sidebar() {
       >
         {/* Header - фиксированная высота */}
         <div 
-          className="h-20 flex items-center justify-between p-6 border-b"
+          className="flex-shrink-0 h-20 flex items-center justify-between p-6 border-b"
           style={{ borderColor: 'var(--color-border)' }}
         >
           <Link
@@ -281,7 +299,7 @@ const Sidebar = memo(function Sidebar() {
           
           <button
             onClick={closeSidebar}
-            className="p-2 rounded-lg transition-colors"
+            className="p-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
             style={{ color: 'var(--color-text-secondary)' }}
             title={locale === "en" ? "Close menu" : "Закрыть меню"}
           >
@@ -291,13 +309,13 @@ const Sidebar = memo(function Sidebar() {
 
         {/* Controls - фиксированная высота */}
         <div 
-          className="h-20 flex items-center p-4 border-b"
+          className="flex-shrink-0 h-20 flex items-center p-4 border-b"
           style={{ borderColor: 'var(--color-border)' }}
         >
           <div className="flex items-center justify-between space-x-2 w-full">
             <ThemeDrawer>
               <button 
-                className="flex-1 p-3 rounded-xl flex items-center justify-center space-x-2 transition-all duration-200 group"
+                className="flex-1 p-3 rounded-xl flex items-center justify-center space-x-2 transition-all duration-200 group hover:opacity-90"
                 style={{ backgroundColor: 'var(--color-muted)' }}
               >
                 <Palette className="h-4 w-4 group-hover:rotate-12 transition-transform" />
@@ -318,39 +336,41 @@ const Sidebar = memo(function Sidebar() {
 
         {/* Navigation - растягивается на всю доступную высоту */}
         <div className="flex-1 min-h-0 overflow-y-auto">
-          <nav className="p-4 space-y-6">
-            {Object.entries(categories).map(([categoryKey, categoryName]) => {
-              const categoryItems = navigation.filter(item => item.category === categoryKey);
-              if (categoryItems.length === 0) return null;
+          <div className="h-full">
+            <nav className="p-4 space-y-6">
+              {Object.entries(categories).map(([categoryKey, categoryName]) => {
+                const categoryItems = navigation.filter(item => item.category === categoryKey);
+                if (categoryItems.length === 0) return null;
 
-              return (
-                <div key={categoryKey}>
-                  <h3 
-                    className="text-xs font-bold uppercase tracking-wider mb-3 px-2"
-                    style={{ color: 'var(--color-text-secondary)' }}
-                  >
-                    {categoryName}
-                  </h3>
-                  
-                  <div className="space-y-1">
-                    {categoryItems.map((item) => (
-                      <NavigationItem
-                        key={item.href}
-                        item={item}
-                        isActive={pathname === item.href}
-                        onClose={closeSidebar}
-                      />
-                    ))}
+                return (
+                  <div key={categoryKey}>
+                    <h3 
+                      className="text-xs font-bold uppercase tracking-wider mb-3 px-2"
+                      style={{ color: 'var(--color-text-secondary)' }}
+                    >
+                      {categoryName}
+                    </h3>
+                    
+                    <div className="space-y-1">
+                      {categoryItems.map((item) => (
+                        <NavigationItem
+                          key={item.href}
+                          item={item}
+                          isActive={pathname === item.href}
+                          onClose={closeSidebar}
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </nav>
+                );
+              })}
+            </nav>
+          </div>
         </div>
 
         {/* Footer - фиксированная высота */}
         <div 
-          className="h-20 flex items-center p-4 border-t"
+          className="flex-shrink-0 h-20 flex items-center p-4 border-t"
           style={{ borderColor: 'var(--color-border)' }}
         >
           <div
