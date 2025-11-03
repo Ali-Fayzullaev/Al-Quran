@@ -6,12 +6,13 @@ import { useLocale } from "@/context/LocaleContext";
 interface Message {
   id: string;
   content: string;
-  type: 'user' | 'ai';
+  type: "user" | "ai";
   timestamp: Date;
 }
 
 const API_KEY = "AIzaSyDF_Q-p6-QS93ckwRoiTQNbKE9qw8GNaOc";
-const API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+const API_URL =
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 
 const MAX_QUESTION_LENGTH = 500;
 const MAX_RESPONSE_LENGTH = 2000;
@@ -55,7 +56,7 @@ export default function AIHelperPage() {
   }, [isRateLimited, rateLimitEndTime]);
 
   const generateSystemPrompt = () => {
-    if (locale === 'en') {
+    if (locale === "en") {
       return `You are a knowledgeable Islamic scholar and Quran assistant. Answer questions about the Quran, Islam, and religious practices with wisdom and understanding.
 
 Rules:
@@ -92,12 +93,17 @@ Remember: knowledge comes from Allah, and we are all learners.`;
     // Проверяем задержку между запросами
     const now = Date.now();
     const timeSinceLastRequest = now - lastRequestTime.current;
-    
+
     if (timeSinceLastRequest < MIN_REQUEST_DELAY) {
       const waitTime = MIN_REQUEST_DELAY - timeSinceLastRequest;
-      setError(locale === 'en' 
-        ? `Please wait ${Math.ceil(waitTime / 1000)} seconds before sending another question.`
-        : `Пожалуйста, подождите ${Math.ceil(waitTime / 1000)} секунд перед отправкой следующего вопроса.`
+      setError(
+        locale === "en"
+          ? `Please wait ${Math.ceil(
+              waitTime / 1000
+            )} seconds before sending another question.`
+          : `Пожалуйста, подождите ${Math.ceil(
+              waitTime / 1000
+            )} секунд перед отправкой следующего вопроса.`
       );
       return;
     }
@@ -105,11 +111,11 @@ Remember: knowledge comes from Allah, and we are all learners.`;
     const userMessage: Message = {
       id: Date.now().toString(),
       content: questionText,
-      type: 'user',
-      timestamp: new Date()
+      type: "user",
+      timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setQuestion("");
     setIsLoading(true);
     setError("");
@@ -117,16 +123,22 @@ Remember: knowledge comes from Allah, and we are all learners.`;
 
     try {
       const response = await fetch(`${API_URL}?key=${API_KEY}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: `${generateSystemPrompt()}\n\n${locale === 'en' ? 'User question' : 'Вопрос пользователя'}: ${questionText}`
-            }]
-          }],
+          contents: [
+            {
+              parts: [
+                {
+                  text: `${generateSystemPrompt()}\n\n${
+                    locale === "en" ? "User question" : "Вопрос пользователя"
+                  }: ${questionText}`,
+                },
+              ],
+            },
+          ],
           generationConfig: {
             temperature: 0.7,
             topK: 40,
@@ -136,41 +148,50 @@ Remember: knowledge comes from Allah, and we are all learners.`;
           safetySettings: [
             {
               category: "HARM_CATEGORY_HARASSMENT",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE"
+              threshold: "BLOCK_MEDIUM_AND_ABOVE",
             },
             {
               category: "HARM_CATEGORY_HATE_SPEECH",
-              threshold: "BLOCK_MEDIUM_AND_ABOVE"
-            }
-          ]
-        })
+              threshold: "BLOCK_MEDIUM_AND_ABOVE",
+            },
+          ],
+        }),
       });
 
       if (!response.ok) {
         if (response.status === 429) {
           // Rate limit exceeded
-          const retryAfter = response.headers.get('Retry-After');
+          const retryAfter = response.headers.get("Retry-After");
           const waitTime = retryAfter ? parseInt(retryAfter) * 1000 : 60000; // По умолчанию 1 минута
-          
+
           setIsRateLimited(true);
           setRateLimitEndTime(Date.now() + waitTime);
-          
-          throw new Error(locale === 'en' 
-            ? `Rate limit exceeded. Please wait ${Math.ceil(waitTime / 1000)} seconds before trying again.`
-            : `Превышен лимит запросов. Пожалуйста, подождите ${Math.ceil(waitTime / 1000)} секунд перед повторной попыткой.`
+
+          throw new Error(
+            locale === "en"
+              ? `Rate limit exceeded. Please wait ${Math.ceil(
+                  waitTime / 1000
+                )} seconds before trying again.`
+              : `Превышен лимит запросов. Пожалуйста, подождите ${Math.ceil(
+                  waitTime / 1000
+                )} секунд перед повторной попыткой.`
           );
         }
         throw new Error(`API Error: ${response.status}`);
       }
 
       const data = await response.json();
-      
-      if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+
+      if (
+        !data.candidates ||
+        !data.candidates[0] ||
+        !data.candidates[0].content
+      ) {
         throw new Error("Incomplete API response");
       }
 
       let aiResponse = data.candidates[0].content.parts[0].text;
-      
+
       // Ограничиваем длину ответа
       if (aiResponse.length > MAX_RESPONSE_LENGTH) {
         aiResponse = aiResponse.substring(0, MAX_RESPONSE_LENGTH) + "...";
@@ -179,28 +200,31 @@ Remember: knowledge comes from Allah, and we are all learners.`;
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: aiResponse,
-        type: 'ai',
-        timestamp: new Date()
+        type: "ai",
+        timestamp: new Date(),
       };
 
-      setMessages(prev => [...prev, aiMessage]);
-      
+      setMessages((prev) => [...prev, aiMessage]);
     } catch (err) {
       console.error("API Error:", err);
-      const errorMessage = err instanceof Error ? err.message : (
-        locale === 'en' ? 'Sorry, an error occurred. Please try again.' : 'Извините, произошла ошибка. Попробуйте еще раз.'
-      );
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : locale === "en"
+          ? "Sorry, an error occurred. Please try again."
+          : "Извините, произошла ошибка. Попробуйте еще раз.";
       setError(errorMessage);
-      
+
       const fallbackMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: locale === 'en' 
-          ? "Sorry, I can't answer your question right now. This might be due to high demand. Please try again in a few moments."
-          : "Извините, сейчас я не могу ответить на ваш вопрос. Возможно, это связано с высокой нагрузкой. Попробуйте через несколько минут.",
-        type: 'ai',
-        timestamp: new Date()
+        content:
+          locale === "en"
+            ? "Sorry, I can't answer your question right now. This might be due to high demand. Please try again in a few moments."
+            : "Извините, сейчас я не могу ответить на ваш вопрос. Возможно, это связано с высокой нагрузкой. Попробуйте через несколько минут.",
+        type: "ai",
+        timestamp: new Date(),
       };
-      setMessages(prev => [...prev, fallbackMessage]);
+      setMessages((prev) => [...prev, fallbackMessage]);
     } finally {
       setIsLoading(false);
     }
@@ -225,14 +249,17 @@ Remember: knowledge comes from Allah, and we are all learners.`;
     en: {
       title: "Smart Quran Assistant",
       arabicTitle: "مساعد القرآن الذكي",
-      subtitle: "Ask questions about Quran, Islam and religious practices. Get wise answers with references to sacred texts.",
+      subtitle:
+        "Ask questions about Quran, Islam and religious practices. Get wise answers with references to sacred texts.",
       popularQuestions: "Popular Questions:",
-      startConversation: "Start a conversation by asking a question or selecting one of the suggested ones",
+      startConversation:
+        "Start a conversation by asking a question or selecting one of the suggested ones",
       askQuestion: "Ask your question about Quran or Islam...",
       send: "Send",
-      clearChat: "Clear Chat", 
+      clearChat: "Clear Chat",
       thinking: "Thinking...",
-      disclaimer: "This AI assistant provides information for educational purposes. For important religious questions, consult qualified scholars.",
+      disclaimer:
+        "This AI assistant provides information for educational purposes. For important religious questions, consult qualified scholars.",
       presetQuestions: [
         "What does Al-Fatiha mean?",
         "How to perform prayer correctly?",
@@ -241,20 +268,23 @@ Remember: knowledge comes from Allah, and we are all learners.`;
         "Explain the meaning of 99 names of Allah",
         "What is Tawhid in Islam?",
         "What duas are recommended to recite daily?",
-        "Tell me about Prophet Muhammad (peace be upon him)"
-      ]
+        "Tell me about Prophet Muhammad (peace be upon him)",
+      ],
     },
     ru: {
       title: "Умный помощник по Корану",
       arabicTitle: "مساعد القرآن الذكي",
-      subtitle: "Задавайте вопросы о Коране, исламе и религиозной практике. Получайте мудрые ответы с ссылками на священные тексты.",
+      subtitle:
+        "Задавайте вопросы о Коране, исламе и религиозной практике. Получайте мудрые ответы с ссылками на священные тексты.",
       popularQuestions: "Популярные вопросы:",
-      startConversation: "Начните разговор, задав вопрос или выбрав один из предложенных",
+      startConversation:
+        "Начните разговор, задав вопрос или выбрав один из предложенных",
       askQuestion: "Задайте ваш вопрос о Коране или исламе...",
       send: "Отправить",
       clearChat: "Очистить чат",
       thinking: "Размышляю...",
-      disclaimer: "Этот AI помощник предоставляет информацию в образовательных целях. Для важных религиозных вопросов обращайтесь к квалифицированным ученым.",
+      disclaimer:
+        "Этот AI помощник предоставляет информацию в образовательных целях. Для важных религиозных вопросов обращайтесь к квалифицированным ученым.",
       presetQuestions: [
         "Что означает Аль-Фатиха?",
         "Как правильно читать намаз?",
@@ -263,13 +293,14 @@ Remember: knowledge comes from Allah, and we are all learners.`;
         "Объясни смысл 99 имен Аллаха",
         "Что такое таухид в исламе?",
         "Какие дуа рекомендуется читать ежедневно?",
-        "Расскажи о пророке Мухаммаде (мир ему)"
-      ]
-    }
+        "Расскажи о пророке Мухаммаде (мир ему)",
+      ],
+    },
   };
 
   // Получаем текущие переводы
-  const currentTranslations = translations[locale as keyof typeof translations] || translations.en;
+  const currentTranslations =
+    translations[locale as keyof typeof translations] || translations.en;
   const presetQuestions = currentTranslations.presetQuestions;
 
   return (
@@ -277,29 +308,44 @@ Remember: knowledge comes from Allah, and we are all learners.`;
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Заголовок с исламскими мотивами */}
         <div className="text-center mb-8 ai-message-appear">
-          <div className="inline-flex items-center justify-center w-20 h-20 islamic-gradient-primary rounded-full mb-6 ai-shadow-optimized ai-pulse-subtle islamic-pattern-animated">
-            <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <div className="inline-flex items-center justify-center bg-[var(--color-primary)] w-20 h-20   rounded-full mb-6 ai-shadow-optimized ai-pulse-subtle islamic-pattern-animated">
+            <svg
+              className="w-10 h-10 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
           </div>
-          
-          <h1 className="text-4xl font-bold arabic-calligraphy text-gray-800 dark:text-white mb-3 islamic-gradient-gold bg-clip-text text-transparent">
-            {currentTranslations.arabicTitle}
+
+          <h1 className="text-4xl font-bold arabic-calligraphy text-emerald-800 dark:text-white mb-3">
+            <span className="bg-gradient-to-r from-emerald-600 to-green-600 dark:from-yellow-400 dark:to-amber-500 bg-clip-text text-transparent">
+              {currentTranslations.arabicTitle}
+            </span>
           </h1>
-          
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-4 font-medium">
+
+          <p className="text-xl text-emerald-700 dark:text-gray-300 mb-4 font-medium">
             {currentTranslations.title}
           </p>
-          
-          <p className="text-sm text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+
+          <p className="text-sm text-emerald-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
             {currentTranslations.subtitle}
           </p>
         </div>
 
         {/* Предустановленные вопросы с анимацией */}
         {messages.length === 0 && (
-          <div className="mb-8 ai-message-appear" style={{ animationDelay: '0.2s' }}>
-            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-6 text-center">
+          <div
+            className="mb-8 ai-message-appear"
+            style={{ animationDelay: "0.2s" }}
+          >
+            <h3 className="text-lg font-semibold text-emerald-800 dark:text-gray-200 mb-6 text-center">
               {currentTranslations.popularQuestions}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -308,10 +354,10 @@ Remember: knowledge comes from Allah, and we are all learners.`;
                   key={index}
                   onClick={() => handlePresetQuestion(presetQ)}
                   disabled={isLoading}
-                  className="p-4 text-left ai-backdrop-blur rounded-xl ai-shadow-optimized border border-emerald-200 dark:border-emerald-700 ai-hover-lift ai-transition-smooth group disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="p-4 text-left bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg border border-emerald-200 dark:border-emerald-700 hover:border-emerald-300 dark:hover:border-emerald-600 ai-hover-lift ai-transition-smooth group disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <span className="text-gray-700 dark:text-gray-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 ai-transition-fast leading-relaxed">
+                  <span className="text-emerald-800 dark:text-gray-200 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 ai-transition-fast leading-relaxed">
                     {presetQ}
                   </span>
                   <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-emerald-300 to-transparent opacity-0 group-hover:opacity-100 ai-transition-smooth mt-2"></div>
@@ -322,16 +368,26 @@ Remember: knowledge comes from Allah, and we are all learners.`;
         )}
 
         {/* Чат сообщения с оптимизированным скроллом */}
-        <div className="ai-backdrop-blur rounded-xl ai-shadow-optimized mb-6 min-h-[400px] max-h-[600px] overflow-y-auto ai-scroll-smooth border border-emerald-100 dark:border-emerald-800">
+        <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-lg mb-6 min-h-[400px] max-h-[600px] overflow-y-auto ai-scroll-smooth border border-emerald-200 dark:border-emerald-800">
           <div className="p-6">
             {messages.length === 0 ? (
               <div className="text-center py-16 ai-message-appear">
                 <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900 rounded-full flex items-center justify-center mx-auto mb-6 ai-pulse-subtle">
-                  <svg className="w-10 h-10 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-1l-4 4z" />
+                  <svg
+                    className="w-10 h-10 text-emerald-600 dark:text-emerald-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-1l-4 4z"
+                    />
                   </svg>
                 </div>
-                <p className="text-gray-500 dark:text-gray-400 text-lg">
+                <p className="text-emerald-700 dark:text-gray-400 text-lg">
                   {currentTranslations.startConversation}
                 </p>
                 <div className="islamic-pattern w-32 h-1 mx-auto mt-4 opacity-30"></div>
@@ -339,43 +395,71 @@ Remember: knowledge comes from Allah, and we are all learners.`;
             ) : (
               <div className="space-y-6">
                 {messages.map((message, index) => (
-                  <div key={message.id} className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'} ai-message-appear`}>
-                    <div className={`max-w-[85%] p-5 rounded-2xl ai-shadow-optimized ai-transition-smooth ${
-                      message.type === 'user' 
-                        ? 'islamic-gradient-primary text-white ml-4 rounded-br-md' 
-                        : 'ai-backdrop-blur border border-emerald-100 dark:border-emerald-800 text-gray-800 dark:text-white mr-4 rounded-bl-md'
-                    }`}>
+                  <div
+                    key={message.id}
+                    className={`flex ${
+                      message.type === "user" ? "justify-end" : "justify-start"
+                    } ai-message-appear`}
+                  >
+                    <div
+                      className={`max-w-[85%] p-5 rounded-2xl shadow-lg ai-transition-smooth ${
+                        message.type === "user"
+                          ? "bg-[var(--color-primary)] text-white ml-4 rounded-br-md"
+                          : "bg-white dark:bg-gray-700 border border-emerald-200 dark:border-emerald-700 text-emerald-900 dark:text-white mr-4 rounded-bl-md"
+                      }`}
+                    >
                       <p className="whitespace-pre-wrap leading-relaxed text-sm md:text-base">
                         {message.content}
                       </p>
-                      <div className={`text-xs mt-3 flex items-center gap-2 ${
-                        message.type === 'user' 
-                          ? 'text-emerald-100' 
-                          : 'text-gray-500 dark:text-gray-400'
-                      }`}>
-                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                      <div
+                        className={`text-xs mt-3 flex items-center gap-2 ${
+                          message.type === "user"
+                            ? "text-emerald-100"
+                            : "text-emerald-600 dark:text-gray-400"
+                        }`}
+                      >
+                        <svg
+                          className="w-3 h-3"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                            clipRule="evenodd"
+                          />
                         </svg>
-                        {message.timestamp.toLocaleTimeString(locale === 'en' ? 'en-US' : 'ru-RU', { 
-                          hour: '2-digit', 
-                          minute: '2-digit' 
-                        })}
+                        {message.timestamp.toLocaleTimeString(
+                          locale === "en" ? "en-US" : "ru-RU",
+                          {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          }
+                        )}
                       </div>
                     </div>
                   </div>
                 ))}
-                
+
                 {/* Оптимизированная анимация загрузки */}
                 {isLoading && (
                   <div className="flex justify-start ai-message-appear">
-                    <div className="ai-backdrop-blur border border-emerald-100 dark:border-emerald-800 p-5 rounded-2xl mr-4 rounded-bl-md">
+                    <div className="bg-white dark:bg-gray-700 border border-emerald-200 dark:border-emerald-700 p-5 rounded-2xl mr-4 rounded-bl-md shadow-lg">
                       <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
                         <div className="flex space-x-1">
                           <div className="w-2 h-2 bg-current rounded-full ai-bounce"></div>
-                          <div className="w-2 h-2 bg-current rounded-full ai-bounce" style={{ animationDelay: '0.2s' }}></div>
-                          <div className="w-2 h-2 bg-current rounded-full ai-bounce" style={{ animationDelay: '0.4s' }}></div>
+                          <div
+                            className="w-2 h-2 bg-current rounded-full ai-bounce"
+                            style={{ animationDelay: "0.2s" }}
+                          ></div>
+                          <div
+                            className="w-2 h-2 bg-current rounded-full ai-bounce"
+                            style={{ animationDelay: "0.4s" }}
+                          ></div>
                         </div>
-                        <span className="text-sm ml-2 ai-typing-indicator">{currentTranslations.thinking}</span>
+                        <span className="text-sm ml-2 ai-typing-indicator">
+                          {currentTranslations.thinking}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -387,54 +471,77 @@ Remember: knowledge comes from Allah, and we are all learners.`;
         </div>
 
         {/* Улучшенная форма ввода */}
-        <form onSubmit={handleSubmit} className="ai-backdrop-blur rounded-xl ai-shadow-optimized p-6 border border-emerald-100 dark:border-emerald-800">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-emerald-200 dark:border-emerald-800"
+        >
           <div className="flex flex-col space-y-4">
             <div className="relative">
               <textarea
                 ref={inputRef}
                 value={question}
-                onChange={(e) => setQuestion(e.target.value.slice(0, MAX_QUESTION_LENGTH))}
+                onChange={(e) =>
+                  setQuestion(e.target.value.slice(0, MAX_QUESTION_LENGTH))
+                }
                 placeholder={currentTranslations.askQuestion}
-                className="w-full p-4 pr-16 border border-emerald-200 dark:border-emerald-700 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-700/50 dark:text-white resize-none ai-transition-smooth backdrop-blur-sm"
+                className="w-full p-4 pr-16 border border-emerald-300 dark:border-emerald-600 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-emerald-50 dark:bg-gray-700 text-emerald-900 dark:text-white placeholder-emerald-600 dark:placeholder-gray-400 resize-none ai-transition-smooth"
                 rows={3}
                 disabled={isLoading}
                 maxLength={MAX_QUESTION_LENGTH}
               />
-              <div className="absolute bottom-3 right-3 text-xs text-gray-400 bg-white dark:bg-gray-800 px-2 py-1 rounded-full">
+              <div className="absolute bottom-3 right-3 text-xs text-emerald-600 dark:text-gray-400 bg-white dark:bg-gray-800 px-2 py-1 rounded-full border border-emerald-200 dark:border-gray-600">
                 {question.length}/{MAX_QUESTION_LENGTH}
               </div>
             </div>
-            
+
             {error && (
-              <div className="text-red-600 dark:text-red-400 text-sm ai-backdrop-blur p-4 rounded-lg border border-red-200 dark:border-red-800 ai-message-appear">
+              <div className="text-red-700 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-200 dark:border-red-800 ai-message-appear">
                 <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  <svg
+                    className="w-4 h-4 flex-shrink-0"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                   {error}
                 </div>
               </div>
             )}
-            
+
             <div className="flex justify-between items-center">
               <button
                 type="button"
                 onClick={clearChat}
-                className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-white ai-transition-fast ai-hover-lift disabled:opacity-50"
+                className="px-4 py-2 text-emerald-700 dark:text-gray-300 hover:text-emerald-900 dark:hover:text-white ai-transition-fast ai-hover-lift disabled:opacity-50 font-medium"
                 disabled={isLoading || messages.length === 0}
               >
                 <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
                   </svg>
                   {currentTranslations.clearChat}
                 </div>
               </button>
-              
+
               <button
                 type="submit"
                 disabled={!question.trim() || isLoading}
-                className="px-8 py-3 islamic-gradient-primary text-white rounded-xl ai-shadow-optimized focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 ai-transition-smooth disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center space-x-2 ai-hover-lift"
+                className="px-8 py-3 bg-[var(--color-primary)]  text-white rounded-xl shadow-lg  ai-transition-smooth disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center space-x-2 ai-hover-lift"
               >
                 {isLoading ? (
                   <>
@@ -444,8 +551,18 @@ Remember: knowledge comes from Allah, and we are all learners.`;
                 ) : (
                   <>
                     <span>{currentTranslations.send}</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                      />
                     </svg>
                   </>
                 )}
@@ -455,10 +572,15 @@ Remember: knowledge comes from Allah, and we are all learners.`;
         </form>
 
         {/* Дисклеймер с исламскими мотивами */}
-        <div className="mt-8 text-center ai-message-appear" style={{ animationDelay: '0.4s' }}>
+        <div
+          className="mt-8 text-center ai-message-appear"
+          style={{ animationDelay: "0.4s" }}
+        >
           <div className="islamic-pattern w-full h-px opacity-20 mb-4"></div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
-            <span className="arabic-calligraphy text-emerald-600 dark:text-emerald-400">بِسْمِ اللَّهِ</span>
+          <p className="text-xs text-emerald-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            <span className="arabic-calligraphy text-emerald-700 dark:text-emerald-400 text-sm">
+              بِسْمِ اللَّهِ
+            </span>
             <br />
             {currentTranslations.disclaimer}
           </p>
