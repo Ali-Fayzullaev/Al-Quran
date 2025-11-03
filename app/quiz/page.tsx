@@ -5,6 +5,101 @@ import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
+import { Loader2, Brain, BookOpen, Target } from 'lucide-react';
+import { useLocale } from '@/context/LocaleContext';
+
+// Компонент загрузки для генерации квиза
+function QuizGenerationLoader({ surahNumber }: { surahNumber?: string }) {
+  const { locale } = useLocale();
+  
+  return (
+    <div className="min-h-screen flex items-center justify-center" 
+         style={{ backgroundColor: 'var(--fixed-background)' }}>
+      <div className="text-center max-w-md mx-auto p-8">
+        {/* Анимированная иконка */}
+        <div className="relative mb-8">
+          <div className="w-20 h-20 mx-auto rounded-full flex items-center justify-center"
+               style={{ 
+                 background: 'linear-gradient(135deg, var(--color-primary) 0%, #059669 100%)',
+                 boxShadow: '0 10px 40px rgba(16, 185, 129, 0.3)'
+               }}>
+            <Brain className="w-10 h-10 text-white" />
+          </div>
+          <div className="absolute inset-0 w-20 h-20 mx-auto rounded-full border-4 border-transparent"
+               style={{ 
+                 borderTopColor: 'var(--color-primary)',
+                 animation: 'spin 2s linear infinite'
+               }} />
+        </div>
+
+        {/* Заголовок */}
+        <h2 className="text-2xl font-bold mb-4" style={{ color: 'var(--fixed-text)' }}>
+          {locale === 'en' ? 'Generating Quiz Questions' : 'Генерируем вопросы викторины'}
+        </h2>
+
+        {/* Подзаголовок с информацией о суре */}
+        {surahNumber && (
+          <p className="text-lg mb-6" style={{ color: 'var(--color-primary)' }}>
+            {locale === 'en' ? `Surah ${surahNumber}` : `Сура ${surahNumber}`}
+          </p>
+        )}
+
+        {/* Описание процесса */}
+        <div className="space-y-3 mb-8">
+          <div className="flex items-center gap-3 text-left">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center"
+                 style={{ backgroundColor: 'var(--color-primary)' }}>
+              <BookOpen className="w-4 h-4 text-white" />
+            </div>
+            <span style={{ color: 'var(--fixed-text-secondary)' }}>
+              {locale === 'en' 
+                ? 'Analyzing verses and selecting questions...'
+                : 'Анализируем аяты и выбираем вопросы...'}
+            </span>
+          </div>
+          
+          <div className="flex items-center gap-3 text-left">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center"
+                 style={{ backgroundColor: 'var(--color-primary)' }}>
+              <Target className="w-4 h-4 text-white" />
+            </div>
+            <span style={{ color: 'var(--fixed-text-secondary)' }}>
+              {locale === 'en' 
+                ? 'Preparing interactive quiz format...'
+                : 'Подготавливаем интерактивный формат викторины...'}
+            </span>
+          </div>
+        </div>
+
+        {/* Прогресс индикатор */}
+        <div className="w-full h-2 rounded-full overflow-hidden mb-4"
+             style={{ backgroundColor: 'var(--color-border)' }}>
+          <div className="h-full rounded-full animate-pulse"
+               style={{ 
+                 background: 'linear-gradient(90deg, var(--color-primary), transparent, var(--color-primary))',
+                 animation: 'shimmer 2s infinite'
+               }} />
+        </div>
+
+        <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)', opacity: 0.7 }}>
+          {locale === 'en'
+            ? 'This usually takes a few seconds...'
+            : 'Обычно это занимает несколько секунд...'}
+        </p>
+      </div>
+
+      <style jsx>{`
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
+  );
+}
 
 // Lazy loading компонентов квиза для лучшей производительности
 const QuizConfiguration = dynamic(() => 
@@ -146,6 +241,11 @@ export default function QuizPage() {
       setPhase('results');
     }
   }, [isQuizActive, currentResult, phase, surahNumber, startTime, completeSurahQuiz]);
+
+  // Показываем лоадер генерации если идет процесс генерации
+  if (isGenerating) {
+    return <QuizGenerationLoader surahNumber={surahNumber || undefined} />;
+  }
   
   return (
     <div className="min-h-screen" style={{ 

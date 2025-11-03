@@ -7,22 +7,49 @@ import { useLocale } from "@/context/LocaleContext";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import dynamic from 'next/dynamic';
-import { PageLoader } from "@/components/PageLoader";
 import MotivationalQuotes from "@/components/quran/MotivationalQuotes";
+
+// Создаем отдельные компоненты загрузки
+const MushafLoader = () => (
+  <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--fixed-background)' }}>
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto mb-4" style={{ borderColor: '#10b981' }}></div>
+      <p style={{ color: 'var(--fixed-text)' }}>Загружаем страницы Мусхафа...</p>
+    </div>
+  </div>
+);
+
+const SurahsLoader = () => (
+  <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--fixed-background)' }}>
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto mb-4" style={{ borderColor: '#3b82f6' }}></div>
+      <p style={{ color: 'var(--fixed-text)' }}>Загружаем список сур...</p>
+    </div>
+  </div>
+);
+
+const JuzLoader = () => (
+  <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--fixed-background)' }}>
+    <div className="text-center">
+      <div className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto mb-4" style={{ borderColor: '#8b5cf6' }}></div>
+      <p style={{ color: 'var(--fixed-text)' }}>Загружаем джузы для изучения...</p>
+    </div>
+  </div>
+);
 
 // Lazy loading компонентов для оптимизации
 const QuranInfiniteScroll = dynamic(() => import("@/components/mushaf/QuranInfiniteScroll"), {
-  loading: () => <PageLoader type="mushaf" message="Загружаем страницы Мусхафа..." />,
+  loading: MushafLoader,
   ssr: false
 });
 
 const SurahsContent = dynamic(() => import("@/components/surahs/SurahsList"), {
-  loading: () => <PageLoader type="surahs" message="Загружаем список сур..." />,
+  loading: SurahsLoader,
   ssr: false
 });
 
 const JuzNavigation = dynamic(() => import("@/components/quran/JuzNavigation"), {
-  loading: () => <PageLoader type="juz" message="Загружаем джузы для изучения..." />,
+  loading: JuzLoader,
   ssr: false
 });
 

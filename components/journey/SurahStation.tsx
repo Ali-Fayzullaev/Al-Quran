@@ -5,7 +5,7 @@ import { useJourneyStore } from '@/lib/journeyStore';
 import { useQuranStore } from '@/lib/store';
 import { useLocale } from '@/context/LocaleContext';
 import { SurahProgress } from '@/lib/journeyTypes';
-import { Lock, Star, Trophy, Clock, Target, Zap } from 'lucide-react';
+import { Lock, Star, Trophy, Clock, Target, Zap, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface SurahStationProps {
@@ -34,6 +34,7 @@ export default function SurahStation({
   
   const [isHovered, setIsHovered] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [isGeneratingQuiz, setIsGeneratingQuiz] = useState(false);
 
   // Предотвращаем hydration mismatch
   useEffect(() => {
@@ -79,10 +80,22 @@ export default function SurahStation({
   const isClickable = status === 'available' || status === 'completed' || status === 'perfect';
 
   const handleClick = () => {
-    if (isClickable && isMounted) {
-      onStart(surahNumber);
+    if (isClickable && isMounted && !isGeneratingQuiz) {
+      setIsGeneratingQuiz(true);
+      
+      // Небольшая задержка для показа спиннера перед переходом
+      setTimeout(() => {
+        onStart(surahNumber);
+      }, 100);
     }
   };
+
+  // Сброс состояния загрузки при смене компонента
+  useEffect(() => {
+    return () => {
+      setIsGeneratingQuiz(false);
+    };
+  }, []);
 
   // Показываем скелетон до монтирования
   if (!isMounted) {
@@ -217,16 +230,25 @@ export default function SurahStation({
         {isClickable && (
           <div className="pt-2">
             <div 
-              className="w-full py-2 px-4 rounded-lg font-medium text-white text-sm transition-all"
+              className={cn(
+                "w-full py-2 px-4 rounded-lg font-medium text-white text-sm transition-all flex items-center justify-center gap-2",
+                isGeneratingQuiz && "opacity-75 cursor-not-allowed"
+              )}
               style={{ 
                 backgroundColor: status === 'perfect' ? '#f59e0b' : primaryColor,
-                opacity: isHovered ? 1 : 0.9,
+                opacity: isHovered && !isGeneratingQuiz ? 1 : 0.9,
               }}
             >
-              {status === 'available' 
-                ? (locale === 'en' ? 'Start Quiz' : 'Начать тест')
-                : (locale === 'en' ? 'Retake Quiz' : 'Пройти снова')
-              }
+              {isGeneratingQuiz ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  {locale === 'en' ? 'Generating...' : 'Генерация...'}
+                </>
+              ) : (
+                status === 'available' 
+                  ? (locale === 'en' ? 'Start Quiz' : 'Начать тест')
+                  : (locale === 'en' ? 'Retake Quiz' : 'Пройти снова')
+              )}
             </div>
           </div>
         )}
