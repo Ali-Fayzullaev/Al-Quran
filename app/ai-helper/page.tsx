@@ -1,3 +1,4 @@
+// app/ai-helper/page.tsx
 "use client";
 
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
@@ -10,7 +11,7 @@ interface Message {
   timestamp: Date;
 }
 
-const API_KEY = "AIzaSyDF_Q-p6-QS93ckwRoiTQNbKE9qw8GNaOc";
+const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY || "AIzaSyDF_Q-p6-QS93ckwRoiTQNbKE9qw8GNaOc";
 const API_URL =
   "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 

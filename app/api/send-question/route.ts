@@ -10,11 +10,10 @@ export async function POST(request: Request) {
       );
     }
 
-    const greenApiUrl = "https://7107.api.green-api.com";
-    const idInstance = "7107367218";
-    const apiTokenInstance =
-      "69dc47a0bd194690af704944038bd257b7fce4e4f5754b72a8";
-    const chatId = "120363422831194293@g.us"; // Обновленный chat ID
+    const greenApiUrl = process.env.GREEN_API_URL || "https://7107.api.green-api.com";
+    const idInstance = process.env.GREEN_API_ID_INSTANCE || "7107367218";
+    const apiTokenInstance = process.env.GREEN_API_TOKEN || "69dc47a0bd194690af704944038bd257b7fce4e4f5754b72a8";
+    const chatId = process.env.GREEN_API_QUESTIONS_CHAT_ID || "120363422929798374@g.us"; // Группа для вопросов
 
     const message = `📩 Новый вопрос от пользователя:
 
@@ -25,7 +24,7 @@ ${question}
 
 ⏰ Время: ${new Date().toLocaleString("ru-RU")}`;
 
-    console.log("Отправляем сообщение:", { chatId, message });
+    console.log("Отправляем вопрос в группу:", chatId);
 
     const response = await fetch(
       `${greenApiUrl}/waInstance${idInstance}/sendMessage/${apiTokenInstance}`,
