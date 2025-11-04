@@ -53,14 +53,14 @@ export interface QuranState {
     surahNumber: number;
     verseNumber: number;
     note?: string;
-    createdAt: Date;
+    createdAt: string; // ISO string instead of Date
   }>;
 
   // Reading progress
   readingSessions: Array<{
     surahNumber: number;
     verseNumber: number;
-    timestamp: Date;
+    timestamp: string; // ISO string instead of Date
     duration: number; // in seconds
   }>;
 
@@ -238,7 +238,7 @@ export const useQuranStore = create<QuranState>()(
               surahNumber: surah,
               verseNumber: verse,
               note,
-              createdAt: new Date(),
+              createdAt: new Date().toISOString(),
             },
           ],
         }));
@@ -259,7 +259,7 @@ export const useQuranStore = create<QuranState>()(
             {
               surahNumber: surah,
               verseNumber: verse,
-              timestamp: new Date(),
+              timestamp: new Date().toISOString(),
               duration,
             },
           ],
