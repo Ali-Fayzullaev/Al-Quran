@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 import { useQuranStore } from "@/lib/store";
 import { useLocale } from "@/context/LocaleContext";
 import { Button } from "@/components/ui/button";
-import { Palette, RotateCcw, Check, Sparkles } from "lucide-react";
+import { Palette, RotateCcw, Check, Sparkles, Sun, Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Готовые цветовые схемы для удобного выбора
@@ -147,13 +148,16 @@ const QUICK_TRANSLATION_COLORS = [
 
 export default function CustomColorSettings() {
   const { locale } = useLocale();
+  const { theme, setTheme } = useTheme();
   const {
     customButtonColor,
     customQuranTextColor,
     customQuranTranslationColor,
+    siteColorTheme,
     setCustomButtonColor,
     setCustomQuranTextColor,
     setCustomQuranTranslationColor,
+    setSiteColorTheme,
   } = useQuranStore();
 
   const [buttonColor, setButtonColor] = useState(customButtonColor || "#10b981");
@@ -307,6 +311,140 @@ export default function CustomColorSettings() {
             ? 'Choose a ready-made color scheme or create your own' 
             : 'Выберите готовую цветовую схему или создайте свою'}
         </p>
+      </div>
+
+      {/* Переключатель темы (светлая/темная) */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
+            {theme === 'light' ? <Sun className="w-5 h-5" style={{ color: 'var(--color-primary)' }} /> : <Moon className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />}
+          </div>
+          <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
+            {locale === 'en' ? 'Theme Mode' : 'Режим темы'}
+          </h3>
+        </div>
+        <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
+          {locale === 'en' 
+            ? 'Choose between light and dark mode' 
+            : 'Выберите между светлым и темным режимом'}
+        </p>
+        
+        <div className="flex gap-4">
+          <button
+            onClick={() => setTheme('light')}
+            className={cn(
+              "flex items-center gap-3 px-6 py-4 rounded-xl border-2 transition-all duration-300 hover:scale-105",
+              theme === 'light' 
+                ? "border-current shadow-md" 
+                : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+            )}
+            style={{
+              borderColor: theme === 'light' ? 'var(--color-primary)' : undefined,
+              backgroundColor: theme === 'light' ? 'var(--color-primary)10' : undefined
+            }}
+          >
+            <Sun className="w-6 h-6" style={{ color: theme === 'light' ? 'var(--color-primary)' : 'var(--fixed-text-secondary)' }} />
+            <div className="text-left">
+              <div className="font-semibold" style={{ color: 'var(--fixed-text)' }}>
+                {locale === 'en' ? 'Light Theme' : 'Светлая тема'}
+              </div>
+              <div className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
+                {locale === 'en' ? 'For daytime reading' : 'Для дневного чтения'}
+              </div>
+            </div>
+            {theme === 'light' && (
+              <Check className="w-5 h-5 ml-auto" style={{ color: 'var(--color-primary)' }} />
+            )}
+          </button>
+          
+          <button
+            onClick={() => setTheme('dark')}
+            className={cn(
+              "flex items-center gap-3 px-6 py-4 rounded-xl border-2 transition-all duration-300 hover:scale-105",
+              theme === 'dark' 
+                ? "border-current shadow-md" 
+                : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+            )}
+            style={{
+              borderColor: theme === 'dark' ? 'var(--color-primary)' : undefined,
+              backgroundColor: theme === 'dark' ? 'var(--color-primary)10' : undefined
+            }}
+          >
+            <Moon className="w-6 h-6" style={{ color: theme === 'dark' ? 'var(--color-primary)' : 'var(--fixed-text-secondary)' }} />
+            <div className="text-left">
+              <div className="font-semibold" style={{ color: 'var(--fixed-text)' }}>
+                {locale === 'en' ? 'Dark Theme' : 'Темная тема'}
+              </div>
+              <div className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
+                {locale === 'en' ? 'For night reading' : 'Для ночного чтения'}
+              </div>
+            </div>
+            {theme === 'dark' && (
+              <Check className="w-5 h-5 ml-auto" style={{ color: 'var(--color-primary)' }} />
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Цветовые схемы сайта */}
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+          <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
+            {locale === 'en' ? 'Site Color Theme' : 'Цветовая тема сайта'}
+          </h3>
+        </div>
+        <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
+          {locale === 'en' 
+            ? 'Choose the main color theme for the interface' 
+            : 'Выберите основную цветовую тему интерфейса'}
+        </p>
+        
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+          {[
+            { id: 'blue', name: locale === 'en' ? 'Blue' : 'Синий', color: '#3b82f6' },
+            { id: 'green', name: locale === 'en' ? 'Green' : 'Зеленый', color: '#10b981' },
+            { id: 'purple', name: locale === 'en' ? 'Purple' : 'Фиолетовый', color: '#8b5cf6' },
+            { id: 'amber', name: locale === 'en' ? 'Amber' : 'Янтарный', color: '#f59e0b' },
+            { id: 'pink', name: locale === 'en' ? 'Pink' : 'Розовый', color: '#ec4899' },
+            { id: 'orange', name: locale === 'en' ? 'Orange' : 'Оранжевый', color: '#f97316' },
+            { id: 'teal', name: locale === 'en' ? 'Teal' : 'Бирюзовый', color: '#14b8a6' },
+            { id: 'indigo', name: locale === 'en' ? 'Indigo' : 'Индиго', color: '#6366f1' },
+            { id: 'red', name: locale === 'en' ? 'Red' : 'Красный', color: '#ef4444' },
+            { id: 'yellow', name: locale === 'en' ? 'Yellow' : 'Желтый', color: '#eab308' },
+            { id: 'gray', name: locale === 'en' ? 'Gray' : 'Серый', color: '#6b7280' },
+            { id: 'sepia', name: locale === 'en' ? 'Sepia' : 'Сепия', color: '#92400e' }
+          ].map((theme) => (
+            <button
+              key={theme.id}
+              onClick={() => setSiteColorTheme(theme.id as any)}
+              className={cn(
+                "group relative overflow-hidden rounded-xl border-2 p-4 transition-all duration-300 hover:scale-105 hover:shadow-lg",
+                siteColorTheme === theme.id 
+                  ? "border-current shadow-md ring-2 ring-offset-2" 
+                  : "border-gray-200 dark:border-gray-700"
+              )}
+              style={{
+                borderColor: siteColorTheme === theme.id ? theme.color : undefined
+              }}
+            >
+              <div className="flex flex-col items-center gap-2">
+                <div 
+                  className="w-8 h-8 rounded-full shadow-md"
+                  style={{ backgroundColor: theme.color }}
+                />
+                <span className="text-xs font-medium text-center" style={{ color: 'var(--fixed-text)' }}>
+                  {theme.name}
+                </span>
+              </div>
+              {siteColorTheme === theme.id && (
+                <div className="absolute top-1 right-1">
+                  <Check className="w-4 h-4 text-white bg-current rounded-full p-0.5" style={{ color: theme.color }} />
+                </div>
+              )}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Готовые цветовые схемы */}
