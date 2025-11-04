@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { useQuranStore } from "@/lib/store";
 import { useSurahMultipleEditions } from "@/lib/hooks";
-import { getWorkingAudioUrl, RECITERS, TRANSLATIONS } from "@/lib/api";
+import { getWorkingAudioUrl, RECITERS, TRANSLATIONS, clearAudioCache } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLocale } from "@/context/LocaleContext";
@@ -106,7 +106,42 @@ export default function QuranReader({
     requestedEditions
   );
 
+  // Отладочная информация для QuranReader
+  console.log('QuranReader Debug:', {
+    surahNumber,
+    requestedEditions,
+    isLoading,
+    error,
+    surahData: surahData ? `${surahData.length} editions` : 'No data'
+  });
+
   const arabicSurah = surahData?.[0];
+
+  // Обработка ошибок загрузки
+  if (error) {
+    return (
+      <div className="p-4 text-center">
+        <p className="text-red-500 mb-4">
+          {locale === 'en' ? 'Error loading surah data' : 'Ошибка загрузки данных суры'}
+        </p>
+        <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
+          {error.message}
+        </p>
+      </div>
+    );
+  }
+
+  // Показываем загрузку если данные еще не готовы
+  if (isLoading || !surahData || !arabicSurah) {
+    return (
+      <div className="p-4 text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: 'var(--color-primary)' }}></div>
+        <p style={{ color: 'var(--fixed-text-secondary)' }}>
+          {locale === 'en' ? 'Loading Quran data...' : 'Загрузка данных Корана...'}
+        </p>
+      </div>
+    );
+  }
   
   // ИСПРАВЛЕНИЕ: Фильтруем переводы только при отображении
   const translationSurahs = useMemo(() => {
@@ -205,6 +240,27 @@ export default function QuranReader({
     };
   }, [currentVerse, arabicSurah, autoPlay, locale]);
 
+  // Обработка изменения чтеца - останавливаем и перезагружаем аудио
+  useEffect(() => {
+    const audio = audioRef.current;
+    
+    // Очищаем кэш аудио при смене чтеца
+    clearAudioCache();
+    
+    if (audio && isPlaying) {
+      // Останавливаем текущее воспроизведение
+      audio.pause();
+      setIsPlaying(false);
+      setAudioProgress(0);
+      setAudioCurrentTime(0);
+      
+      // Если было активное воспроизведение, автоматически начинаем с новым чтецом
+      setTimeout(() => {
+        playVerseAudio(currentVerse);
+      }, 300);
+    }
+  }, [audioReciter]);
+
   // ИСПРАВЛЕННАЯ функция для воспроизведения аудио конкретного аята
   const playVerseAudio = async (verseNumber: number) => {
     const audio = audioRef.current;
@@ -251,6 +307,21 @@ export default function QuranReader({
     } else {
       playVerseAudio(currentVerse);
     }
+  };
+
+  const handleResetAudio = () => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+      audio.src = '';
+    }
+    setIsPlaying(false);
+    setAudioCurrentTime(0);
+    setAudioProgress(0);
+    setIsBuffering(false);
+    setIsLoadingAudio(false);
+    setAudioError(null);
   };
 
   const navigateVerse = (direction: 'prev' | 'next') => {
@@ -515,6 +586,8 @@ export default function QuranReader({
                   variant="ghost"
                   size="sm"
                   onClick={() => setShowSettings(false)}
+                  onTouchStart={(e) => e.stopPropagation()}
+                  onMouseDown={(e) => e.stopPropagation()}
                   className="sm:hidden"
                 >
                   <X className="w-4 h-4" />
@@ -528,10 +601,18 @@ export default function QuranReader({
                   {locale === 'en' ? 'Select Reciter (Qari)' : 'Выбрать чтеца (Кари)'}
                 </label>
                 <Select value={audioReciter} onValueChange={setAudioReciter}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger 
+                    className="w-full"
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                  >
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="max-h-60">
+                  <SelectContent 
+                    className="max-h-60"
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                  >
                     {availableReciters.map((reciter) => (
                       <SelectItem key={reciter.id} value={reciter.id}>
                         <div className="text-left">
@@ -563,6 +644,8 @@ export default function QuranReader({
                           type="checkbox"
                           checked={selectedTranslations.includes(translation.id)}
                           onChange={(e) => handleTranslationChange(translation.id, e.target.checked)}
+                          onTouchStart={(e) => e.stopPropagation()}
+                          onMouseDown={(e) => e.stopPropagation()}
                           className="rounded w-4 h-4"
                           style={{
                             accentColor: 'var(--color-primary)'
@@ -592,6 +675,8 @@ export default function QuranReader({
                       variant="outline"
                       size="sm"
                       onClick={() => setFontSize(fontSize - 2)}
+                      onTouchStart={(e) => e.stopPropagation()}
+                      onMouseDown={(e) => e.stopPropagation()}
                       className="w-8 h-8 p-0"
                     >
                       -
@@ -603,6 +688,8 @@ export default function QuranReader({
                       variant="outline"
                       size="sm"
                       onClick={() => setFontSize(fontSize + 2)}
+                      onTouchStart={(e) => e.stopPropagation()}
+                      onMouseDown={(e) => e.stopPropagation()}
                       className="w-8 h-8 p-0"
                     >
                       +
@@ -623,6 +710,8 @@ export default function QuranReader({
                       step="0.1"
                       value={audioVolume}
                       onChange={(e) => setAudioVolume(parseFloat(e.target.value))}
+                      onTouchStart={(e) => e.stopPropagation()}
+                      onMouseDown={(e) => e.stopPropagation()}
                       className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
                     />
                     <Volume2 className="h-4 w-4 text-gray-500" />
@@ -637,10 +726,16 @@ export default function QuranReader({
                     {locale === 'en' ? 'Speed' : 'Скорость'}
                   </label>
                   <Select value={audioSpeed.toString()} onValueChange={(value) => setAudioSpeed(parseFloat(value))}>
-                    <SelectTrigger>
+                    <SelectTrigger
+                      onTouchStart={(e) => e.stopPropagation()}
+                      onMouseDown={(e) => e.stopPropagation()}
+                    >
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent
+                      onTouchStart={(e) => e.stopPropagation()}
+                      onMouseDown={(e) => e.stopPropagation()}
+                    >
                       <SelectItem value="0.5">0.5x</SelectItem>
                       <SelectItem value="0.75">0.75x</SelectItem>
                       <SelectItem value="1">1x</SelectItem>
@@ -658,6 +753,8 @@ export default function QuranReader({
                 </label>
                 <button
                   onClick={() => setAutoPlay(!autoPlay)}
+                  onTouchStart={(e) => e.stopPropagation()}
+                  onMouseDown={(e) => e.stopPropagation()}
                   className={cn(
                     "relative inline-flex h-6 w-11 items-center rounded-full transition-colors",
                     autoPlay ? "theme-bg-primary" : "bg-gray-300 dark:bg-gray-600"
@@ -1027,6 +1124,230 @@ export default function QuranReader({
           </Button>
         </div>
       </div>
+
+      {/* Mobile Floating Settings Button */}
+      <div className="fixed bottom-4 right-4 z-50 md:hidden">
+        <Button
+          onClick={() => setShowSettings(!showSettings)}
+          className="w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+          style={{
+            backgroundColor: showSettings ? 'var(--color-primary)' : 'var(--fixed-background)',
+            borderColor: 'var(--color-primary)',
+            color: showSettings ? 'white' : 'var(--color-primary)'
+          }}
+        >
+          <motion.div
+            animate={{ rotate: showSettings ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Settings className="w-6 h-6" />
+          </motion.div>
+        </Button>
+      </div>
+
+      {/* Mobile Settings Panel - Fixed Structure */}
+      {showSettings && (
+        <div className="md:hidden">
+          {/* Background Overlay */}
+          <div 
+            className="fixed inset-0 bg-black/50 z-40 mobile-overlay-backdrop"
+            onTouchStart={(e) => {
+              e.stopPropagation();
+              setShowSettings(false);
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowSettings(false);
+            }}
+            onTouchEnd={(e) => e.stopPropagation()}
+          />
+          
+          {/* Settings Panel */}
+          <motion.div
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+            className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl shadow-2xl mobile-panel-interactive mobile-panel-foreground"
+            style={{ 
+              backgroundColor: 'var(--fixed-background)',
+              pointerEvents: 'auto',
+              touchAction: 'pan-y'
+            }}
+            onTouchStart={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            onTouchEnd={(e) => e.stopPropagation()}
+            onTouchMove={(e) => e.stopPropagation()}
+          >
+            {/* Handle */}
+            <div className="w-12 h-1 bg-gray-300 rounded-full mx-auto mt-3 mb-4"></div>
+            
+            <div 
+              className="px-6 pb-6 max-h-[80vh] overflow-y-auto mobile-panel-interactive"
+              onTouchStart={(e) => e.stopPropagation()}
+              onClick={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+              onTouchEnd={(e) => e.stopPropagation()}
+              onTouchMove={(e) => e.stopPropagation()}
+              style={{ touchAction: 'pan-y' }}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-bold" style={{ color: 'var(--fixed-text)' }}>
+                  {locale === 'en' ? 'Settings' : 'Настройки'}
+                </h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowSettings(false)}
+                  onTouchStart={(e) => e.stopPropagation()}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  className="p-2"
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
+
+              {/* Quick Audio Controls */}
+              <div className="mb-6 p-4 rounded-xl" style={{ backgroundColor: 'var(--verse-background)' }}>
+                <h4 className="text-sm font-medium mb-3" style={{ color: 'var(--fixed-text)' }}>
+                  {locale === 'en' ? 'Audio Controls' : 'Управление аудио'}
+                </h4>
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={toggleAudio}
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    className="flex-1"
+                  >
+                    {isPlaying ? <Pause className="w-4 h-4 mr-2" /> : <Play className="w-4 h-4 mr-2" />}
+                    {isPlaying ? (locale === 'en' ? 'Pause' : 'Пауза') : (locale === 'en' ? 'Play' : 'Воспроизвести')}
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleResetAudio}
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    disabled={!audioRef.current?.src}
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </Button>
+                </div>
+                
+                {/* Volume Control */}
+                <div className="mt-4">
+                  <label className="text-xs font-medium flex items-center gap-2 mb-2" style={{ color: 'var(--fixed-text-secondary)' }}>
+                    <Volume2 className="w-3 h-3" />
+                    {locale === 'en' ? 'Volume' : 'Громкость'}: {Math.round(audioVolume * 100)}%
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.1"
+                    value={audioVolume}
+                    onChange={(e) => setAudioVolume(parseFloat(e.target.value))}
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+
+              {/* Reciter Selection */}
+              <div className="mb-6">
+                <label className="text-sm font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--fixed-text)' }}>
+                  <User className="w-4 h-4" />
+                  {locale === 'en' ? 'Reciter' : 'Чтец'}
+                </label>
+                <Select value={audioReciter} onValueChange={setAudioReciter}>
+                  <SelectTrigger 
+                    className="w-full"
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent 
+                    className="max-h-60"
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                  >
+                    {availableReciters.map((reciter) => (
+                      <SelectItem key={reciter.id} value={reciter.id}>
+                        <div>
+                          <div className="font-medium text-sm">{reciter.name}</div>
+                          <div className="text-xs opacity-70">{reciter.country}</div>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Font Size */}
+              <div className="mb-6">
+                <label className="text-sm font-medium mb-3 flex items-center gap-2" style={{ color: 'var(--fixed-text)' }}>
+                  <Type className="w-4 h-4" />
+                  {locale === 'en' ? 'Font Size' : 'Размер шрифта'}: {fontSize}px
+                </label>
+                <input
+                  type="range"
+                  min="14"
+                  max="32"
+                  value={fontSize}
+                  onChange={(e) => setFontSize(parseInt(e.target.value))}
+                  onTouchStart={(e) => e.stopPropagation()}
+                  onMouseDown={(e) => e.stopPropagation()}
+                  className="w-full"
+                />
+              </div>
+
+              {/* Translation Toggle */}
+              <div className="mb-6">
+                <label className="flex items-center justify-between">
+                  <span className="text-sm font-medium flex items-center gap-2" style={{ color: 'var(--fixed-text)' }}>
+                    <Languages className="w-4 h-4" />
+                    {locale === 'en' ? 'Show Translation' : 'Показать перевод'}
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={showTranslation}
+                    onChange={(e) => toggleTranslation()}
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    className="w-5 h-5 rounded"
+                    style={{ accentColor: 'var(--color-primary)' }}
+                  />
+                </label>
+              </div>
+
+              {/* Auto Play Toggle */}
+              <div>
+                <label className="flex items-center justify-between">
+                  <span className="text-sm font-medium flex items-center gap-2" style={{ color: 'var(--fixed-text)' }}>
+                    <SkipForward className="w-4 h-4" />
+                    {locale === 'en' ? 'Auto Play Next' : 'Автовоспроизведение'}
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={autoPlay}
+                    onChange={(e) => setAutoPlay(e.target.checked)}
+                    onTouchStart={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                    className="w-5 h-5 rounded"
+                    style={{ accentColor: 'var(--color-primary)' }}
+                  />
+                </label>
+              </div>
+            </div>
+            </motion.div>
+        </div>
+      )}
     </div>
   );
 }

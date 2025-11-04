@@ -1885,6 +1885,20 @@ mark {
   -ms-overflow-style: none;
 }
 
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+/* Класс для скрытия горизонтального скроллбара */
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* ========================================
    ОПТИМИЗИРОВАННЫЕ АНИМАЦИИ ДЛЯ AI ПОМОЩНИКА
    ======================================== */
@@ -1898,9 +1912,16 @@ mark {
 
 /* Оптимизированная анимация печати (тайпинг) */
 @keyframes ai-typing {
-  0%, 20% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
+  0%,
+  20% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .ai-typing-indicator {
@@ -1911,12 +1932,14 @@ mark {
 
 /* Оптимизированная анимация bounce для точек загрузки */
 @keyframes ai-bounce {
-  0%, 80%, 100% { 
-    transform: translateY(0) translateZ(0); 
+  0%,
+  80%,
+  100% {
+    transform: translateY(0) translateZ(0);
     animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
   }
-  40% { 
-    transform: translateY(-8px) translateZ(0); 
+  40% {
+    transform: translateY(-8px) translateZ(0);
     animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
   }
 }
@@ -1929,8 +1952,12 @@ mark {
 
 /* Оптимизированная анимация спиннера */
 @keyframes ai-spin {
-  0% { transform: rotate(0deg) translateZ(0); }
-  100% { transform: rotate(360deg) translateZ(0); }
+  0% {
+    transform: rotate(0deg) translateZ(0);
+  }
+  100% {
+    transform: rotate(360deg) translateZ(0);
+  }
 }
 
 .ai-spin {
@@ -1958,9 +1985,15 @@ mark {
 
 /* Градиентная анимация для кнопок */
 @keyframes ai-gradient-shift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .ai-gradient-animated {
@@ -1972,13 +2005,14 @@ mark {
 
 /* Пульсация для активных элементов */
 @keyframes ai-pulse-subtle {
-  0%, 100% { 
-    opacity: 1; 
-    transform: scale(1) translateZ(0); 
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
   }
-  50% { 
-    opacity: 0.9; 
-    transform: scale(1.02) translateZ(0); 
+  50% {
+    opacity: 0.9;
+    transform: scale(1.02) translateZ(0);
   }
 }
 
@@ -2025,12 +2059,12 @@ mark {
   .ai-hover-lift:hover {
     transform: none;
   }
-  
+
   /* Упрощаем анимации на мобильных */
   .ai-bounce {
     animation-duration: 2s;
   }
-  
+
   .ai-gradient-animated {
     animation: none;
     background: #10b981;
@@ -2047,13 +2081,13 @@ mark {
   .ai-typing-indicator {
     animation: none;
   }
-  
+
   .ai-message-appear {
     animation: none;
     opacity: 1;
     transform: none;
   }
-  
+
   .ai-hover-lift {
     transition: none;
   }
@@ -2061,9 +2095,16 @@ mark {
 
 /* Исламские декоративные элементы */
 .islamic-pattern {
-  background-image: 
-    radial-gradient(circle at 25% 25%, rgba(16, 185, 129, 0.1) 2px, transparent 2px),
-    radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.1) 2px, transparent 2px);
+  background-image: radial-gradient(
+      circle at 25% 25%,
+      rgba(16, 185, 129, 0.1) 2px,
+      transparent 2px
+    ),
+    radial-gradient(
+      circle at 75% 75%,
+      rgba(16, 185, 129, 0.1) 2px,
+      transparent 2px
+    );
   background-size: 40px 40px;
   background-position: 0 0, 20px 20px;
 }
@@ -2077,29 +2118,25 @@ mark {
 
 /* Оптимизированные тени */
 .ai-shadow-optimized {
-  box-shadow: 
-    0 4px 20px -4px rgba(16, 185, 129, 0.25),
+  box-shadow: 0 4px 20px -4px rgba(16, 185, 129, 0.25),
     0 2px 10px -2px rgba(0, 0, 0, 0.1);
   will-change: box-shadow;
 }
 
 .ai-shadow-optimized:hover {
-  box-shadow: 
-    0 8px 30px -4px rgba(16, 185, 129, 0.3),
+  box-shadow: 0 8px 30px -4px rgba(16, 185, 129, 0.3),
     0 4px 20px -2px rgba(0, 0, 0, 0.15);
 }
 
 /* Производительные transition'ы */
 .ai-transition-fast {
-  transition: 
-    transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
     opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform, opacity;
 }
 
 .ai-transition-smooth {
-  transition: 
-    all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: auto;
 }
 
@@ -2121,6 +2158,91 @@ mark {
   background-color: rgba(31, 41, 55, 0.8);
 }
 
+/* ========================================
+   МОБИЛЬНЫЕ ПАНЕЛИ И ВЗАИМОДЕЙСТВИЕ
+   ======================================== */
+
+/* Принудительное включение взаимодействия для мобильных панелей */
+.mobile-panel-interactive {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+/* Все дочерние элементы панели должны быть интерактивными */
+.mobile-panel-interactive * {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+}
+
+/* Специальные стили для input элементов в мобильных панелях */
+.mobile-panel-interactive input,
+.mobile-panel-interactive button,
+.mobile-panel-interactive select,
+.mobile-panel-interactive textarea {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  -webkit-user-select: auto !important;
+  -moz-user-select: auto !important;
+  -ms-user-select: auto !important;
+  user-select: auto !important;
+}
+
+/* Overlay с правильным z-index управлением */
+.mobile-overlay-backdrop {
+  pointer-events: auto !important;
+  z-index: 40 !important;
+}
+
+/* Панель поверх overlay */
+.mobile-panel-foreground {
+  pointer-events: auto !important;
+  z-index: 50 !important;
+  position: relative !important;
+}
+
+/* Фикс для iOS touch delay */
+.mobile-panel-interactive {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+}
+
+/* Улучшенное взаимодействие для range inputs */
+.mobile-panel-interactive input[type="range"] {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  cursor: pointer !important;
+}
+
+/* Checkbox и radio улучшения */
+.mobile-panel-interactive input[type="checkbox"],
+.mobile-panel-interactive input[type="radio"] {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  transform: scale(1.2) !important;
+}
+
+/* Селекты и выпадающие списки */
+.mobile-panel-interactive [data-radix-select-trigger],
+.mobile-panel-interactive [data-radix-select-content] {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+}
+
+/* Кнопки в мобильных панелях */
+.mobile-panel-interactive button {
+  pointer-events: auto !important;
+  touch-action: manipulation !important;
+  cursor: pointer !important;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1) !important;
+}
+
 /* Изумрудная тема с исламскими акцентами */
 .emerald-islamic-theme {
   --emerald-primary: #059669;
@@ -2128,7 +2250,7 @@ mark {
   --emerald-lighter: #34d399;
   --emerald-dark: #047857;
   --emerald-darker: #065f46;
-  
+
   /* Золотые акценты для исламского дизайна */
   --gold-accent: #d4af37;
   --gold-light: #f7d794;
@@ -2156,8 +2278,13 @@ mark {
 
 /* Оптимизированная анимация для исламских узоров */
 @keyframes islamic-pattern-float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-5px) rotate(1deg); }
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(1deg);
+  }
 }
 
 .islamic-pattern-animated {

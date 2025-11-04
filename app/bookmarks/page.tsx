@@ -66,7 +66,7 @@ export default function BookmarksPage() {
   };
 
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat(locale === 'en' ? 'en-US' : 'ru-RU', {
+    return new Intl.DateTimeFormat(locale === 'en' ? 'en-US' : locale === 'ru' ? 'ru-RU' : 'uz-UZ', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',

@@ -38,24 +38,53 @@ export function useSurahs() {
 
 // Получить конкретную суру
 export function useSurah(surahNumber: number, edition: string = 'quran-uthmani') {
-  return useQuery({
+  const query = useQuery({
     queryKey: QUERY_KEYS.surah(surahNumber, edition),
-    queryFn: () => getSurah(surahNumber, edition),
+    queryFn: async () => {
+      console.log(`useSurah: Fetching surah ${surahNumber} with edition ${edition}`);
+      const result = await getSurah(surahNumber, edition);
+      console.log(`useSurah: Got result for surah ${surahNumber}:`, result);
+      return result;
+    },
     enabled: surahNumber > 0 && surahNumber <= 114,
     staleTime: 30 * 60 * 1000, // 30 minutes
   });
+
+  console.log(`useSurah hook status for ${surahNumber}:`, {
+    isLoading: query.isLoading,
+    error: query.error,
+    data: query.data,
+    enabled: surahNumber > 0 && surahNumber <= 114
+  });
+
+  return query;
 }
 
 // Хук для получения суры с множественными переводами
 export function useSurahMultipleEditions(surahNumber: number, editions: string[]) {
-  return useQuery({
+  const query = useQuery({
     queryKey: ['surah', surahNumber, 'multiple', editions.sort().join(',')],
-    queryFn: () => getSurahMultipleEditions(surahNumber, editions),
+    queryFn: async () => {
+      console.log(`useSurahMultipleEditions: Fetching surah ${surahNumber} with editions:`, editions);
+      const result = await getSurahMultipleEditions(surahNumber, editions);
+      console.log(`useSurahMultipleEditions: Got result for surah ${surahNumber}:`, result?.length, 'editions');
+      return result;
+    },
     enabled: !!surahNumber && editions.length > 0,
     staleTime: 30 * 60 * 1000, // 30 minutes - увеличиваем кеш
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   });
+
+  console.log(`useSurahMultipleEditions hook status for ${surahNumber}:`, {
+    isLoading: query.isLoading,
+    error: query.error,
+    data: query.data ? `${query.data.length} editions` : 'No data',
+    enabled: !!surahNumber && editions.length > 0,
+    editions
+  });
+
+  return query;
 }
 
 // Получить джуз

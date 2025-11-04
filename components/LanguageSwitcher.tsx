@@ -13,6 +13,7 @@ export default function LanguageSwitcher({ children }: { children: React.ReactNo
       <div className="flex justify-end p-4 gap-2 bb">
         <button onClick={() => setLocale("en")}>🇬🇧 EN</button>
         <button onClick={() => setLocale("ru")}>🇷🇺 RU</button>
+        <button onClick={() => setLocale("uz")}>🇺🇿 UZ</button>
       </div>
       {children}
     </NextIntlClientProvider>

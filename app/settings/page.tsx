@@ -128,7 +128,10 @@ export default function SettingsPage() {
       setPreviewAudio(reciterId);
       setIsPlaying(true);
       
+      console.log(`🎵 Previewing reciter: ${reciterId}`);
       const audioUrl = await getCachedWorkingAudioUrl(1, 1, reciterId);
+      console.log(`🔗 Got audio URL: ${audioUrl}`);
+      
       const audio = new Audio();
       audio.volume = audioVolume;
       audio.crossOrigin = 'anonymous';
@@ -169,13 +172,15 @@ export default function SettingsPage() {
       }, 8000);
       
     } catch (error) {
-      console.error('Preview failed:', error);
+      console.error(`❌ Failed to play ${reciterId}:`, error);
       setIsPlaying(false);
       setPreviewAudio(null);
       
       const errorMessage = locale === 'en' 
-        ? 'Preview not available for this reciter' 
-        : 'Превью недоступно для этого чтеца';
+        ? `Preview not available for ${reciterId}. Error: ${error instanceof Error ? error.message : 'Unknown error'}` 
+        : `Превью недоступно для ${reciterId}. Ошибка: ${error instanceof Error ? error.message : 'Неизвестная ошибка'}`;
+      
+      console.log(`📝 Error message: ${errorMessage}`);
       
       setTimeout(() => {
         alert(errorMessage);
@@ -197,8 +202,8 @@ export default function SettingsPage() {
     setAudioSpeed(1);
     setAudioVolume(1);
     setAutoPlay(false);
-    setSelectedTranslations(['en.sahih', 'ru.kuliev']);
-    setAudioReciter('ar.alafasy');
+    setSelectedTranslations(['en.sahih', 'ru.kuliev', 'uz.sodik']);
+    setAudioReciter('ar.husary');
     setSiteColorTheme('green');
     setQuranTextColorScheme('classic');
   };

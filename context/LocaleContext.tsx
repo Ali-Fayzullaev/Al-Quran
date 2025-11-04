@@ -74,7 +74,7 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedLocale = localStorage.getItem('preferred-locale');
-      if (savedLocale && (savedLocale === 'en' || savedLocale === 'ru')) {
+      if (savedLocale && (savedLocale === 'en' || savedLocale === 'ru' || savedLocale === 'uz')) {
         setLocaleState(savedLocale);
       }
     }

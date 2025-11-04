@@ -146,7 +146,7 @@ export const useQuranStore = create<QuranState>()(
       showTranslation: true,
       showTransliteration: false,
       selectedTranslations: ["en.sahih", "ru.kuliev"],
-      audioReciter: "ar.alafasy",
+      audioReciter: "ar.husary",
       availableReciters: RECITERS,
       availableTranslations: TRANSLATIONS,
       audioSpeed: 1,
