@@ -443,8 +443,8 @@ export default function QuranPage({
         </AnimatePresence>
 
         {/* Номер страницы - перемещен вниз */}
-        <div className="absolute bottom-2 right-2 bg-black/20 text-white px-2 py-1 rounded text-xs font-bold">
-          {pageNumber}
+        <div className=" bottom-2  flex justify-center text-white px-2 py-1 ">
+          <span className='text-yellow-700 rounded text-xs font-bold'>{pageNumber}</span>
         </div>
 
         {/* Индикатор активности */}

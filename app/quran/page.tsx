@@ -131,7 +131,6 @@ export default function QuranReadingPage() {
             className="bg-black/20 hover:bg-black/40 text-white backdrop-blur-sm border border-white/20"
           >
             <ArrowRight className="w-4 h-4 mr-2 rotate-180" />
-            {locale === 'en' ? 'Back to Menu' : 'Назад в меню'}
           </Button>
         </div>
 

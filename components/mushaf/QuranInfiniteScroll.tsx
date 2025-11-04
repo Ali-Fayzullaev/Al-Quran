@@ -115,7 +115,7 @@ const FastPageJump = ({
         title="Быстрый переход"
       >
         <Search className="w-4 h-4 " />
-        <Navigation className="w-4 h-4 "/>
+        <Navigation className="w-4 h-4 " />
       </Button>
 
       <AnimatePresence>
@@ -593,27 +593,73 @@ export default function QuranInfiniteScroll({
         )}
       </AnimatePresence>
 
-      {/* Кнопка выхода из иммерсивного режима - теперь всегда видна */}
-      <AnimatePresence>
-        {isImmersiveMode && (
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsImmersiveMode(false)}
-            className="fixed top-4 right-4 z-[9999] p-3 bg-black/70 hover:bg-black/90 text-white rounded-full shadow-2xl border-2 border-white/20 backdrop-blur-sm"
-            style={{
-              position: "fixed",
-              top: "16px",
-              right: "16px",
-              zIndex: 9999,
-            }}
-          >
-            <Minimize2 className="w-6 h-6" />
-            <span className="sr-only">Выйти из полноэкранного режима</span>
-          </motion.button>
-        )}
-      </AnimatePresence>
+      {/* Кнопка выхода из иммерсивного режима */}
+<AnimatePresence>
+  {isImmersiveMode && (
+    <motion.button
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.8 }}
+      onClick={() => setIsImmersiveMode(false)}
+      className="sticky z-[99999] bg-gradient-to-br from-gray-900/90 to-black/90 hover:from-gray-800 hover:to-black text-white rounded-xl shadow-2xl border border-white/20 backdrop-blur-xl transition-all duration-300 hover:scale-110 hover:shadow-3xl group"
+      style={{
+        position: "sticky",
+        top: "10px",
+        left: "96vw",
+        zIndex: 99999,
+      }}
+      whileHover={{
+        scale: 1.1,
+        transition: { type: "spring", stiffness: 400, damping: 10 },
+      }}
+      whileTap={{ scale: 0.95 }}
+    >
+      {/* Контейнер с адаптивными размерами */}
+      <div className="
+        w-7 h-7  /* Мобильный размер */
+        sm:w-10 sm:h-10  /* Планшет */
+        md:w-14 md:h-14  /* Десктоп */
+        p-2  /* Мобильный padding */
+        sm:p-2.5  /* Планшет padding */
+        md:p-3  /* Десктоп padding */
+        relative
+        flex items-center justify-center
+      ">
+        {/* Декоративный элемент */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/10 to-blue-500/0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+        {/* Адаптивная иконка */}
+        <Minimize2 className="
+          w-5 h-5  /* Мобильный */
+          sm:w-5 sm:h-5  /* Планшет */
+          md:w-6 md:h-6  /* Десктоп */
+          relative z-10 transform group-hover:rotate-90 transition-transform duration-300
+        " />
+
+        {/* Тултип при наведении - только на десктопе */}
+        <div className="
+          hidden  /* Скрыт на мобилке */
+          md:block /* Показываем только на десктопе */
+          absolute right-full mr-3 top-1/2 transform -translate-y-1/2 px-3 py-2 bg-black/90 text-white text-sm rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none backdrop-blur-sm border border-white/10
+        ">
+          Выйти из полноэкранного режима
+          <div className="absolute left-full top-1/2 transform -translate-y-1/2 w-0 h-0 border-t-4 border-t-transparent border-b-4 border-b-transparent border-l-4 border-l-black/90"></div>
+        </div>
+
+        {/* Индикатор видимости при скролле */}
+        <div className="
+          absolute -bottom-1 -right-1 
+          w-2 h-2  /* Мобильный */
+          sm:w-2.5 sm:h-2.5  /* Планшет */
+          md:w-3 md:h-3  /* Десктоп */
+          bg-green-500/90 rounded-full border border-white/80 animate-pulse
+        " />
+      </div>
+
+      <span className="sr-only">Выйти из полноэкранного режима</span>
+    </motion.button>
+  )}
+</AnimatePresence>
 
       {/* Основной контент - фиксированный размер */}
       <div className={cn("py-6", getPageSpacing())}>

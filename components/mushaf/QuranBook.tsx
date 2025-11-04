@@ -158,9 +158,6 @@ export default function QuranBook({
   const { theme } = useTheme();
   const {
     siteColorTheme,
-    mushafPageSize,
-    mushafShowSizeControls,
-    mushafAutoFitToScreen,
   } = useQuranStore();
   const { applyCurrentColors } = useColorTheme();
 
@@ -1044,7 +1041,6 @@ export default function QuranBook({
         <div
           className="flex-1 flex items-center justify-center px-4 py-8 relative"
           style={{
-            transform: `scale(${MUSHAF_CONFIG.PAGE_SIZES[mushafPageSize].scale})`,
             transformOrigin: "center center",
             transition: "transform 0.3s ease-in-out",
           }}
@@ -1074,7 +1070,6 @@ export default function QuranBook({
             onNavigationChange={handleNavigationChange}
             onZoomChange={handleZoomChange}
             onViewModeChange={handleViewModeChange}
-            pageSize={mushafPageSize}
           />
         </div>
 
