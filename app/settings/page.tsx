@@ -86,10 +86,6 @@ export default function SettingsPage() {
   const [showAllReciters, setShowAllReciters] = useState(false);
   const [activeTab, setActiveTab] = useState('audio');
 
-  if (isLoading) {
-    return <SettingsLoader message="Загружаем ваши настройки..." />;
-  }
-
   // Фильтрация чтецов по поиску
   const filteredReciters = useMemo(() => {
     if (!reciterSearch) return showAllReciters ? RECITERS : RECITERS.filter(r => POPULAR_RECITERS.includes(r.id));
@@ -117,6 +113,10 @@ export default function SettingsPage() {
       return acc;
     }, {} as Record<string, typeof TRANSLATIONS>);
   }, [translationSearch]);
+
+  if (isLoading) {
+    return <SettingsLoader message="Загружаем ваши настройки..." />;
+  }
 
   const previewReciter = async (reciterId: string) => {
     try {
