@@ -106,44 +106,10 @@ export default function QuranReader({
     requestedEditions
   );
 
-  // Отладочная информация для QuranReader
-  console.log('QuranReader Debug:', {
-    surahNumber,
-    requestedEditions,
-    isLoading,
-    error,
-    surahData: surahData ? `${surahData.length} editions` : 'No data'
-  });
-
+  // ИСПРАВЛЕНИЕ: Перемещаем все мемоизированные значения до условных возвратов
   const arabicSurah = surahData?.[0];
-
-  // Обработка ошибок загрузки
-  if (error) {
-    return (
-      <div className="p-4 text-center">
-        <p className="text-red-500 mb-4">
-          {locale === 'en' ? 'Error loading surah data' : 'Ошибка загрузки данных суры'}
-        </p>
-        <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-          {error.message}
-        </p>
-      </div>
-    );
-  }
-
-  // Показываем загрузку если данные еще не готовы
-  if (isLoading || !surahData || !arabicSurah) {
-    return (
-      <div className="p-4 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: 'var(--color-primary)' }}></div>
-        <p style={{ color: 'var(--fixed-text-secondary)' }}>
-          {locale === 'en' ? 'Loading Quran data...' : 'Загрузка данных Корана...'}
-        </p>
-      </div>
-    );
-  }
   
-  // ИСПРАВЛЕНИЕ: Фильтруем переводы только при отображении
+  // ИСПРАВЛЕНИЕ: Фильтруем переводы только при отображении - ПЕРЕМЕЩЕНО СЮДА
   const translationSurahs = useMemo(() => {
     if (!showTranslation || !surahData) return [];
     return surahData.slice(1) || [];
@@ -159,6 +125,7 @@ export default function QuranReader({
     }
   }, []);
 
+  // ИСПРАВЛЕНИЕ: Перемещаем ВСЕ useEffect до условных возвратов
   useEffect(() => {
     scrollToVerse(currentVerse);
   }, [currentVerse, scrollToVerse]);
@@ -262,7 +229,7 @@ export default function QuranReader({
   }, [audioReciter]);
 
   // ИСПРАВЛЕННАЯ функция для воспроизведения аудио конкретного аята
-  const playVerseAudio = async (verseNumber: number) => {
+  const playVerseAudio = useCallback(async (verseNumber: number) => {
     const audio = audioRef.current;
     if (!audio || !arabicSurah) return;
 
@@ -291,25 +258,26 @@ export default function QuranReader({
       setIsLoadingAudio(false);
       setAudioError(locale === 'en' ? 'Audio not available' : 'Аудио недоступно');
     }
-  };
+  }, [surahNumber, audioReciter, audioSpeed, audioVolume, arabicSurah, locale]);
 
-  const pauseAudio = () => {
+  // Остальные функции
+  const pauseAudio = useCallback(() => {
     const audio = audioRef.current;
     if (audio) {
       audio.pause();
       setIsPlaying(false);
     }
-  };
+  }, []);
 
-  const toggleAudio = () => {
+  const toggleAudio = useCallback(() => {
     if (isPlaying) {
       pauseAudio();
     } else {
       playVerseAudio(currentVerse);
     }
-  };
+  }, [isPlaying, pauseAudio, playVerseAudio, currentVerse]);
 
-  const handleResetAudio = () => {
+  const handleResetAudio = useCallback(() => {
     const audio = audioRef.current;
     if (audio) {
       audio.pause();
@@ -322,9 +290,9 @@ export default function QuranReader({
     setIsBuffering(false);
     setIsLoadingAudio(false);
     setAudioError(null);
-  };
+  }, []);
 
-  const navigateVerse = (direction: 'prev' | 'next') => {
+  const navigateVerse = useCallback((direction: 'prev' | 'next') => {
     if (!arabicSurah) return;
 
     if (direction === 'prev' && currentVerse > 1) {
@@ -334,21 +302,21 @@ export default function QuranReader({
     }
 
     pauseAudio();
-  };
+  }, [arabicSurah, currentVerse, pauseAudio]);
 
-  const isBookmarked = (verseNumber: number) => {
+  const isBookmarked = useCallback((verseNumber: number) => {
     return bookmarks.some(b => b.surahNumber === surahNumber && b.verseNumber === verseNumber);
-  };
+  }, [bookmarks, surahNumber]);
 
-  const toggleBookmark = (verseNumber: number) => {
+  const toggleBookmark = useCallback((verseNumber: number) => {
     if (isBookmarked(verseNumber)) {
       removeBookmark(surahNumber, verseNumber);
     } else {
       addBookmark(surahNumber, verseNumber);
     }
-  };
+  }, [isBookmarked, removeBookmark, addBookmark, surahNumber]);
 
-  const copyVerse = async (verseNumber: number) => {
+  const copyVerse = useCallback(async (verseNumber: number) => {
     if (!arabicSurah) return;
 
     const arabicVerse = arabicSurah.ayahs?.[verseNumber - 1];
@@ -367,9 +335,9 @@ export default function QuranReader({
     } catch (error) {
       console.error('Failed to copy text:', error);
     }
-  };
+  }, [arabicSurah, translationSurahs]);
 
-  const handleTranslationChange = (translationId: string, checked: boolean) => {
+  const handleTranslationChange = useCallback((translationId: string, checked: boolean) => {
     const currentTranslations = selectedTranslations.filter(t => t !== 'quran-uthmani');
     
     if (checked) {
@@ -377,10 +345,10 @@ export default function QuranReader({
     } else {
       setSelectedTranslations(currentTranslations.filter(t => t !== translationId));
     }
-  };
+  }, [selectedTranslations, setSelectedTranslations]);
 
   // НОВЫЕ функции управления аудио
-  const seekAudio = (percentage: number) => {
+  const seekAudio = useCallback((percentage: number) => {
     const audio = audioRef.current;
     if (audio && audioDuration) {
       const newTime = (percentage / 100) * audioDuration;
@@ -388,34 +356,34 @@ export default function QuranReader({
       setAudioCurrentTime(newTime);
       setAudioProgress(percentage);
     }
-  };
+  }, [audioDuration]);
 
-  const skipAudio = (seconds: number) => {
+  const skipAudio = useCallback((seconds: number) => {
     const audio = audioRef.current;
     if (audio) {
       const newTime = Math.max(0, Math.min(audioDuration, audioCurrentTime + seconds));
       audio.currentTime = newTime;
     }
-  };
+  }, [audioDuration, audioCurrentTime]);
 
-  const restartAudio = () => {
+  const restartAudio = useCallback(() => {
     const audio = audioRef.current;
     if (audio) {
       audio.currentTime = 0;
       setAudioProgress(0);
       setAudioCurrentTime(0);
     }
-  };
+  }, []);
 
   // Форматирование времени
-  const formatTime = (seconds: number) => {
+  const formatTime = useCallback((seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins}:${secs.toString().padStart(2, '0')}`;
-  };
+  }, []);
 
   // УЛУЧШЕННАЯ функция для получения иконки состояния аудио
-  const getAudioIcon = (verseNumber?: number) => {
+  const getAudioIcon = useCallback((verseNumber?: number) => {
     const isCurrentlyPlaying = verseNumber ? (currentVerse === verseNumber && isPlaying) : isPlaying;
     const isCurrentlyLoading = verseNumber ? (currentVerse === verseNumber && isLoadingAudio) : isLoadingAudio;
     const isCurrentlyBuffering = verseNumber ? (currentVerse === verseNumber && isBuffering) : isBuffering;
@@ -433,28 +401,39 @@ export default function QuranReader({
     }
     
     return <Play className="h-4 w-4" />;
-  };
+  }, [currentVerse, isPlaying, isLoadingAudio, isBuffering]);
 
-  // ИСПРАВЛЕНИЕ: Показываем лоадер только при первоначальной загрузке
-  if (isLoading && !arabicSurah) {
+  // Отладочная информация для QuranReader
+  console.log('QuranReader Debug:', {
+    surahNumber,
+    requestedEditions,
+    isLoading,
+    error,
+    surahData: surahData ? `${surahData.length} editions` : 'No data'
+  });
+
+  // Обработка ошибок загрузки
+  if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: 'var(--color-primary)' }}></div>
-          <p className="text-gray-600 dark:text-gray-300">
-            {locale === 'en' ? 'Loading Surah...' : 'Загрузка суры...'}
-          </p>
-        </div>
+      <div className="p-4 text-center">
+        <p className="text-red-500 mb-4">
+          {locale === 'en' ? 'Error loading surah data' : 'Ошибка загрузки данных суры'}
+        </p>
+        <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
+          {error.message}
+        </p>
       </div>
     );
   }
 
-  if (error || !arabicSurah) {
+  // Показываем загрузку если данные еще не готовы
+  if (isLoading || !surahData || !arabicSurah) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center text-red-600">
-          <p>{locale === 'en' ? 'Error loading Surah' : 'Ошибка загрузки суры'}</p>
-        </div>
+      <div className="p-4 text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: 'var(--color-primary)' }}></div>
+        <p style={{ color: 'var(--fixed-text-secondary)' }}>
+          {locale === 'en' ? 'Loading Quran data...' : 'Загрузка данных Корана...'}
+        </p>
       </div>
     );
   }
