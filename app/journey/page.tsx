@@ -12,7 +12,7 @@ import { Map, BarChart3, Trophy, Brain } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function JourneyPage() {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<
     "map" | "stats" | "achievements" | "quiz"
@@ -52,15 +52,13 @@ export default function JourneyPage() {
               className="text-4xl md:text-5xl font-bold"
               style={{ color: "var(--fixed-text)" }}
             >
-              {locale === "en" ? "Quran Journey" : "Путешествие по Корану"}
+              {t('quranJourney')}
             </h1>
             <p
               className="text-lg max-w-2xl mx-auto"
               style={{ color: "var(--fixed-text-secondary)" }}
             >
-              {locale === "en"
-                ? "Embark on an interactive journey through all 114 surahs of the Holy Quran. Test your knowledge, unlock achievements, and track your progress!"
-                : "Отправьтесь в интерактивное путешествие по всем 114 сурам Священного Корана. Проверьте свои знания, разблокируйте достижения и отслеживайте свой прогресс!"}
+              {t('journeyDescription')}
             </p>
           </div>
         </div>
@@ -84,7 +82,7 @@ export default function JourneyPage() {
               }}
             >
               <Map className="w-5 h-5" />
-              <span>{locale === "en" ? "Journey Map" : "Карта"}</span>
+              <span>{t('journeyMap')}</span>
             </button>
 
             <button
@@ -97,7 +95,7 @@ export default function JourneyPage() {
               }}
             >
               <BarChart3 className="w-5 h-5" />
-              <span>{locale === "en" ? "Statistics" : "Статистика"}</span>
+              <span>{t('statistics')}</span>
             </button>
 
             <button
@@ -111,7 +109,7 @@ export default function JourneyPage() {
               }}
             >
               <Trophy className="w-5 h-5" />
-              <span>{locale === "en" ? "Achievements" : "Достижения"}</span>
+              <span>{t('achievements')}</span>
             </button>
 
             <button
@@ -124,7 +122,7 @@ export default function JourneyPage() {
               }}
             >
               <Brain className="w-5 h-5" />
-              <span>{locale === "en" ? "Quiz" : "Викторина"}</span>
+              <span>{t('quiz')}</span>
             </button>
           </div>
         </div>

@@ -8,7 +8,7 @@ import { cn } from '@/lib/utils';
 import { useEffect } from 'react';
 
 export default function JourneyStats() {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
 
   const { stats, streakDays, surahProgress } = useJourneyStore();
 
@@ -26,28 +26,28 @@ export default function JourneyStats() {
   const statCards = [
     {
       icon: <Target className="w-6 h-6" />,
-      label: locale === 'en' ? 'Completed Surahs' : 'Завершено сур',
+      label: t('completedSurahs'),
       value: `${stats.completedSurahs}/114`,
       color: primaryColor,
       progress: (stats.completedSurahs / 114) * 100,
     },
     {
       icon: <Trophy className="w-6 h-6" />,
-      label: locale === 'en' ? 'Perfect Surahs' : 'Идеальных сур',
+      label: t('perfectSurahs'),
       value: stats.perfectSurahs.toString(),
       color: '#f59e0b',
       progress: (stats.perfectSurahs / stats.completedSurahs) * 100 || 0,
     },
     {
       icon: <Star className="w-6 h-6" />,
-      label: locale === 'en' ? 'Average Score' : 'Средний балл',
+      label: t('averageScore'),
       value: `${stats.averageScore}%`,
       color: '#8b5cf6',
       progress: stats.averageScore,
     },
     {
       icon: <Flame className="w-6 h-6" />,
-      label: locale === 'en' ? 'Day Streak' : 'Дней подряд',
+      label: t('dayStreak'),
       value: streakDays.toString(),
       color: '#ef4444',
       progress: Math.min((streakDays / 30) * 100, 100),

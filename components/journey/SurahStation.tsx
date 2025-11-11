@@ -16,6 +16,7 @@ interface SurahStationProps {
   revelation: 'Meccan' | 'Medinan';
   meaningEn: string;
   meaningRu: string;
+  meaningUz?: string;
   onStart: (surahNumber: number) => void;
 }
 
@@ -27,10 +28,23 @@ export default function SurahStation({
   revelation,
   meaningEn,
   meaningRu,
+  meaningUz,
   onStart,
 }: SurahStationProps) {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const { surahProgress, getSurahStatus } = useJourneyStore();
+
+  // Функция для получения локализованного значения
+  const getLocalizedMeaning = () => {
+    switch (locale) {
+      case 'uz':
+        return meaningUz || meaningEn;
+      case 'en':
+        return meaningEn;
+      default:
+        return meaningRu;
+    }
+  };
   
   const [isHovered, setIsHovered] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -170,10 +184,7 @@ export default function SurahStation({
           color: revelation === 'Meccan' ? '#9a3412' : '#1e3a8a',
         }}
       >
-        {revelation === 'Meccan' 
-          ? (locale === 'en' ? 'Meccan' : 'Мекка')
-          : (locale === 'en' ? 'Medinan' : 'Медина')
-        }
+        {revelation === 'Meccan' ? t('meccan') : t('medinan')}
       </div>
 
       {/* Основной контент */}
@@ -189,14 +200,14 @@ export default function SurahStation({
             {name}
           </p>
           <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {locale === 'en' ? meaningEn : meaningRu}
+            {getLocalizedMeaning()}
           </p>
         </div>
 
         {/* Количество аятов */}
         <div className="flex items-center justify-center gap-2 text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
           <span>{ayahs}</span>
-          <span>{locale === 'en' ? 'verses' : 'аятов'}</span>
+          <span>{t('versesCount')}</span>
         </div>
 
         {/* Прогресс (если есть) */}
@@ -205,11 +216,11 @@ export default function SurahStation({
             <div className="flex items-center justify-between text-xs" style={{ color: 'var(--fixed-text-secondary)' }}>
               <div className="flex items-center gap-1">
                 <Star className="w-3 h-3" />
-                <span>{locale === 'en' ? 'Best' : 'Лучший'}: {progress.bestScore}%</span>
+                <span>{t('bestScore')}: {progress.bestScore}%</span>
               </div>
               <div className="flex items-center gap-1">
                 <Zap className="w-3 h-3" />
-                <span>{progress.attempts} {locale === 'en' ? 'attempts' : 'попыток'}</span>
+                <span>{progress.attempts} {t('quizAttempts')}</span>
               </div>
             </div>
 
@@ -242,12 +253,12 @@ export default function SurahStation({
               {isGeneratingQuiz ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  {locale === 'en' ? 'Generating...' : 'Генерация...'}
+                  {t('generatingQuiz')}
                 </>
               ) : (
                 status === 'available' 
-                  ? (locale === 'en' ? 'Start Quiz' : 'Начать тест')
-                  : (locale === 'en' ? 'Retake Quiz' : 'Пройти снова')
+                  ? t('startSurahQuiz')
+                  : t('retakeQuiz')
               )}
             </div>
           </div>
@@ -257,10 +268,7 @@ export default function SurahStation({
         {status === 'locked' && (
           <div className="pt-2 text-center">
             <p className="text-xs" style={{ color: 'var(--fixed-text-muted)' }}>
-              {locale === 'en' 
-                ? 'Complete previous surahs to unlock'
-                : 'Завершите предыдущие суры для разблокировки'
-              }
+              {t('completePreviousSurahs')}
             </p>
           </div>
         )}
