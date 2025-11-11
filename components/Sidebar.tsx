@@ -1,3 +1,4 @@
+// components/Sidebar.tsx
 "use client";
 
 import { useState, memo, useEffect, useMemo, useCallback } from "react";
@@ -94,22 +95,32 @@ const Sidebar = memo(function Sidebar() {
   }, []);
 
   // Навигационные элементы
-  const navigation = useMemo(() => [
+  const navigation = useMemo(() => {
+    // Отладка: проверим что возвращает функция t
+    console.log('Debug translations:', {
+      home: t("home"),
+      quranReading: t("quranReading"),
+      journey: t("journey"),
+      quiz: t("quiz"),
+      locale: locale
+    });
+    
+    return [
+      {
+        name: t("home"),
+        href: "/",
+        icon: Home,
+        category: "main",
+      },
     {
-      name: t("home"),
-      href: "/",
-      icon: Home,
-      category: "main",
-    },
-    {
-      name: locale === "en" ? "Quran Reading" : "Чтение Корана",
+      name: t("quranReading"),
       href: "/quran",
       icon: Book,
       isPremium: true,
       category: "main",
     },
     {
-      name: locale === "en" ? "Journey" : "Путешествие",
+      name: t("journey"),
       href: "/journey",
       icon: Map,
       category: "learning",
@@ -121,7 +132,7 @@ const Sidebar = memo(function Sidebar() {
       category: "learning",
     },
     {
-      name: locale === "en" ? "AI Helper" : "AI Помощник",
+      name: t("aiHelperNav"),
       href: "/ai-helper",
       icon: Bot,
       isPremium: true,
@@ -141,7 +152,7 @@ const Sidebar = memo(function Sidebar() {
       category: "tools",
     },
     {
-      name: locale === "en" ? "Feedback" : "Обратная связь",
+      name: t("feedback"),
       href: "/feedback",
       icon: MessageSquare,
       category: "settings",
@@ -152,15 +163,16 @@ const Sidebar = memo(function Sidebar() {
       icon: Settings,
       category: "settings",
     },
-  ], [locale, t, bookmarks.length]);
+    ];
+  }, [locale, t, bookmarks.length]);
 
   // Категории
   const categories = useMemo(() => ({
-    main: locale === "en" ? "Main" : "Основное",
-    learning: locale === "en" ? "Learning" : "Обучение",
-    tools: locale === "en" ? "Tools" : "Инструменты",
-    settings: locale === "en" ? "Settings" : "Настройки",
-  }), [locale]);
+    main: t("main"),
+    learning: t("learning"),
+    tools: t("tools"),
+    settings: t("settingsCategory"),
+  }), [t]);
 
   const closeSidebar = useCallback(() => {
     setIsOpen(false);
@@ -219,7 +231,7 @@ const Sidebar = memo(function Sidebar() {
       <button
         id="sidebar-toggle"
         className="fixed top-4 left-4 z-50 p-3 rounded-xl shadow-lg border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-emerald-600 dark:text-emerald-400"
-        title={locale === "en" ? "Open menu" : "Открыть меню"}
+        title={t("openMenu")}
       >
         <Menu className="h-5 w-5" />
       </button>
@@ -238,7 +250,7 @@ const Sidebar = memo(function Sidebar() {
           borderColor: 'var(--color-border)',
           color: 'var(--color-primary)'
         }}
-        title={locale === "en" ? "Open menu" : "Открыть меню"}
+        title={t("openMenu")}
       >
         <Menu className="h-5 w-5" />
       </button>
@@ -292,7 +304,7 @@ const Sidebar = memo(function Sidebar() {
                 className="text-xs"
                 style={{ color: 'var(--color-text-secondary)' }}
               >
-                {locale === "en" ? "Islamic Learning Platform" : "Платформа изучения ислама"}
+                {t("islamicLearningPlatform")}
               </p>
             </div>
           </Link>
@@ -301,7 +313,7 @@ const Sidebar = memo(function Sidebar() {
             onClick={closeSidebar}
             className="p-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
             style={{ color: 'var(--color-text-secondary)' }}
-            title={locale === "en" ? "Close menu" : "Закрыть меню"}
+            title={t("closeMenu")}
           >
             <X className="h-5 w-5" />
           </button>
@@ -323,7 +335,7 @@ const Sidebar = memo(function Sidebar() {
                   className="text-sm font-medium"
                   style={{ color: 'var(--color-text)' }}
                 >
-                  {locale === "en" ? "Themes" : "Темы"}
+                  {t("themes")}
                 </span>
               </button>
             </ThemeDrawer>
@@ -382,7 +394,7 @@ const Sidebar = memo(function Sidebar() {
           >
             <p className="font-medium">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
             <p className="mt-1">
-              {locale === "en" ? "In the name of Allah" : "Во имя Аллаха"}
+              {t("inTheNameOfAllah")}
             </p>
           </div>
         </div>

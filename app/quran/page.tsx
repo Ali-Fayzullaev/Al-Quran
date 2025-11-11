@@ -10,23 +10,29 @@ import dynamic from 'next/dynamic';
 import MotivationalQuotes from "@/components/quran/MotivationalQuotes";
 
 // Создаем отдельные компоненты загрузки
-const MushafLoader = () => (
-  <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--fixed-background)' }}>
-    <div className="text-center">
-      <div className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto mb-4" style={{ borderColor: '#10b981' }}></div>
-      <p style={{ color: 'var(--fixed-text)' }}>Загружаем страницы Мусхафа...</p>
+const MushafLoader = () => {
+  const { t } = useLocale();
+  return (
+    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--fixed-background)' }}>
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto mb-4" style={{ borderColor: '#10b981' }}></div>
+        <p style={{ color: 'var(--fixed-text)' }}>{t("loadingMushafPages")}</p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
-const SurahsLoader = () => (
-  <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--fixed-background)' }}>
-    <div className="text-center">
-      <div className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto mb-4" style={{ borderColor: '#3b82f6' }}></div>
-      <p style={{ color: 'var(--fixed-text)' }}>Загружаем список сур...</p>
+const SurahsLoader = () => {
+  const { t } = useLocale();
+  return (
+    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--fixed-background)' }}>
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto mb-4" style={{ borderColor: '#3b82f6' }}></div>
+        <p style={{ color: 'var(--fixed-text)' }}>{t("loadingSurahsList")}</p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // Lazy loading компонентов для оптимизации
 const QuranInfiniteScroll = dynamic(() => import("@/components/mushaf/QuranInfiniteScroll"), {
@@ -54,11 +60,11 @@ interface ReadingModeConfig {
 
 // Лоадер для режимов чтения
 function ReadingModeLoader({ mode }: { mode: string }) {
-  const { locale } = useLocale();
+  const { t } = useLocale();
   
   const modeNames = {
-    mushaf: locale === 'en' ? 'Mushaf Reader' : 'Мусхаф',
-    surahs: locale === 'en' ? 'Surah Reader' : 'Чтение сур'
+    mushaf: t("mushafReader"),
+    surahs: t("surahReader")
   };
 
   return (
@@ -68,7 +74,7 @@ function ReadingModeLoader({ mode }: { mode: string }) {
         <div className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto mb-6"
              style={{ borderColor: 'var(--color-primary)' }}></div>
         <h3 className="text-xl font-bold mb-2" style={{ color: 'var(--fixed-text)' }}>
-          {locale === 'en' ? 'Loading' : 'Загрузка'}
+          {t("loadingText")}
         </h3>
         <p style={{ color: 'var(--fixed-text-secondary)' }}>
           {modeNames[mode as keyof typeof modeNames]}...
@@ -79,41 +85,37 @@ function ReadingModeLoader({ mode }: { mode: string }) {
 }
 
 export default function QuranReadingPage() {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const [currentMode, setCurrentMode] = useState<ReadingMode>('selection');
 
   const readingModes: ReadingModeConfig[] = [
     {
       id: 'mushaf',
-      title: locale === 'en' ? 'Mushaf Reading' : 'Чтение Мусхафа',
+      title: t("mushafReading"),
       titleArabic: 'قراءة المصحف',
-      description: locale === 'en' 
-        ? 'Traditional page-by-page reading experience. Perfect for focused study and memorization.'
-        : 'Традиционное чтение страница за страницей. Идеально для изучения и заучивания.',
+      description: t("mushafModeDescription"),
       icon: <BookOpen className="w-8 h-8" />,
       color: '#10b981',
       features: [
-        locale === 'en' ? '📖 Page-by-page reading' : '📖 Чтение по страницам',
-        locale === 'en' ? '🎯 Focus mode' : '🎯 Режим концентрации',
-        locale === 'en' ? '⚡ Fast navigation' : '⚡ Быстрая навигация',
-        locale === 'en' ? '📱 Mobile optimized' : '📱 Оптимизировано для мобильных'
+        t("pageByPageReading"),
+        t("focusMode"),
+        t("fastNavigation"),
+        t("mobileOptimized")
       ],
       bgGradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
     },
     {
       id: 'surahs',
-      title: locale === 'en' ? 'Surah Reading' : 'Чтение по сурам',
+      title: t("surahReading"),
       titleArabic: 'قراءة السور',
-      description: locale === 'en'
-        ? 'Read individual surahs with translations and audio. Great for daily reading and understanding.'
-        : 'Читайте отдельные суры с переводами и аудио. Отлично для ежедневного чтения и понимания.',
+      description: t("surahModeDescription"),
       icon: <Book className="w-8 h-8" />,
       color: '#3b82f6',
       features: [
-        locale === 'en' ? '🔊 Audio recitation' : '🔊 Аудио чтение',
-        locale === 'en' ? '🌍 Multiple translations' : '🌍 Множественные переводы',
-        locale === 'en' ? '🔍 Search & filter' : '🔍 Поиск и фильтры',
-        locale === 'en' ? '📚 Surah information' : '📚 Информация о сурах'
+        t("audioRecitation"),
+        t("multipleTranslations"),
+        t("searchAndFilter"),
+        t("surahInformation")
       ],
       bgGradient: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
     }
@@ -190,7 +192,7 @@ export default function QuranReadingPage() {
 
           <h1 className="text-4xl md:text-6xl font-bold mb-4" 
               style={{ color: 'var(--fixed-text)' }}>
-            {locale === 'en' ? 'Quran Reading' : 'Чтение Корана'}
+            {t("quranReading")}
           </h1>
           
           <h2 className="text-2xl md:text-3xl font-bold mb-6 font-amiri" 
@@ -200,9 +202,7 @@ export default function QuranReadingPage() {
 
           <p className="text-xl max-w-3xl mx-auto leading-relaxed" 
              style={{ color: 'var(--fixed-text-secondary)' }}>
-            {locale === 'en' 
-              ? 'Choose your preferred reading experience. Each mode is designed for different purposes and preferences.'
-              : 'Выберите предпочитаемый способ чтения. Каждый режим разработан для разных целей и предпочтений.'}
+            {t("chooseReadingExperience")}
           </p>
         </motion.div>
 
@@ -293,7 +293,7 @@ export default function QuranReadingPage() {
                       }}
                     >
                       <Play className="w-4 h-4 mr-2" />
-                      {locale === 'en' ? 'Start Reading' : 'Начать чтение'}
+                      {t("startReading")}
                     </Button>
                   </div>
 
@@ -317,16 +317,12 @@ export default function QuranReadingPage() {
             <div className="flex items-center justify-center gap-4 mb-4">
               <Settings className="w-5 h-5" style={{ color: 'var(--fixed-text-secondary)' }} />
               <span className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-                {locale === 'en' 
-                  ? 'All modes support dark/light themes and multiple languages'
-                  : 'Все режимы поддерживают темные/светлые темы и множественные языки'}
+                {t("allModesSupport")}
               </span>
             </div>
             
             <p className="text-xs" style={{ color: 'var(--fixed-text-secondary)', opacity: 0.7 }}>
-              {locale === 'en'
-                ? 'Switch between modes anytime using the back button'
-                : 'Переключайтесь между режимами в любое время с помощью кнопки назад'}
+              {t("switchBetweenModes")}
             </p>
           </div>
         </motion.div>
