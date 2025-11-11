@@ -1167,18 +1167,22 @@ const ALL_SURAHS: Surah[] = [
 // Генерация остальных сур (упрощенно для примера)
 const generateAllSurahs = () => {
   const surahs = [...ALL_SURAHS];
-  // Добавляем остальные суры с базовыми данными
-  for (let i = 11; i <= 108; i++) {
-    surahs.splice(i - 1, 0, {
-      number: i,
-      name: `Surah ${i}`,
-      arabicName: `سورة ${i}`,
-      ayahs: Math.floor(Math.random() * 100) + 10,
-      revelation: i % 2 === 0 ? ("Meccan" as const) : ("Medinan" as const),
-      juz: Math.ceil(i / 4),
-      meaningEn: `Meaning ${i}`,
-      meaningRu: `Значение ${i}`,
-    });
+  const existingNumbers = new Set(surahs.map(s => s.number));
+  
+  // Добавляем остальные суры с базовыми данными только если их еще нет
+  for (let i = 1; i <= 114; i++) {
+    if (!existingNumbers.has(i)) {
+      surahs.push({
+        number: i,
+        name: `Surah ${i}`,
+        arabicName: `سورة ${i}`,
+        ayahs: Math.floor(Math.random() * 100) + 10,
+        revelation: i % 2 === 0 ? ("Meccan" as const) : ("Medinan" as const),
+        juz: Math.ceil(i / 4),
+        meaningEn: `Meaning ${i}`,
+        meaningRu: `Значение ${i}`,
+      });
+    }
   }
   return surahs.sort((a, b) => a.number - b.number);
 };

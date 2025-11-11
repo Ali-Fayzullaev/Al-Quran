@@ -84,7 +84,7 @@ export default function JourneyStats() {
       <div className="flex items-center gap-3">
         <BarChart3 className="w-7 h-7" style={{ color: primaryColor }} />
         <h2 className="text-2xl font-bold" style={{ color: 'var(--fixed-text)' }}>
-          {locale === 'en' ? 'Your Journey Statistics' : 'Статистика вашего путешествия'}
+          {t('yourJourneyStatistics')}
         </h2>
       </div>
 

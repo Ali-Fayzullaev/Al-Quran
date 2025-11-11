@@ -1,4 +1,4 @@
-
+// components/journey/JourneyQuiz.tsx
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -17,7 +17,7 @@ interface JourneyQuizProps {
 }
 
 export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const { surahProgress, getCompletedSurahsInPriorityOrder, stats, completeSurahQuiz, initializeJourney } = useJourneyStore();
   const { 
     startJourneyQuiz, 
@@ -137,13 +137,10 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
         
         <div>
           <h1 className="text-4xl font-bold mb-2" style={{ color: 'var(--fixed-text)' }}>
-            {locale === 'en' ? 'Journey Quiz' : 'Викторина путешествия'}
+            {t('journeyQuiz')}
           </h1>
           <p className="text-lg" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {locale === 'en' 
-              ? 'Test your knowledge of completed surahs'
-              : 'Проверьте свои знания по завершенным сурам'
-            }
+            {t('testYourKnowledgeCompleted')}
           </p>
         </div>
       </div>
@@ -166,7 +163,7 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
             {completedSurahs.length}
           </div>
           <div className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {locale === 'en' ? 'Completed Surahs' : 'Завершенных сур'}
+            {t('completedSurahs')}
           </div>
         </div>
 
@@ -182,7 +179,7 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
             {stats.averageScore}%
           </div>
           <div className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {locale === 'en' ? 'Average Score' : 'Средний балл'}
+            {t('averageScore')}
           </div>
         </div>
 
@@ -198,7 +195,7 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
             {stats.perfectSurahs}
           </div>
           <div className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {locale === 'en' ? 'Perfect Scores' : 'Идеальных результатов'}
+            {t('perfectScores')}
           </div>
         </div>
       </motion.div>
@@ -216,14 +213,14 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
           }}
         >
           <h2 className="text-2xl font-bold mb-6 text-center" style={{ color: 'var(--fixed-text)' }}>
-            {locale === 'en' ? 'Quiz Configuration' : 'Настройки викторины'}
+            {t('quizConfiguration')}
           </h2>
 
           <div className="space-y-6">
             {/* Количество вопросов */}
             <div>
               <label className="block text-lg font-medium mb-3" style={{ color: 'var(--fixed-text)' }}>
-                {locale === 'en' ? 'Number of Questions' : 'Количество вопросов'}
+                {t('numberOfQuestions')}
               </label>
               <div className="grid grid-cols-3 gap-3">
                 {[5, 10, 15, 20].map((count) => (
@@ -246,7 +243,7 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
             {/* Сложность */}
             <div>
               <label className="block text-lg font-medium mb-3" style={{ color: 'var(--fixed-text)' }}>
-                {locale === 'en' ? 'Difficulty' : 'Сложность'}
+                {t('difficulty')}
               </label>
               <div className="grid grid-cols-3 gap-3">
                 {(['easy', 'medium', 'hard'] as const).map((difficulty) => (
@@ -260,12 +257,7 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
                       color: selectedDifficulty === difficulty ? 'white' : 'var(--fixed-text)',
                     }}
                   >
-                    {difficulty === 'easy' 
-                      ? (locale === 'en' ? 'Easy' : 'Легко')
-                      : difficulty === 'medium'
-                      ? (locale === 'en' ? 'Medium' : 'Средне')
-                      : (locale === 'en' ? 'Hard' : 'Сложно')
-                    }
+                    {t(difficulty)}
                   </button>
                 ))}
               </div>
@@ -274,7 +266,7 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
             {/* Типы вопросов */}
             <div>
               <label className="block text-lg font-medium mb-3" style={{ color: 'var(--fixed-text)' }}>
-                {locale === 'en' ? 'Question Types' : 'Типы вопросов'}
+                {t('questionTypes')}
               </label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div
@@ -286,13 +278,10 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
                 >
                   <div className="text-2xl mb-2">📖</div>
                   <div className="font-medium" style={{ color: 'var(--fixed-text)' }}>
-                    {locale === 'en' ? 'Continue Ayah' : 'Продолжи аят'}
+                    {t('continueAyah')}
                   </div>
                   <div className="text-sm mt-1" style={{ color: 'var(--fixed-text-secondary)' }}>
-                    {locale === 'en' 
-                      ? 'Complete the verse from memory'
-                      : 'Завершите аят по памяти'
-                    }
+                    {t('completeVerseFromMemory')}
                   </div>
                 </div>
                 
@@ -305,13 +294,10 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
                 >
                   <div className="text-2xl mb-2">🔤</div>
                   <div className="font-medium" style={{ color: 'var(--fixed-text)' }}>
-                    {locale === 'en' ? 'Missing Word' : 'Пропущенное слово'}
+                    {t('missingWord')}
                   </div>
                   <div className="text-sm mt-1" style={{ color: 'var(--fixed-text-secondary)' }}>
-                    {locale === 'en' 
-                      ? 'Find the missing word in the verse'
-                      : 'Найдите пропущенное слово в аяте'
-                    }
+                    {t('findMissingWord')}
                   </div>
                 </div>
               </div>
@@ -320,13 +306,10 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
             {/* Приоритетные суры */}
             <div>
               <label className="block text-lg font-medium mb-3" style={{ color: 'var(--fixed-text)' }}>
-                {locale === 'en' ? 'Surahs Priority Order' : 'Порядок приоритета сур'}
+                {t('surahsPriorityOrder')}
               </label>
               <div className="text-sm mb-2" style={{ color: 'var(--fixed-text-secondary)' }}>
-                {locale === 'en' 
-                  ? 'Small surahs (114→77) have priority, then large surahs (1→76)'
-                  : 'Приоритет у малых сур (114→77), затем большие суры (1→76)'
-                }
+                {t('smallSurahsPriority')}
               </div>
               <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
                 {completedSurahs.slice(0, 10).map((surahNumber, index) => {
@@ -341,7 +324,7 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
                         border: isSmall ? `1px solid ${primaryColor}40` : '1px solid var(--color-border)',
                       }}
                     >
-                      {isSmall ? '🌟' : '📖'} {index + 1}. {locale === 'en' ? `Surah ${surahNumber}` : `Сура ${surahNumber}`}
+                      {isSmall ? '🌟' : '📖'} {index + 1}. {locale === 'en' ? `Surah ${surahNumber}` : `${t('surah')} ${surahNumber}`}
                     </span>
                   );
                 })}
@@ -350,7 +333,7 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
                     className="px-3 py-1 rounded-lg text-sm"
                     style={{ color: 'var(--fixed-text-secondary)' }}
                   >
-                    +{completedSurahs.length - 10} {locale === 'en' ? 'more' : 'ещё'}
+                    +{completedSurahs.length - 10} {t('more')}
                   </span>
                 )}
               </div>
@@ -368,7 +351,7 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
               }}
             >
               <PlayCircle className="w-6 h-6" />
-              {locale === 'en' ? 'Start Quiz' : 'Начать викторину'}
+              {t('startQuiz')}
             </Button>
           </div>
         </motion.div>
@@ -381,13 +364,10 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
         >
           <div className="text-6xl mb-4">📚</div>
           <h2 className="text-2xl font-bold mb-4" style={{ color: 'var(--fixed-text)' }}>
-            {locale === 'en' ? 'No Completed Surahs' : 'Нет завершенных сур'}
+            {t('noCompletedSurahs')}
           </h2>
           <p className="text-lg mb-6" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {locale === 'en' 
-              ? 'Complete some surahs first to unlock the journey quiz'
-              : 'Сначала завершите некоторые суры, чтобы разблокировать викторину путешествия'
-            }
+            {t('completeFirstToUnlock')}
           </p>
           
           {/* Тестовые кнопки для разработки */}
@@ -397,7 +377,7 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
               className="gap-2"
               style={{ backgroundColor: primaryColor, color: 'white' }}
             >
-              🧪 {locale === 'en' ? 'Test: Complete Some Surahs' : 'Тест: Завершить несколько сур'}
+              🧪 {t('testCompleteSurahs')}
             </Button>
           </div>
           
@@ -408,7 +388,7 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
               className="gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              {locale === 'en' ? 'Back to Journey' : 'Назад к путешествию'}
+              {t('backToJourney')}
             </Button>
           )}
         </motion.div>

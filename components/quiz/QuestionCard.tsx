@@ -25,7 +25,7 @@ export function QuestionCard({
   showFeedback = true,
   timeLimit,
 }: QuestionCardProps) {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const  customButtonColor  = "var(--color-primary)"
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [hasAnswered, setHasAnswered] = useState(false);
@@ -67,7 +67,7 @@ export function QuestionCard({
         return (
           <div className="space-y-4">
             <p className="text-sm font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>
-              {locale === 'en' ? 'Which Surah is this ayah from?' : 'Из какой суры этот аят?'}
+              {t('whichSurahIsThisFromQ')}
             </p>
             <div className="p-8 rounded-3xl shadow-2xl" style={{
               background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(20, 184, 166, 0.15) 100%)',
@@ -86,7 +86,7 @@ export function QuestionCard({
         return (
           <div className="space-y-4">
             <p className="text-sm font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>
-              {locale === 'en' ? 'How does this ayah continue?' : 'Как продолжается этот аят?'}
+              {t('howDoesThisAyahContinueQ')}
             </p>
             <div className="p-8 rounded-3xl shadow-2xl" style={{
               background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(6, 182, 212, 0.15) 100%)',
@@ -105,7 +105,7 @@ export function QuestionCard({
         return (
           <div className="space-y-4">
             <p className="text-sm font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>
-              {locale === 'en' ? 'Fill in the missing word' : 'Заполните пропущенное слово'}
+              {t('fillInTheMissingWordQ')}
             </p>
             <div className="p-8 rounded-3xl shadow-2xl" style={{
               background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.15) 100%)',
@@ -124,7 +124,7 @@ export function QuestionCard({
         return (
           <div className="space-y-4">
             <p className="text-sm font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>
-              {locale === 'en' ? 'Which Surah matches this description?' : 'Какая сура соответствует этому описанию?'}
+              {t('whichSurahMatchesDescriptionQ')}
             </p>
             <div className="p-8 rounded-3xl shadow-2xl" style={{
               background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.1) 0%, rgba(239, 68, 68, 0.15) 100%)',
@@ -157,7 +157,7 @@ export function QuestionCard({
         <div className="flex justify-between items-center mb-4">
           <div>
             <p className="text-sm font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>
-              {locale === 'en' ? 'Question' : 'Вопрос'} {questionNumber} {locale === 'en' ? 'of' : 'из'} {totalQuestions}
+              {t('questionOfTotal')} {questionNumber} {t('ofTotal')} {totalQuestions}
             </p>
             <div className="flex items-center gap-2 mt-1">
               <div className="h-2 w-32 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -187,7 +187,7 @@ export function QuestionCard({
               backgroundColor: customButtonColor || '#10b981',
               color: 'white',
             }}>
-              {question.points} {locale === 'en' ? 'pts' : 'оч.'}
+              {question.points} {t('ptsShort')}
             </span>
           </div>
         </div>
@@ -210,7 +210,7 @@ export function QuestionCard({
             </div>
             <div className="flex justify-between items-center mt-2">
               <p className="text-xs font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>
-                {locale === 'en' ? 'Time remaining' : 'Осталось времени'}
+                {t('timeRemainingShort')}
               </p>
               <p className={cn(
                 "text-sm font-bold",
@@ -323,7 +323,7 @@ export function QuestionCard({
             <Lightbulb className="w-6 h-6 text-blue-500 flex-shrink-0 mt-1" />
             <div className="flex-1">
               <p className="text-base font-bold text-blue-600 dark:text-blue-400 mb-2">
-                {locale === 'en' ? 'Explanation' : 'Объяснение'}
+                {t('explanation')}
               </p>
               <p className="text-base leading-relaxed" style={{ color: 'var(--fixed-text)' }}>
                 {question.explanation}
@@ -334,7 +334,7 @@ export function QuestionCard({
             <div className="flex items-center gap-2 mt-4 pt-4 border-t" style={{ borderColor: 'var(--color-border)' }}>
               <AlertCircle className="w-4 h-4 text-blue-500" />
               <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
-                {locale === 'en' ? 'Reference:' : 'Ссылка:'} {question.verseReference}
+                {t('reference')}: {question.verseReference}
               </p>
             </div>
           )}

@@ -10,7 +10,7 @@ import { useLocale } from '@/context/LocaleContext';
 
 // Компонент загрузки для генерации квиза
 function QuizGenerationLoader({ surahNumber }: { surahNumber?: string }) {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   
   return (
     <div className="min-h-screen flex items-center justify-center" 
@@ -34,13 +34,13 @@ function QuizGenerationLoader({ surahNumber }: { surahNumber?: string }) {
 
         {/* Заголовок */}
         <h2 className="text-2xl font-bold mb-4" style={{ color: 'var(--fixed-text)' }}>
-          {locale === 'en' ? 'Generating Quiz Questions' : 'Генерируем вопросы викторины'}
+          {t('generatingQuizQuestions')}
         </h2>
 
         {/* Подзаголовок с информацией о суре */}
         {surahNumber && (
           <p className="text-lg mb-6" style={{ color: 'var(--color-primary)' }}>
-            {locale === 'en' ? `Surah ${surahNumber}` : `Сура ${surahNumber}`}
+            {t('surah')} {surahNumber}
           </p>
         )}
 
@@ -52,9 +52,7 @@ function QuizGenerationLoader({ surahNumber }: { surahNumber?: string }) {
               <BookOpen className="w-4 h-4 text-white" />
             </div>
             <span style={{ color: 'var(--fixed-text-secondary)' }}>
-              {locale === 'en' 
-                ? 'Analyzing verses and selecting questions...'
-                : 'Анализируем аяты и выбираем вопросы...'}
+              {t('analyzingVerses')}
             </span>
           </div>
           
@@ -64,9 +62,7 @@ function QuizGenerationLoader({ surahNumber }: { surahNumber?: string }) {
               <Target className="w-4 h-4 text-white" />
             </div>
             <span style={{ color: 'var(--fixed-text-secondary)' }}>
-              {locale === 'en' 
-                ? 'Preparing interactive quiz format...'
-                : 'Подготавливаем интерактивный формат викторины...'}
+              {t('preparingQuizFormat')}
             </span>
           </div>
         </div>
@@ -82,9 +78,7 @@ function QuizGenerationLoader({ surahNumber }: { surahNumber?: string }) {
         </div>
 
         <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)', opacity: 0.7 }}>
-          {locale === 'en'
-            ? 'This usually takes a few seconds...'
-            : 'Обычно это занимает несколько секунд...'}
+          {t('usuallyTakesFewSeconds')}
         </p>
       </div>
 
@@ -105,7 +99,7 @@ function QuizGenerationLoader({ surahNumber }: { surahNumber?: string }) {
 const QuizConfiguration = dynamic(() => 
   import('@/components/quiz/QuizConfiguration').then(mod => ({ default: mod.QuizConfiguration })),
   { 
-    loading: () => <div className="flex items-center justify-center p-8">Загрузка настроек квиза...</div>,
+    loading: () => <div className="flex items-center justify-center p-8">Loading quiz settings...</div>,
     ssr: false 
   }
 );
@@ -113,7 +107,7 @@ const QuizConfiguration = dynamic(() =>
 const Quiz = dynamic(() => 
   import('@/components/quiz/Quiz').then(mod => ({ default: mod.Quiz })),
   { 
-    loading: () => <div className="flex items-center justify-center p-8">Загрузка квиза...</div>,
+    loading: () => <div className="flex items-center justify-center p-8">Loading quiz...</div>,
     ssr: false 
   }
 );
@@ -121,7 +115,7 @@ const Quiz = dynamic(() =>
 const QuizResults = dynamic(() => 
   import('@/components/quiz/QuizResults').then(mod => ({ default: mod.QuizResults })),
   { 
-    loading: () => <div className="flex items-center justify-center p-8">Загрузка результатов...</div>,
+    loading: () => <div className="flex items-center justify-center p-8">Loading results...</div>,
     ssr: false 
   }
 );
@@ -135,6 +129,7 @@ type QuizPhase = 'config' | 'quiz' | 'results';
 export default function QuizPage() {
   const searchParams = useSearchParams();
   const surahNumber = searchParams?.get('surah');
+  const { t } = useLocale();
   
   const [phase, setPhase] = useState<QuizPhase>('config');
   const [isGenerating, setIsGenerating] = useState(false);

@@ -11,7 +11,7 @@ import { useQuranStore } from '@/lib/store';
 import type { UserAnswer } from '@/lib/quizTypes';
 
 export function Quiz() {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const customButtonColor = "var(--color-primary)";
   const {
     questions,
@@ -72,10 +72,10 @@ export function Quiz() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
-              {locale === 'en' ? 'Quiz in Progress' : 'Викторина'}
+              {t('quizInProgress')}
             </h2>
             <p className="text-sm mt-1" style={{ color: 'var(--fixed-text-secondary)' }}>
-              {locale === 'en' ? 'Answer all questions to see your results' : 'Ответьте на все вопросы, чтобы увидеть результаты'}
+              {t('answerAllQuestions')}
             </p>
           </div>
           <Button
@@ -87,12 +87,12 @@ export function Quiz() {
             {isPaused ? (
               <>
                 <Play className="w-5 h-5 mr-2" />
-                {locale === 'en' ? 'Resume' : 'Продолжить'}
+                {t('resume')}
               </>
             ) : (
               <>
                 <Pause className="w-5 h-5 mr-2" />
-                {locale === 'en' ? 'Pause' : 'Пауза'}
+                {t('pauseQuiz')}
               </>
             )}
           </Button>
@@ -112,7 +112,7 @@ export function Quiz() {
             />
           </div>
           <p className="text-xs font-medium mt-2 text-right" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {currentQuestionIndex + 1} / {questions.length} {locale === 'en' ? 'completed' : 'завершено'}
+            {currentQuestionIndex + 1} / {questions.length} {t('completed')}
           </p>
         </div>
       </div>

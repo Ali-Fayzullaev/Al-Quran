@@ -1,3 +1,4 @@
+// components/quiz/QuizConfiguration.tsx
 'use client';
 
 import { useState } from 'react';
@@ -143,12 +144,10 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
             <Brain className="w-12 h-12 text-white" />
           </motion.div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r text-[var(--color-primary)] bg-clip-text ">
-            {locale === 'en' ? 'Quran Quiz' : 'Викторина по Корану'}
+            {t('quranQuiz')}
           </h1>
           <p className="text-lg" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {locale === 'en' 
-              ? 'Test your knowledge of the Holy Quran' 
-              : 'Проверьте свои знания Священного Корана'}
+            {t('testYourKnowledge')}
           </p>
         </div>
         
@@ -165,7 +164,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                 <BookOpen className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
               </div>
               <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
-                {locale === 'en' ? 'Number of Questions' : 'Количество вопросов'}
+                {t('numberOfQuestions')}
               </h3>
             </div>
             <div className="grid grid-cols-4 gap-3">
@@ -206,7 +205,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                 <Sparkles className="w-5 h-5 text-purple-600 dark:text-purple-400" />
               </div>
               <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
-                {locale === 'en' ? 'Difficulty Level' : 'Уровень сложности'}
+                {t('difficultyLevel')}
               </h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -229,9 +228,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                   }}>
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-lg font-bold capitalize" style={{ color: 'var(--fixed-text)' }}>
-                        {locale === 'en' 
-                          ? level.charAt(0).toUpperCase() + level.slice(1)
-                          : level === 'easy' ? 'Легкий' : level === 'medium' ? 'Средний' : 'Сложный'}
+                        {t(`${level}Level`)}
                       </span>
                       <Trophy className={`w-6 h-6 ${
                         level === 'easy' ? 'text-green-500' : 
@@ -245,9 +242,9 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                       ${level === 'medium' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300' : ''}
                       ${level === 'hard' ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300' : ''}
                     `}>
-                      {level === 'easy' && `10 ${locale === 'en' ? 'points' : 'очков'}`}
-                      {level === 'medium' && `20 ${locale === 'en' ? 'points' : 'очков'}`}
-                      {level === 'hard' && `30 ${locale === 'en' ? 'points' : 'очков'}`}
+                      {level === 'easy' && `10 ${t('pointsShort')}`}
+                      {level === 'medium' && `20 ${t('pointsShort')}`}
+                      {level === 'hard' && `30 ${t('pointsShort')}`}
                     </div>
                   </div>
                 </label>
@@ -267,7 +264,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                 <Settings2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
               <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
-                {locale === 'en' ? 'Question Types' : 'Типы вопросов'}
+                {t('questionTypes')}
               </h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -296,12 +293,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                       </div>
                       <div className="flex-1">
                         <p className="font-semibold text-lg" style={{ color: 'var(--fixed-text)' }}>
-                          {locale === 'en' 
-                            ? type.value.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
-                            : type.labelKey === 'guessSurah' ? 'Угадай суру' :
-                              type.labelKey === 'continueAyah' ? 'Продолжи аят' :
-                              type.labelKey === 'fillMissingWord' ? 'Пропущенное слово' :
-                              'Описание суры'}
+                          {t(type.labelKey)}
                         </p>
                       </div>
                       {selectedTypes.includes(type.value) && (
@@ -342,7 +334,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                 <Clock className="w-5 h-5 text-orange-600 dark:text-orange-400" />
               </div>
               <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
-                {locale === 'en' ? 'Time Limit' : 'Ограничение времени'}
+                {t('timeLimitConfig')}
               </h3>
             </div>
             <div className="p-6 rounded-2xl border-2" style={{
@@ -359,7 +351,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                 <div className="flex items-center gap-3">
                   <Zap className="w-5 h-5 text-orange-500" />
                   <span className="text-base font-medium" style={{ color: 'var(--fixed-text)' }}>
-                    {locale === 'en' ? 'Enable time limit per question' : 'Включить ограничение времени на вопрос'}
+                    {t('enableTimeLimitPerQuestion')}
                   </span>
                 </div>
               </label>
@@ -373,7 +365,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                   <input
                     type="number"
                     {...register('timePerQuestion', { valueAsNumber: true })}
-                    placeholder={locale === 'en' ? 'Seconds per question (10-120)' : 'Секунд на вопрос (10-120)'}
+                    placeholder={t('secondsPerQuestionPlaceholder')}
                     min={10}
                     max={120}
                     defaultValue={30}
@@ -408,7 +400,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                 className="w-5 h-5 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
               />
               <span className="text-base font-medium" style={{ color: 'var(--fixed-text)' }}>
-                {locale === 'en' ? 'Show translation in quiz' : 'Показывать перевод в викторине'}
+                {t('showTranslationInQuizConfig')}
               </span>
             </label>
           </motion.div>
@@ -424,14 +416,14 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
               borderColor: customButtonColor || '#10b981',
             }}
           >
-            <h3 className="font-bold text-xl mb-4 flex items-center gap-2" style={{ color: 'var(--fixed-text)' }}>
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-3" style={{ color: 'var(--fixed-text)' }}>
               <Sparkles className="w-6 h-6" style={{ color: customButtonColor || '#10b981' }} />
-              {locale === 'en' ? 'Quiz Summary' : 'Сводка викторины'}
+              {t('quizSummary')}
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
                 <p className="text-sm mb-1" style={{ color: 'var(--fixed-text-secondary)' }}>
-                  {locale === 'en' ? 'Questions' : 'Вопросы'}
+                  {t('questions')}
                 </p>
                 <p className="text-2xl font-bold" style={{ color: 'var(--fixed-text)' }}>
                   {questionCount}
@@ -439,17 +431,15 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
               </div>
               <div>
                 <p className="text-sm mb-1" style={{ color: 'var(--fixed-text-secondary)' }}>
-                  {locale === 'en' ? 'Difficulty' : 'Сложность'}
+                  {t('difficulty')}
                 </p>
                 <p className="text-2xl font-bold capitalize" style={{ color: 'var(--fixed-text)' }}>
-                  {locale === 'en' ? difficulty : 
-                    difficulty === 'easy' ? 'Легк.' : 
-                    difficulty === 'medium' ? 'Сред.' : 'Слож.'}
+                  {t(`${difficulty}Level`)}
                 </p>
               </div>
               <div>
                 <p className="text-sm mb-1" style={{ color: 'var(--fixed-text-secondary)' }}>
-                  {locale === 'en' ? 'Types' : 'Типы'}
+                  {t('typesConfig')}
                 </p>
                 <p className="text-2xl font-bold" style={{ color: 'var(--fixed-text)' }}>
                   {selectedTypes.length}
@@ -457,7 +447,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
               </div>
               <div>
                 <p className="text-sm mb-1" style={{ color: 'var(--fixed-text-secondary)' }}>
-                  {locale === 'en' ? 'Timer' : 'Таймер'}
+                  {t('timerConfig')}
                 </p>
                 <p className="text-2xl font-bold" style={{ color: 'var(--fixed-text)' }}>
                   {useTimer ? '✓' : '✗'}
@@ -487,12 +477,12 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                     transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
                     className="w-6 h-6 border-3 border-white border-t-transparent rounded-full"
                   />
-                  {locale === 'en' ? 'Generating Questions...' : 'Генерация вопросов...'}
+                  {t('generatingQuestions')}
                 </span>
               ) : (
                 <span className="flex items-center justify-center gap-3">
                   <Play className="w-6 h-6" />
-                  {locale === 'en' ? 'Start Quiz' : 'Начать викторину'}
+                  {t('startQuiz')}
                 </span>
               )}
             </Button>
