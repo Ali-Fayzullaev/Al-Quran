@@ -28,7 +28,7 @@ import { cn } from "@/lib/utils";
 import { SearchLoader } from "@/components/PageLoader";
 
 function SearchContent() {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { addToSearchHistory, searchHistory } = useQuranStore();
@@ -129,9 +129,7 @@ function SearchContent() {
     } catch (searchError) {
       console.error("Search error:", searchError);
       setError(
-        locale === "en"
-          ? "Search failed. Please try again later."
-          : "Поиск не удался. Попробуйте позже."
+        t('searchFailed')
       );
       setSearchResults([]);
       setTotalResults(0);
@@ -189,12 +187,10 @@ function SearchContent() {
       {/* Search Header */}
       <div className="text-center space-y-4">
         <h1 className="text-3xl font-bold gradient-text-primary">
-          {locale === "en" ? "Search the Quran" : "Поиск по Корану"}
+          {t('searchTheQuran')}
         </h1>
         <p style={{ color: "var(--fixed-text-secondary)" }}>
-          {locale === "en"
-            ? "Search through verses in Arabic text and translations"
-            : "Поиск по аятам в арабском тексте и переводах"}
+          {t('searchDescription')}
         </p>
       </div>
 
@@ -204,11 +200,7 @@ function SearchContent() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={
-            locale === "en"
-              ? "Enter your search query..."
-              : "Введите поисковый запрос..."
-          }
+          placeholder={t('searchPlaceholder')}
           className="w-full p-4 text-lg border-2 rounded-xl focus:outline-none"
           style={{
             backgroundColor: "var(--verse-background)",
@@ -251,7 +243,7 @@ function SearchContent() {
             className="font-semibold text-lg"
             style={{ color: "var(--fixed-text)" }}
           >
-            {locale === "en" ? "Advanced Search" : "Расширенный поиск"}
+            {t('advancedSearch')}
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -261,7 +253,7 @@ function SearchContent() {
                 className="block text-sm font-medium mb-2"
                 style={{ color: "var(--fixed-text-secondary)" }}
               >
-                {locale === "en" ? "Search Mode" : "Режим поиска"}
+                {t('searchMode')}
               </label>
               <select
                 value={searchMode}
@@ -274,15 +266,13 @@ function SearchContent() {
                 }}
               >
                 <option value="both">
-                  {locale === "en"
-                    ? "Arabic & Translation"
-                    : "Арабский и перевод"}
+                  {t('searchModeBoth')}
                 </option>
                 <option value="arabic">
-                  {locale === "en" ? "Arabic Only" : "Только арабский"}
+                  {t('searchModeArabic')}
                 </option>
                 <option value="translation">
-                  {locale === "en" ? "Translation Only" : "Только перевод"}
+                  {t('searchModeTranslation')}
                 </option>
               </select>
             </div>
@@ -294,7 +284,7 @@ function SearchContent() {
                   className="block text-sm font-medium mb-2"
                   style={{ color: "var(--fixed-text-secondary)" }}
                 >
-                  {locale === "en" ? "Translation" : "Перевод"}
+                  {t('translation')}
                 </label>
                 <select
                   value={translationLanguage}
@@ -321,7 +311,7 @@ function SearchContent() {
                 className="block text-sm font-medium mb-2"
                 style={{ color: "var(--fixed-text-secondary)" }}
               >
-                {locale === "en" ? "Filter by Surah" : "Фильтр по суре"}
+                {t('filterBySurahLabel')}
               </label>
               <select
                 value={surahFilter || ""}
@@ -338,11 +328,11 @@ function SearchContent() {
                 }}
               >
                 <option value="">
-                  {locale === "en" ? "All Surahs" : "Все суры"}
+                  {t('allSurahs')}
                 </option>
                 {Array.from({ length: 114 }, (_, i) => (
                   <option key={i + 1} value={i + 1}>
-                    {locale === "en" ? `Surah ${i + 1}` : `Сура ${i + 1}`}
+                    {`${t('surahNumber')} ${i + 1}`}
                   </option>
                 ))}
               </select>
@@ -354,7 +344,7 @@ function SearchContent() {
                 className="block text-sm font-medium mb-2"
                 style={{ color: "var(--fixed-text-secondary)" }}
               >
-                {locale === "en" ? "Filter by Juz" : "Фильтр по джузу"}
+                {t('filterByJuz')}
               </label>
               <select
                 value={juzFilter || ""}
@@ -371,11 +361,11 @@ function SearchContent() {
                 }}
               >
                 <option value="">
-                  {locale === "en" ? "All Juz" : "Все джузы"}
+                  {t('allJuz')}
                 </option>
                 {Array.from({ length: 30 }, (_, i) => (
                   <option key={i + 1} value={i + 1}>
-                    {locale === "en" ? `Juz ${i + 1}` : `Джуз ${i + 1}`}
+                    {`${t('juzNumber')} ${i + 1}`}
                   </option>
                 ))}
               </select>
@@ -394,13 +384,7 @@ function SearchContent() {
           }}
         >
           <p style={{ color: "var(--color-primary)" }}>
-            {locale === "en"
-              ? `Found ${totalResults} result${
-                  totalResults !== 1 ? "s" : ""
-                } for "${debouncedQuery}"`
-              : `Найдено ${totalResults} результат${
-                  totalResults === 1 ? "" : totalResults < 5 ? "а" : "ов"
-                } по запросу "${debouncedQuery}"`}
+            {`${totalResults} ${t('searchResultsCount')} "${debouncedQuery}"`}
           </p>
         </div>
       )}
@@ -413,7 +397,7 @@ function SearchContent() {
             style={{ borderColor: "var(--color-primary)" }}
           ></div>
           <p className="mt-2" style={{ color: "var(--fixed-text-secondary)" }}>
-            {locale === "en" ? "Searching..." : "Поиск..."}
+            {t('searching')}
           </p>
         </div>
       )}
@@ -445,7 +429,7 @@ function SearchContent() {
                   )}
                   <span>
                     {" "}
-                    • {locale === "en" ? "Verse" : "Аят"} {result.numberInSurah}
+                    • {t('verse')} {result.numberInSurah}
                   </span>
                   <span> • Juz {result.juz}</span>
                 </div>
@@ -457,7 +441,7 @@ function SearchContent() {
                       copyVerse(result);
                     }}
                     className="p-1 text-gray-500 hover:text-blue-500 transition-colors"
-                    title={locale === "en" ? "Copy verse" : "Копировать аят"}
+                    title={t('copyVerse')}
                   >
                     <Copy size={16} />
                   </button>
@@ -468,7 +452,7 @@ function SearchContent() {
                     }}
                     className="p-1 text-gray-500 hover:text-yellow-500 transition-colors"
                     title={
-                      locale === "en" ? "Bookmark verse" : "Добавить в закладки"
+                      t('bookmarkVerse')
                     }
                   >
                     <Bookmark size={16} />
@@ -515,7 +499,7 @@ function SearchContent() {
                       : "Найдено в переводе")}
                 </span>
                 <span className="flex items-center gap-1 text-blue-500 hover:text-blue-600">
-                  {locale === "en" ? "Read full surah" : "Читать полную суру"}
+                  {t('readFullSurah')}
                   <ExternalLink size={12} />
                 </span>
               </div>
@@ -529,12 +513,10 @@ function SearchContent() {
         <div className="text-center py-12">
           <BookOpen className="mx-auto h-16 w-16 text-gray-400 mb-4" />
           <h3 className="text-xl font-medium text-gray-700 dark:text-gray-300 mb-2">
-            {locale === "en" ? "No verses found" : "Аяты не найдены"}
+            {t('noVersesFound')}
           </h3>
           <p className="text-gray-500 dark:text-gray-400">
-            {locale === "en"
-              ? "Try different keywords or check your spelling"
-              : "Попробуйте другие ключевые слова или проверьте правописание"}
+            {t('tryModifyingSearch')}
           </p>
         </div>
       )}
@@ -544,7 +526,7 @@ function SearchContent() {
         <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Clock size={20} />
-            {locale === "en" ? "Recent Searches" : "Недавние поиски"}
+            {t('recentSearches')}
           </h3>
           <div className="flex flex-wrap gap-2">
             {searchHistory.slice(0, 10).map((searchTerm, index) => (
@@ -570,44 +552,38 @@ function SearchContent() {
           }}
         >
           <h3 className="text-lg font-semibold  mb-4">
-            {locale === "en" ? "Search Tips" : "Советы по поиску"}
+            {t('searchTips')}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
               <h4 className="font-medium mb-2">
-                {locale === "en" ? "Arabic Search:" : "Поиск на арабском:"}
+                {t('arabicSearchTip')}
               </h4>
               <ul className="space-y-1">
                 <li>
-                  •{" "}
-                  {locale === "en"
-                    ? "Use Arabic text for exact matches"
-                    : "Используйте арабский текст для точных совпадений"}
+                  • {t('arabicSearchDescription')}
                 </li>
                 <li>
-                  •{" "}
-                  {locale === "en"
-                    ? "Try different word forms"
-                    : "Попробуйте разные формы слов"}
+                  • {t('useArabicForExactMatch')}
+                </li>
+                <li>
+                  • {t('tryDifferentWordForms')}
                 </li>
               </ul>
             </div>
             <div>
               <h4 className="font-medium mb-2">
-                {locale === "en" ? "Translation Search:" : "Поиск в переводе:"}
+                {t('translationSearchTip')}
               </h4>
               <ul className="space-y-1">
                 <li>
-                  •{" "}
-                  {locale === "en"
-                    ? "Search in your preferred language"
-                    : "Ищите на предпочитаемом языке"}
+                  • {t('translationSearchDescription')}
                 </li>
                 <li>
-                  •{" "}
-                  {locale === "en"
-                    ? "Use keywords and phrases"
-                    : "Используйте ключевые слова и фразы"}
+                  • {t('searchInPreferredLanguage')}
+                </li>
+                <li>
+                  • {t('useKeywordsAndPhrases')}
                 </li>
               </ul>
             </div>
@@ -619,6 +595,7 @@ function SearchContent() {
 }
 
 export default function SearchPage() {
+  const { t } = useLocale();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -631,7 +608,7 @@ export default function SearchPage() {
   }, []);
 
   if (isLoading) {
-    return <SearchLoader message="Подготавливаем поисковую систему..." />;
+    return <SearchLoader message={t('preparingSearchSystem')} />;
   }
 
   return (

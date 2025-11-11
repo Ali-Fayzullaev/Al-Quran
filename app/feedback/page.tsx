@@ -12,7 +12,7 @@ interface FeedbackForm {
 }
 
 export default function FeedbackPage() {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const [form, setForm] = useState<FeedbackForm>({
     type: 'bug',
     title: '',
@@ -22,46 +22,7 @@ export default function FeedbackPage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState('');
 
-  const translations = {
-    en: {
-      title: "Feedback & Support",
-      arabicTitle: "الملاحظات والدعم",
-      subtitle: "Help us improve by reporting bugs or suggesting new features",
-      bugReport: "❗ Bug Report",
-      featureRequest: "✨ Feature Request", 
-      improvement: "🔧 Improvement",
-      other: "💬 Other",
-      feedbackType: "Feedback Type",
-      issueTitle: "Issue/Suggestion Title",
-      description: "Detailed Description",
-      submitFeedback: "Submit Feedback",
-      successTitle: "Thank you for your feedback!",
-      successMessage: "We have received your message and will review it soon. Your input helps us make the site better!",
-      backToSite: "Back to Site",
-      descriptionPlaceholder: "Please describe the issue or your suggestion in detail...",
-      titlePlaceholder: "Brief summary of the issue or request",
-    },
-    ru: {
-      title: "Обратная связь и поддержка",
-      arabicTitle: "الملاحظات والدعم", 
-      subtitle: "Помогите нам улучшить сайт, сообщив об ошибках или предложив новые функции",
-      bugReport: "🐛 Сообщить об ошибке",
-      featureRequest: "✨ Предложить функцию",
-      improvement: "🔧 Улучшение",
-      other: "💬 Другое",
-      feedbackType: "Тип обращения",
-      issueTitle: "Заголовок проблемы/предложения",
-      description: "Подробное описание",
-      submitFeedback: "Отправить отзыв",
-      successTitle: "Спасибо за ваш отзыв!",
-      successMessage: "Мы получили ваше сообщение и скоро его рассмотрим. Ваши замечания помогают нам делать сайт лучше!",
-      backToSite: "Вернуться на сайт",
-      descriptionPlaceholder: "Пожалуйста, опишите проблему или ваше предложение подробно...",
-      titlePlaceholder: "Краткое описание проблемы или запроса",
-    }
-  };
 
-  const currentTranslations = translations[locale as keyof typeof translations] || translations.ru;
 
   const handleInputChange = (field: keyof FeedbackForm, value: string) => {
     setForm(prev => ({ ...prev, [field]: value }));
@@ -81,7 +42,7 @@ export default function FeedbackPage() {
       
       const message = `${typeEmoji} Новое обращение от пользователя:
 
-🏷️ Тип: ${currentTranslations[form.type as keyof typeof currentTranslations]}
+🏷️ Тип: ${t(form.type)}
 
 📋 Заголовок: ${form.title}
 
@@ -143,14 +104,14 @@ ${form.description}
             className="text-4xl font-bold mb-6"
             style={{ color: 'var(--color-primary)' }}
           >
-            {currentTranslations.title}
+            {t('feedbackAndSupport')}
           </h1>
 
           <p 
             className="max-w-2xl mx-auto leading-relaxed mb-8 text-lg"
             style={{ color: 'var(--color-text-secondary)' }}
           >
-            {currentTranslations.subtitle}
+            {t('feedbackSubtitle')}
           </p>
         </div>
 
@@ -170,14 +131,14 @@ ${form.description}
             </div>
             
             <h2 className="text-2xl font-bold text-green-600 dark:text-green-400 mb-4">
-              {currentTranslations.successTitle}
+              {t('successTitle')}
             </h2>
             
             <p 
               className="mb-8 text-lg"
               style={{ color: 'var(--color-text-secondary)' }}
             >
-              {currentTranslations.successMessage}
+              {t('successMessage')}
             </p>
 
             <button
@@ -185,7 +146,7 @@ ${form.description}
               className="px-8 py-3 text-white rounded-lg transition-colors font-medium"
               style={{ backgroundColor: 'var(--color-primary)' }}
             >
-              {currentTranslations.backToSite}
+              {t('backToSite')}
             </button>
           </div>
         ) : (
@@ -202,7 +163,7 @@ ${form.description}
                   className="block text-sm font-semibold mb-3"
                   style={{ color: 'var(--color-text)' }}
                 >
-                  {currentTranslations.feedbackType}
+                  {t('feedbackType')}
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {(['bug', 'feature', 'improvement', 'other'] as FeedbackType[]).map((type) => (
@@ -218,10 +179,10 @@ ${form.description}
                         borderColor: form.type === type ? 'var(--color-primary)' : 'var(--color-border)'
                       }}
                     >
-                      {type === 'bug' ? currentTranslations.bugReport : 
-                        type === 'feature' ? currentTranslations.featureRequest :
-                        type === 'improvement' ? currentTranslations.improvement :
-                        currentTranslations.other}
+                      {type === 'bug' ? t('bugReport') : 
+                        type === 'feature' ? t('featureRequest') :
+                        type === 'improvement' ? t('improvement') :
+                        t('other')}
                     </button>
                   ))}
                 </div>
@@ -233,13 +194,13 @@ ${form.description}
                   className="block text-sm font-medium mb-2"
                   style={{ color: 'var(--color-text)' }}
                 >
-                  {currentTranslations.issueTitle} *
+                  {t('issueTitle')} *
                 </label>
                 <input
                   type="text"
                   value={form.title}
                   onChange={(e) => handleInputChange('title', e.target.value)}
-                  placeholder={currentTranslations.titlePlaceholder}
+                  placeholder={t('titlePlaceholder')}
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors"
                   style={{
                     backgroundColor: 'var(--color-surface)',
@@ -257,12 +218,12 @@ ${form.description}
                   className="block text-sm font-medium mb-2"
                   style={{ color: 'var(--color-text)' }}
                 >
-                  {currentTranslations.description} *
+                  {t('description')} *
                 </label>
                 <textarea
                   value={form.description}
                   onChange={(e) => handleInputChange('description', e.target.value)}
-                  placeholder={currentTranslations.descriptionPlaceholder}
+                  placeholder={t('descriptionPlaceholder')}
                   rows={6}
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 resize-none transition-colors"
                   style={{
@@ -304,7 +265,7 @@ ${form.description}
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
-                    {currentTranslations.submitFeedback}
+                    {t('submitFeedback')}
                   </>
                 )}
               </button>

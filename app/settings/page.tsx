@@ -243,8 +243,8 @@ export default function SettingsPage() {
             {[
               { id: 'audio', icon: Volume2, label: t('audio') },
               { id: 'translation', icon: Languages, label: t('translation') },
-              { id: 'reading', icon: Type, label: locale === 'en' ? 'Reading' : 'Чтение' },
-              { id: 'colors', icon: Eye, label: locale === 'en' ? 'Colors' : 'Цвета' }
+              { id: 'reading', icon: Type, label: t('reading') },
+              { id: 'colors', icon: Eye, label: t('colors') }
             ].map(({ id, icon: Icon, label }) => (
               <button
                 key={id}
@@ -308,8 +308,8 @@ export default function SettingsPage() {
                     className="text-xs"
                   >
                     {showAllReciters 
-                      ? (locale === 'en' ? 'Show Popular' : 'Популярные')
-                      : (locale === 'en' ? 'Show All' : 'Все')
+                      ? t('showPopular')
+                      : t('showAll')
                     }
                   </Button>
                 </div>
@@ -319,7 +319,7 @@ export default function SettingsPage() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" style={{ color: 'var(--fixed-text-secondary)' }} />
                   <input
                     type="text"
-                    placeholder={locale === 'en' ? 'Search reciters...' : 'Поиск чтецов...'}
+                    placeholder={t('searchReciters')}
                     value={reciterSearch}
                     onChange={(e) => setReciterSearch(e.target.value)}
                     className="w-full pl-10 pr-4 py-2 border rounded-lg"
@@ -430,7 +430,7 @@ export default function SettingsPage() {
                       {t('autoplayNext')}
                     </p>
                     <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-                      {locale === 'en' ? 'Automatically play next verse' : 'Автоматически воспроизводить следующий аят'}
+                      {t('autoPlayNext')}
                     </p>
                   </div>
                   <button
@@ -471,7 +471,7 @@ export default function SettingsPage() {
             {/* Quick Language Selection */}
             <div className="mb-6">
               <h3 className="text-lg font-medium mb-3" style={{ color: 'var(--fixed-text)' }}>
-                {locale === 'en' ? 'Quick Setup' : 'Быстрая настройка'}
+                {t('quickSetup')}
               </h3>
               <div className="flex gap-2 flex-wrap">
                 {[
@@ -498,7 +498,7 @@ export default function SettingsPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
-                placeholder={locale === 'en' ? 'Search translations...' : 'Поиск переводов...'}
+                placeholder={t('searchTranslations')}
                 value={translationSearch}
                 onChange={(e) => setTranslationSearch(e.target.value)}
                 
@@ -605,7 +605,7 @@ export default function SettingsPage() {
                       {t('showTranslation')}
                     </p>
                     <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-                      {locale === 'en' ? 'Show verse translations' : 'Показывать переводы аятов'}
+                      {t('showTranslations')}
                     </p>
                   </div>
                   <button
@@ -628,7 +628,7 @@ export default function SettingsPage() {
                       {t('showTransliteration')}
                     </p>
                     <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-                      {locale === 'en' ? 'Show Arabic transliteration' : 'Показывать транслитерацию'}
+                      {t('showTransliteration')}
                     </p>
                   </div>
                   <button
@@ -679,7 +679,7 @@ export default function SettingsPage() {
         
         <Button className="flex items-center gap-2 theme-btn-primary px-6 py-3">
           <Save size={18} />
-          {locale === 'en' ? 'Settings Saved' : 'Настройки сохранены'}
+          {t('settingsSaved')}
         </Button>
       </motion.div>
 
@@ -688,14 +688,11 @@ export default function SettingsPage() {
         <div className="flex items-center justify-center gap-2 mb-2">
           <SettingsIcon className="w-4 h-4" />
           <span className="font-medium">
-            {locale === 'en' ? 'Auto-Save Enabled' : 'Автосохранение включено'}
+            {t('autoSaveEnabled')}
           </span>
         </div>
         <p>
-          {locale === 'en' 
-            ? 'All settings are automatically saved to your device and will persist across sessions.'
-            : 'Все настройки автоматически сохраняются на вашем устройстве и сохранятся между сессиями.'
-          }
+          {t('settingsAutoSave')}
         </p>
       </div>
     </div>

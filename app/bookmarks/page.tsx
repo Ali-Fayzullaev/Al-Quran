@@ -23,7 +23,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 export default function BookmarksPage() {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const { bookmarks, removeBookmark } = useQuranStore();
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<'date' | 'surah'>('date');
@@ -91,27 +91,25 @@ export default function BookmarksPage() {
             </motion.div>
             
             <h1 className="text-3xl md:text-4xl font-bold mb-4 gradient-text-primary">
-              {locale === 'en' ? 'Your Bookmarks' : 'Ваши закладки'}
+              {t('yourBookmarks')}
             </h1>
             
             <p className="mb-8 max-w-md mx-auto" style={{ color: 'var(--fixed-text-secondary)' }}>
-              {locale === 'en' 
-                ? 'You haven\'t saved any verses yet. Start reading and bookmark your favorite ayahs!'
-                : 'Вы еще не сохранили ни одного аята. Начните читать и сохраняйте любимые аяты!'}
+              {t('startSavingVerses')}
             </p>
             
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/surahs">
                 <Button className="theme-btn-primary gap-2">
                   <Book className="w-4 h-4" />
-                  {locale === 'en' ? 'Browse Surahs' : 'Просмотр сур'}
+                  {t('browseSurahs')}
                 </Button>
               </Link>
               
               <Link href="/search">
                 <Button variant="outline" className="gap-2">
                   <Search className="w-4 h-4" />
-                  {locale === 'en' ? 'Search Quran' : 'Поиск в Коране'}
+                  {t('searchQuran')}
                 </Button>
               </Link>
             </div>
@@ -136,13 +134,11 @@ export default function BookmarksPage() {
           </motion.div>
           
           <h1 className="text-3xl md:text-4xl font-bold mb-2 gradient-text-primary">
-            {locale === 'en' ? 'Your Bookmarks' : 'Ваши закладки'}
+            {t('yourBookmarks')}
           </h1>
           
           <p className="mb-6" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {bookmarks.length} {locale === 'en' 
-              ? `saved verse${bookmarks.length !== 1 ? 's' : ''}`
-              : `сохраненных аят${bookmarks.length === 1 ? '' : bookmarks.length < 5 ? 'а' : 'ов'}`}
+            {bookmarks.length} {t('bookmarksFound')}
           </p>
 
           {/* Search and Filters */}
@@ -151,7 +147,7 @@ export default function BookmarksPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" style={{ color: 'var(--fixed-text-secondary)' }} />
               <input
                 type="text"
-                placeholder={locale === 'en' ? 'Search bookmarks...' : 'Поиск закладок...'}
+                placeholder={t('searchBookmarks')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:outline-none"
@@ -179,9 +175,7 @@ export default function BookmarksPage() {
                 className="gap-2"
               >
                 <Filter className="w-4 h-4" />
-                {locale === 'en' 
-                  ? (sortBy === 'date' ? 'By Date' : 'By Surah') 
-                  : (sortBy === 'date' ? 'По дате' : 'По суре')}
+                {sortBy === 'date' ? t('sortByDate') : t('sortBySurah')}
               </Button>
               
               <Button
@@ -217,9 +211,7 @@ export default function BookmarksPage() {
           <div className="text-center py-12">
             <Search className="w-12 h-12 mx-auto mb-4" style={{ color: 'var(--fixed-text-secondary)' }} />
             <p style={{ color: 'var(--fixed-text-secondary)' }}>
-              {locale === 'en' 
-                ? `No bookmarks found for "${searchQuery}"`
-                : `Не найдено закладок для "${searchQuery}"`}
+              {t('noBookmarksYet')}
             </p>
           </div>
         )}
@@ -230,14 +222,14 @@ export default function BookmarksPage() {
             <Link href="/surahs">
               <Button variant="outline" className="gap-2">
                 <Book className="w-4 h-4" />
-                {locale === 'en' ? 'Browse Surahs' : 'Просмотр сур'}
+                {t('browseSurahs')}
               </Button>
             </Link>
             
             <Link href="/search">
               <Button variant="outline" className="gap-2">
                 <Search className="w-4 h-4" />
-                {locale === 'en' ? 'Search Quran' : 'Поиск в Коране'}
+                {t('searchQuran')}
               </Button>
             </Link>
           </div>
@@ -263,6 +255,7 @@ function BookmarkCard({
   locale: string;
   formatDate: (date: Date) => string;
 }) {
+  const { t } = useLocale();
   const { data: surahData } = useSurah(bookmark.surahNumber);
   
   return (
@@ -288,7 +281,7 @@ function BookmarkCard({
             </div>
             <div>
               <h3 className="font-semibold" style={{ color: 'var(--fixed-text)' }}>
-                {locale === 'en' ? 'Surah' : 'Сура'} {bookmark.surahNumber}
+                {t('surahNumber')} {bookmark.surahNumber}
               </h3>
               {surahData && (
                 <p className="text-xs" style={{ color: 'var(--fixed-text-secondary)' }}>
@@ -304,6 +297,7 @@ function BookmarkCard({
             variant="ghost"
             size="sm"
             onClick={onCopy}
+            title={t('copyText')}
             className="p-2"
             style={{
               '--hover-bg': 'var(--color-border)'
@@ -322,6 +316,7 @@ function BookmarkCard({
             variant="ghost"
             size="sm"
             onClick={onRemove}
+            title={t('removeBookmark')}
             className="p-2 text-red-600 dark:text-red-400"
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
@@ -354,7 +349,7 @@ function BookmarkCard({
         <Link href={`/surah/${bookmark.surahNumber}?verse=${bookmark.verseNumber}`}>
           <Button size="sm" className="bg-green-600 hover:bg-green-700 text-xs">
             <Play className="w-3 h-3 mr-1" />
-            {locale === 'en' ? 'Read' : 'Читать'}
+            {t('read')}
           </Button>
         </Link>
       </div>

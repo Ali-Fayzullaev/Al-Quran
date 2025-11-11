@@ -53,7 +53,7 @@ interface Translations {
 }
 
 export default function AIHelperPage() {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const [messages, setMessages] = useState<Message[]>([]);
   const [question, setQuestion] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -82,94 +82,17 @@ export default function AIHelperPage() {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  // Мемоизированные переводы
-  const translations: Translations = useMemo(
-    () => ({
-      en: {
-        title: "Smart Quran Assistant",
-        arabicTitle: "مساعد القرآن الذكي",
-        subtitle:
-          "Ask questions about Quran, Islam and religious practices. Get wise answers with references to sacred texts.",
-        popularQuestions: "Popular Questions:",
-        startConversation:
-          "Start a conversation by asking a question or selecting one of the suggested ones",
-        askQuestion: "Ask your question about Quran or Islam...",
-        send: "Send",
-        clearChat: "Clear Chat",
-        thinking: "Thinking...",
-        disclaimer:
-          "This AI assistant provides information for educational purposes. For important religious questions, consult qualified scholars.",
-        complexQuestion: "If you have a complex question...",
-        complexQuestionDesc:
-          "Our scholars will personally review and answer your question with detailed explanation",
-        yourContact: "Your contact (phone or email)",
-        yourQuestion: "Your question",
-        submitQuestion: "Submit Question",
-        responseTime: "We will respond within 1-7 days, InshaAllah",
-        questionSent: "Your question has been sent successfully!",
-        thankYou:
-          "Thank you for your question. Our scholars will review it and respond soon.",
-        backToChat: "Back to Chat",
-        contactPlaceholder: "Enter your phone number or email",
-        questionPlaceholder: "Describe your question in detail...",
-        hadithQuote:
-          "Every son of Adam makes mistakes, but the best of those who make mistakes are those who repent.",
-        presetQuestions: [
-          "What does Al-Fatiha mean?",
-          "How to perform prayer correctly?",
-          "What is the wisdom of fasting in Ramadan?",
-          "What does the Quran say about patience?",
-          "Explain the meaning of 99 names of Allah",
-          "What is Tawhid in Islam?",
-          "What duas are recommended to recite daily?",
-          "Tell me about Prophet Muhammad (peace be upon him)",
-        ],
-      },
-      ru: {
-        title: "Умный помощник по Корану",
-        arabicTitle: "مساعد القرآن الذكي",
-        subtitle:
-          "Задавайте вопросы о Коране, исламе и религиозной практике. Получайте мудрые ответы с ссылками на священные тексты.",
-        popularQuestions: "Популярные вопросы:",
-        startConversation:
-          "Начните разговор, задав вопрос или выбрав один из предложенных",
-        askQuestion: "Задайте ваш вопрос о Коране или исламе...",
-        send: "Отправить",
-        clearChat: "Очистить чат",
-        thinking: "Размышляю...",
-        disclaimer:
-          "Этот AI помощник предоставляет информацию в образовательных целях. Для важных религиозных вопросов обращайтесь к квалифицированным ученым.",
-        complexQuestion: "Если у вас сложный вопрос...",
-        complexQuestionDesc:
-          "Наши ученые лично рассмотрят и ответят на ваш вопрос с подробным объяснением",
-        yourContact: "Ваш контакт (телефон или почта)",
-        yourQuestion: "Ваш вопрос",
-        submitQuestion: "Отправить вопрос",
-        responseTime: "Ответим в течение 1-7 дней, иншаАллах",
-        questionSent: "Ваш вопрос успешно отправлен!",
-        thankYou:
-          "Спасибо за ваш вопрос. Наши ученые рассмотрят его и ответят в ближайшее время.",
-        backToChat: "Вернуться к чату",
-        contactPlaceholder: "Введите номер телефона или email",
-        questionPlaceholder: "Опишите ваш вопрос подробно...",
-        hadithQuote:
-          "Каждый сын Адама совершает ошибки, но лучшие из ошибающихся — кающиеся.",
-        presetQuestions: [
-          "Что означает Аль-Фатиха?",
-          "Как правильно читать намаз?",
-          "В чем мудрость поста в Рамадан?",
-          "Что говорит Коран о терпении?",
-          "Объясни смысл 99 имен Аллаха",
-          "Что такое таухид в исламе?",
-          "Какие дуа рекомендуется читать ежедневно?",
-          "Расскажи о пророке Мухаммаде (мир ему)",
-        ],
-      },
-    }),
-    []
-  );
-
-  const currentTranslations = translations[locale] || translations.en;
+  // Предустановленные вопросы
+  const presetQuestions = [
+    t('presetQuestion1'),
+    t('presetQuestion2'), 
+    t('presetQuestion3'),
+    t('presetQuestion4'),
+    t('presetQuestion5'),
+    t('presetQuestion6'),
+    t('presetQuestion7'),
+    t('presetQuestion8')
+  ];
 
   const generateSystemPrompt = useCallback(() => {
     if (locale === "en") {
@@ -520,21 +443,21 @@ Remember: knowledge comes from Allah, and we are all learners.`;
             className="text-4xl font-bold mb-3"
             style={{ color: 'var(--color-primary)' }}
           >
-            {currentTranslations.arabicTitle}
+            {t('arabicTitle')}
           </h1>
 
           <p 
             className="text-xl mb-4 font-medium"
             style={{ color: 'var(--color-text)' }}
           >
-            {currentTranslations.title}
+            {t('smartQuranAssistant')}
           </p>
 
           <p 
             className="max-w-2xl mx-auto leading-relaxed mb-6"
             style={{ color: 'var(--color-text-secondary)' }}
           >
-            {currentTranslations.subtitle}
+            {t('aiHelperSubtitle')}
           </p>
 
           {/* Кнопка для сложных вопросов */}
@@ -557,7 +480,7 @@ Remember: knowledge comes from Allah, and we are all learners.`;
                   d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              {currentTranslations.complexQuestion}
+              {t('complexQuestion')}
             </button>
           </div>
         </div>
@@ -589,13 +512,13 @@ Remember: knowledge comes from Allah, and we are all learners.`;
                   </svg>
                 </div>
                 <h3 className="text-2xl font-bold text-green-600 dark:text-green-400 mb-4">
-                  {currentTranslations.questionSent}
+                  {t('questionSent')}
                 </h3>
                 <p 
                   className="mb-6"
                   style={{ color: 'var(--color-text-secondary)' }}
                 >
-                  {currentTranslations.thankYou}
+                  {t('thankYou')}
                 </p>
                 <div 
                   className="p-4 rounded-lg border mb-6"
@@ -606,7 +529,7 @@ Remember: knowledge comes from Allah, and we are all learners.`;
                   }}
                 >
                   <p className="font-medium">
-                    ⏰ {currentTranslations.responseTime}
+                    ⏰ {t('responseTime')}
                   </p>
                 </div>
                 <button
@@ -617,7 +540,7 @@ Remember: knowledge comes from Allah, and we are all learners.`;
                   className="px-6 py-3 text-white rounded-lg transition-colors font-medium"
                   style={{ backgroundColor: 'var(--color-primary)' }}
                 >
-                  {currentTranslations.backToChat}
+                  {t('backToChat')}
                 </button>
               </div>
             ) : (
@@ -627,10 +550,10 @@ Remember: knowledge comes from Allah, and we are all learners.`;
                     className="text-2xl font-bold mb-2"
                     style={{ color: 'var(--color-primary)' }}
                   >
-                    🎓 {currentTranslations.complexQuestion}
+                    🎓 {t('complexQuestion')}
                   </h3>
                   <p style={{ color: 'var(--color-text-secondary)' }}>
-                    {currentTranslations.complexQuestionDesc}
+                    {t('complexQuestionDesc')}
                   </p>
                 </div>
 
@@ -640,13 +563,13 @@ Remember: knowledge comes from Allah, and we are all learners.`;
                       className="block text-sm font-medium mb-2"
                       style={{ color: 'var(--color-text)' }}
                     >
-                      {currentTranslations.yourContact}
+                      {t('yourContact')}
                     </label>
                     <input
                       type="text"
                       value={contact}
                       onChange={(e) => setContact(e.target.value)}
-                      placeholder={currentTranslations.contactPlaceholder}
+                      placeholder={t('contactPlaceholder')}
                       className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors"
                       style={{ 
                         backgroundColor: 'var(--color-surface)',
@@ -663,12 +586,12 @@ Remember: knowledge comes from Allah, and we are all learners.`;
                       className="block text-sm font-medium mb-2"
                       style={{ color: 'var(--color-text)' }}
                     >
-                      {currentTranslations.yourQuestion}
+                      {t('yourQuestion')}
                     </label>
                     <textarea
                       value={complexQuestion}
                       onChange={(e) => setComplexQuestion(e.target.value)}
-                      placeholder={currentTranslations.questionPlaceholder}
+                      placeholder={t('questionPlaceholder')}
                       className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 resize-none transition-colors"
                       style={{ 
                         backgroundColor: 'var(--color-surface)',
@@ -704,7 +627,7 @@ Remember: knowledge comes from Allah, and we are all learners.`;
                         />
                       </svg>
                       <span className="font-medium">
-                        ⏰ {currentTranslations.responseTime}
+                        ⏰ {t('responseTime')}
                       </span>
                     </div>
                   </div>
@@ -750,7 +673,7 @@ Remember: knowledge comes from Allah, and we are all learners.`;
                               d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
                             />
                           </svg>
-                          {currentTranslations.submitQuestion}
+                          {t('submitQuestion')}
                         </>
                       )}
                     </button>
@@ -768,10 +691,10 @@ Remember: knowledge comes from Allah, and we are all learners.`;
               className="text-lg font-semibold mb-6 text-center"
               style={{ color: 'var(--color-text)' }}
             >
-              {currentTranslations.popularQuestions}
+              {t('popularQuestions')}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {currentTranslations.presetQuestions.map((presetQ, index) => (
+              {presetQuestions.map((presetQ, index) => (
                 <button
                   key={index}
                   onClick={() => handlePresetQuestion(presetQ)}
@@ -821,7 +744,7 @@ Remember: knowledge comes from Allah, and we are all learners.`;
                   className="text-lg"
                   style={{ color: 'var(--color-text-secondary)' }}
                 >
-                  {currentTranslations.startConversation}
+                  {t('startConversation')}
                 </p>
               </div>
             ) : (
@@ -879,7 +802,7 @@ Remember: knowledge comes from Allah, and we are all learners.`;
                           <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
                           <div className="w-2 h-2 bg-current rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
                         </div>
-                        <span className="text-sm ml-2">{currentTranslations.thinking}</span>
+                        <span className="text-sm ml-2">{t('thinking')}</span>
                       </div>
                     </div>
                   </div>
@@ -905,7 +828,7 @@ Remember: knowledge comes from Allah, and we are all learners.`;
                 ref={inputRef}
                 value={question}
                 onChange={(e) => setQuestion(e.target.value.slice(0, MAX_QUESTION_LENGTH))}
-                placeholder={currentTranslations.askQuestion}
+                placeholder={t('askQuestion')}
                 className="w-full p-4 pr-16 border rounded-xl focus:ring-2 focus:outline-none resize-none transition-colors"
                 style={{
                   backgroundColor: 'var(--color-background-secondary)',
@@ -964,7 +887,7 @@ Remember: knowledge comes from Allah, and we are all learners.`;
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
-                  {currentTranslations.clearChat}
+                  {t('clearChat')}
                 </div>
               </button>
 
@@ -977,7 +900,7 @@ Remember: knowledge comes from Allah, and we are all learners.`;
                 {isLoading ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    <span>{currentTranslations.thinking}</span>
+                    <span>{t('thinking')}</span>
                   </>
                 ) : isRateLimited ? (
                   <>
@@ -988,7 +911,7 @@ Remember: knowledge comes from Allah, and we are all learners.`;
                   </>
                 ) : (
                   <>
-                    <span>{currentTranslations.send}</span>
+                    <span>{t('send')}</span>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
@@ -1012,9 +935,9 @@ Remember: knowledge comes from Allah, and we are all learners.`;
               بِسْمِ اللَّهِ
             </span>
             <br />
-            {currentTranslations.disclaimer}
+            {t('disclaimer')}
             <br />
-            <span className="italic">{currentTranslations.hadithQuote}</span>
+            <span className="italic">{t('hadithQuote')}</span>
           </p>
         </div>
       </div>

@@ -147,8 +147,34 @@ const QUICK_TRANSLATION_COLORS = [
 ];
 
 export default function CustomColorSettings() {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const { theme, setTheme } = useTheme();
+  
+  // Функция для получения локализованного названия схемы
+  const getSchemeName = (schemeId: string) => {
+    const key = `scheme${schemeId.charAt(0).toUpperCase() + schemeId.slice(1).replace(/[-]/g, '').toLowerCase()}Name`;
+    return t(key);
+  };
+  
+  // Функция для получения локализованного описания схемы
+  const getSchemeDesc = (schemeId: string) => {
+    const key = `scheme${schemeId.charAt(0).toUpperCase() + schemeId.slice(1).replace(/[-]/g, '').toLowerCase()}Desc`;
+    return t(key);
+  };
+  
+  // Функция для получения локализованного названия цвета
+  const getColorName = (preset: { name: { en: string; ru: string } }) => {
+    // Пытаемся найти соответствующий ключ перевода для цвета
+    const colorName = preset.name.en.toLowerCase().replace(/\s+/g, '').replace(/[()]/g, '');
+    const colorKey = `color${colorName.charAt(0).toUpperCase() + colorName.slice(1)}`;
+    
+    // Если у нас есть перевод для этого цвета, используем его, иначе fallback к старому методу
+    try {
+      return t(colorKey);
+    } catch {
+      return locale === 'en' ? preset.name.en : preset.name.ru;
+    }
+  };
   const {
     customButtonColor,
     customQuranTextColor,
@@ -303,13 +329,11 @@ export default function CustomColorSettings() {
         <div className="inline-flex items-center gap-3 mb-3">
           <Palette className="w-6 h-6" style={{ color: customButtonColor || '#10b981' }} />
           <h2 className="text-2xl font-bold" style={{ color: 'var(--fixed-text)' }}>
-            {locale === 'en' ? 'Custom Colors' : 'Настройки цветов'}
+            {t('customColors')}
           </h2>
         </div>
         <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-          {locale === 'en' 
-            ? 'Choose a ready-made color scheme or create your own' 
-            : 'Выберите готовую цветовую схему или создайте свою'}
+          {t('customColorsDesc')}
         </p>
       </div>
 
@@ -320,13 +344,11 @@ export default function CustomColorSettings() {
             {theme === 'light' ? <Sun className="w-5 h-5" style={{ color: 'var(--color-primary)' }} /> : <Moon className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />}
           </div>
           <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
-            {locale === 'en' ? 'Theme Mode' : 'Режим темы'}
+            {t('themeMode')}
           </h3>
         </div>
         <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-          {locale === 'en' 
-            ? 'Choose between light and dark mode' 
-            : 'Выберите между светлым и темным режимом'}
+          {t('themeModeDesc')}
         </p>
         
         <div className="flex gap-4">
@@ -346,10 +368,10 @@ export default function CustomColorSettings() {
             <Sun className="w-6 h-6" style={{ color: theme === 'light' ? 'var(--color-primary)' : 'var(--fixed-text-secondary)' }} />
             <div className="text-left">
               <div className="font-semibold" style={{ color: 'var(--fixed-text)' }}>
-                {locale === 'en' ? 'Light Theme' : 'Светлая тема'}
+                {t('lightTheme')}
               </div>
               <div className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-                {locale === 'en' ? 'For daytime reading' : 'Для дневного чтения'}
+                {t('lightThemeDesc')}
               </div>
             </div>
             {theme === 'light' && (
@@ -373,10 +395,10 @@ export default function CustomColorSettings() {
             <Moon className="w-6 h-6" style={{ color: theme === 'dark' ? 'var(--color-primary)' : 'var(--fixed-text-secondary)' }} />
             <div className="text-left">
               <div className="font-semibold" style={{ color: 'var(--fixed-text)' }}>
-                {locale === 'en' ? 'Dark Theme' : 'Темная тема'}
+                {t('darkTheme')}
               </div>
               <div className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-                {locale === 'en' ? 'For night reading' : 'Для ночного чтения'}
+                {t('darkThemeDesc')}
               </div>
             </div>
             {theme === 'dark' && (
@@ -391,29 +413,27 @@ export default function CustomColorSettings() {
         <div className="flex items-center gap-2">
           <Sparkles className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
           <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
-            {locale === 'en' ? 'Site Color Theme' : 'Цветовая тема сайта'}
+            {t('siteColorTheme')}
           </h3>
         </div>
         <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-          {locale === 'en' 
-            ? 'Choose the main color theme for the interface' 
-            : 'Выберите основную цветовую тему интерфейса'}
+          {t('siteColorThemeDesc')}
         </p>
         
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
           {[
-            { id: 'blue', name: locale === 'en' ? 'Blue' : 'Синий', color: '#3b82f6' },
-            { id: 'green', name: locale === 'en' ? 'Green' : 'Зеленый', color: '#10b981' },
-            { id: 'purple', name: locale === 'en' ? 'Purple' : 'Фиолетовый', color: '#8b5cf6' },
-            { id: 'amber', name: locale === 'en' ? 'Amber' : 'Янтарный', color: '#f59e0b' },
-            { id: 'pink', name: locale === 'en' ? 'Pink' : 'Розовый', color: '#ec4899' },
-            { id: 'orange', name: locale === 'en' ? 'Orange' : 'Оранжевый', color: '#f97316' },
-            { id: 'teal', name: locale === 'en' ? 'Teal' : 'Бирюзовый', color: '#14b8a6' },
-            { id: 'indigo', name: locale === 'en' ? 'Indigo' : 'Индиго', color: '#6366f1' },
-            { id: 'red', name: locale === 'en' ? 'Red' : 'Красный', color: '#ef4444' },
-            { id: 'yellow', name: locale === 'en' ? 'Yellow' : 'Желтый', color: '#eab308' },
-            { id: 'gray', name: locale === 'en' ? 'Gray' : 'Серый', color: '#6b7280' },
-            { id: 'sepia', name: locale === 'en' ? 'Sepia' : 'Сепия', color: '#92400e' }
+            { id: 'blue', name: t('colorBlue'), color: '#3b82f6' },
+            { id: 'green', name: t('colorGreen'), color: '#10b981' },
+            { id: 'purple', name: t('colorPurple'), color: '#8b5cf6' },
+            { id: 'amber', name: t('colorAmber'), color: '#f59e0b' },
+            { id: 'pink', name: t('colorPink'), color: '#ec4899' },
+            { id: 'orange', name: t('colorOrange'), color: '#f97316' },
+            { id: 'teal', name: t('colorTeal'), color: '#14b8a6' },
+            { id: 'indigo', name: t('colorIndigo'), color: '#6366f1' },
+            { id: 'red', name: t('colorRed'), color: '#ef4444' },
+            { id: 'yellow', name: t('colorYellow'), color: '#eab308' },
+            { id: 'gray', name: t('colorGray'), color: '#6b7280' },
+            { id: 'sepia', name: 'Sepia', color: '#92400e' }
           ].map((theme) => (
             <button
               key={theme.id}
@@ -453,14 +473,14 @@ export default function CustomColorSettings() {
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
             <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
-              {locale === 'en' ? 'Ready-Made Color Schemes' : 'Готовые цветовые схемы'}
+              {t('readyMadeColorSchemes')}
             </h3>
           </div>
           <p className="text-xs px-3 py-1 rounded-full" style={{ 
             backgroundColor: 'var(--color-primary)',
             color: 'white'
           }}>
-            {locale === 'en' ? 'Click to apply instantly' : 'Нажмите для мгновенного применения'}
+            {t('clickToApplyInstantly')}
           </p>
         </div>
         
@@ -500,19 +520,17 @@ export default function CustomColorSettings() {
                   className="text-sm leading-relaxed"
                   style={{ color: scheme.translationColor }}
                 >
-                  {locale === 'en' 
-                    ? 'In the name of Allah, the Most Gracious, the Most Merciful' 
-                    : 'Во имя Аллаха, Милостивого, Милосердного'}
+                  {t('inTheNameOfAllah')}
                 </p>
               </div>
               
               {/* Content */}
               <div className="p-4 space-y-2" style={{ backgroundColor: 'var(--fixed-background)' }}>
                 <h4 className="font-bold text-base" style={{ color: 'var(--fixed-text)' }}>
-                  {locale === 'en' ? scheme.name.en : scheme.name.ru}
+                  {getSchemeName(scheme.id)}
                 </h4>
                 <p className="text-xs leading-relaxed" style={{ color: 'var(--fixed-text-secondary)' }}>
-                  {locale === 'en' ? scheme.description.en : scheme.description.ru}
+                  {getSchemeDesc(scheme.id)}
                 </p>
                 
                 {/* Color Preview Dots */}
@@ -520,17 +538,17 @@ export default function CustomColorSettings() {
                   <div 
                     className="w-6 h-6 rounded-full border-2 border-white shadow-md"
                     style={{ backgroundColor: scheme.buttonColor }}
-                    title={locale === 'en' ? 'Buttons' : 'Кнопки'}
+                    title={t('buttonsTitle')}
                   />
                   <div 
                     className="w-6 h-6 rounded-full border-2 border-white shadow-md"
                     style={{ backgroundColor: scheme.textColor }}
-                    title={locale === 'en' ? 'Arabic Text' : 'Арабский текст'}
+                    title={t('arabicTextTitle')}
                   />
                   <div 
                     className="w-6 h-6 rounded-full border-2 border-white shadow-md"
                     style={{ backgroundColor: scheme.translationColor }}
-                    title={locale === 'en' ? 'Translation' : 'Перевод'}
+                    title={t('translationTitle')}
                   />
                 </div>
               </div>
@@ -559,7 +577,7 @@ export default function CustomColorSettings() {
             backgroundColor: 'var(--fixed-background)',
             color: 'var(--fixed-text-secondary)' 
           }}>
-            {locale === 'en' ? 'Or customize manually' : 'Или настройте вручную'}
+            {t('orCustomizeManually')}
           </span>
         </div>
       </div>
@@ -571,7 +589,7 @@ export default function CustomColorSettings() {
       }}>
         <h3 className="text-lg font-semibold flex items-center gap-2" style={{ color: 'var(--fixed-text)' }}>
           <div className="w-4 h-4 rounded-full" style={{ backgroundColor: buttonColor }}></div>
-          {locale === 'en' ? 'Button Color' : 'Цвет кнопок'}
+          {t('buttonColorLabel')}
         </h3>
         
         {/* Цветовой пикер */}
@@ -602,7 +620,7 @@ export default function CustomColorSettings() {
         {/* Предустановленные цвета */}
         <div className="space-y-2">
           <p className="text-xs" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {locale === 'en' ? 'Quick colors (click to apply instantly)' : 'Быстрые цвета (нажмите для мгновенного применения)'}
+            {t('quickColors')}
           </p>
           <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
             {QUICK_BUTTON_COLORS.map((preset) => (
@@ -617,7 +635,7 @@ export default function CustomColorSettings() {
                   backgroundColor: 'var(--fixed-background)',
                   borderColor: buttonColor === preset.color ? preset.color : 'var(--color-border)',
                 }}
-                title={locale === 'en' ? preset.name.en : preset.name.ru}
+                title={getColorName(preset)}
               >
                 <div className="w-8 h-8 rounded-full" style={{ backgroundColor: preset.color }}></div>
               </button>
@@ -633,7 +651,7 @@ export default function CustomColorSettings() {
             style={{ backgroundColor: buttonColor, color: 'white' }}
           >
             <Check className="w-4 h-4" />
-            {locale === 'en' ? 'Apply' : 'Применить'}
+            {t('applyColor')}
           </Button>
           <Button
             onClick={handleResetButtonColor}
@@ -641,7 +659,7 @@ export default function CustomColorSettings() {
             className="gap-2"
           >
             <RotateCcw className="w-4 h-4" />
-            {locale === 'en' ? 'Reset' : 'Сбросить'}
+            {t('resetColorBtn')}
           </Button>
         </div>
       </div>
@@ -653,7 +671,7 @@ export default function CustomColorSettings() {
       }}>
         <h3 className="text-lg font-semibold flex items-center gap-2" style={{ color: 'var(--fixed-text)' }}>
           <div className="w-4 h-4 rounded-full" style={{ backgroundColor: quranTextColor }}></div>
-          {locale === 'en' ? 'Quran Text Color (Arabic)' : 'Цвет текста Корана (арабский)'}
+          {t('quranTextColorFull')}
         </h3>
         
         {/* Цветовой пикер */}
@@ -695,7 +713,7 @@ export default function CustomColorSettings() {
                 backgroundColor: 'var(--fixed-background)',
                 borderColor: quranTextColor === preset.color ? preset.color : 'var(--color-border)',
               }}
-              title={locale === 'en' ? preset.name.en : preset.name.ru}
+              title={getColorName(preset)}
             >
               <div className="w-8 h-8 rounded-full" style={{ backgroundColor: preset.color }}></div>
             </button>
@@ -708,7 +726,7 @@ export default function CustomColorSettings() {
             بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
           </p>
           <p className="text-xs text-center mt-2" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {locale === 'en' ? 'Preview' : 'Предпросмотр'}
+            {t('preview')}
           </p>
         </div>
 
@@ -720,7 +738,7 @@ export default function CustomColorSettings() {
             style={{ backgroundColor: buttonColor, color: 'white' }}
           >
             <Check className="w-4 h-4" />
-            {locale === 'en' ? 'Apply' : 'Применить'}
+            {t('applyColor')}
           </Button>
           <Button
             onClick={handleResetQuranTextColor}
@@ -728,7 +746,7 @@ export default function CustomColorSettings() {
             className="gap-2"
           >
             <RotateCcw className="w-4 h-4" />
-            {locale === 'en' ? 'Reset' : 'Сбросить'}
+            {t('resetColorBtn')}
           </Button>
         </div>
       </div>
@@ -740,7 +758,7 @@ export default function CustomColorSettings() {
       }}>
         <h3 className="text-lg font-semibold flex items-center gap-2" style={{ color: 'var(--fixed-text)' }}>
           <div className="w-4 h-4 rounded-full" style={{ backgroundColor: translationColor }}></div>
-          {locale === 'en' ? 'Translation Text Color' : 'Цвет текста перевода'}
+          {t('translationTextColor')}
         </h3>
         
         {/* Цветовой пикер */}
@@ -782,7 +800,7 @@ export default function CustomColorSettings() {
                 backgroundColor: 'var(--fixed-background)',
                 borderColor: translationColor === preset.color ? preset.color : 'var(--color-border)',
               }}
-              title={locale === 'en' ? preset.name.en : preset.name.ru}
+              title={getColorName(preset)}
             >
               <div className="w-8 h-8 rounded-full" style={{ backgroundColor: preset.color }}></div>
             </button>
@@ -792,12 +810,10 @@ export default function CustomColorSettings() {
         {/* Предпросмотр */}
         <div className="p-4 rounded-lg border" style={{ borderColor: 'var(--color-border)' }}>
           <p className="text-base text-center" style={{ color: translationColor }}>
-            {locale === 'en' 
-              ? 'In the name of Allah, the Entirely Merciful, the Especially Merciful.' 
-              : 'Во имя Аллаха, Милостивого, Милосердного!'}
+            {t('inTheNameOfAllah')}
           </p>
           <p className="text-xs text-center mt-2" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {locale === 'en' ? 'Preview' : 'Предпросмотр'}
+            {t('preview')}
           </p>
         </div>
 
@@ -809,7 +825,7 @@ export default function CustomColorSettings() {
             style={{ backgroundColor: buttonColor, color: 'white' }}
           >
             <Check className="w-4 h-4" />
-            {locale === 'en' ? 'Apply' : 'Применить'}
+            {t('applyColor')}
           </Button>
           <Button
             onClick={handleResetTranslationColor}
@@ -817,7 +833,7 @@ export default function CustomColorSettings() {
             className="gap-2"
           >
             <RotateCcw className="w-4 h-4" />
-            {locale === 'en' ? 'Reset' : 'Сбросить'}
+            {t('resetColorBtn')}
           </Button>
         </div>
       </div>
