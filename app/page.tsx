@@ -1,3 +1,4 @@
+// app/page.tsx
 "use client";
 
 import { useLocale } from "@/context/LocaleContext";
@@ -66,12 +67,36 @@ export default function HomePage() {
   ];
 
   const popularSurahs = [
-    { number: 1, name: "Al-Fatiha", translation: locale === "en" ? "The Opening" : "Открывающая" },
-    { number: 2, name: "Al-Baqarah", translation: locale === "en" ? "The Cow" : "Корова" },
-    { number: 18, name: "Al-Kahf", translation: locale === "en" ? "The Cave" : "Пещера" },
-    { number: 36, name: "Ya-Sin", translation: locale === "en" ? "Ya-Sin" : "Я Син" },
-    { number: 55, name: "Ar-Rahman", translation: locale === "en" ? "The Beneficent" : "Милостивый" },
-    { number: 67, name: "Al-Mulk", translation: locale === "en" ? "The Sovereignty" : "Власть" },
+    { 
+      number: 1, 
+      name: "Al-Fatiha", 
+      translation: locale === "en" ? "The Opening" : locale === "ru" ? "Открывающая" : "Ochuvchi"
+    },
+    { 
+      number: 2, 
+      name: "Al-Baqarah", 
+      translation: locale === "en" ? "The Cow" : locale === "ru" ? "Корова" : "Sigir"
+    },
+    { 
+      number: 18, 
+      name: "Al-Kahf", 
+      translation: locale === "en" ? "The Cave" : locale === "ru" ? "Пещера" : "G'or"
+    },
+    { 
+      number: 36, 
+      name: "Ya-Sin", 
+      translation: locale === "en" ? "Ya-Sin" : locale === "ru" ? "Я Син" : "Yo Sin"
+    },
+    { 
+      number: 55, 
+      name: "Ar-Rahman", 
+      translation: locale === "en" ? "The Beneficent" : locale === "ru" ? "Милостивый" : "Rahmon"
+    },
+    { 
+      number: 67, 
+      name: "Al-Mulk", 
+      translation: locale === "en" ? "The Sovereignty" : locale === "ru" ? "Власть" : "Mulk"
+    },
   ];
 
   return (
@@ -105,9 +130,7 @@ export default function HomePage() {
             </h1>
             
             <p className="text-xl md:text-2xl max-w-3xl mx-auto mb-8 leading-relaxed" style={{ color: 'var(--fixed-text-secondary)' }}>
-              {locale === "en"
-                ? "Experience the Holy Quran with modern technology. Read, listen, search, and reflect with our intelligent platform designed for Muslims worldwide."
-                : "Познавайте Священный Коран с помощью современных технологий. Читайте, слушайте, ищите и размышляйте с нашей интеллектуальной платформой для мусульман всего мира."}
+              {t("heroDescription")}
             </p>
 
             {/* Search Bar */}
@@ -212,7 +235,7 @@ export default function HomePage() {
                   backgroundColor: 'var(--color-primary)'
                 }}>
                   <Quote className="w-4 h-4" />
-                  {locale === "en" ? `Verse ${randomAyah.numberInSurah}` : `Аят ${randomAyah.numberInSurah}`}
+                  {locale === "en" ? `Verse ${randomAyah.numberInSurah}` : locale === "ru" ? `Аят ${randomAyah.numberInSurah}` : `Oyat ${randomAyah.numberInSurah}`}
                 </div>
               </div>
               
@@ -222,7 +245,9 @@ export default function HomePage() {
               
               <div className="text-center">
                 <p className="font-semibold" style={{ color: 'var(--color-primary)' }}>
-                  {locale === "en" ? `Juz ${randomAyah.juz} • Page ${randomAyah.page}` : `Джуз ${randomAyah.juz} • Страница ${randomAyah.page}`}
+                  {locale === "en" ? `Juz ${randomAyah.juz} • Page ${randomAyah.page}` : 
+                   locale === "ru" ? `Джуз ${randomAyah.juz} • Страница ${randomAyah.page}` : 
+                   `Juz ${randomAyah.juz} • Sahifa ${randomAyah.page}`}
                 </p>
               </div>
             </motion.div>
@@ -243,9 +268,7 @@ export default function HomePage() {
               {t("exploreKnowledge")}
             </h2>
             <p className="text-xl max-w-2xl mx-auto" style={{ color: 'var(--fixed-text-secondary)' }}>
-              {locale === "en" 
-                ? "Access the complete Quran, authentic Hadith collections, and daily duas with modern features"
-                : "Получите доступ к полному Корану, достоверным сборникам хадисов и ежедневным дуа с современными возможностями"}
+              {t("accessCompleteQuran")}
             </p>
           </motion.div>
 
@@ -265,15 +288,13 @@ export default function HomePage() {
                     style={{ backgroundColor: 'var(--color-primary)' }}></div>
                   <Book className="w-12 h-12 mb-6 relative z-10" style={{ color: 'var(--color-primary)' }} />
                   <h3 className="text-2xl font-bold mb-4 relative z-10" style={{ color: 'var(--fixed-text)' }}>
-                    {locale === "en" ? "Holy Quran" : "Священный Коран"}
+                    {t("holyQuran")}
                   </h3>
                   <p className="mb-6 relative z-10" style={{ color: 'var(--fixed-text-secondary)' }}>
-                    {locale === "en"
-                      ? "Read and listen to all 114 Surahs with multiple translations, audio recitations, and advanced study tools."
-                      : "Читайте и слушайте все 114 сур с множественными переводами, аудио-чтениями и продвинутыми инструментами изучения."}
+                    {t("holyQuranDescription")}
                   </p>
                   <div className="flex items-center gap-2 font-semibold relative z-10" style={{ color: 'var(--color-primary)' }}>
-                    <span>{locale === "en" ? "Start Reading" : "Начать чтение"}</span>
+                    <span>{t("startReading")}</span>
                     <Play className="w-4 h-4" />
                   </div>
                 </div>
@@ -294,15 +315,13 @@ export default function HomePage() {
                   style={{ backgroundColor: 'var(--color-primary)' }}></div>
                 <Quote className="w-12 h-12 mb-6 relative z-10" style={{ color: 'var(--color-primary)' }} />
                 <h3 className="text-2xl font-bold mb-4 relative z-10" style={{ color: 'var(--fixed-text)' }}>
-                  {locale === "en" ? "Hadith Collections" : "Сборники хадисов"}
+                  {t("hadithCollections")}
                 </h3>
                 <p className="mb-6 relative z-10" style={{ color: 'var(--fixed-text-secondary)' }}>
-                  {locale === "en"
-                    ? "Explore authentic Hadith from Sahih Bukhari, Sahih Muslim, and other trusted collections."
-                    : "Изучайте достоверные хадисы из Сахих аль-Бухари, Сахих Муслим и других надежных сборников."}
+                  {t("hadithDescription")}
                 </p>
                 <div className="flex items-center gap-2 font-semibold relative z-10" style={{ color: 'var(--color-primary)' }}>
-                  <span>{locale === "en" ? "Coming Soon" : "Скоро"}</span>
+                  <span>{t("comingSoon")}</span>
                   <Star className="w-4 h-4" />
                 </div>
               </div>
@@ -322,15 +341,13 @@ export default function HomePage() {
                   style={{ backgroundColor: 'var(--color-primary)' }}></div>
                 <Hand className="w-12 h-12 mb-6 relative z-10" style={{ color: 'var(--color-primary)' }} />
                 <h3 className="text-2xl font-bold mb-4 relative z-10" style={{ color: 'var(--fixed-text)' }}>
-                  {locale === "en" ? "Daily Duas" : "Ежедневные дуа"}
+                  {t("dailyDuas")}
                 </h3>
                 <p className="mb-6 relative z-10" style={{ color: 'var(--fixed-text-secondary)' }}>
-                  {locale === "en"
-                    ? "Learn and practice essential daily prayers and supplications with audio pronunciation guides."
-                    : "Изучайте и практикуйте важные ежедневные молитвы и мольбы с аудио-гидами произношения."}
+                  {t("dailyDuasDescription")}
                 </p>
                 <div className="flex items-center gap-2 font-semibold relative z-10" style={{ color: 'var(--color-primary)' }}>
-                  <span>{locale === "en" ? "Coming Soon" : "Скоро"}</span>
+                  <span>{t("comingSoon")}</span>
                   <Star className="w-4 h-4" />
                 </div>
               </div>
@@ -351,10 +368,10 @@ export default function HomePage() {
             className="text-center mb-12"
           >
             <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: 'var(--fixed-text)' }}>
-              {locale === "en" ? "Popular Surahs" : "Популярные суры"}
+              {t("popularSurahs")}
             </h2>
             <p className="text-xl" style={{ color: 'var(--fixed-text-secondary)' }}>
-              {locale === "en" ? "Most read and beloved chapters" : "Наиболее читаемые и любимые главы"}
+              {t("mostReadChapters")}
             </p>
           </motion.div>
 
@@ -414,7 +431,7 @@ export default function HomePage() {
           >
             <Link href="/surahs">
               <Button className="px-8 py-4 theme-override-primary rounded-2xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300">
-                {locale === "en" ? "View All Surahs" : "Посмотреть все суры"}
+                {t("viewAllSurahs")}
               </Button>
             </Link>
           </motion.div>

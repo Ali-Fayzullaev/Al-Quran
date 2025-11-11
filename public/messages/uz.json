@@ -50,6 +50,14 @@
     "confirmClearBookmarks": "Haqiqatan ham barcha xatcho'plarni o'chirishni xohlaysizmi?",
     "confirmClearCache": "Ishonchingiz komilmi? Bu barcha sozlamalar va xatcho'plarni o'chiradi.",
     "bookmarksCount": "Sizda {{count}} ta xatcho'p bor",
+    "heroDescription": "Muqaddas Qur'onni zamonaviy texnologiyalar bilan his eting. Butun dunyo musulmonlari uchun mo'ljallangan aqlli platformamiz orqali o'qing, tinglang, qidiring va fikr yuritishni o'rganing.",
+    "accessCompleteQuran": "To'liq Qur'on, haqiqiy Hadis to'plamlari va kunlik duolarga zamonaviy imkoniyatlar bilan kirish",
+    "holyQuranDescription": "Barcha 114 surani ko'plab tarjimalar, audio qiroatlar va rivojlangan o'rganish vositalari bilan o'qing va tinglang.",
+    "hadithDescription": "Sahih al-Buxoriy, Sahih Muslim va boshqa ishonchli to'plamlardan haqiqiy hadislarni o'rganing.",
+    "dailyDuasDescription": "Audio talaffuz yo'riqnomalari bilan muhim kunlik namozlar va duolarni o'rganing va amalda qo'llang.",
+    "popularSurahs": "Mashhur suralar",
+    "mostReadChapters": "Eng ko'p o'qiladigan va sevimli boblar",
+    "viewAllSurahs": "Barcha suralarni ko'rish",
     "selectMultipleTranslations": "bir nechta tanlash mumkin",
     "showTranslation": "Tarjimani ko'rsatish",
     "showTransliteration": "Transliteratsiyani ko'rsatish",
@@ -181,7 +189,7 @@
     "recNeedsImprovement2": "Har kuni Qur'onni tarjima bilan o'qing",
     "recNeedsImprovement3": "Shoshilmang, o'z sur'atingizda boring",
     "recNeedsImprovement4": "Qur'on o'rganish guruhiga yoki darsga qo'shiling",
-
+    
     "aiHelper": {
         "title": "Aqlli Qur'on yordamchisi",
         "arabicTitle": "مساعد القرآن الذكي",
