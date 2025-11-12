@@ -2291,3 +2291,27 @@ mark {
   animation: islamic-pattern-float 6s ease-in-out infinite;
   will-change: transform;
 }
+
+/* Арабский текст */
+.font-arabic {
+  font-family: var(--font-arabic);
+  font-feature-settings: "liga" 1, "kern" 1;
+  text-rendering: optimizeLegibility;
+  direction: rtl;
+  unicode-bidi: embed;
+}
+
+/* Улучшенные стили для арабского текста Корана */
+.quran-text {
+  font-family: "Amiri", "Scheherazade New", "Traditional Arabic", serif;
+  font-size: 1.5rem;
+  line-height: 2.5;
+  direction: rtl;
+  text-align: right;
+  color: #1a202c;
+  letter-spacing: 0.05em;
+}
+
+.dark .quran-text {
+  color: #f7fafc;
+}

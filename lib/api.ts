@@ -269,21 +269,35 @@ export async function getRandomAyah(
   }
 }
 
-// Получить аяты в диапазоне
+// Получить аяты в диапазоне из суры
 export async function getAyahsRange(
-  from: string,
-  to: string,
+  surah: string,
+  fromAyah: string,
+  toAyah: string,
   edition: string = "quran-uthmani"
 ): Promise<ApiVerse[]> {
   try {
-    const response = await fetch(`${BASE_URL}/ayah/${from}-${to}/${edition}`);
-    if (!response.ok)
-      throw new Error(`Failed to fetch ayahs range ${from}-${to}`);
+    // Строим запрос для получения аятов из суры
+    const surahNum = parseInt(surah);
+    const fromAyahNum = parseInt(fromAyah);
+    const toAyahNum = parseInt(toAyah);
+    
+    // Получаем суру целиком и фильтруем нужные аяты
+    const response = await fetch(`${BASE_URL}/surah/${surahNum}/${edition}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch surah ${surah}`);
+    }
 
-    const data: ApiResponse<ApiVerse[]> = await response.json();
-    return data.data;
+    const data: ApiResponse<{ ayahs: ApiVerse[] }> = await response.json();
+    
+    // Фильтруем аяты в нужном диапазоне
+    const filteredAyahs = data.data.ayahs.filter(ayah => 
+      ayah.numberInSurah >= fromAyahNum && ayah.numberInSurah <= toAyahNum
+    );
+    
+    return filteredAyahs;
   } catch (error) {
-    console.error(`Error fetching ayahs range ${from}-${to}:`, error);
+    console.error(`Error fetching ayahs range ${surah}:${fromAyah}-${toAyah}:`, error);
     throw error;
   }
 }
@@ -1168,4 +1182,142 @@ export function getRecommendedTranslations(
   }
 
   return recommended.filter(Boolean);
+}
+
+// === ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ ПЛАНИРОВЩИКА ИЗУЧЕНИЯ ===
+
+// Получить подробную информацию о суре для планирования
+export async function getSurahInfoForPlanner(surahNumber: number): Promise<{
+  number: number;
+  name: string;
+  englishName: string;
+  englishNameTranslation: string;
+  numberOfAyahs: number;
+  revelationType: string;
+} | null> {
+  try {
+    const surahs = await getSurahs();
+    return surahs.find(surah => surah.number === surahNumber) || null;
+  } catch (error) {
+    console.error(`Error fetching surah info for ${surahNumber}:`, error);
+    return null;
+  }
+}
+
+// Получить все суры с их информацией для планировщика
+export async function getAllSurahsForPlanner(): Promise<ApiSurah[]> {
+  try {
+    return await getSurahs();
+  } catch (error) {
+    console.error('Error fetching all surahs info:', error);
+    return [];
+  }
+}
+
+// Получить информацию о джузе для планировщика
+export async function getJuzInfoForPlanner(juzNumber: number): Promise<{
+  number: number;
+  ayahs: ApiVerse[];
+  surahs: Record<number, ApiSurah>;
+} | null> {
+  try {
+    const juzData = await getJuz(juzNumber);
+    return {
+      number: juzNumber,
+      ...juzData
+    };
+  } catch (error) {
+    console.error(`Error fetching juz info for ${juzNumber}:`, error);
+    return null;
+  }
+}
+
+// Получить манзиль (для недельного чтения)
+export async function getManzil(
+  manzilNumber: number,
+  edition: string = "quran-uthmani"
+): Promise<{ ayahs: ApiVerse[]; surahs: Record<number, ApiSurah> } | null> {
+  try {
+    const response = await fetch(`${BASE_URL}/manzil/${manzilNumber}/${edition}`);
+    if (!response.ok) throw new Error(`Failed to fetch manzil ${manzilNumber}`);
+
+    const data: ApiResponse<{
+      ayahs: ApiVerse[];
+      surahs: Record<number, ApiSurah>;
+    }> = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error(`Error fetching manzil ${manzilNumber}:`, error);
+    return null;
+  }
+}
+
+// Получить метаданные Корана для планировщика
+export async function getQuranMetaForPlanner(): Promise<{
+  surahs: { count: number; references: ApiSurah[] };
+  ayahs: { count: number };
+  rukus: number;
+  pages: number;
+  manzils: number;
+  sajdas: { count: number; references: any[] };
+} | null> {
+  try {
+    const response = await fetch(`${BASE_URL}/meta`);
+    if (!response.ok) throw new Error('Failed to fetch Quran meta');
+
+    const data: ApiResponse<any> = await response.json();
+    return data.data;
+  } catch (error) {
+    console.error('Error fetching Quran meta:', error);
+    return null;
+  }
+}
+
+// Утилиты для планирования
+
+// Подсчет общего количества аятов в диапазоне сур
+export async function countAyahsInSurahs(surahNumbers: number[]): Promise<number> {
+  try {
+    const surahs = await getAllSurahsForPlanner();
+    return surahNumbers.reduce((total, surahNumber) => {
+      const surah = surahs.find((s: ApiSurah) => s.number === surahNumber);
+      return total + (surah?.numberOfAyahs || 0);
+    }, 0);
+  } catch (error) {
+    console.error('Error counting ayahs in surahs:', error);
+    return 0;
+  }
+}
+
+// Получить рекомендуемые суры для начинающих
+export function getRecommendedSurahsForBeginners(): number[] {
+  return [
+    1,   // Аль-Фатиха
+    112, // Аль-Ихлас
+    113, // Аль-Фаляк
+    114, // Ан-Нас
+    111, // Аль-Масад
+    110, // Ан-Наср
+    109, // Аль-Кафирун
+    108, // Аль-Каусар
+    107, // Аль-Маун
+    106, // Курайш
+    105, // Аль-Филь
+    104, // Аль-Хумаза
+    103, // Аль-Аср
+    102, // Ат-Такасур
+  ];
+}
+
+// Получить среднее время чтения для количества аятов (в минутах)
+export function getEstimatedReadingTime(ayahCount: number): number {
+  // Приблизительно 30 секунд на аят для обдуманного чтения
+  return Math.round((ayahCount * 0.5) * 10) / 10;
+}
+
+// Получить оценку сложности для суры
+export function getSurahDifficulty(ayahCount: number): 'easy' | 'medium' | 'hard' {
+  if (ayahCount <= 10) return 'easy';
+  if (ayahCount <= 50) return 'medium';
+  return 'hard';
 }

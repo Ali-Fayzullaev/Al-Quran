@@ -18,6 +18,7 @@ import {
   Bot,
   MessageSquare,
   Star,
+  Calendar,
 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
@@ -123,6 +124,12 @@ const Sidebar = memo(function Sidebar() {
       name: t("journey"),
       href: "/journey",
       icon: Map,
+      category: "learning",
+    },
+    {
+      name: t("plannerTitle") || "Планировщик",
+      href: "/planner",
+      icon: Calendar,
       category: "learning",
     },
     {
