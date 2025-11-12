@@ -6,6 +6,7 @@ import { plannerStore } from '../../lib/plannerStore';
 import { getAyahsRange } from '../../lib/api';
 import CreatePlanForm from './CreatePlanForm';
 import CalendarView from './CalendarView';
+import CustomColorSettings from '../CustomColorSettings';
 
 export default function PlannerDashboard() {
   const [plans, setPlans] = useState<StudyPlan[]>([]);
@@ -198,20 +199,25 @@ export default function PlannerDashboard() {
   const motivationalMsg = getMotivationalMessage();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-blue-900/10 dark:to-indigo-900/10 py-8">
+    <div className="min-h-screen  py-8" style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
+      {/* Скрытый компонент для инициализации цветовых настроек */}
+      <div style={{ display: 'none' }}>
+        <CustomColorSettings />
+      </div>
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Заголовок */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-green-600 via-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-primary)] to-purple-600 bg-clip-text text-transparent mb-4">
             📖 Планировщик изучения Корана 🕌
           </h1>
-          <p className="mt-2 text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="mt-2 text-base sm:text-lg md:text-xl max-w-2xl mx-auto" style={{ color: 'var(--color-text-secondary)' }}>
             Создавайте персональные планы изучения и отслеживайте свой духовный прогресс с мудростью и постоянством
           </p>
         </div>
 
         {/* Мотивационное сообщение */}
-        <div className="mb-8 bg-gradient-to-r from-green-500 via-emerald-500 to-blue-600 rounded-2xl p-8 text-white shadow-2xl relative overflow-hidden">
+        <div className="mb-8 bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-primary)] to-blue-600 rounded-2xl p-8 text-white shadow-2xl relative overflow-hidden">
           <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
           <div className="relative z-10">
             <h2 className="text-2xl font-bold mb-3 flex items-center">
@@ -228,12 +234,12 @@ export default function PlannerDashboard() {
           // Первый запуск - приветственная страница
           <div className="text-center py-16">
             <div className="max-w-2xl mx-auto">
-              <div className="bg-white dark:bg-gray-800 rounded-3xl p-12 shadow-2xl">
+              <div className="rounded-3xl p-12 shadow-2xl" style={{ backgroundColor: 'var(--color-background)' }}>
                 <div className="text-8xl mb-8">�</div>
                 <h2 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-6">
                   Начните свое духовное путешествие
                 </h2>
-                <p className="text-xl text-gray-600 dark:text-gray-400 mb-12 leading-relaxed">
+                <p className="text-xl mb-12 leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
                   Создайте свой первый план изучения Священного Корана и откройте дверь к мудрости, 
                   покою и духовному росту с персонализированным подходом.
                 </p>
@@ -241,18 +247,18 @@ export default function PlannerDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
                   <div className="text-center">
                     <div className="text-3xl mb-3">📅</div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Планирование</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Структурированное изучение по дням</p>
+                    <h3 className="font-semibold mb-2" style={{ color: 'var(--color-text)' }}>Планирование</h3>
+                    <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Структурированное изучение по дням</p>
                   </div>
                   <div className="text-center">
                     <div className="text-3xl mb-3">📊</div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Прогресс</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Отслеживание достижений</p>
+                    <h3 className="font-semibold mb-2" style={{ color: 'var(--color-text)' }}>Прогресс</h3>
+                    <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Отслеживание достижений</p>
                   </div>
                   <div className="text-center">
                     <div className="text-3xl mb-3">🏆</div>
-                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Мотивация</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">Система наград и достижений</p>
+                    <h3 className="font-semibold mb-2" style={{ color: 'var(--color-text)' }}>Мотивация</h3>
+                    <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Система наград и достижений</p>
                   </div>
                 </div>
 
@@ -273,8 +279,8 @@ export default function PlannerDashboard() {
             {/* Левая колонка - Статистика и текущие задачи */}
             <div className="lg:col-span-2 space-y-6">
               {/* Статистика */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-100 dark:border-gray-700">
-                <h3 className="text-2xl font-bold mb-6 flex items-center">
+              <div className="rounded-2xl p-8 shadow-xl" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
+                <h3 className="text-2xl font-bold mb-6 flex items-center" style={{ color: 'var(--color-text)' }}>
                   <span className="mr-3">📊</span>
                   Общая статистика
                 </h3>
@@ -299,16 +305,16 @@ export default function PlannerDashboard() {
               </div>
 
               {/* Задачи на сегодня */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-100 dark:border-gray-700">
-                <h3 className="text-2xl font-bold mb-6 flex items-center">
+              <div className="rounded-2xl p-8 shadow-xl" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
+                <h3 className="text-2xl font-bold mb-6 flex items-center" style={{ color: 'var(--color-text)' }}>
                   <span className="mr-3">📖</span>
                   Задачи на сегодня
                 </h3>
                 {todayTasks.length === 0 ? (
                   <div className="text-center py-12">
                     <div className="text-6xl mb-6">🎉</div>
-                    <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Отличная работа!</h4>
-                    <p className="text-gray-600 dark:text-gray-400 text-lg">
+                    <h4 className="text-xl font-semibold mb-2" style={{ color: 'var(--color-text)' }}>Отличная работа!</h4>
+                    <p className="text-lg" style={{ color: 'var(--color-text-secondary)' }}>
                       На сегодня все задачи выполнены. Отдохните или создайте новый план!
                     </p>
                   </div>
@@ -317,16 +323,16 @@ export default function PlannerDashboard() {
                     {todayTasks.map((task, index) => {
                       const plan = plans.find(p => p.tasks.includes(task));
                       return (
-                        <div key={index} className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-700 rounded-xl p-6 hover:shadow-lg transition-all duration-200">
+                        <div key={index} className="rounded-xl p-6 hover:shadow-lg transition-all duration-200" style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
                           <div className="flex items-center justify-between">
                             <div className="flex-1">
                               <div className="flex items-center mb-2">
                                 <span className="text-2xl mr-3">📚</span>
-                                <div className="font-bold text-lg text-gray-900 dark:text-white">{plan?.title}</div>
+                                <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{plan?.title}</div>
                               </div>
-                              <div className="text-base text-blue-700 dark:text-blue-300 mb-4">
+                              <div className="text-base mb-4" style={{ color: 'var(--color-primary)' }}>
                                 🕌 Сура {task.surahNumber}, аяты {task.fromAyah}-{task.toAyah}
-                                <span className="ml-2 px-2 py-1 bg-blue-100 dark:bg-blue-800 rounded-full text-sm">
+                                <span className="ml-2 px-2 py-1 rounded-full text-sm" style={{ backgroundColor: 'var(--color-muted)', color: 'var(--color-text)' }}>
                                   {task.ayahCount} {task.ayahCount === 1 ? 'аят' : 'аятов'}
                                 </span>
                               </div>
@@ -389,15 +395,15 @@ export default function PlannerDashboard() {
               </div>
 
               {/* Активные планы */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-100 dark:border-gray-700">
+              <div className="rounded-2xl p-8 shadow-xl" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-2xl font-bold flex items-center">
+                  <h3 className="text-2xl font-bold flex items-center" style={{ color: 'var(--color-text)' }}>
                     <span className="mr-3">📋</span>
                     Активные планы
                   </h3>
                   <button
                     onClick={handleCreatePlan}
-                    className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-1 flex items-center"
+                    className="px-6 py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary)] text-white rounded-xl font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-1 flex items-center"
                   >
                     <span className="mr-2">➕</span>
                     Создать план
@@ -406,29 +412,30 @@ export default function PlannerDashboard() {
                 
                 <div className="space-y-6">
                   {plans.filter(plan => plan.status === 'active').map((plan) => (
-                    <div key={plan.id} className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-700 dark:to-gray-800 border border-gray-200 dark:border-gray-600 rounded-2xl p-6 hover:shadow-xl hover:border-blue-300 dark:hover:border-blue-500 transition-all duration-300 cursor-pointer" 
+                    <div key={plan.id} className="rounded-2xl p-6 hover:shadow-xl transition-all duration-300 cursor-pointer" 
+                         style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}
                          onClick={() => window.location.href = `/planner/${plan.id}`}>
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center">
                           <span className="text-3xl mr-3">📖</span>
-                          <h4 className="font-bold text-lg text-gray-900 dark:text-white">{plan.title}</h4>
+                          <h4 className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{plan.title}</h4>
                         </div>
                         <div className="text-right">
                           <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                             {plan.completionPercentage.toFixed(1)}%
                           </div>
-                          <div className="text-xs text-gray-500 dark:text-gray-400">выполнено</div>
+                          <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>выполнено</div>
                         </div>
                       </div>
                       
                       {plan.description && (
-                        <p className="text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                        <p className="mb-4 line-clamp-2" style={{ color: 'var(--color-text-secondary)' }}>
                           {plan.description}
                         </p>
                       )}
                       
-                      <div className="mb-4">
-                        <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-3 overflow-hidden">
+                        <div className="mb-4">
+                        <div className="w-full rounded-full h-3 overflow-hidden" style={{ backgroundColor: 'var(--color-muted)' }}>
                           <div 
                             className="bg-gradient-to-r from-green-400 to-emerald-500 h-3 rounded-full transition-all duration-500 ease-out" 
                             style={{ width: `${plan.completionPercentage}%` }}
@@ -455,38 +462,38 @@ export default function PlannerDashboard() {
             {/* Правая колонка - Дополнительная информация */}
             <div className="space-y-8">
               {/* Достижения */}
-              <div className="bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-yellow-900/20 dark:to-amber-900/20 rounded-2xl p-8 shadow-xl border border-yellow-200 dark:border-yellow-700">
-                <h3 className="text-2xl font-bold mb-6 flex items-center text-yellow-800 dark:text-yellow-200">
+              <div className="rounded-2xl p-8 shadow-xl" style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
+                <h3 className="text-2xl font-bold mb-6 flex items-center" style={{ color: 'var(--color-text)' }}>
                   <span className="mr-3">🏆</span>
                   Достижения
                 </h3>
                 <div className="space-y-4">
                   {stats?.longestStreak && stats.longestStreak > 0 ? (
-                    <div className="flex items-center space-x-4 bg-white/50 dark:bg-gray-800/50 rounded-xl p-4">
+                    <div className="flex items-center space-x-4 rounded-xl p-4" style={{ backgroundColor: 'var(--color-muted)' }}>
                       <span className="text-4xl">🔥</span>
                       <div>
-                        <div className="font-bold text-lg text-gray-900 dark:text-white">Самая длинная серия</div>
-                        <div className="text-yellow-700 dark:text-yellow-300 font-semibold">{stats.longestStreak} дней подряд!</div>
+                        <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>Самая длинная серия</div>
+                        <div className="font-semibold" style={{ color: 'var(--color-primary)' }}>{stats.longestStreak} дней подряд!</div>
                       </div>
                     </div>
                   ) : null}
                   
                   {stats?.completedPlans && stats.completedPlans > 0 ? (
-                    <div className="flex items-center space-x-4 bg-white/50 dark:bg-gray-800/50 rounded-xl p-4">
+                    <div className="flex items-center space-x-4 rounded-xl p-4" style={{ backgroundColor: 'var(--color-muted)' }}>
                       <span className="text-4xl">🎯</span>
                       <div>
-                        <div className="font-bold text-lg text-gray-900 dark:text-white">Завершенные планы</div>
-                        <div className="text-yellow-700 dark:text-yellow-300 font-semibold">{stats.completedPlans} планов завершено</div>
+                        <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>Завершенные планы</div>
+                        <div className="font-semibold" style={{ color: 'var(--color-primary)' }}>{stats.completedPlans} планов завершено</div>
                       </div>
                     </div>
                   ) : null}
                   
                   {stats?.totalAyahsRead && stats.totalAyahsRead > 100 ? (
-                    <div className="flex items-center space-x-4 bg-white/50 dark:bg-gray-800/50 rounded-xl p-4">
+                    <div className="flex items-center space-x-4 rounded-xl p-4" style={{ backgroundColor: 'var(--color-muted)' }}>
                       <span className="text-4xl">📚</span>
                       <div>
-                        <div className="font-bold text-lg text-gray-900 dark:text-white">Ученый читатель</div>
-                        <div className="text-yellow-700 dark:text-yellow-300 font-semibold">Изучено {stats.totalAyahsRead} аятов</div>
+                        <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>Ученый читатель</div>
+                        <div className="font-semibold" style={{ color: 'var(--color-primary)' }}>Изучено {stats.totalAyahsRead} аятов</div>
                       </div>
                     </div>
                   ) : null}
@@ -494,7 +501,7 @@ export default function PlannerDashboard() {
                   {(!stats?.longestStreak && !stats?.completedPlans && (!stats?.totalAyahsRead || stats?.totalAyahsRead <= 100)) && (
                     <div className="text-center py-8">
                       <div className="text-6xl mb-4">🌟</div>
-                      <p className="text-yellow-800 dark:text-yellow-300 font-medium text-lg">
+                      <p className="font-medium text-lg" style={{ color: 'var(--color-text-secondary)' }}>
                         Начните изучение, чтобы получить первые достижения!
                       </p>
                     </div>
@@ -503,8 +510,8 @@ export default function PlannerDashboard() {
               </div>
 
               {/* Быстрые действия */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-100 dark:border-gray-700">
-                <h3 className="text-2xl font-bold mb-6 flex items-center text-gray-900 dark:text-white">
+              <div className="rounded-2xl p-8 shadow-xl" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
+                <h3 className="text-2xl font-bold mb-6 flex items-center" style={{ color: 'var(--color-text)' }}>
                   <span className="mr-3">⚡</span>
                   Быстрые действия
                 </h3>
@@ -538,14 +545,14 @@ export default function PlannerDashboard() {
               </div>
 
               {/* Совет дня */}
-              <div className="bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100 dark:from-indigo-900/30 dark:via-purple-900/20 dark:to-pink-900/30 rounded-2xl p-8 shadow-xl border border-indigo-200 dark:border-indigo-700 relative overflow-hidden">
+              <div className="rounded-2xl p-8 shadow-xl relative overflow-hidden" style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
                 <div className="absolute inset-0 bg-white/20 dark:bg-gray-800/20 backdrop-blur-sm"></div>
                 <div className="relative z-10">
-                  <h3 className="text-2xl font-bold mb-4 text-indigo-800 dark:text-indigo-200 flex items-center">
+                  <h3 className="text-2xl font-bold mb-4 flex items-center" style={{ color: 'var(--color-text)' }}>
                     <span className="mr-3">💡</span>
                     Совет дня
                   </h3>
-                  <p className="text-indigo-700 dark:text-indigo-300 text-lg leading-relaxed font-medium">
+                  <p className="text-lg leading-relaxed font-medium" style={{ color: 'var(--color-text-secondary)' }}>
                     "Лучшее время для чтения Корана - раннее утро после фаджр намаза, когда ум наиболее ясен и спокоен. 
                     В эти благословенные моменты сердце открыто для божественной мудрости."
                   </p>
@@ -560,7 +567,7 @@ export default function PlannerDashboard() {
         {/* Календарь (отображается при showCalendar = true) */}
         {showCalendar && (
           <div className="mt-12">
-            <div className="bg-gradient-to-br from-white to-blue-50 dark:from-gray-800 dark:to-blue-900/20 rounded-3xl p-8 shadow-2xl border border-blue-100 dark:border-blue-800">
+            <div className="rounded-3xl p-8 shadow-2xl" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
               <div className="flex justify-between items-center mb-8">
                 <h2 className="text-3xl font-bold flex items-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   <span className="mr-4">📅</span>
@@ -568,7 +575,10 @@ export default function PlannerDashboard() {
                 </h2>
                 <button 
                   onClick={() => setShowCalendar(false)}
-                  className="text-2xl text-gray-500 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 transition-colors p-2 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20"
+                  className="text-2xl transition-colors p-2 rounded-full" 
+                  style={{ color: 'var(--color-text-secondary)' }}
+                  onMouseEnter={(e) => (e.target as HTMLElement).style.color = '#ef4444'}
+                  onMouseLeave={(e) => (e.target as HTMLElement).style.color = 'var(--color-text-secondary)'}
                 >
                   ❌
                 </button>

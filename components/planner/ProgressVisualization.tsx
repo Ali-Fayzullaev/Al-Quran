@@ -46,10 +46,10 @@ function PlanProgressCard({ plan }: { plan: StudyPlan }) {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
+    <div className=" rounded-lg p-6 shadow-sm" style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <h3 className="text-lg font-semibold">
             {plan.title}
           </h3>
           <p className="text-sm text-gray-500">
@@ -67,13 +67,13 @@ function PlanProgressCard({ plan }: { plan: StudyPlan }) {
 
       {/* Прогресс-бар */}
       <div className="mb-4">
-        <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2">
+        <div className="flex justify-between text-sm  mb-2">
           <span>Прогресс выполнения</span>
           <span>{progressPercentage.toFixed(1)}%</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-3">
           <div 
-            className="bg-gradient-to-r from-green-400 to-green-600 h-3 rounded-full transition-all duration-500"
+            className="bg-[var(--color-primary)] h-3 rounded-full transition-all duration-500"
             style={{ width: `${progressPercentage}%` }}
           />
         </div>

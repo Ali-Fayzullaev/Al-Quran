@@ -9,6 +9,7 @@ import { getAyahsRange, getSurahInfoForPlanner } from '../../../lib/api';
 import { ApiVerse } from '../../../lib/api';
 import ProgressVisualization from '../../../components/planner/ProgressVisualization';
 import CalendarView from '../../../components/planner/CalendarView';
+import CustomColorSettings from '../../../components/CustomColorSettings';
 
 interface PlanDetailPageProps {
   params: Promise<{ id: string }>;
@@ -198,7 +199,17 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
     .slice(0, 5);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 py-8">
+    <div className="min-h-screen py-8" style={{ 
+      background: `linear-gradient(135deg, 
+        color-mix(in srgb, var(--color-primary) 5%, var(--color-background)) 0%,
+        var(--color-background) 50%,
+        color-mix(in srgb, var(--color-primary) 3%, var(--color-background)) 100%)`
+    }}>
+      {/* Скрытый компонент для инициализации цветовых настроек */}
+      <div style={{ display: 'none' }}>
+        <CustomColorSettings />
+      </div>
+      
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Заголовок с навигацией */}
         <div className="mb-8">
@@ -206,7 +217,10 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
             <div className="flex items-center space-x-4">
               <Link 
                 href="/planner"
-                className="flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+                className="flex items-center transition-colors"
+                style={{ color: 'var(--color-text-secondary)' }}
+                onMouseEnter={(e) => (e.target as HTMLElement).style.color = 'var(--color-text)'}
+                onMouseLeave={(e) => (e.target as HTMLElement).style.color = 'var(--color-text-secondary)'}
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -221,7 +235,10 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
               <div className="hidden md:flex space-x-3">
                 <button
                   onClick={() => setShowCalendar(!showCalendar)}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2"
+                  className="px-4 py-2 text-white rounded-lg transition-colors flex items-center space-x-2"
+                  style={{ backgroundColor: 'var(--color-primary)' }}
+                  onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary-dark)'}
+                  onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary)'}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -244,7 +261,10 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                 
                 <button
                   onClick={() => setShowEditForm(!showEditForm)}
-                  className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors flex items-center space-x-2"
+                  className="px-4 py-2 text-white rounded-lg transition-colors flex items-center space-x-2"
+                  style={{ backgroundColor: '#f59e0b' }}
+                  onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = '#d97706'}
+                  onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = '#f59e0b'}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -267,7 +287,13 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
               <div className="md:hidden relative">
                 <button
                   onClick={() => setShowActionsDropdown(!showActionsDropdown)}
-                  className="p-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                  className="p-2 rounded-lg transition-colors"
+                  style={{ 
+                    backgroundColor: 'var(--color-background-secondary)', 
+                    color: 'var(--color-text)' 
+                  }}
+                  onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-muted)'}
+                  onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-background-secondary)'}
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
@@ -275,14 +301,17 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                 </button>
 
                 {showActionsDropdown && (
-                  <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-50">
+                  <div className="absolute right-0 top-full mt-2 w-48 rounded-lg shadow-xl z-50" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
                     <div className="py-2">
                       <button
                         onClick={() => {
                           setShowCalendar(!showCalendar);
                           setShowActionsDropdown(false);
                         }}
-                        className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2"
+                        className="w-full px-4 py-2 text-left rounded flex items-center space-x-2 transition-colors"
+                        style={{ color: 'var(--color-text)' }}
+                        onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-muted)'}
+                        onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'transparent'}
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -295,7 +324,10 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                           exportPlanData();
                           setShowActionsDropdown(false);
                         }}
-                        className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2"
+                        className="w-full px-4 py-2 text-left rounded flex items-center space-x-2 transition-colors"
+                        style={{ color: 'var(--color-text)' }}
+                        onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-muted)'}
+                        onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'transparent'}
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -308,7 +340,10 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                           setShowEditForm(!showEditForm);
                           setShowActionsDropdown(false);
                         }}
-                        className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2"
+                        className="w-full px-4 py-2 text-left rounded flex items-center space-x-2 transition-colors"
+                        style={{ color: 'var(--color-text)' }}
+                        onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-muted)'}
+                        onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'transparent'}
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -321,7 +356,9 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                           setShowDeleteConfirm(true);
                           setShowActionsDropdown(false);
                         }}
-                        className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 flex items-center space-x-2"
+                        className="w-full px-4 py-2 text-left rounded flex items-center space-x-2 transition-colors text-red-600"
+                        onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-muted)'}
+                        onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'transparent'}
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -335,11 +372,11 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-xl border border-gray-200 dark:border-gray-700">
+          <div className="rounded-xl p-8 shadow-xl planner-card-animated" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
             {showEditForm ? (
               /* Форма редактирования */
               <div className="space-y-6">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center">
+                <h2 className="text-2xl font-bold flex items-center" style={{ color: 'var(--color-text)' }}>
                   <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
@@ -348,7 +385,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                 
                 <div className="space-y-4">
                   <div>
-                    <label htmlFor="editTitle" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label htmlFor="editTitle" className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
                       Название плана
                     </label>
                     <input
@@ -356,13 +393,19 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                       type="text"
                       value={editTitle}
                       onChange={(e) => setEditTitle(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-4 py-3 rounded-lg focus:ring-2 focus:border-transparent transition-colors"
+                      style={{ 
+                        backgroundColor: 'var(--color-background)', 
+                        borderColor: 'var(--color-border)', 
+                        color: 'var(--color-text)',
+                        borderWidth: '1px'
+                      }}
                       placeholder="Введите название плана"
                     />
                   </div>
                   
                   <div>
-                    <label htmlFor="editDescription" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    <label htmlFor="editDescription" className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
                       Описание (необязательно)
                     </label>
                     <textarea
@@ -370,7 +413,13 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                       value={editDescription}
                       onChange={(e) => setEditDescription(e.target.value)}
                       rows={3}
-                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-4 py-3 rounded-lg focus:ring-2 focus:border-transparent transition-colors"
+                      style={{ 
+                        backgroundColor: 'var(--color-background)', 
+                        borderColor: 'var(--color-border)', 
+                        color: 'var(--color-text)',
+                        borderWidth: '1px'
+                      }}
                       placeholder="Добавьте описание плана..."
                     />
                   </div>
@@ -380,7 +429,10 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   <button
                     onClick={handleSaveEdit}
                     disabled={!editTitle.trim()}
-                    className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center space-x-2"
+                    className="px-6 py-3 text-white rounded-lg transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ backgroundColor: 'var(--color-primary)' }}
+                    onMouseEnter={(e) => !e.currentTarget.disabled && ((e.target as HTMLElement).style.backgroundColor = 'var(--color-primary-dark)')}
+                    onMouseLeave={(e) => !e.currentTarget.disabled && ((e.target as HTMLElement).style.backgroundColor = 'var(--color-primary)')}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -394,7 +446,14 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                       setEditTitle(plan.title);
                       setEditDescription(plan.description || '');
                     }}
-                    className="px-6 py-3 border border-gray-300 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors flex items-center space-x-2"
+                    className="px-6 py-3 rounded-lg transition-colors flex items-center space-x-2"
+                    style={{ 
+                      borderColor: 'var(--color-border)', 
+                      borderWidth: '1px',
+                      color: 'var(--color-text-secondary)' 
+                    }}
+                    onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-muted)'}
+                    onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'transparent'}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -407,24 +466,24 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
               /* Обычное отображение */
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+                  <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--color-text)' }}>
                     {plan.title}
                   </h1>
                   {plan.description && (
-                    <p className="text-gray-600 dark:text-gray-400 text-lg mb-4">
+                    <p className="text-lg mb-4" style={{ color: 'var(--color-text-secondary)' }}>
                       {plan.description}
                     </p>
                   )}
                   
                   <div className="flex items-center space-x-6 text-sm">
                     <span className="flex items-center">
-                      <span className="text-gray-500">Создан:</span>
-                      <span className="ml-2 font-medium">
+                      <span style={{ color: 'var(--color-text-secondary)' }}>Создан:</span>
+                      <span className="ml-2 font-medium" style={{ color: 'var(--color-text)' }}>
                         {new Date(plan.createdAt).toLocaleDateString('ru-RU')}
                       </span>
                     </span>
                     <span className="flex items-center">
-                      <span className="text-gray-500">Статус:</span>
+                      <span style={{ color: 'var(--color-text-secondary)' }}>Статус:</span>
                       <span className={`ml-2 px-3 py-1 rounded-full text-xs font-medium ${
                         plan.status === 'active' ? 'bg-green-100 text-green-800' :
                         plan.status === 'completed' ? 'bg-blue-100 text-blue-800' :
@@ -440,23 +499,23 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                 </div>
                 
                 <div className="text-right">
-                  <div className="text-3xl font-bold text-green-500">
+                  <div className="text-3xl font-bold text-[var(--color-primary)]">
                     {plan.completionPercentage.toFixed(1)}%
                   </div>
-                  <div className="text-sm text-gray-500">выполнено</div>
+                  <div className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>выполнено</div>
                 </div>
               </div>
             )}
 
             {/* Прогресс-бар */}
             <div className="mt-6">
-              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
+              <div className="w-full rounded-full h-3" style={{ backgroundColor: 'var(--color-muted)' }}>
                 <div 
-                  className="bg-gradient-to-r from-green-400 to-green-600 h-3 rounded-full transition-all duration-500"
+                  className="bg-[var(--color-primary)] h-3 rounded-full transition-all duration-500"
                   style={{ width: `${plan.completionPercentage}%` }}
                 />
               </div>
-              <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mt-2">
+              <div className="flex justify-between text-sm mt-2" style={{ color: 'var(--color-text-secondary)' }}>
                 <span>{completedTasks} из {totalTasks} дней</span>
                 <span>Серия: {plan.currentStreak} дней</span>
               </div>
@@ -467,7 +526,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
         {/* Задача на сегодня */}
         {todayTask && (
           <div className="mb-8">
-            <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-8 text-white shadow-xl">
+            <div className=" rounded-xl p-8  shadow-xl" style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold">📖 Задание на сегодня</h2>
                 <div className="text-lg font-medium">
@@ -479,7 +538,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                 <div className="text-xl font-semibold mb-2">
                   Сура {todayTask.surahNumber}, аяты {todayTask.fromAyah}-{todayTask.toAyah}
                 </div>
-                <div className="text-blue-100">
+                <div>
                   Количество аятов: {todayTask.ayahCount}
                 </div>
               </div>
@@ -495,20 +554,20 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   
                   <div className="space-y-6">
                     {todayAyahs.map((ayah, index) => (
-                      <div key={index} className="bg-white/5 rounded-lg p-6 border border-white/10">
+                      <div key={index} className=" rounded-lg p-6 border border-white/10">
                         {/* Заголовок аята */}
                         <div className="text-center mb-4">
                           <span className="inline-flex items-center justify-center w-10 h-10 bg-white/20 text-white rounded-full font-bold">
                             {ayah.numberInSurah}
                           </span>
-                          <div className="text-sm text-blue-100 opacity-75 mt-1">
+                          <div className="text-sm opacity-75 mt-1">
                             Аят {ayah.numberInSurah} • Джуз {ayah.juz}
                           </div>
                         </div>
                         
                         {/* Арабский текст */}
-                        <div className="bg-white/5 rounded-lg p-6 mb-4">
-                          <div className="quran-text text-center text-white text-3xl leading-loose">
+                        <div className=" rounded-lg p-6 mb-4">
+                          <div className="quran-text quran-text-animated text-center  text-3xl leading-loose">
                             {ayah.text}
                           </div>
                         </div>
@@ -516,7 +575,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                         {/* Разделитель */}
                         {index < todayAyahs.length - 1 && (
                           <div className="flex justify-center mt-6">
-                            <div className="w-12 h-1 bg-white/20 rounded-full"></div>
+                            <div className="w-12 h-1  rounded-full"></div>
                           </div>
                         )}
                       </div>
@@ -524,7 +583,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   </div>
                   
                   <div className="mt-6 text-center">
-                    <p className="text-blue-100 text-sm opacity-75 italic">
+                    <p className=" text-sm opacity-75 italic">
                       🌙 "И читай Коран размеренным чтением" (Коран 73:4)
                     </p>
                   </div>
@@ -538,9 +597,9 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                     {readingCounter} {readingCounter === 1 ? 'раз' : readingCounter > 1 && readingCounter < 5 ? 'раза' : 'раз'}
                   </div>
                 </div>
-                <button
-                  onClick={incrementReadingCounter}
-                  className="w-full text-white rounded-lg font-bold py-4 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                  <button
+                    onClick={incrementReadingCounter}
+                    className="w-full text-white rounded-lg font-bold py-4 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 planner-button-animated"
                   style={{ backgroundColor: 'var(--color-primary)' }}
                   onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary-dark)'}
                   onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary)'}
@@ -620,31 +679,31 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
           </div>
 
           {/* Ближайшие задачи */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-xl border border-gray-200 dark:border-gray-700">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
+          <div className="rounded-xl p-6 shadow-xl planner-card-animated" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
+            <h3 className="text-xl font-bold mb-6" style={{ color: 'var(--color-text)' }}>
               📅 Ближайшие задачи
             </h3>
             <div className="space-y-4">
               {upcomingTasks.length > 0 ? (
                 upcomingTasks.map((task, index) => (
-                  <div key={index} className="border border-gray-200 dark:border-gray-600 rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                  <div key={index} className="rounded-lg p-4 transition-colors" style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="font-medium text-gray-900 dark:text-white">
+                        <div className="font-medium" style={{ color: 'var(--color-text)' }}>
                           {new Date(task.date).toLocaleDateString('ru-RU')}
                         </div>
-                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                        <div className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
                           Сура {task.surahNumber}, аяты {task.fromAyah}-{task.toAyah} ({task.ayahCount} аятов)
                         </div>
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
                         {new Date(task.date).toLocaleDateString('ru-RU', { weekday: 'short' })}
                       </div>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8" style={{ color: 'var(--color-text-secondary)' }}>
                   <div className="text-4xl mb-4">🎉</div>
                   <p>Все задачи выполнены!</p>
                 </div>
@@ -656,17 +715,24 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
         {/* Модальное окно подтверждения удаления */}
         {showDeleteConfirm && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+            <div className="rounded-lg p-6 max-w-md w-full mx-4 planner-card-animated" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}>
+              <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-text)' }}>
                 Удалить план?
               </h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-6">
+              <p className="mb-6" style={{ color: 'var(--color-text-secondary)' }}>
                 Вы уверены, что хотите удалить план "{plan.title}"? Это действие нельзя отменить.
               </p>
               <div className="flex space-x-4">
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
-                  className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  className="flex-1 px-4 py-2 rounded-lg transition-colors"
+                  style={{ 
+                    borderColor: 'var(--color-border)', 
+                    borderWidth: '1px', 
+                    color: 'var(--color-text)' 
+                  }}
+                  onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-muted)'}
+                  onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'transparent'}
                 >
                   Отмена
                 </button>
