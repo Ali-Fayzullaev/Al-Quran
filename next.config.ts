@@ -5,21 +5,22 @@ module.exports = withNextIntl({
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
-  swcMinify: true, // Быстрая минификация
   
   // Экспериментальные функции для производительности
   experimental: {
     optimizePackageImports: ['framer-motion', 'lucide-react', '@tanstack/react-query'],
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
-      },
-    },
     webpackBuildWorker: true, // Параллельная сборка
     optimizeCss: true, // Оптимизация CSS
+  },
+  
+  // Turbopack конфигурация (вместо experimental.turbo)
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
   },
   
   // Оптимизация изображений  

@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { StudyPlan, ProgressStats, DailyTask } from '../../lib/plannerTypes';
 import { plannerStore } from '../../lib/plannerStore';
 import { getAyahsRange } from '../../lib/api';
@@ -9,6 +11,7 @@ import CalendarView from './CalendarView';
 import CustomColorSettings from '../CustomColorSettings';
 
 export default function PlannerDashboard() {
+  const router = useRouter();
   const [plans, setPlans] = useState<StudyPlan[]>([]);
   const [stats, setStats] = useState<ProgressStats | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -412,9 +415,9 @@ export default function PlannerDashboard() {
                 
                 <div className="space-y-6">
                   {plans.filter(plan => plan.status === 'active').map((plan) => (
-                    <div key={plan.id} className="rounded-2xl p-6 hover:shadow-xl transition-all duration-300 cursor-pointer" 
-                         style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}
-                         onClick={() => window.location.href = `/planner/${plan.id}`}>
+                    <Link key={plan.id} href={`/planner/${plan.id}`} className="block">
+                      <div className="rounded-2xl p-6 hover:shadow-xl transition-all duration-300 cursor-pointer" 
+                           style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center">
                           <span className="text-3xl mr-3">📖</span>
@@ -453,7 +456,8 @@ export default function PlannerDashboard() {
                           <span className="font-medium">{plan.totalDaysCompleted}/{plan.tasks.length} дней</span>
                         </div>
                       </div>
-                    </div>
+                      </div>
+                    </Link>
                   ))}
                 </div>
               </div>
