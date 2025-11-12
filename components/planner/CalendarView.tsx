@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { CalendarDay } from '../../lib/plannerTypes';
 import { plannerStore } from '../../lib/plannerStore';
+import { useLocale } from '../../context/LocaleContext';
 
 interface CalendarViewProps {
   year?: number;
@@ -11,6 +12,7 @@ interface CalendarViewProps {
 }
 
 export default function CalendarView({ year, month, onDateSelect }: CalendarViewProps) {
+  const { locale, t } = useLocale();
   const [currentYear, setCurrentYear] = useState(year || new Date().getFullYear());
   const [currentMonth, setCurrentMonth] = useState(month !== undefined ? month : new Date().getMonth());
   const [calendarData, setCalendarData] = useState<CalendarDay[]>([]);
@@ -32,12 +34,30 @@ export default function CalendarView({ year, month, onDateSelect }: CalendarView
     }
   };
 
-  const monthNames = [
-    'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
-    'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
-  ];
+  const getMonthNames = () => {
+    switch (locale) {
+      case 'en':
+        return ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      case 'uz':
+        return ["Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun", "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"];
+      default:
+        return ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+    }
+  };
 
-  const weekDays = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+  const getWeekDays = () => {
+    switch (locale) {
+      case 'en':
+        return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      case 'uz':
+        return ["Ya", "Du", "Se", "Ch", "Pa", "Ju", "Sh"];
+      default:
+        return ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+    }
+  };
+
+  const monthNames = getMonthNames();
+  const weekDays = getWeekDays();
 
   const navigateMonth = (direction: 'prev' | 'next') => {
     if (direction === 'prev') {
@@ -116,7 +136,7 @@ export default function CalendarView({ year, month, onDateSelect }: CalendarView
         <button
           onClick={() => navigateMonth('prev')}
           className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-          aria-label="Предыдущий месяц"
+          aria-label={t('calendarView.previousMonth')}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -130,7 +150,7 @@ export default function CalendarView({ year, month, onDateSelect }: CalendarView
         <button
           onClick={() => navigateMonth('next')}
           className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-          aria-label="Следующий месяц"
+          aria-label={t('calendarView.nextMonth')}
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -155,7 +175,7 @@ export default function CalendarView({ year, month, onDateSelect }: CalendarView
               <button
                 onClick={() => onDateSelect?.(day.date)}
                 className={`w-full h-full rounded-lg border-2 border-transparent hover:border-gray-300 dark:hover:border-gray-600 transition-colors flex flex-col items-center justify-center text-sm ${getDateStatus(day)}`}
-                title={day.tasks.length > 0 ? `${day.tasks.length} задач` : undefined}
+                title={day.tasks.length > 0 ? `${day.tasks.length} ${t('calendarView.tasks')}` : undefined}
               >
                 <div className="font-medium">
                   {new Date(day.date).getDate()}
@@ -182,19 +202,19 @@ export default function CalendarView({ year, month, onDateSelect }: CalendarView
       <div className="mt-6 flex flex-wrap gap-4 text-sm">
         <div className="flex items-center space-x-2">
           <div className="w-4 h-4 bg-green-500 rounded"></div>
-          <span className="text-gray-600 dark:text-gray-400">Выполнено</span>
+          <span className="text-gray-600 dark:text-gray-400">{t('calendarView.legend.completed')}</span>
         </div>
         <div className="flex items-center space-x-2">
           <div className="w-4 h-4 bg-yellow-500 rounded"></div>
-          <span className="text-gray-600 dark:text-gray-400">Пропущено</span>
+          <span className="text-gray-600 dark:text-gray-400">{t('calendarView.legend.skipped')}</span>
         </div>
         <div className="flex items-center space-x-2">
           <div className="w-4 h-4 bg-red-200 rounded"></div>
-          <span className="text-gray-600 dark:text-gray-400">Не выполнено</span>
+          <span className="text-gray-600 dark:text-gray-400">{t('calendarView.legend.pending')}</span>
         </div>
         <div className="flex items-center space-x-2">
           <div className="w-4 h-4 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded"></div>
-          <span className="text-gray-600 dark:text-gray-400">Будущее</span>
+          <span className="text-gray-600 dark:text-gray-400">{t('calendarView.legend.future')}</span>
         </div>
       </div>
     </div>

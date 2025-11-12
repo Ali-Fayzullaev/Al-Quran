@@ -1,6 +1,7 @@
 'use client';
 
 import { StudyPlan, ProgressStats } from '../../lib/plannerTypes';
+import { useLocale } from '../../context/LocaleContext';
 
 interface ProgressVisualizationProps {
   plan?: StudyPlan;
@@ -21,6 +22,7 @@ export default function ProgressVisualization({ plan, stats, type }: ProgressVis
 }
 
 function PlanProgressCard({ plan }: { plan: StudyPlan }) {
+  const { locale, t } = useLocale();
   const completedTasks = plan.tasks.filter(task => task.completed).length;
   const totalTasks = plan.tasks.length;
   const progressPercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
@@ -37,11 +39,11 @@ function PlanProgressCard({ plan }: { plan: StudyPlan }) {
 
   const getStatusText = (status: StudyPlan['status']) => {
     switch (status) {
-      case 'active': return 'Активный';
-      case 'completed': return 'Завершен';
-      case 'paused': return 'Приостановлен';
-      case 'cancelled': return 'Отменен';
-      default: return 'Неизвестно';
+      case 'active': return t('progressVisualization.status.active');
+      case 'completed': return t('progressVisualization.status.completed');
+      case 'paused': return t('progressVisualization.status.paused');
+      case 'cancelled': return t('progressVisualization.status.cancelled');
+      default: return t('progressVisualization.status.unknown');
     }
   };
 
@@ -53,7 +55,7 @@ function PlanProgressCard({ plan }: { plan: StudyPlan }) {
             {plan.title}
           </h3>
           <p className="text-sm text-gray-500">
-            Создан {new Date(plan.createdAt).toLocaleDateString('ru-RU')}
+            {t('progressVisualization.createdOn')} {new Date(plan.createdAt).toLocaleDateString(locale === 'ru' ? 'ru-RU' : locale === 'uz' ? 'uz-UZ' : 'en-US')}
           </p>
         </div>
         <div className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(plan.status)}`}>
@@ -68,7 +70,7 @@ function PlanProgressCard({ plan }: { plan: StudyPlan }) {
       {/* Прогресс-бар */}
       <div className="mb-4">
         <div className="flex justify-between text-sm  mb-2">
-          <span>Прогресс выполнения</span>
+          <span>{t('progressVisualization.completionProgress')}</span>
           <span>{progressPercentage.toFixed(1)}%</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-3">
@@ -83,15 +85,15 @@ function PlanProgressCard({ plan }: { plan: StudyPlan }) {
       <div className="grid grid-cols-3 gap-4">
         <div className="text-center">
           <div className="text-2xl font-bold text-blue-500">{completedTasks}</div>
-          <div className="text-sm text-gray-500">Выполнено</div>
+          <div className="text-sm text-gray-500">{t('progressVisualization.completed')}</div>
         </div>
         <div className="text-center">
           <div className="text-2xl font-bold text-green-500">{plan.currentStreak}</div>
-          <div className="text-sm text-gray-500">Серия</div>
+          <div className="text-sm text-gray-500">{t('progressVisualization.streak')}</div>
         </div>
         <div className="text-center">
           <div className="text-2xl font-bold text-purple-500">{totalTasks}</div>
-          <div className="text-sm text-gray-500">Всего дней</div>
+          <div className="text-sm text-gray-500">{t('progressVisualization.totalDays')}</div>
         </div>
       </div>
     </div>
@@ -99,29 +101,30 @@ function PlanProgressCard({ plan }: { plan: StudyPlan }) {
 }
 
 function OverallProgressCard({ stats }: { stats: ProgressStats }) {
+  const { t } = useLocale();
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-        Общая статистика
+        {t('progressVisualization.overallStatistics')}
       </h3>
 
       {/* Основные метрики */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
         <div className="text-center">
           <div className="text-3xl font-bold text-blue-500 mb-1">{stats.activePlans}</div>
-          <div className="text-sm text-gray-500">Активные планы</div>
+          <div className="text-sm text-gray-500">{t('progressVisualization.activePlans')}</div>
         </div>
         <div className="text-center">
           <div className="text-3xl font-bold text-green-500 mb-1">{stats.completedPlans}</div>
-          <div className="text-sm text-gray-500">Завершенные планы</div>
+          <div className="text-sm text-gray-500">{t('progressVisualization.completedPlans')}</div>
         </div>
         <div className="text-center">
           <div className="text-3xl font-bold text-orange-500 mb-1">{stats.totalAyahsRead}</div>
-          <div className="text-sm text-gray-500">Изученные аяты</div>
+          <div className="text-sm text-gray-500">{t('progressVisualization.studiedAyahs')}</div>
         </div>
         <div className="text-center">
           <div className="text-3xl font-bold text-purple-500 mb-1">{Math.round(stats.totalTimeSpent)}</div>
-          <div className="text-sm text-gray-500">Минут изучения</div>
+          <div className="text-sm text-gray-500">{t('progressVisualization.minutesStudied')}</div>
         </div>
       </div>
 
@@ -133,7 +136,7 @@ function OverallProgressCard({ stats }: { stats: ProgressStats }) {
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                 {stats.currentStreak}
               </div>
-              <div className="text-sm text-green-600 dark:text-green-400">Текущая серия</div>
+              <div className="text-sm text-green-600 dark:text-green-400">{t('progressVisualization.currentStreak')}</div>
             </div>
             <div className="text-2xl">🔥</div>
           </div>
@@ -145,7 +148,7 @@ function OverallProgressCard({ stats }: { stats: ProgressStats }) {
               <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                 {stats.longestStreak}
               </div>
-              <div className="text-sm text-blue-600 dark:text-blue-400">Лучшая серия</div>
+              <div className="text-sm text-blue-600 dark:text-blue-400">{t('progressVisualization.bestStreak')}</div>
             </div>
             <div className="text-2xl">🏆</div>
           </div>
@@ -158,10 +161,10 @@ function OverallProgressCard({ stats }: { stats: ProgressStats }) {
           <div className="flex items-center justify-between">
             <div>
               <div className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-                Среднее время сессии
+                {t('progressVisualization.averageSessionTime')}
               </div>
               <div className="text-2xl font-bold text-gray-900 dark:text-white">
-                {stats.averageSessionTime.toFixed(1)} мин
+                {stats.averageSessionTime.toFixed(1)} {t('progressVisualization.minutes')}
               </div>
             </div>
             <div className="text-2xl">⏱️</div>

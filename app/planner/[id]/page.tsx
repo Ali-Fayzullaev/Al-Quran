@@ -7,6 +7,7 @@ import { StudyPlan, DailyTask } from '../../../lib/plannerTypes';
 import { plannerStore } from '../../../lib/plannerStore';
 import { getAyahsRange, getSurahInfoForPlanner } from '../../../lib/api';
 import { ApiVerse } from '../../../lib/api';
+import { useLocale } from '../../../context/LocaleContext';
 import ProgressVisualization from '../../../components/planner/ProgressVisualization';
 import CalendarView from '../../../components/planner/CalendarView';
 import CustomColorSettings from '../../../components/CustomColorSettings';
@@ -17,6 +18,7 @@ interface PlanDetailPageProps {
 
 export default function PlanDetailPage({ params }: PlanDetailPageProps) {
   const router = useRouter();
+  const { locale, t } = useLocale();
   const resolvedParams = use(params);
   const [plan, setPlan] = useState<StudyPlan | null>(null);
   const [loading, setLoading] = useState(true);

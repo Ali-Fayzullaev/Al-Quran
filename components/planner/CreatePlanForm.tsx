@@ -21,6 +21,7 @@ import {
 } from '../../lib/api';
 import { plannerStore } from '../../lib/plannerStore';
 import { ApiSurah } from '../../lib/api';
+import { useLocale } from '../../context/LocaleContext';
 import CustomColorSettings from '../CustomColorSettings';
 
 interface CreatePlanFormProps {
@@ -29,6 +30,8 @@ interface CreatePlanFormProps {
 }
 
 export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFormProps) {
+  const { locale, t } = useLocale();
+  
   // Состояние формы
   const [step, setStep] = useState(1);
   const [title, setTitle] = useState('');
@@ -128,24 +131,24 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
           type: 'multiple_surahs',
           surahs: recommended.slice(0, 5)
         });
-        setTitle('План для начинающих');
-        setDescription('Изучение коротких сур для начинающих');
+        setTitle(t('createPlanForm.quickStart.beginnerPlanName'));
+        setDescription(t('createPlanForm.quickStart.beginnerPlanDesc'));
         break;
       case 'short':
         setGoal({
           type: 'multiple_surahs', 
           surahs: recommended.slice(0, 10)
         });
-        setTitle('Короткий план изучения');
-        setDescription('Изучение популярных коротких сур');
+        setTitle(t('createPlanForm.quickStart.quickPlanName'));
+        setDescription(t('createPlanForm.quickStart.quickPlanDesc'));
         break;
       case 'medium':
         setGoal({
           type: 'surah',
           surahs: [2] // Аль-Бакара
         });
-        setTitle('Изучение суры Аль-Бакара');
-        setDescription('Систематическое изучение самой длинной суры');
+        setTitle(t('createPlanForm.quickStart.mediumPlanName'));
+        setDescription(t('createPlanForm.quickStart.mediumPlanDesc'));
         break;
     }
     setStep(2);
@@ -173,20 +176,20 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
       onPlanCreated(plan.id);
     } catch (error) {
       console.error('Error creating plan:', error);
-      alert('Ошибка при создании плана. Попробуйте еще раз.');
+      alert(t('createPlanForm.errors.creationError'));
     } finally {
       setLoading(false);
     }
   };
 
   const weekDays = [
-    { id: 0, name: 'Воскресенье', short: 'Вс' },
-    { id: 1, name: 'Понедельник', short: 'Пн' },
-    { id: 2, name: 'Вторник', short: 'Вт' },
-    { id: 3, name: 'Среда', short: 'Ср' },
-    { id: 4, name: 'Четверг', short: 'Чт' },
-    { id: 5, name: 'Пятница', short: 'Пт' },
-    { id: 6, name: 'Суббота', short: 'Сб' }
+    { id: 0, name: t('createPlanForm.weekDays.sunday'), short: t('createPlanForm.weekDays.sun') },
+    { id: 1, name: t('createPlanForm.weekDays.monday'), short: t('createPlanForm.weekDays.mon') },
+    { id: 2, name: t('createPlanForm.weekDays.tuesday'), short: t('createPlanForm.weekDays.tue') },
+    { id: 3, name: t('createPlanForm.weekDays.wednesday'), short: t('createPlanForm.weekDays.wed') },
+    { id: 4, name: t('createPlanForm.weekDays.thursday'), short: t('createPlanForm.weekDays.thu') },
+    { id: 5, name: t('createPlanForm.weekDays.friday'), short: t('createPlanForm.weekDays.fri') },
+    { id: 6, name: t('createPlanForm.weekDays.saturday'), short: t('createPlanForm.weekDays.sat') }
   ];
 
   const isValidPlan = title.trim() && 
@@ -203,7 +206,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
       
       <div className="mb-6">
         <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--color-text)' }}>
-          Создать план изучения Корана
+          {t('createPlanForm.title')}
         </h2>
         <div className="flex items-center space-x-4">
           {[1, 2, 3, 4].map((stepNum) => (
@@ -229,7 +232,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
       {step === 1 && (
         <div className="space-y-6">
           <div>
-            <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-text)' }}>Выберите способ создания плана</h3>
+            <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-text)' }}>{t('createPlanForm.chooseCreationMethod')}</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <button
@@ -241,8 +244,8 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
               >
                 <div className="text-center">
                   <div className="text-2xl mb-2">🌱</div>
-                  <h4 className="font-semibold" style={{ color: 'var(--color-text)' }}>Для начинающих</h4>
-                  <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>5 коротких сур</p>
+                  <h4 className="font-semibold" style={{ color: 'var(--color-text)' }}>{t('createPlanForm.quickStart.beginnerTitle')}</h4>
+                  <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>{t('createPlanForm.quickStart.beginnerDesc')}</p>
                 </div>
               </button>
               
@@ -255,8 +258,8 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
               >
                 <div className="text-center">
                   <div className="text-2xl mb-2">⚡</div>
-                  <h4 className="font-semibold" style={{ color: 'var(--color-text)' }}>Быстрый план</h4>
-                  <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>10 популярных сур</p>
+                  <h4 className="font-semibold" style={{ color: 'var(--color-text)' }}>{t('createPlanForm.quickStart.quickTitle')}</h4>
+                  <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>{t('createPlanForm.quickStart.quickDesc')}</p>
                 </div>
               </button>
               
@@ -269,8 +272,8 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
               >
                 <div className="text-center">
                   <div className="text-2xl mb-2">📖</div>
-                  <h4 className="font-semibold" style={{ color: 'var(--color-text)' }}>Средний план</h4>
-                  <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Сура Аль-Бакара</p>
+                  <h4 className="font-semibold" style={{ color: 'var(--color-text)' }}>{t('createPlanForm.quickStart.mediumTitle')}</h4>
+                  <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>{t('createPlanForm.quickStart.mediumDesc')}</p>
                 </div>
               </button>
             </div>
@@ -283,7 +286,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
                 onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary-dark)'}
                 onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary)'}
               >
-                Создать индивидуальный план
+                {t('createPlanForm.customPlan')}
               </button>
             </div>
           </div>
@@ -294,11 +297,11 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
       {step === 2 && (
         <div className="space-y-6">
           <div>
-            <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-text)' }}>Основная информация</h3>
+            <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-text)' }}>{t('createPlanForm.basicInfoTitle')}</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>Название плана *</label>
+                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>{t('createPlanForm.planNameLabel')}</label>
                 <input
                   type="text"
                   value={title}
@@ -310,12 +313,12 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
                     color: 'var(--color-text)',
                     borderWidth: '1px'
                   }}
-                  placeholder="Мой план изучения Корана"
+                  placeholder={t('createPlanForm.planNamePlaceholder')}
                 />
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>Описание (опционально)</label>
+                <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>{t('createPlanForm.planDescLabel')}</label>
                 <input
                   type="text"
                   value={description}
@@ -327,14 +330,14 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
                     color: 'var(--color-text)',
                     borderWidth: '1px'
                   }}
-                  placeholder="Краткое описание плана"
+                  placeholder={t('createPlanForm.planDescPlaceholder')}
                 />
               </div>
             </div>
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-text)' }}>Цель изучения</h3>
+            <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-text)' }}>{t('createPlanForm.studyGoalLabel')}</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
               <button
@@ -345,7 +348,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
                   backgroundColor: goal.type === 'surah' ? 'var(--color-muted)' : 'transparent'
                 }}
               >
-                <div className="text-sm font-medium" style={{ color: 'var(--color-text)' }}>Одна сура</div>
+                <div className="text-sm font-medium" style={{ color: 'var(--color-text)' }}>{t('createPlanForm.oneSurah')}</div>
               </button>
               
               <button
@@ -356,7 +359,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
                   backgroundColor: goal.type === 'multiple_surahs' ? 'var(--color-muted)' : 'transparent'
                 }}
               >
-                <div className="text-sm font-medium" style={{ color: 'var(--color-text)' }}>Несколько сур</div>
+                <div className="text-sm font-medium" style={{ color: 'var(--color-text)' }}>{t('createPlanForm.multipleSurahs')}</div>
               </button>
               
               <button
@@ -367,7 +370,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
                   backgroundColor: goal.type === 'juz' ? 'var(--color-muted)' : 'transparent'
                 }}
               >
-                <div className="text-sm font-medium" style={{ color: 'var(--color-text)' }}>Джуз</div>
+                <div className="text-sm font-medium" style={{ color: 'var(--color-text)' }}>{t('createPlanForm.oneJuz')}</div>
               </button>
               
               <button
@@ -378,7 +381,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
                   backgroundColor: goal.type === 'complete_quran' ? 'var(--color-muted)' : 'transparent'
                 }}
               >
-                <div className="text-sm font-medium" style={{ color: 'var(--color-text)' }}>Весь Коран</div>
+                <div className="text-sm font-medium" style={{ color: 'var(--color-text)' }}>{t('createPlanForm.completeQuran')}</div>
               </button>
             </div>
 
@@ -386,7 +389,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
             {(goal.type === 'surah' || goal.type === 'multiple_surahs') && (
               <div>
                 <label className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
-                  Выберите {goal.type === 'surah' ? 'суру' : 'суры'} *
+                  {goal.type === 'surah' ? t('createPlanForm.selectSurahLabel') : t('createPlanForm.selectSurahsLabel')}
                 </label>
                 <div className="max-h-60 overflow-y-auto rounded-lg p-3" style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
@@ -411,7 +414,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
                             {surah.number}. {surah.englishName}
                           </div>
                           <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-                            {surah.numberOfAyahs} аятов • {difficulty === 'easy' ? '🟢' : difficulty === 'medium' ? '🟡' : '🔴'}
+                            {surah.numberOfAyahs} {t('createPlanForm.ayahsCount')} • {difficulty === 'easy' ? '🟢' : difficulty === 'medium' ? '🟡' : '🔴'}
                           </div>
                         </button>
                       );
@@ -422,9 +425,9 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
                 {goal.surahs && goal.surahs.length > 0 && (
                   <div className="mt-2 p-3 rounded-lg" style={{ backgroundColor: 'var(--color-muted)' }}>
                     <div className="text-sm" style={{ color: 'var(--color-text)' }}>
-                      <strong>Выбрано:</strong> {goal.surahs.length} {goal.surahs.length === 1 ? 'сура' : 'сур'}
+                      <strong>{t('createPlanForm.selectedCount')}</strong> {goal.surahs.length} {goal.surahs.length === 1 ? t('createPlanForm.surah') : t('createPlanForm.surahs')}
                       {totalAyahs > 0 && (
-                        <span className="ml-2">• {totalAyahs} аятов • ~{estimatedTime} мин чтения</span>
+                        <span className="ml-2">• {totalAyahs} {t('createPlanForm.ayahsCount')} • ~{estimatedTime} {t('createPlanForm.minutesReading')}</span>
                       )}
                     </div>
                   </div>
@@ -445,7 +448,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
               onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-muted)'}
               onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'transparent'}
             >
-              Назад
+              {t('createPlanForm.buttons.back')}
             </button>
             
             <button
@@ -456,7 +459,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
               onMouseEnter={(e) => !e.currentTarget.disabled && ((e.target as HTMLElement).style.backgroundColor = 'var(--color-primary-dark)')}
               onMouseLeave={(e) => !e.currentTarget.disabled && ((e.target as HTMLElement).style.backgroundColor = 'var(--color-primary)')}
             >
-              Далее
+              {t('createPlanForm.buttons.next')}
             </button>
           </div>
         </div>
@@ -466,12 +469,12 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
       {step === 3 && (
         <div className="space-y-6">
           <div>
-            <h3 className="text-lg font-semibold mb-4">Настройка расписания</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('createPlanForm.scheduleTitle')}</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium mb-2">
-                  Аятов в день: {schedule.ayahsPerDay}
+                  {t('createPlanForm.ayahsPerDay')} {schedule.ayahsPerDay}
                 </label>
                 <input
                   type="range"
@@ -492,7 +495,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-2">Дата начала</label>
+                <label className="block text-sm font-medium mb-2">{t('createPlanForm.startDateLabel')}</label>
                 <input
                   type="date"
                   value={schedule.startDate}
@@ -506,7 +509,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-3">Активные дни недели</label>
+              <label className="block text-sm font-medium mb-3">{t('createPlanForm.activeDaysLabel')}</label>
               <div className="grid grid-cols-7 gap-2">
                 {weekDays.map((day) => (
                   <button
@@ -523,7 +526,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
                 ))}
               </div>
               <div className="text-xs text-gray-600 mt-2">
-                Выбрано: {schedule.activeDays.length} {schedule.activeDays.length === 1 ? 'день' : 'дней'} в неделю
+                {t('createPlanForm.selectedDays')} {schedule.activeDays.length} {schedule.activeDays.length === 1 ? t('createPlanForm.day') : t('createPlanForm.days')} {t('createPlanForm.inWeek')}
               </div>
             </div>
           </div>
@@ -533,14 +536,14 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
               onClick={() => setStep(2)}
               className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
-              Назад
+              {t('createPlanForm.buttons.back')}
             </button>
             
             <button
               onClick={() => setStep(4)}
               className="px-6 py-2 bg-[var(--color-primary)] rounded-lg hover:bg-[var(--color-primary-dark)] transition-colors"
             >
-              Далее
+              {t('createPlanForm.buttons.next')}
             </button>
           </div>
         </div>
@@ -550,36 +553,36 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
       {step === 4 && (
         <div className="space-y-6">
           <div>
-            <h3 className="text-lg font-semibold mb-4">Подтверждение плана</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('createPlanForm.confirmationTitle')}</h3>
             
             <div className="rounded-lg p-6" style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="font-semibold mb-3">Основная информация</h4>
+                  <h4 className="font-semibold mb-3">{t('createPlanForm.basicInfoTitle')}</h4>
                   <div className="space-y-2 text-sm">
-                    <div><strong>Название:</strong> {title}</div>
-                    {description && <div><strong>Описание:</strong> {description}</div>}
-                    <div><strong>Тип цели:</strong> {
-                      goal.type === 'surah' ? 'Одна сура' :
-                      goal.type === 'multiple_surahs' ? 'Несколько сур' :
-                      goal.type === 'juz' ? 'Джуз' : 'Весь Коран'
+                    <div><strong>{t('createPlanForm.nameField')}</strong> {title}</div>
+                    {description && <div><strong>{t('createPlanForm.descField')}</strong> {description}</div>}
+                    <div><strong>{t('createPlanForm.goalTypeField')}</strong> {
+                      goal.type === 'surah' ? t('createPlanForm.oneSurah') :
+                      goal.type === 'multiple_surahs' ? t('createPlanForm.multipleSurahs') :
+                      goal.type === 'juz' ? t('createPlanForm.oneJuz') : t('createPlanForm.completeQuran')
                     }</div>
                     {goal.surahs && goal.surahs.length > 0 && (
-                      <div><strong>Суры:</strong> {goal.surahs.join(', ')}</div>
+                      <div><strong>{t('createPlanForm.surahsField')}</strong> {goal.surahs.join(', ')}</div>
                     )}
                   </div>
                 </div>
 
                 <div>
-                  <h4 className="font-semibold mb-3">Расписание и прогноз</h4>
+                  <h4 className="font-semibold mb-3">{t('createPlanForm.scheduleAndForecast')}</h4>
                   <div className="space-y-2 text-sm">
-                    <div><strong>Аятов в день:</strong> {schedule.ayahsPerDay}</div>
-                    <div><strong>Дней в неделю:</strong> {schedule.daysPerWeek}</div>
-                    <div><strong>Дата начала:</strong> {new Date(schedule.startDate).toLocaleDateString('ru-RU')}</div>
-                    <div><strong>Ориентировочное окончание:</strong> {new Date(schedule.estimatedEndDate).toLocaleDateString('ru-RU')}</div>
-                    <div><strong>Общее количество аятов:</strong> {totalAyahs}</div>
-                    <div><strong>Ожидаемая длительность:</strong> {estimatedDays} дней</div>
-                    <div><strong>Общее время чтения:</strong> ~{estimatedTime} минут</div>
+                    <div><strong>{t('createPlanForm.ayahsPerDayField')}</strong> {schedule.ayahsPerDay}</div>
+                    <div><strong>{t('createPlanForm.daysPerWeekField')}</strong> {schedule.daysPerWeek}</div>
+                    <div><strong>{t('createPlanForm.startDateField')}</strong> {new Date(schedule.startDate).toLocaleDateString(locale === 'ru' ? 'ru-RU' : locale === 'uz' ? 'uz-UZ' : 'en-US')}</div>
+                    <div><strong>{t('createPlanForm.estimatedEndField')}</strong> {new Date(schedule.estimatedEndDate).toLocaleDateString(locale === 'ru' ? 'ru-RU' : locale === 'uz' ? 'uz-UZ' : 'en-US')}</div>
+                    <div><strong>{t('createPlanForm.totalAyahsField')}</strong> {totalAyahs}</div>
+                    <div><strong>{t('createPlanForm.estimatedDurationField')}</strong> {estimatedDays} {t('createPlanForm.daysCount')}</div>
+                    <div><strong>{t('createPlanForm.totalReadingTimeField')}</strong> ~{estimatedTime} {t('createPlanForm.minutesCount')}</div>
                   </div>
                 </div>
               </div>
@@ -591,7 +594,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
               onClick={() => setStep(3)}
               className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             >
-              Назад
+              {t('createPlanForm.buttons.back')}
             </button>
             
             <button
@@ -599,7 +602,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
               disabled={!isValidPlan || loading}
               className="px-8 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-primary-dark)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              {loading ? 'Создание...' : 'Создать план'}
+              {loading ? t('createPlanForm.buttons.creating') : t('createPlanForm.buttons.create')}
             </button>
           </div>
         </div>
@@ -611,7 +614,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
           onClick={onCancel}
           className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 transition-colors"
         >
-          Отмена
+          {t('createPlanForm.buttons.cancel')}
         </button>
       </div>
     </div>

@@ -6,12 +6,15 @@ import Link from 'next/link';
 import { StudyPlan, ProgressStats, DailyTask } from '../../lib/plannerTypes';
 import { plannerStore } from '../../lib/plannerStore';
 import { getAyahsRange } from '../../lib/api';
+import { useLocale } from '../../context/LocaleContext';
 import CreatePlanForm from './CreatePlanForm';
 import CalendarView from './CalendarView';
 import CustomColorSettings from '../CustomColorSettings';
+import { Calendar, Check, PartyPopper, Play, Plus, SkipForward } from 'lucide-react';
 
 export default function PlannerDashboard() {
   const router = useRouter();
+  const { locale, t } = useLocale();
   const [plans, setPlans] = useState<StudyPlan[]>([]);
   const [stats, setStats] = useState<ProgressStats | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -150,23 +153,23 @@ export default function PlannerDashboard() {
     
     if (currentStreak === 0) {
       return {
-        title: "Добро пожаловать! 🌟",
-        message: "Начните свое духовное путешествие с изучения Корана сегодня."
+        title: t('welcomeTitle') + " 🌟",
+        message: t('welcomeMessage')
       };
     } else if (currentStreak < 7) {
       return {
-        title: `Отличное начало! 🔥`,
-        message: `У вас серия в ${currentStreak} ${currentStreak === 1 ? 'день' : 'дня'}. Продолжайте в том же духе!`
+        title: t('greatStartTitle') + " 🔥",
+        message: t('greatStartMessage').replace('{{streak}}', currentStreak.toString()).replace('{{days}}', t('days'))
       };
     } else if (currentStreak < 30) {
       return {
-        title: `Потрясающая дисциплина! ⭐`,
-        message: `Серия в ${currentStreak} дней! Вы на правильном пути к формированию прочной привычки.`
+        title: t('amazingDisciplineTitle') + " ⭐",
+        message: t('amazingDisciplineMessage').replace('{{streak}}', currentStreak.toString()).replace('{{days}}', t('days'))
       };
     } else {
       return {
-        title: `Невероятное достижение! 🏆`,
-        message: `${currentStreak} дней подряд! Ваша преданность изучению Корана вдохновляет.`
+        title: t('incredibleAchievementTitle') + " 🏆",
+        message: t('incredibleAchievementMessage').replace('{{streak}}', currentStreak.toString()).replace('{{days}}', t('days'))
       };
     }
   };
@@ -181,9 +184,9 @@ export default function PlannerDashboard() {
           </div>
           <div className="mt-6">
             <h2 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-2">
-              📖 Загружаем ваш планировщик...
+              📖 {t('loadingPlannerTitle')}
             </h2>
-            <p className="text-gray-600 dark:text-gray-400">Подготавливаем духовное путешествие</p>
+            <p className="text-gray-600 dark:text-gray-400">{t('loadingPlannerMessage')}</p>
           </div>
         </div>
       </div>
@@ -212,10 +215,10 @@ export default function PlannerDashboard() {
         {/* Заголовок */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-primary)] to-purple-600 bg-clip-text text-transparent mb-4">
-            📖 Планировщик изучения Корана 🕌
+            📖 {t('studyPlanner')} 🕌
           </h1>
           <p className="mt-2 text-base sm:text-lg md:text-xl max-w-2xl mx-auto" style={{ color: 'var(--color-text-secondary)' }}>
-            Создавайте персональные планы изучения и отслеживайте свой духовный прогресс с мудростью и постоянством
+            {t('plannerSubtitle')}
           </p>
         </div>
 
@@ -240,28 +243,27 @@ export default function PlannerDashboard() {
               <div className="rounded-3xl p-12 shadow-2xl" style={{ backgroundColor: 'var(--color-background)' }}>
                 <div className="text-8xl mb-8">�</div>
                 <h2 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-6">
-                  Начните свое духовное путешествие
+                  {t('startSpiritualJourney')}
                 </h2>
                 <p className="text-xl mb-12 leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
-                  Создайте свой первый план изучения Священного Корана и откройте дверь к мудрости, 
-                  покою и духовному росту с персонализированным подходом.
+                  {t('firstPlanDescription')}
                 </p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
                   <div className="text-center">
                     <div className="text-3xl mb-3">📅</div>
-                    <h3 className="font-semibold mb-2" style={{ color: 'var(--color-text)' }}>Планирование</h3>
-                    <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Структурированное изучение по дням</p>
+                    <h3 className="font-semibold mb-2" style={{ color: 'var(--color-text)' }}>{t('planning')}</h3>
+                    <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>{t('planningDescription')}</p>
                   </div>
                   <div className="text-center">
                     <div className="text-3xl mb-3">📊</div>
-                    <h3 className="font-semibold mb-2" style={{ color: 'var(--color-text)' }}>Прогресс</h3>
-                    <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Отслеживание достижений</p>
+                    <h3 className="font-semibold mb-2" style={{ color: 'var(--color-text)' }}>{t('progress')}</h3>
+                    <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>{t('progressDescription')}</p>
                   </div>
                   <div className="text-center">
                     <div className="text-3xl mb-3">🏆</div>
-                    <h3 className="font-semibold mb-2" style={{ color: 'var(--color-text)' }}>Мотивация</h3>
-                    <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>Система наград и достижений</p>
+                    <h3 className="font-semibold mb-2" style={{ color: 'var(--color-text)' }}>{t('motivation')}</h3>
+                    <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>{t('plannerMotivationDescription')}</p>
                   </div>
                 </div>
 
@@ -272,7 +274,7 @@ export default function PlannerDashboard() {
                   onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary-dark)'}
                   onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary)'}
                 >
-                  ✨ Создать первый план ✨
+                  ✨ {t('createFirstPlan')} ✨
                 </button>
               </div>
             </div>
@@ -285,16 +287,16 @@ export default function PlannerDashboard() {
               <div className="rounded-2xl p-8 shadow-xl" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
                 <h3 className="text-2xl font-bold mb-6 flex items-center" style={{ color: 'var(--color-text)' }}>
                   <span className="mr-3">📊</span>
-                  Общая статистика
+                  {t('overallStatistics')}
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                   <div className="text-center bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4">
                     <div className="text-3xl font-bold text-green-600 dark:text-green-400">{stats?.activePlans || 0}</div>
-                    <div className="text-sm font-medium text-green-700 dark:text-green-300">Активных планов</div>
+                    <div className="text-sm font-medium text-green-700 dark:text-green-300">{t('activePlans')}</div>
                   </div>
                   <div className="text-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4">
                     <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">{stats?.currentStreak || 0}</div>
-                    <div className="text-sm font-medium text-blue-700 dark:text-blue-300">Текущая серия</div>
+                    <div className="text-sm font-medium text-blue-700 dark:text-blue-300">{t('currentStreak')}</div>
                   </div>
                   <div className="text-center bg-gradient-to-br from-purple-50 to-violet-100 dark:from-purple-900/20 dark:to-violet-900/20 rounded-xl p-4">
                     <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">{stats?.totalAyahsRead || 0}</div>
@@ -364,27 +366,35 @@ export default function PlannerDashboard() {
                                     onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary-dark)'}
                                     onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary)'}
                                   >
-                                    <span className="mr-2">✅</span>
+                                    <span className="mr-2">
+                                        <Check className="w-5 h-5" />
+                                    </span>
                                     Выполнено
                                   </button>
                                   <button
                                     onClick={() => handleSkipTask(plan!.id, task.date)}
                                     className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-lg sm:rounded-xl font-semibold hover:from-gray-500 hover:to-gray-600 transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center text-sm sm:text-base"
                                   >
-                                    <span className="mr-2">⏭️</span>
+                                    <span className="mr-2">
+                                        <SkipForward className="w-5 h-5" />
+                                    </span>
                                     Пропустить
                                   </button>
                                 </>
                               )}
                               {task.completed && (
                                 <div className="px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 dark:from-green-800 dark:to-emerald-800 dark:text-green-200 rounded-xl font-semibold flex items-center justify-center">
-                                  <span className="mr-2">🎉</span>
+                                  <span className="mr-2">
+                                    <PartyPopper className="w-6 h-6" />
+                                  </span>
                                   Выполнено!
                                 </div>
                               )}
                               {task.skipped && (
-                                <div className="px-6 py-3 bg-gradient-to-r from-gray-100 to-slate-100 text-gray-800 dark:from-gray-700 dark:to-slate-700 dark:text-gray-200 rounded-xl font-semibold flex items-center justify-center">
-                                  <span className="mr-2">⏸️</span>
+                                <div className="px-6 py-3 bg-[var(--color-primary)]   rounded-xl font-semibold flex items-center justify-center">
+                                  <span className="mr-2">
+                                    <Play className="w-6 h-6" />
+                                  </span>
                                   Пропущено
                                 </div>
                               )}
@@ -406,9 +416,11 @@ export default function PlannerDashboard() {
                   </h3>
                   <button
                     onClick={handleCreatePlan}
-                    className="px-6 py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary)] text-white rounded-xl font-semibold hover:from-green-600 hover:to-emerald-700 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-1 flex items-center"
+                    className="px-6 py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-primary)] text-white rounded-xl font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-1 flex items-center"
                   >
-                    <span className="mr-2">➕</span>
+                    <span className="mr-2">
+                        <Plus className="w-5 h-5" />
+                    </span>
                     Создать план
                   </button>
                 </div>
@@ -424,7 +436,7 @@ export default function PlannerDashboard() {
                           <h4 className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{plan.title}</h4>
                         </div>
                         <div className="text-right">
-                          <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+                          <div className="text-2xl font-bold text-[var(--color-primary)]"> 
                             {plan.completionPercentage.toFixed(1)}%
                           </div>
                           <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>выполнено</div>
@@ -476,8 +488,8 @@ export default function PlannerDashboard() {
                     <div className="flex items-center space-x-4 rounded-xl p-4" style={{ backgroundColor: 'var(--color-muted)' }}>
                       <span className="text-4xl">🔥</span>
                       <div>
-                        <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>Самая длинная серия</div>
-                        <div className="font-semibold" style={{ color: 'var(--color-primary)' }}>{stats.longestStreak} дней подряд!</div>
+                        <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{t('longestStreak')}</div>
+                        <div className="font-semibold" style={{ color: 'var(--color-primary)' }}>{stats.longestStreak} {t('daysInARow')}!</div>
                       </div>
                     </div>
                   ) : null}
@@ -486,8 +498,8 @@ export default function PlannerDashboard() {
                     <div className="flex items-center space-x-4 rounded-xl p-4" style={{ backgroundColor: 'var(--color-muted)' }}>
                       <span className="text-4xl">🎯</span>
                       <div>
-                        <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>Завершенные планы</div>
-                        <div className="font-semibold" style={{ color: 'var(--color-primary)' }}>{stats.completedPlans} планов завершено</div>
+                        <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{t('completedPlans')}</div>
+                        <div className="font-semibold" style={{ color: 'var(--color-primary)' }}>{stats.completedPlans} {t('plansCompleted')}</div>
                       </div>
                     </div>
                   ) : null}
@@ -496,8 +508,8 @@ export default function PlannerDashboard() {
                     <div className="flex items-center space-x-4 rounded-xl p-4" style={{ backgroundColor: 'var(--color-muted)' }}>
                       <span className="text-4xl">📚</span>
                       <div>
-                        <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>Ученый читатель</div>
-                        <div className="font-semibold" style={{ color: 'var(--color-primary)' }}>Изучено {stats.totalAyahsRead} аятов</div>
+                        <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{t('scholarlyReader')}</div>
+                        <div className="font-semibold" style={{ color: 'var(--color-primary)' }}>{stats.totalAyahsRead} {t('studiedAyahs')}</div>
                       </div>
                     </div>
                   ) : null}
@@ -506,7 +518,7 @@ export default function PlannerDashboard() {
                     <div className="text-center py-8">
                       <div className="text-6xl mb-4">🌟</div>
                       <p className="font-medium text-lg" style={{ color: 'var(--color-text-secondary)' }}>
-                        Начните изучение, чтобы получить первые достижения!
+                        {t('startStudyingToEarnAchievements')}
                       </p>
                     </div>
                   )}
@@ -517,7 +529,7 @@ export default function PlannerDashboard() {
               <div className="rounded-2xl p-8 shadow-xl" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
                 <h3 className="text-2xl font-bold mb-6 flex items-center" style={{ color: 'var(--color-text)' }}>
                   <span className="mr-3">⚡</span>
-                  Быстрые действия
+                  {t('quickActions')}
                 </h3>
                 <div className="space-y-4">
                   <button 
@@ -527,23 +539,27 @@ export default function PlannerDashboard() {
                     onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary-dark)'}
                     onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary)'}
                   >
-                    <span className="mr-3 text-xl">➕</span>
-                    Новый план
+                    <span className="mr-3 text-xl">
+                        <Plus className="w-6 h-6" />
+                    </span>
+                    {t('newPlan')}
                   </button>
                   
                   <button 
                     onClick={() => setShowCalendar(!showCalendar)}
                     className="w-full px-6 py-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl font-bold hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center"
                   >
-                    <span className="mr-3 text-xl">📅</span>
-                    {showCalendar ? 'Скрыть календарь' : 'Просмотр календаря'}
+                    <span className="mr-3 text-xl">
+                        <Calendar className="w-6 h-6" />
+                    </span>
+                    {showCalendar ? t('hideCalendar') : t('viewCalendar')}
                   </button>
                   
                   <button 
                     onClick={handleExportData}
                     className="w-full px-6 py-4 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-xl font-bold hover:from-purple-600 hover:to-violet-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center"
                   >
-                    Экспорт данных
+                    {t('exportData')}
                   </button>
                 </div>
               </div>
@@ -554,11 +570,10 @@ export default function PlannerDashboard() {
                 <div className="relative z-10">
                   <h3 className="text-2xl font-bold mb-4 flex items-center" style={{ color: 'var(--color-text)' }}>
                     <span className="mr-3">💡</span>
-                    Совет дня
+                    {t('tipOfTheDay')}
                   </h3>
                   <p className="text-lg leading-relaxed font-medium" style={{ color: 'var(--color-text-secondary)' }}>
-                    "Лучшее время для чтения Корана - раннее утро после фаджр намаза, когда ум наиболее ясен и спокоен. 
-                    В эти благословенные моменты сердце открыто для божественной мудрости."
+                    {t('dailyTipMessage')}
                   </p>
                 </div>
                 <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/30 rounded-full"></div>
@@ -575,7 +590,7 @@ export default function PlannerDashboard() {
               <div className="flex justify-between items-center mb-8">
                 <h2 className="text-3xl font-bold flex items-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   <span className="mr-4">📅</span>
-                  Календарь изучения
+                  {t('studyCalendar')}
                 </h2>
                 <button 
                   onClick={() => setShowCalendar(false)}
