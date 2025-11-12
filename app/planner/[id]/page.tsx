@@ -26,10 +26,26 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [editTitle, setEditTitle] = useState('');
   const [editDescription, setEditDescription] = useState('');
+  const [showActionsDropdown, setShowActionsDropdown] = useState(false);
+  const [readingCounter, setReadingCounter] = useState(0);
 
   useEffect(() => {
     loadPlanDetails();
   }, [resolvedParams.id]);
+
+  // Закрытие dropdown при клике вне его области
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showActionsDropdown) {
+        setShowActionsDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showActionsDropdown]);
 
   const loadPlanDetails = async () => {
     try {
@@ -113,6 +129,19 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
     }
   };
 
+  const incrementReadingCounter = () => {
+    setReadingCounter(prev => prev + 1);
+    
+    // Добавляем анимацию
+    const counterElement = document.querySelector('.reading-counter');
+    if (counterElement) {
+      counterElement.classList.add('counter-animate');
+      setTimeout(() => {
+        counterElement.classList.remove('counter-animate');
+      }, 300);
+    }
+  };
+
   const handleDeletePlan = () => {
     if (!plan) return;
     
@@ -186,46 +215,123 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
               </Link>
             </div>
             
-            <div className="flex space-x-3">
-              <button
-                onClick={() => setShowCalendar(!showCalendar)}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <span>Календарь</span>
-              </button>
-              
-              <button
-                onClick={exportPlanData}
-                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center space-x-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <span>Экспорт</span>
-              </button>
-              
-              <button
-                onClick={() => setShowEditForm(!showEditForm)}
-                className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors flex items-center space-x-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-                <span>Редактировать</span>
-              </button>
-              
-              <button
-                onClick={() => setShowDeleteConfirm(true)}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center space-x-2"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-                <span>Удалить</span>
-              </button>
+            {/* Кнопки действий - адаптивные */}
+            <div className="flex items-center space-x-3">
+              {/* Десктоп версия */}
+              <div className="hidden md:flex space-x-3">
+                <button
+                  onClick={() => setShowCalendar(!showCalendar)}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span>Календарь</span>
+                </button>
+                
+                <button
+                  onClick={exportPlanData}
+                  className="px-4 py-2 text-white rounded-lg transition-colors flex items-center space-x-2"
+                  style={{ backgroundColor: 'var(--color-primary)' }}
+                  onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary-dark)'}
+                  onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary)'}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span>Экспорт</span>
+                </button>
+                
+                <button
+                  onClick={() => setShowEditForm(!showEditForm)}
+                  className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors flex items-center space-x-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  <span>Редактировать</span>
+                </button>
+                
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center space-x-2"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  <span>Удалить</span>
+                </button>
+              </div>
+
+              {/* Мобильная версия - Dropdown */}
+              <div className="md:hidden relative">
+                <button
+                  onClick={() => setShowActionsDropdown(!showActionsDropdown)}
+                  className="p-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                  </svg>
+                </button>
+
+                {showActionsDropdown && (
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-50">
+                    <div className="py-2">
+                      <button
+                        onClick={() => {
+                          setShowCalendar(!showCalendar);
+                          setShowActionsDropdown(false);
+                        }}
+                        className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>Календарь</span>
+                      </button>
+                      
+                      <button
+                        onClick={() => {
+                          exportPlanData();
+                          setShowActionsDropdown(false);
+                        }}
+                        className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <span>Экспорт</span>
+                      </button>
+                      
+                      <button
+                        onClick={() => {
+                          setShowEditForm(!showEditForm);
+                          setShowActionsDropdown(false);
+                        }}
+                        className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center space-x-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        <span>Редактировать</span>
+                      </button>
+                      
+                      <button
+                        onClick={() => {
+                          setShowDeleteConfirm(true);
+                          setShowActionsDropdown(false);
+                        }}
+                        className="w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-700 text-red-600 dark:text-red-400 flex items-center space-x-2"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        <span>Удалить</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -381,27 +487,80 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
               {/* Арабский текст аятов */}
               {todayAyahs.length > 0 && (
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
-                  <h3 className="text-lg font-semibold mb-4 text-center">📜 Аяты для изучения</h3>
-                  <div className="space-y-4">
+                  <h3 className="text-lg font-semibold mb-4 text-center flex items-center justify-center">
+                    <span className="mr-2">📜</span>
+                    Аяты для изучения
+                    <span className="ml-2">🕌</span>
+                  </h3>
+                  
+                  <div className="space-y-6">
                     {todayAyahs.map((ayah, index) => (
-                      <div key={index} className="text-center">
-                        <div className="text-2xl font-arabic leading-loose mb-2" dir="rtl" lang="ar">
-                          {ayah.text}
+                      <div key={index} className="bg-white/5 rounded-lg p-6 border border-white/10">
+                        {/* Заголовок аята */}
+                        <div className="text-center mb-4">
+                          <span className="inline-flex items-center justify-center w-10 h-10 bg-white/20 text-white rounded-full font-bold">
+                            {ayah.numberInSurah}
+                          </span>
+                          <div className="text-sm text-blue-100 opacity-75 mt-1">
+                            Аят {ayah.numberInSurah} • Джуз {ayah.juz}
+                          </div>
                         </div>
-                        <div className="text-sm text-blue-100 opacity-75">
-                          Аят {ayah.numberInSurah}
+                        
+                        {/* Арабский текст */}
+                        <div className="bg-white/5 rounded-lg p-6 mb-4">
+                          <div className="quran-text text-center text-white text-3xl leading-loose">
+                            {ayah.text}
+                          </div>
                         </div>
+                        
+                        {/* Разделитель */}
+                        {index < todayAyahs.length - 1 && (
+                          <div className="flex justify-center mt-6">
+                            <div className="w-12 h-1 bg-white/20 rounded-full"></div>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
+                  
+                  <div className="mt-6 text-center">
+                    <p className="text-blue-100 text-sm opacity-75 italic">
+                      🌙 "И читай Коран размеренным чтением" (Коран 73:4)
+                    </p>
+                  </div>
                 </div>
               )}
+              {/* Счетчик чтения */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold">📊 Счетчик чтения</h3>
+                  <div className="text-2xl font-bold reading-counter">
+                    {readingCounter} {readingCounter === 1 ? 'раз' : readingCounter > 1 && readingCounter < 5 ? 'раза' : 'раз'}
+                  </div>
+                </div>
+                <button
+                  onClick={incrementReadingCounter}
+                  className="w-full text-white rounded-lg font-bold py-4 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                  style={{ backgroundColor: 'var(--color-primary)' }}
+                  onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary-dark)'}
+                  onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary)'}
+                >
+                  <span className="text-xl mr-2">📖</span>
+                  +1 Прочитал
+                </button>
+                <p className="text-center text-blue-100 text-sm mt-3 opacity-75">
+                  💡 Нажимайте каждый раз после прочтения аятов
+                </p>
+              </div>
 
               {!todayTask.completed && !todayTask.skipped && (
                 <div className="flex space-x-4">
                   <button
                     onClick={() => handleCompleteTask(todayTask.date)}
-                    className="flex-1 bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center space-x-2"
+                    className="flex-1 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center space-x-2"
+                    style={{ backgroundColor: 'var(--color-primary)' }}
+                    onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary-dark)'}
+                    onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary)'}
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
