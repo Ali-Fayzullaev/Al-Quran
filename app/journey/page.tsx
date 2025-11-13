@@ -1,21 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { useLocale } from "@/context/LocaleContext";
 import JourneyMap from "@/components/journey/JourneyMap";
 import JourneyStats from "@/components/journey/JourneyStats";
 import JourneyAchievements from "@/components/journey/JourneyAchievements";
 import JourneyQuiz from "@/components/journey/JourneyQuiz";
 import { Map, BarChart3, Trophy, Brain } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function JourneyPage() {
-  const { locale, t } = useLocale();
-  const router = useRouter();
-  const [activeTab, setActiveTab] = useState<
-    "map" | "stats" | "achievements" | "quiz"
-  >("map");
+type JourneyTabId = "map" | "stats" | "achievements" | "quiz";
 
+export default function JourneyPage() {
+  const { t } = useLocale();
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState<JourneyTabId>("map");
+
+  const tabScrollStyle: CSSProperties = {
+    WebkitOverflowScrolling: "touch",
+  };
+
+  const tabItems: Array<{ id: JourneyTabId; label: string; icon: LucideIcon }> = [
+    { id: "map", label: t("journeyMap"), icon: Map },
+    { id: "stats", label: t("statistics"), icon: BarChart3 },
+    { id: "achievements", label: t("achievements"), icon: Trophy },
+    { id: "quiz", label: t("quiz"), icon: Brain },
+  ];
 
   const handleStartQuiz = (surahNumber: number) => {
     // Перенаправляем на страницу квиза для конкретной суры
@@ -50,13 +61,13 @@ export default function JourneyPage() {
               className="text-4xl md:text-5xl font-bold"
               style={{ color: "var(--fixed-text)" }}
             >
-              {t('quranJourney')}
+              {t("quranJourney")}
             </h1>
             <p
               className="text-lg max-w-2xl mx-auto"
               style={{ color: "var(--fixed-text-secondary)" }}
             >
-              {t('journeyDescription')}
+              {t("journeyDescription")}
             </p>
           </div>
         </div>
@@ -64,64 +75,43 @@ export default function JourneyPage() {
         {/* Табы навигации */}
         <div className="mb-8">
           <div
-            className="flex gap-3 p-2 rounded-2xl border-2 bg-opacity-50"
+            className=" bg-opacity-50"
             style={{
               backgroundColor: "var(--fixed-background-secondary)",
               borderColor: "var(--color-border)",
             }}
           >
-            <button
-              onClick={() => setActiveTab("map")}
-              className="flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-xl transition-all font-medium"
-              style={{
-                backgroundColor:
-                  activeTab === "map" ? "var(--color-primary)" : "transparent",
-                color: activeTab === "map" ? "white" : "var(--fixed-text)",
-              }}
+            <div
+              className="flex gap-3 overflow-x-auto pb-3 sm:pb-2 sm:flex-wrap bb"
+              style={tabScrollStyle}
             >
-              <Map className="w-5 h-5" />
-              <span>{t('journeyMap')}</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab("stats")}
-              className="flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-xl transition-all font-medium"
-              style={{
-                backgroundColor:
-                  activeTab === "stats" ? "var(--color-primary)" : "transparent",
-                color: activeTab === "stats" ? "white" : "var(--fixed-text)",
-              }}
-            >
-              <BarChart3 className="w-5 h-5" />
-              <span>{t('statistics')}</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab("achievements")}
-              className="flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-xl transition-all font-medium"
-              style={{
-                backgroundColor:
-                  activeTab === "achievements" ? "var(--color-primary)" : "transparent",
-                color:
-                  activeTab === "achievements" ? "white" : "var(--fixed-text)",
-              }}
-            >
-              <Trophy className="w-5 h-5" />
-              <span>{t('achievements')}</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab("quiz")}
-              className="flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-xl transition-all font-medium"
-              style={{
-                backgroundColor:
-                  activeTab === "quiz" ? "var(--color-primary)" : "transparent",
-                color: activeTab === "quiz" ? "white" : "var(--fixed-text)",
-              }}
-            >
-              <Brain className="w-5 h-5" />
-              <span>{t('quiz')}</span>
-            </button>
+              {tabItems.map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => setActiveTab(id)}
+                  className={`min-w-[200px] sm:min-w-0 sm:flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-xl transition-all font-medium ${
+                    activeTab === id
+                      ? "shadow-lg"
+                      : "opacity-90 hover:opacity-100"
+                  }`}
+                  style={{
+                    backgroundColor:
+                      activeTab === id
+                        ? "var(--color-primary)"
+                        : "var(--fixed-background)",
+                    borderColor:
+                      activeTab === id
+                        ? "var(--color-primary)"
+                        : "var(--color-border)",
+                    color: activeTab === id ? "white" : "var(--fixed-text)",
+                  }}
+                  aria-pressed={activeTab === id}
+                >
+                  <Icon className="w-5 h-5" />
+                  <span className="whitespace-nowrap">{label}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 

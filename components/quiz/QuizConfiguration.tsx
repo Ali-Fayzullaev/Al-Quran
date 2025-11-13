@@ -183,7 +183,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                       borderColor: 'var(--color-border)',
                     }}
                   >
-                    <span className="text-3xl font-bold bg-gradient-to-br from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+                    <span className="text-3xl font-bold text-[var(--color-primary)] bg-clip-text">
                       {count}
                     </span>
                     <CheckCircle2 className="w-5 h-5 mx-auto mt-2 text-emerald-500 opacity-0 peer-checked:opacity-100 transition-opacity" />

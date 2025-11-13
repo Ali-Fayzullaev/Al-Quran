@@ -1,7 +1,14 @@
 // components/Sidebar.tsx
 "use client";
 
-import { useState, memo, useEffect, useMemo, useCallback, type CSSProperties } from "react";
+import {
+  useState,
+  memo,
+  useEffect,
+  useMemo,
+  useCallback,
+  type CSSProperties,
+} from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -38,48 +45,49 @@ const ThemeDrawer = dynamic(() => import("./ThemeDrawer"), {
 });
 
 // Компонент навигационного элемента
-const NavigationItem = memo(({ 
-  item, 
-  isActive, 
-  onClose 
-}: {
-  item: any;
-  isActive: boolean;
-  onClose: () => void;
-}) => {
-  const Icon = item.icon;
-  
-  return (
-    <Link
-      href={item.href}
-      onClick={onClose}
-      className={cn(
-        "relative flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium group transition-all duration-200",
-        isActive
-          ? "text-white shadow-md"
-          : "hover:translate-x-1"
-      )}
-      style={isActive ? 
-        { backgroundColor: 'var(--color-primary)' } : 
-        { color: 'var(--color-text)' }
-      }
-    >
-      <div className="relative">
-        <Icon className="h-5 w-5" />
-        {item.badge && (
-          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center text-[10px]">
-            {item.badge > 99 ? "99+" : item.badge}
-          </span>
+const NavigationItem = memo(
+  ({
+    item,
+    isActive,
+    onClose,
+  }: {
+    item: any;
+    isActive: boolean;
+    onClose: () => void;
+  }) => {
+    const Icon = item.icon;
+
+    return (
+      <Link
+        href={item.href}
+        onClick={onClose}
+        className={cn(
+          "relative flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium group transition-all duration-200",
+          isActive ? "text-white shadow-md" : "hover:translate-x-1"
         )}
-      </div>
-      
-      <span className="flex-1">{item.name}</span>
-      {item.isPremium && (
-        <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-      )}
-    </Link>
-  );
-});
+        style={
+          isActive
+            ? { backgroundColor: "var(--color-primary)" }
+            : { color: "var(--color-text)" }
+        }
+      >
+        <div className="relative">
+          <Icon className="h-5 w-5" />
+          {item.badge && (
+            <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center text-[10px]">
+              {item.badge > 99 ? "99+" : item.badge}
+            </span>
+          )}
+        </div>
+
+        <span className="flex-1">{item.name}</span>
+        {item.isPremium && (
+          <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+        )}
+      </Link>
+    );
+  }
+);
 
 NavigationItem.displayName = "NavigationItem";
 
@@ -98,14 +106,14 @@ const Sidebar = memo(function Sidebar() {
   // Навигационные элементы
   const navigation = useMemo(() => {
     // Отладка: проверим что возвращает функция t
-    console.log('Debug translations:', {
+    console.log("Debug translations:", {
       home: t("home"),
       quranReading: t("quranReading"),
       journey: t("journey"),
       quiz: t("quiz"),
-      locale: locale
+      locale: locale,
     });
-    
+
     return [
       {
         name: t("home"),
@@ -113,80 +121,83 @@ const Sidebar = memo(function Sidebar() {
         icon: Home,
         category: "main",
       },
-    {
-      name: t("quranReading"),
-      href: "/quran",
-      icon: Book,
-      isPremium: true,
-      category: "main",
-    },
-    {
-      name: t("journey"),
-      href: "/journey",
-      icon: Map,
-      category: "learning",
-    },
-    {
-      name: t("plannerTitle") || "Планировщик",
-      href: "/planner",
-      icon: Calendar,
-      category: "learning",
-    },
-    {
-      name: t("quiz"),
-      href: "/quiz",
-      icon: Brain,
-      category: "learning",
-    },
-    {
-      name: t("aiHelperNav"),
-      href: "/ai-helper",
-      icon: Bot,
-      isPremium: true,
-      category: "tools",
-    },
-    {
-      name: t("search"),
-      href: "/search",
-      icon: Search,
-      category: "tools",
-    },
-    {
-      name: t("bookmarks"),
-      href: "/bookmarks",
-      icon: Bookmark,
-      badge: bookmarks.length > 0 ? bookmarks.length : undefined,
-      category: "tools",
-    },
-    {
-      name: t("feedback"),
-      href: "/feedback",
-      icon: MessageSquare,
-      category: "settings",
-    },
-    {
-      name: t("settings"),
-      href: "/settings",
-      icon: Settings,
-      category: "settings",
-    },
+      {
+        name: t("quranReading"),
+        href: "/quran",
+        icon: Book,
+        isPremium: true,
+        category: "main",
+      },
+      {
+        name: t("journey"),
+        href: "/journey",
+        icon: Map,
+        category: "learning",
+      },
+      {
+        name: t("plannerTitle") || "Планировщик",
+        href: "/planner",
+        icon: Calendar,
+        category: "learning",
+      },
+      {
+        name: t("quiz"),
+        href: "/quiz",
+        icon: Brain,
+        category: "learning",
+      },
+      {
+        name: t("aiHelperNav"),
+        href: "/ai-helper",
+        icon: Bot,
+        isPremium: true,
+        category: "tools",
+      },
+      {
+        name: t("search"),
+        href: "/search",
+        icon: Search,
+        category: "tools",
+      },
+      {
+        name: t("bookmarks"),
+        href: "/bookmarks",
+        icon: Bookmark,
+        badge: bookmarks.length > 0 ? bookmarks.length : undefined,
+        category: "tools",
+      },
+      {
+        name: t("feedback"),
+        href: "/feedback",
+        icon: MessageSquare,
+        category: "settings",
+      },
+      {
+        name: t("settings"),
+        href: "/settings",
+        icon: Settings,
+        category: "settings",
+      },
     ];
   }, [locale, t, bookmarks.length]);
 
   // Категории
-  const categories = useMemo(() => ({
-    main: t("main"),
-    learning: t("learning"),
-    tools: t("tools"),
-    settings: t("settingsCategory"),
-  }), [t]);
+  const categories = useMemo(
+    () => ({
+      main: t("main"),
+      learning: t("learning"),
+      tools: t("tools"),
+      settings: t("settingsCategory"),
+    }),
+    [t]
+  );
 
   const closeSidebar = useCallback(() => {
     setIsOpen(false);
   }, []);
 
   const toggleSidebar = useCallback(() => {
-    setIsOpen(prev => !prev);
+    setIsOpen((prev) => !prev);
   }, []);
 
   const toggleButtonClassName = useMemo(
@@ -198,16 +209,33 @@ const Sidebar = memo(function Sidebar() {
     []
   );
 
-  const toggleButtonStyle = useMemo<CSSProperties>(() => ({
-    position: "fixed",
-    background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))",
-    borderColor: "rgba(255,255,255,0.35)",
-    boxShadow: "0 10px 30px rgba(0,0,0,0.18)",
-    top: "calc(env(safe-area-inset-top, 0px) + 0.75rem)",
-    right: "calc(env(safe-area-inset-right, 0px) + 0.75rem)",
-    left: "auto",
-    bottom: "auto",
-  }), []);
+  const toggleButtonStyle = useMemo<CSSProperties>(
+    () => ({
+      position: "fixed",
+      background:
+        "linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))",
+      borderColor: "rgba(255,255,255,0.35)",
+      boxShadow: "0 10px 30px rgba(0,0,0,0.18)",
+      top: "calc(env(safe-area-inset-top, 0px) + 0.75rem)",
+      right: "calc(env(safe-area-inset-right, 0px) + 0.75rem)",
+      left: "auto",
+      bottom: "auto",
+    }),
+    []
+  );
+
+  const navScrollStyle = useMemo<CSSProperties>(
+    () => ({
+      WebkitOverflowScrolling: "touch",
+      overscrollBehavior: "contain",
+      touchAction: "pan-y",
+      height:
+        "calc(100dvh - (5rem * 3) - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))",
+      maxHeight:
+        "calc(100dvh - (5rem * 3) - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px))",
+    }),
+    []
+  );
 
   // Закрытие при клике вне sidebar
   useEffect(() => {
@@ -217,8 +245,12 @@ const Sidebar = memo(function Sidebar() {
       const target = event.target as HTMLElement;
       const sidebar = document.getElementById("main-sidebar");
       const toggleButton = document.getElementById("sidebar-toggle");
-      
-      if (sidebar && !sidebar.contains(target) && !toggleButton?.contains(target)) {
+
+      if (
+        sidebar &&
+        !sidebar.contains(target) &&
+        !toggleButton?.contains(target)
+      ) {
         setIsOpen(false);
       }
     };
@@ -246,7 +278,7 @@ const Sidebar = memo(function Sidebar() {
     } else {
       document.body.style.overflow = "";
     }
-    
+
     return () => {
       document.body.style.overflow = "";
     };
@@ -299,14 +331,14 @@ const Sidebar = memo(function Sidebar() {
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
         style={{
-          backgroundColor: 'var(--color-surface)',
-          borderColor: 'var(--color-border)'
+          backgroundColor: "var(--color-surface)",
+          borderColor: "var(--color-border)",
         }}
       >
         {/* Header - фиксированная высота */}
-        <div 
+        <div
           className="flex-shrink-0 h-20 flex items-center justify-between p-6 border-b"
-          style={{ borderColor: 'var(--color-border)' }}
+          style={{ borderColor: "var(--color-border)" }}
         >
           <Link
             href="/"
@@ -315,30 +347,30 @@ const Sidebar = memo(function Sidebar() {
           >
             <div
               className="flex items-center justify-center w-10 h-10 rounded-xl shadow-md transition-transform group-hover:scale-105"
-              style={{ backgroundColor: 'var(--color-primary)' }}
+              style={{ backgroundColor: "var(--color-primary)" }}
             >
               <Book className="h-6 w-6 text-white" />
             </div>
             <div>
-              <h1 
+              <h1
                 className="font-bold text-xl"
-                style={{ color: 'var(--color-text)' }}
+                style={{ color: "var(--color-text)" }}
               >
                 {t("title")}
               </h1>
-              <p 
+              <p
                 className="text-xs"
-                style={{ color: 'var(--color-text-secondary)' }}
+                style={{ color: "var(--color-text-secondary)" }}
               >
                 {t("islamicLearningPlatform")}
               </p>
             </div>
           </Link>
-          
+
           <button
             onClick={closeSidebar}
             className="p-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
-            style={{ color: 'var(--color-text-secondary)' }}
+            style={{ color: "var(--color-text-secondary)" }}
             title={t("closeMenu")}
           >
             <X className="h-5 w-5" />
@@ -346,20 +378,20 @@ const Sidebar = memo(function Sidebar() {
         </div>
 
         {/* Controls - фиксированная высота */}
-        <div 
+        <div
           className="flex-shrink-0 h-20 flex items-center p-4 border-b"
-          style={{ borderColor: 'var(--color-border)' }}
+          style={{ borderColor: "var(--color-border)" }}
         >
           <div className="flex items-center justify-between space-x-2 w-full">
             <ThemeDrawer>
-              <button 
+              <button
                 className="flex-1 p-3 rounded-xl flex items-center justify-center space-x-2 transition-all duration-200 group hover:opacity-90"
-                style={{ backgroundColor: 'var(--color-muted)' }}
+                style={{ backgroundColor: "var(--color-muted)" }}
               >
                 <Palette className="h-4 w-4 group-hover:rotate-12 transition-transform" />
-                <span 
+                <span
                   className="text-sm font-medium"
-                  style={{ color: 'var(--color-text)' }}
+                  style={{ color: "var(--color-text)" }}
                 >
                   {t("themes")}
                 </span>
@@ -373,22 +405,32 @@ const Sidebar = memo(function Sidebar() {
         </div>
 
         {/* Navigation - растягивается на всю доступную высоту */}
-        <div className="flex-1 min-h-0 overflow-y-auto">
-          <div className="h-full">
-            <nav className="p-4 space-y-6">
+        <div
+          className="flex-1 min-h-0 overflow-y-auto"
+          style={navScrollStyle}
+        >
+          <nav
+            className="p-4 space-y-6"
+            style={{
+              paddingBottom:
+                "calc(env(safe-area-inset-bottom, 0px) + 1.5rem)",
+            }}
+          >
               {Object.entries(categories).map(([categoryKey, categoryName]) => {
-                const categoryItems = navigation.filter(item => item.category === categoryKey);
+                const categoryItems = navigation.filter(
+                  (item) => item.category === categoryKey
+                );
                 if (categoryItems.length === 0) return null;
 
                 return (
                   <div key={categoryKey}>
-                    <h3 
+                    <h3
                       className="text-xs font-bold uppercase tracking-wider mb-3 px-2"
-                      style={{ color: 'var(--color-text-secondary)' }}
+                      style={{ color: "var(--color-text-secondary)" }}
                     >
                       {categoryName}
                     </h3>
-                    
+
                     <div className="space-y-1">
                       {categoryItems.map((item) => (
                         <NavigationItem
@@ -402,26 +444,25 @@ const Sidebar = memo(function Sidebar() {
                   </div>
                 );
               })}
-            </nav>
-          </div>
+          </nav>
         </div>
 
         {/* Footer - фиксированная высота */}
-        <div 
+        <div
           className="flex-shrink-0 h-20 flex items-center p-4 border-t"
-          style={{ borderColor: 'var(--color-border)' }}
+          style={{ borderColor: "var(--color-border)" }}
         >
           <div
             className="text-center text-xs px-4 py-2 rounded-lg w-full"
             style={{
-              color: 'var(--color-text-secondary)',
-              backgroundColor: 'var(--color-muted)',
+              color: "var(--color-text-secondary)",
+              backgroundColor: "var(--color-muted)",
             }}
           >
-            <p className="font-medium">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p>
-            <p className="mt-1">
-              {t("inTheNameOfAllah")}
+            <p className="font-medium">
+              بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
             </p>
+            <p className="mt-1">{t("inTheNameOfAllah")}</p>
           </div>
         </div>
       </aside>

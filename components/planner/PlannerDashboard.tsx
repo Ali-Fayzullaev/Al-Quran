@@ -331,8 +331,8 @@ export default function PlannerDashboard() {
                       const plan = plans.find(p => p.tasks.includes(task));
                       return (
                         <div key={index} className="rounded-xl p-6 hover:shadow-lg transition-all duration-200" style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
+                          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                            <div className="flex-1 w-full">
                               <div className="flex items-center mb-2">
                                 <span className="text-2xl mr-3">📚</span>
                                 <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{plan?.title}</div>
@@ -358,12 +358,12 @@ export default function PlannerDashboard() {
                                 </div>
                               )}
                             </div>
-                            <div className="flex flex-col gap-2 sm:gap-3">
+                            <div className="flex flex-col gap-2 sm:gap-3 w-full sm:w-auto sm:self-stretch">
                               {!task.completed && !task.skipped && (
                                 <>
                                   <button
                                     onClick={() => handleCompleteTask(plan!.id, task.date)}
-                                    className="px-4 sm:px-6 py-2 sm:py-3 text-white rounded-lg sm:rounded-xl font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-1 flex items-center justify-center text-sm sm:text-base"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 text-white rounded-lg sm:rounded-xl font-semibold transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-1 flex items-center justify-center text-sm sm:text-base"
                                     style={{ backgroundColor: 'var(--color-primary)' }}
                                     onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary-dark)'}
                                     onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary)'}
@@ -375,7 +375,7 @@ export default function PlannerDashboard() {
                                   </button>
                                   <button
                                     onClick={() => handleSkipTask(plan!.id, task.date)}
-                                    className="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-lg sm:rounded-xl font-semibold hover:from-gray-500 hover:to-gray-600 transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center text-sm sm:text-base"
+                                    className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-gray-400 to-gray-500 text-white rounded-lg sm:rounded-xl font-semibold hover:from-gray-500 hover:to-gray-600 transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center text-sm sm:text-base"
                                   >
                                     <span className="mr-2">
                                         <SkipForward className="w-5 h-5" />
@@ -385,7 +385,7 @@ export default function PlannerDashboard() {
                                 </>
                               )}
                               {task.completed && (
-                                <div className="px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 dark:from-green-800 dark:to-emerald-800 dark:text-green-200 rounded-xl font-semibold flex items-center justify-center">
+                                <div className="w-full px-6 py-3 bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 dark:from-green-800 dark:to-emerald-800 dark:text-green-200 rounded-xl font-semibold flex items-center justify-center">
                                   <span className="mr-2">
                                     <PartyPopper className="w-6 h-6" />
                                   </span>
@@ -393,7 +393,7 @@ export default function PlannerDashboard() {
                                 </div>
                               )}
                               {task.skipped && (
-                                <div className="px-6 py-3 bg-[var(--color-primary)]   rounded-xl font-semibold flex items-center justify-center">
+                                <div className="w-full px-6 py-3 bg-[var(--color-primary)] rounded-xl font-semibold flex items-center justify-center">
                                   <span className="mr-2">
                                     <Play className="w-6 h-6" />
                                   </span>
@@ -411,7 +411,7 @@ export default function PlannerDashboard() {
 
               {/* Активные планы */}
               <div className="rounded-2xl p-8 shadow-xl" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
-                <div className="flex items-center justify-between mb-6">
+                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
                   <h3 className="text-2xl font-bold flex items-center" style={{ color: 'var(--color-text)' }}>
                     <span className="mr-3">📋</span>
                     Активные планы
@@ -432,13 +432,13 @@ export default function PlannerDashboard() {
                     <Link key={plan.id} href={`/planner/${plan.id}`} className="block">
                       <div className="rounded-2xl p-6 hover:shadow-xl transition-all duration-300 cursor-pointer" 
                            style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
-                      <div className="flex items-center justify-between mb-4">
+                      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4">
                         <div className="flex items-center">
                           <span className="text-3xl mr-3">📖</span>
                           <h4 className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{plan.title}</h4>
                         </div>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-[var(--color-primary)]"> 
+                        <div className="text-right md:text-right">
+                          <div className="text-2xl font-bold text-[var(--color-primary)]">
                             {plan.completionPercentage.toFixed(1)}%
                           </div>
                           <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>выполнено</div>
@@ -460,7 +460,7 @@ export default function PlannerDashboard() {
                         </div>
                       </div>
                       
-                      <div className="flex justify-between">
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex items-center text-sm text-blue-600 dark:text-blue-400">
                           <span className="mr-2">🔥</span>
                           <span className="font-medium">Серия: {plan.currentStreak} дней</span>
@@ -487,7 +487,7 @@ export default function PlannerDashboard() {
                 </h3>
                 <div className="space-y-4">
                   {stats?.longestStreak && stats.longestStreak > 0 ? (
-                    <div className="flex items-center space-x-4 rounded-xl p-4" style={{ backgroundColor: 'var(--color-muted)' }}>
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 rounded-xl p-4" style={{ backgroundColor: 'var(--color-muted)' }}>
                       <span className="text-4xl">🔥</span>
                       <div>
                         <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{t('longestStreak')}</div>
@@ -497,7 +497,7 @@ export default function PlannerDashboard() {
                   ) : null}
                   
                   {stats?.completedPlans && stats.completedPlans > 0 ? (
-                    <div className="flex items-center space-x-4 rounded-xl p-4" style={{ backgroundColor: 'var(--color-muted)' }}>
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 rounded-xl p-4" style={{ backgroundColor: 'var(--color-muted)' }}>
                       <span className="text-4xl">🎯</span>
                       <div>
                         <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{t('completedPlans')}</div>
@@ -507,7 +507,7 @@ export default function PlannerDashboard() {
                   ) : null}
                   
                   {stats?.totalAyahsRead && stats.totalAyahsRead > 100 ? (
-                    <div className="flex items-center space-x-4 rounded-xl p-4" style={{ backgroundColor: 'var(--color-muted)' }}>
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 rounded-xl p-4" style={{ backgroundColor: 'var(--color-muted)' }}>
                       <span className="text-4xl">📚</span>
                       <div>
                         <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{t('scholarlyReader')}</div>
@@ -589,7 +589,7 @@ export default function PlannerDashboard() {
         {showCalendar && (
           <div className="mt-12">
             <div className="rounded-3xl p-8 shadow-2xl" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
-              <div className="flex justify-between items-center mb-8">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
                 <h2 className="text-3xl font-bold flex items-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   <span className="mr-4">📅</span>
                   {t('studyCalendar')}

@@ -6,7 +6,20 @@ import { useJourneyStore, SURAHS_DATA } from "@/lib/journeyStore";
 import { useQuranStore } from "@/lib/store";
 import { useLocale } from "@/context/LocaleContext";
 import SurahStation from "./SurahStation";
-import { Map, Filter, Search, Grid3x3, List, Layers } from "lucide-react";
+import {
+  Map,
+  Filter,
+  Search,
+  Grid3x3,
+  Layers,
+  BookOpen,
+  Target,
+  CheckCircle2,
+  Lock,
+  Sun,
+  Building2,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -1225,6 +1238,7 @@ export default function JourneyMap({ onStartQuiz }: JourneyMapProps) {
   const [selectedJuz, setSelectedJuz] = useState<number | null>(null);
 
   const primaryColor = "var(--color-primary)";
+  const filtersLabel = getLocalizedText("Фильтры", "Filters", "Filtrlar");
 
   useEffect(() => {
     initializeJourney();
@@ -1275,14 +1289,14 @@ export default function JourneyMap({ onStartQuiz }: JourneyMapProps) {
   const filterButtons: Array<{
     id: FilterType;
     labelKey: string;
-    icon?: string;
+    icon: LucideIcon;
   }> = [
-    { id: "all", labelKey: "allSurahs", icon: "📖" },
-    { id: "available", labelKey: "availableSurahs", icon: "🎯" },
-    { id: "completed", labelKey: "completedSurahs", icon: "✅" },
-    { id: "locked", labelKey: "lockedSurahs", icon: "🔒" },
-    { id: "meccan", labelKey: "meccanSurahs", icon: "🏜️" },
-    { id: "medinan", labelKey: "medinanSurahs", icon: "🏙️" },
+    { id: "all", labelKey: "allSurahs", icon: BookOpen },
+    { id: "available", labelKey: "availableSurahs", icon: Target },
+    { id: "completed", labelKey: "completedSurahs", icon: CheckCircle2 },
+    { id: "locked", labelKey: "lockedSurahs", icon: Lock },
+    { id: "meccan", labelKey: "meccanSurahs", icon: Sun },
+    { id: "medinan", labelKey: "medinanSurahs", icon: Building2 },
   ];
 
   return (
@@ -1311,19 +1325,17 @@ export default function JourneyMap({ onStartQuiz }: JourneyMapProps) {
           {/* Переключатели вида */}
           <div className="flex items-center gap-2">
             <Button
-              variant={viewMode === "grid" ? "default" : "outline"}
               size="sm"
               onClick={() => setViewMode("grid")}
-              className="gap-2"
+              className={`gap-2 ${viewMode === "grid" ? "text-white bg-[var(--color-primary)]" : " border-2 border-[var(--color-primary)]"}`}
             >
               <Grid3x3 className="w-4 h-4" />
               {t('grid')}
             </Button>
             <Button
-              variant={viewMode === "juz" ? "default" : "outline"}
               size="sm"
               onClick={() => setViewMode("juz")}
-              className="gap-2"
+              className={`gap-2 ${viewMode === "juz" ? "text-white bg-[var(--color-primary)]" : "border-2 border-[var(--color-primary)]"}`}
             >
               <Layers className="w-4 h-4" />
               {t('byJuz')}
@@ -1352,31 +1364,46 @@ export default function JourneyMap({ onStartQuiz }: JourneyMapProps) {
         </div>
 
         {/* Фильтры */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <Filter
-            className="w-5 h-5"
-            style={{ color: "var(--fixed-text-secondary)" }}
-          />
-          {filterButtons.map(({ id, labelKey, icon }) => (
-            <button
-              key={id}
-              onClick={() => setFilter(id)}
-              className={cn(
-                "px-4 py-2 rounded-lg border-2 transition-all text-sm font-medium",
-                filter === id ? "scale-105" : ""
-              )}
-              style={{
-                backgroundColor:
-                  filter === id ? primaryColor : "var(--fixed-background)",
-                borderColor:
-                  filter === id ? primaryColor : "var(--color-border)",
-                color: filter === id ? "white" : "var(--fixed-text)",
-              }}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Filter
+              className="w-5 h-5"
+              style={{ color: "var(--fixed-text-secondary)" }}
+            />
+            <span
+              className="text-sm font-semibold uppercase tracking-wide"
+              style={{ color: "var(--fixed-text-secondary)" }}
             >
-              {icon && <span className="mr-2">{icon}</span>}
-              {t(labelKey)}
-            </button>
-          ))}
+              {filtersLabel}
+            </span>
+          </div>
+          <div className="overflow-x-auto">
+            <div className="flex gap-2 min-w-max snap-x pb-1">
+              {filterButtons.map(({ id, labelKey, icon: Icon }) => (
+                <button
+                  key={id}
+                  onClick={() => setFilter(id)}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-2 rounded-lg border-2 transition-all text-sm font-medium snap-start",
+                    filter === id ? "shadow-md" : "opacity-90 hover:opacity-100"
+                  )}
+                  style={{
+                    backgroundColor:
+                      filter === id
+                        ? primaryColor
+                        : "var(--fixed-background)",
+                    borderColor:
+                      filter === id ? primaryColor : "var(--color-border)",
+                    color: filter === id ? "white" : "var(--fixed-text)",
+                  }}
+                  aria-pressed={filter === id}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span className="whitespace-nowrap">{t(labelKey)}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
