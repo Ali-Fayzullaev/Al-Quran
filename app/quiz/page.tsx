@@ -126,7 +126,7 @@ import type { QuizConfig } from '@/lib/quizTypes';
 
 type QuizPhase = 'config' | 'quiz' | 'results';
 
-export default function QuizPage() {
+function QuizPageContent() {
   const searchParams = useSearchParams();
   const surahNumber = searchParams?.get('surah');
   const { t } = useLocale();
@@ -292,5 +292,20 @@ export default function QuizPage() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+export default function QuizPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
+          <p>Загрузка квиза...</p>
+        </div>
+      </div>
+    }>
+      <QuizPageContent />
+    </Suspense>
   );
 }

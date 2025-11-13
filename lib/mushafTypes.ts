@@ -189,6 +189,46 @@ export const MUSHAF_CONFIG = {
   // Фиксированный размер страниц (без вариантов)
   DEFAULT_PAGE_SCALE: 0.6, // Один фиксированный размер для всех
   
+  // Размеры страниц для контроллера
+  PAGE_SIZES: {
+    tiny: {
+      name: 'Tiny',
+      nameArabic: 'صغير جداً',
+      icon: '📱',
+      scale: 0.4
+    },
+    minimal: {
+      name: 'Minimal',
+      nameArabic: 'أدنى',
+      icon: '🔍',
+      scale: 0.5
+    },
+    small: {
+      name: 'Small',
+      nameArabic: 'صغير',
+      icon: '📊',
+      scale: 0.7
+    },
+    medium: {
+      name: 'Medium',
+      nameArabic: 'متوسط',
+      icon: '📄',
+      scale: 1.0
+    },
+    large: {
+      name: 'Large',
+      nameArabic: 'كبير',
+      icon: '📋',
+      scale: 1.3
+    },
+    maximum: {
+      name: 'Maximum',
+      nameArabic: 'أقصى',
+      icon: '📺',
+      scale: 1.6
+    }
+  } as const,
+  
   ANIMATION_DURATION: {
     PAGE_TURN: 400,
     ZOOM: 300,

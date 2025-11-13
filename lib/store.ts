@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { RECITERS, TRANSLATIONS } from "./api";
+import { PageSizeType } from "./mushafTypes";
 
 export interface Verse {
   number: number;
@@ -98,6 +99,10 @@ export interface QuranState {
   analyticsEnabled: boolean;
   crashReportingEnabled: boolean;
 
+  // Mushaf settings
+  mushafPageSize: PageSizeType;
+  mushafShowSizeControls: boolean;
+
   // Actions
   setCurrentPosition: (surah: number, verse: number) => void;
   setEdition: (edition: string) => void;
@@ -133,6 +138,10 @@ export interface QuranState {
   setCustomButtonColor: (color: string | null) => void;
   setCustomQuranTextColor: (color: string | null) => void;
   setCustomQuranTranslationColor: (color: string | null) => void;
+
+  // Mushaf actions
+  setMushafPageSize: (size: PageSizeType) => void;
+  setMushafShowSizeControls: (show: boolean) => void;
 }
 
 export const useQuranStore = create<QuranState>()(
@@ -186,6 +195,10 @@ export const useQuranStore = create<QuranState>()(
       // Privacy settings
       analyticsEnabled: true,
       crashReportingEnabled: true,
+
+      // Mushaf settings
+      mushafPageSize: 'medium' as const,
+      mushafShowSizeControls: true,
 
       // Actions
       setCurrentPosition: (surah: number, verse: number) => {
@@ -353,6 +366,15 @@ export const useQuranStore = create<QuranState>()(
 
       setCustomQuranTranslationColor: (color: string | null) => {
         set({ customQuranTranslationColor: color });
+      },
+
+      // Mushaf actions
+      setMushafPageSize: (size: PageSizeType) => {
+        set({ mushafPageSize: size });
+      },
+
+      setMushafShowSizeControls: (show: boolean) => {
+        set({ mushafShowSizeControls: show });
       },
     }),
     {

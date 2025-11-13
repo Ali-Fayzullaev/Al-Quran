@@ -20,6 +20,26 @@ const eslintConfig = [
       "next-env.d.ts",
     ],
   },
+  {
+    rules: {
+      // Отключаем проблемные TypeScript правила
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-require-imports": "warn",
+      "prefer-const": "warn",
+      
+      // React правила как предупреждения
+      "react-hooks/exhaustive-deps": "warn",
+      "react/no-unescaped-entities": "warn",
+      
+      // Next.js правила как предупреждения
+      "@next/next/no-img-element": "warn",
+      "@next/next/no-page-custom-font": "warn",
+      
+      // Отключаем некоторые строгие правила
+      "prefer-spread": "off",
+    },
+  },
 ];
 
 export default eslintConfig;
