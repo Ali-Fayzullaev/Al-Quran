@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Maximize2, Minimize2, Monitor, Smartphone, Tablet, MonitorSpeaker, Tv, EyeOff, Eye } from "lucide-react";
+import { Minimize2, Monitor, Smartphone, MonitorSpeaker, Tv, EyeOff, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useQuranStore } from "@/lib/store";

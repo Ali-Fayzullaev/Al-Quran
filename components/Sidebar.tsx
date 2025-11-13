@@ -1,7 +1,7 @@
 // components/Sidebar.tsx
 "use client";
 
-import { useState, memo, useEffect, useMemo, useCallback } from "react";
+import { useState, memo, useEffect, useMemo, useCallback, type CSSProperties } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -189,6 +189,26 @@ const Sidebar = memo(function Sidebar() {
     setIsOpen(prev => !prev);
   }, []);
 
+  const toggleButtonClassName = useMemo(
+    () =>
+      cn(
+        "fixed z-[60] flex h-11 w-11 items-center justify-center rounded-full shadow-2xl border transition-all duration-200 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+        "text-white"
+      ),
+    []
+  );
+
+  const toggleButtonStyle = useMemo<CSSProperties>(() => ({
+    position: "fixed",
+    background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-dark))",
+    borderColor: "rgba(255,255,255,0.35)",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.18)",
+    top: "calc(env(safe-area-inset-top, 0px) + 0.75rem)",
+    right: "calc(env(safe-area-inset-right, 0px) + 0.75rem)",
+    left: "auto",
+    bottom: "auto",
+  }), []);
+
   // Закрытие при клике вне sidebar
   useEffect(() => {
     if (!isOpen) return;
@@ -237,8 +257,10 @@ const Sidebar = memo(function Sidebar() {
     return (
       <button
         id="sidebar-toggle"
-        className="fixed top-4 left-4 z-50 p-3 rounded-xl shadow-lg border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-emerald-600 dark:text-emerald-400"
+        className={toggleButtonClassName}
+        style={toggleButtonStyle}
         title={t("openMenu")}
+        aria-label={t("openMenu")}
       >
         <Menu className="h-5 w-5" />
       </button>
@@ -251,13 +273,10 @@ const Sidebar = memo(function Sidebar() {
       <button
         id="sidebar-toggle"
         onClick={toggleSidebar}
-        className="fixed top-4 left-4 z-50 p-3 rounded-xl shadow-lg border transition-all duration-200 hover:scale-105"
-        style={{
-          backgroundColor: 'var(--color-surface)',
-          borderColor: 'var(--color-border)',
-          color: 'var(--color-primary)'
-        }}
+        className={toggleButtonClassName}
+        style={toggleButtonStyle}
         title={t("openMenu")}
+        aria-label={t("openMenu")}
       >
         <Menu className="h-5 w-5" />
       </button>

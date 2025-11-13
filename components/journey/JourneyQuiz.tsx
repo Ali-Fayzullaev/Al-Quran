@@ -10,7 +10,7 @@ import { Quiz } from '@/components/quiz/Quiz';
 import { QuizResults } from '@/components/quiz/QuizResults';
 import { Button } from '@/components/ui/button';
 import { BookOpen, Trophy, Shuffle, Brain, PlayCircle, ArrowLeft } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface JourneyQuizProps {
   onBack?: () => void;
@@ -117,7 +117,6 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
       <QuizResults 
         result={results}
         onRetry={handleStartQuiz}
-        onHome={handleBackToConfig}
       />
     );
   }

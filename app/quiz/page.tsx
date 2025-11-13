@@ -286,7 +286,6 @@ function QuizPageContent() {
             <QuizResults
               result={currentResult}
               onRetry={handleRetry}
-              onHome={handleHome}
             />
           </motion.div>
         )}

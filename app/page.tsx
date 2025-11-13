@@ -2,7 +2,7 @@
 "use client";
 
 import { useLocale } from "@/context/LocaleContext";
-import { Book, Quote, Hand, Search, Play, Bookmark, TrendingUp, Users, Globe, Star } from "lucide-react";
+import { Book, Quote, Hand, Search, Play, TrendingUp, Star } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useState } from "react";

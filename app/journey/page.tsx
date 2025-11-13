@@ -2,12 +2,10 @@
 
 import { useState } from "react";
 import { useLocale } from "@/context/LocaleContext";
-import { useQuranStore } from "@/lib/store";
 import JourneyMap from "@/components/journey/JourneyMap";
 import JourneyStats from "@/components/journey/JourneyStats";
 import JourneyAchievements from "@/components/journey/JourneyAchievements";
 import JourneyQuiz from "@/components/journey/JourneyQuiz";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Map, BarChart3, Trophy, Brain } from "lucide-react";
 import { useRouter } from "next/navigation";
 

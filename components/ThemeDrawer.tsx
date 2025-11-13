@@ -36,10 +36,7 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
       </SheetTrigger>
       <SheetContent 
         className="w-80 border-l  overflow-y-auto"
-        style={{
-          backgroundColor: 'var(--fixed-background)',
-          borderColor: 'var(--color-border)'
-        }}
+       style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}
       >
         <SheetHeader className="pb-6">
           <SheetTitle className="flex items-center gap-2 text-left" style={{ color: 'var(--fixed-text)' }}>
