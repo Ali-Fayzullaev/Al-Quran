@@ -1,8 +1,10 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useMemo, type ReactNode } from "react";
 
-type Messages = Record<string, string>;
+import ruMessages from "../public/messages/ru.json";
+
+type Messages = Record<string, unknown>;
 
 type LocaleContextType = {
   locale: string;
@@ -14,90 +16,34 @@ type LocaleContextType = {
 
 const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
 
-export function LocaleProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState("en");
-  const [messages, setMessages] = useState<Messages>({});
-  const [isLoading, setIsLoading] = useState(true);
+// Helper to walk nested keys inside plain objects
+const getMessageValue = (messages: Messages, key: string): string => {
+  const segments = key.split(".");
+  let current: unknown = messages;
 
-  // Загружаем переводы при изменении языка
-  useEffect(() => {
-    const loadMessages = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetch(`/messages/${locale}.json`);
-        if (response.ok) {
-          const msgs = await response.json();
-          setMessages(msgs);
-        } else {
-          console.error(`Failed to fetch messages for locale ${locale}: HTTP ${response.status}`);
-          // Fallback to English if current locale fails
-          if (locale !== 'en') {
-            const fallbackResponse = await fetch('/messages/en.json');
-            if (fallbackResponse.ok) {
-              const fallbackMsgs = await fallbackResponse.json();
-              setMessages(fallbackMsgs);
-            }
-          }
-        }
-      } catch (error) {
-        console.error(`Failed to load messages for locale ${locale}:`, error);
-        // Fallback to English
-        if (locale !== 'en') {
-          try {
-            const fallbackResponse = await fetch('/messages/en.json');
-            if (fallbackResponse.ok) {
-              const fallbackMsgs = await fallbackResponse.json();
-              setMessages(fallbackMsgs);
-            }
-          } catch (fallbackError) {
-            console.error('Failed to load fallback messages:', fallbackError);
-          }
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadMessages();
-  }, [locale]);
-
-  // Сохраняем выбранный язык в localStorage
-  const setLocale = (newLocale: string) => {
-    if (newLocale === locale) return; // Избегаем ненужных перезагрузок
-    setLocaleState(newLocale);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('preferred-locale', newLocale);
+  for (const segment of segments) {
+    if (current && typeof current === "object" && segment in (current as Record<string, unknown>)) {
+      current = (current as Record<string, unknown>)[segment];
+    } else {
+      return key;
     }
-  };
+  }
 
-  // Загружаем сохраненный язык при инициализации
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedLocale = localStorage.getItem('preferred-locale');
-      if (savedLocale && (savedLocale === 'en' || savedLocale === 'ru' || savedLocale === 'uz')) {
-        setLocaleState(savedLocale);
-      }
-    }
-  }, []);
+  return typeof current === "string" ? current : key;
+};
 
-  // Функция перевода с поддержкой вложенных ключей
-  const t = (key: string): any => {
-    const keys = key.split('.');
-    let value: any = messages;
-    
-    for (const k of keys) {
-      if (value && typeof value === 'object' && k in value) {
-        value = value[k];
-      } else {
-        return key; // Возвращаем ключ если перевод не найден
-      }
-    }
-    
-    return value || key;
+export function LocaleProvider({ children }: { children: ReactNode }) {
+  const locale = "ru";
+  const messages = useMemo<Messages>(() => ruMessages as Messages, []);
+
+  const t = (key: string) => getMessageValue(messages, key);
+
+  const setLocale = () => {
+    console.warn("Locale change is disabled. Russian locale is enforced for the planner module.");
   };
 
   return (
-    <LocaleContext.Provider value={{ locale, setLocale, messages, t, isLoading }}>
+    <LocaleContext.Provider value={{ locale, setLocale, messages, t, isLoading: false }}>
       {children}
     </LocaleContext.Provider>
   );
