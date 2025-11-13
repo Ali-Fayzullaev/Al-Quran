@@ -86,6 +86,16 @@ export default function SettingsPage() {
   const [showAllReciters, setShowAllReciters] = useState(false);
   const [activeTab, setActiveTab] = useState('audio');
 
+  const quickTabs = useMemo(
+    () => [
+      { id: 'audio', icon: Volume2, label: t('audio') },
+      { id: 'translation', icon: Languages, label: t('translation') },
+      { id: 'reading', icon: Type, label: t('reading') },
+      { id: 'colors', icon: Eye, label: t('colors') }
+    ],
+    [t]
+  );
+
   // Фильтрация чтецов по поиску
   const filteredReciters = useMemo(() => {
     if (!reciterSearch) return showAllReciters ? RECITERS : RECITERS.filter(r => POPULAR_RECITERS.includes(r.id));
@@ -219,7 +229,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-8">
+    <div className="max-w-6xl mx-auto px-4 py-8 sm:px-6 lg:px-8 space-y-8">
       {/* Header */}
       <div className="text-center space-y-4">
         <div className="flex items-center justify-center gap-3">
@@ -234,42 +244,34 @@ export default function SettingsPage() {
       </div>
 
       {/* Quick Settings Tabs */}
-      <div className="flex justify-center">
-        <div className="rounded-2xl p-2 shadow-lg border" style={{
-          backgroundColor: 'var(--verse-background)',
-          borderColor: 'var(--color-border)'
-        }}>
-          <div className="flex gap-2">
-            {[
-              { id: 'audio', icon: Volume2, label: t('audio') },
-              { id: 'translation', icon: Languages, label: t('translation') },
-              { id: 'reading', icon: Type, label: t('reading') },
-              { id: 'colors', icon: Eye, label: t('colors') }
-            ].map(({ id, icon: Icon, label }) => (
-              <button
-                key={id}
-                onClick={() => setActiveTab(id)}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition-all"
-                style={{
-                  backgroundColor: activeTab === id ? 'var(--color-primary)' : 'transparent',
-                  color: activeTab === id ? '#ffffff' : 'var(--fixed-text-secondary)',
-                  boxShadow: activeTab === id ? '0 4px 10px rgba(0,0,0,0.1)' : 'none'
-                }}
-                onMouseEnter={(e) => {
-                  if (activeTab !== id) {
-                    e.currentTarget.style.backgroundColor = 'var(--color-border)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (activeTab !== id) {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                  }
-                }}
-              >
-                <Icon size={16} />
-                {label}
-              </button>
-            ))}
+      <div className="relative">
+        <div className="overflow-x-auto pb-3 -mx-4 sm:mx-0" role="tablist">
+          <div className="flex w-max gap-2 px-4 sm:px-0 sm:justify-center sm:w-full">
+            {quickTabs.map(({ id, icon: Icon, label }) => {
+              const isActive = activeTab === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setActiveTab(id)}
+                  aria-pressed={isActive}
+                  className="flex items-center gap-2 rounded-2xl border px-4 py-2 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                  style={{
+                    backgroundColor: isActive
+                      ? 'var(--color-primary)'
+                      : 'var(--verse-background)',
+                    color: isActive ? '#ffffff' : 'var(--fixed-text)',
+                    borderColor: isActive
+                      ? 'var(--color-primary)'
+                      : 'var(--color-border)',
+                    boxShadow: isActive ? '0 10px 30px rgba(0,0,0,0.12)' : 'none',
+                  }}
+                >
+                  <Icon size={16} />
+                  <span className="whitespace-nowrap">{label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -297,7 +299,7 @@ export default function SettingsPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Reciter Selection */}
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <h3 className="text-lg font-medium" style={{ color: 'var(--fixed-text)' }}>
                     {t('selectReciterQari')}
                   </h3>
@@ -424,7 +426,7 @@ export default function SettingsPage() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between p-4 rounded-lg" style={{ backgroundColor: 'var(--color-secondary)' }}>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-lg" style={{ backgroundColor: 'var(--color-secondary)' }}>
                   <div>
                     <p className="font-medium" style={{ color: 'var(--fixed-text)' }}>
                       {t('autoplayNext')}
@@ -599,7 +601,7 @@ export default function SettingsPage() {
 
               {/* Display Options */}
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-lg" style={{ backgroundColor: 'var(--color-secondary)' }}>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-lg" style={{ backgroundColor: 'var(--color-secondary)' }}>
                   <div>
                     <p className="font-medium" style={{ color: 'var(--fixed-text)' }}>
                       {t('showTranslation')}
@@ -622,7 +624,7 @@ export default function SettingsPage() {
                   </button>
                 </div>
 
-                <div className="flex items-center justify-between p-4 rounded-lg" style={{ backgroundColor: 'var(--color-secondary)' }}>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-lg" style={{ backgroundColor: 'var(--color-secondary)' }}>
                   <div>
                     <p className="font-medium" style={{ color: 'var(--fixed-text)' }}>
                       {t('showTransliteration')}
@@ -666,18 +668,18 @@ export default function SettingsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="flex justify-center gap-4"
+        className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4"
       >
         <Button
           onClick={resetSettings}
           variant="outline"
-          className="flex items-center gap-2 px-6 py-3"
+          className="flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto"
         >
           <RotateCcw size={18} />
           {t('resetToDefault')}
         </Button>
         
-        <Button className="flex items-center gap-2 theme-btn-primary px-6 py-3">
+        <Button className="flex items-center justify-center gap-2 theme-btn-primary px-6 py-3 w-full sm:w-auto">
           <Save size={18} />
           {t('settingsSaved')}
         </Button>
