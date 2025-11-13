@@ -852,7 +852,23 @@
             "day": "день",
             "errorUpdating": "Ошибка при обновлении плана",
             "completedFromPlanPage": "Выполнено со страницы плана",
-            "skippedFromPlanPage": "Пропущено со страницы плана"
+            "skippedFromPlanPage": "Пропущено со страницы плана",
+            "completedText": "выполнено",
+            "daysOf": "из",
+            "daysWord": "дней",
+            "streakLabel": "Серия:",
+            "ayahCount": "Количество аятов:",
+            "ayahsForStudy": "Аяты для изучения",
+            "ayahNumber": "Аят",
+            "juzNumber": "Джуз",
+            "quranQuote": "\"И читай Коран размеренным чтением\" (Коран 73:4)",
+            "readingCounter": "Счетчик чтения",
+            "readButtonText": "+1 Прочитал",
+            "readingTip": "Нажимайте каждый раз после прочтения аятов",
+            "completedAt": "Выполнено в",
+            "timeSingular": "раз",
+            "timesPlural": "раза",
+            "timesMany": "раз"
         },
         
         "achievementSystem": {
@@ -935,6 +951,20 @@
                     "Каждый день изучения приближает к Аллаху 📖",
                     "Маленькие шаги каждый день ведут к большим результатам ⭐"
                 ]
+            }
+        },
+        
+        "streakGoals": {
+            "title": "Цели серий",
+            "daysAgo30": "30 дней назад",
+            "today": "Сегодня",
+            "day": "День",
+            "achieved": "✓ Достигнуто",
+            "goals": {
+                "week": "Неделя дисциплины",
+                "month": "Месяц постоянства", 
+                "hundred": "Сто дней мастерства",
+                "year": "Год преданности"
             }
         }
 

@@ -1,3 +1,5 @@
+
+// src/components/planner/PlannerDashboard.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -95,7 +97,7 @@ export default function PlannerDashboard() {
     const profile = plannerStore.getUserProfile();
     if (!profile) {
       // Создаем базовый профиль
-      plannerStore.createUserProfile(t('plannerDashboard.defaultUserName'), {
+      plannerStore.createUserProfile(t('defaultUserName'), {
         language: 'ru',
         theme: 'light',
         notifications: true
@@ -338,7 +340,7 @@ export default function PlannerDashboard() {
                               <div className="text-base mb-4" style={{ color: 'var(--color-primary)' }}>
                                 🕌 Сура {task.surahNumber}, аяты {task.fromAyah}-{task.toAyah}
                                 <span className="ml-2 px-2 py-1 rounded-full text-sm" style={{ backgroundColor: 'var(--color-muted)', color: 'var(--color-text)' }}>
-                                  {task.ayahCount} {task.ayahCount === 1 ? t('plannerDashboard.ayahSingular') : t('plannerDashboard.ayahPlural')}
+                                  {task.ayahCount} {task.ayahCount === 1 ? t('ayahSingular') : t('ayahPlural')}
                                 </span>
                               </div>
                               

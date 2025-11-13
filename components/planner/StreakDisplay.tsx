@@ -1,3 +1,4 @@
+// src/components/planner/StreakDisplay.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -139,29 +140,29 @@ export default function StreakDisplay({ stats, plans }: StreakDisplayProps) {
                     ? 'bg-green-500' 
                     : 'bg-gray-200 dark:bg-gray-600'
                 } ${isToday ? 'ring-2 ring-blue-500' : ''}`}
-                title={`День ${index + 1}`}
+                title={`${t('streakGoals.day')} ${index + 1}`}
               />
             );
           })}
         </div>
         <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
-          <span>30 дней назад</span>
-          <span>Сегодня</span>
+          <span>{t('streakGoals.daysAgo30')}</span>
+          <span>{t('streakGoals.today')}</span>
         </div>
       </div>
 
       {/* Мотивационные цели */}
       <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
         <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-          Цели серий
+          {t('streakGoals.title')}
         </div>
         
         <div className="space-y-3">
           {[
-            { days: 7, title: "Неделя дисциплины", reward: "🎯" },
-            { days: 30, title: "Месяц постоянства", reward: "🏅" },
-            { days: 100, title: "Сто дней мастерства", reward: "👑" },
-            { days: 365, title: "Год преданности", reward: "🌟" }
+            { days: 7, titleKey: "week", reward: "🎯" },
+            { days: 30, titleKey: "month", reward: "🏅" },
+            { days: 100, titleKey: "hundred", reward: "👑" },
+            { days: 365, titleKey: "year", reward: "🌟" }
           ].map((goal) => {
             const achieved = stats.longestStreak >= goal.days;
             const current = stats.currentStreak >= goal.days;
@@ -176,10 +177,10 @@ export default function StreakDisplay({ stats, plans }: StreakDisplayProps) {
                     <div className={`font-medium ${
                       achieved ? "text-green-600 dark:text-green-400" : "text-gray-600 dark:text-gray-400"
                     }`}>
-                      {goal.title}
+                      {t(`streakGoals.goals.${goal.titleKey}`)}
                     </div>
                     <div className="text-xs text-gray-500">
-                      {goal.days} дней подряд
+                      {goal.days} {t('streakDisplay.daysPlural')}
                     </div>
                   </div>
                 </div>
@@ -187,7 +188,7 @@ export default function StreakDisplay({ stats, plans }: StreakDisplayProps) {
                 <div className="text-right">
                   {achieved ? (
                     <div className="text-green-600 dark:text-green-400 text-sm font-medium">
-                      ✓ Достигнуто
+                      {t('streakGoals.achieved')}
                     </div>
                   ) : (
                     <div className="text-gray-400 text-sm">

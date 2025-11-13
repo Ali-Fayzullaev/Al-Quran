@@ -1,3 +1,4 @@
+// src/components/quiz/QuestionCard.tsx
 'use client';
 
 import { useState, useEffect } from 'react';

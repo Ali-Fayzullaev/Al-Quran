@@ -858,7 +858,23 @@
         "day": "kun",
         "errorUpdating": "Rejani yangilashda xato",
         "completedFromPlanPage": "Reja sahifasidan bajarildi",
-        "skippedFromPlanPage": "Reja sahifasidan o'tkazib yuborildi"
+        "skippedFromPlanPage": "Reja sahifasidan o'tkazib yuborildi",
+        "completedText": "bajarildi",
+        "daysOf": "dan",
+        "daysWord": "kun",
+        "streakLabel": "Ketma-ketlik:",
+        "ayahCount": "Oyatlar soni:",
+        "ayahsForStudy": "O'rganish uchun oyatlar",
+        "ayahNumber": "Oyat",
+        "juzNumber": "Juz",
+        "quranQuote": "\"Va Qur'onni tartib bilan o'qi\" (Qur'on 73:4)",
+        "readingCounter": "O'qish hisoblagichi",
+        "readButtonText": "+1 O'qildi",
+        "readingTip": "Oyatlarni o'qib bo'lgach har safar bosing",
+        "completedAt": "Bajarilgan vaqt:",
+        "timeSingular": "marta",
+        "timesPlural": "marta",
+        "timesMany": "marta"
     },
     
     "achievementSystem": {
@@ -941,6 +957,20 @@
                 "Har kungi o'qish sizni Allohga yaqinlashtiradi 📖",
                 "Har kuni kichik qadamlar katta natijalarga olib keladi ⭐"
             ]
+        }
+    },
+    
+    "streakGoals": {
+        "title": "Ketma-ketlik maqsadlari",
+        "daysAgo30": "30 kun oldin",
+        "today": "Bugun",
+        "day": "Kun",
+        "achieved": "✓ Erishildi",
+        "goals": {
+            "week": "Intizom haftasi",
+            "month": "Barqarorlik oyi", 
+            "hundred": "Yuz kunlik mahorat",
+            "year": "Sodiqlik yili"
         }
     }
 

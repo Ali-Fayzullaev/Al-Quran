@@ -1,3 +1,4 @@
+// src/app/planner/[id]/page.tsx
 'use client';
 
 import { useState, useEffect, use } from 'react';
@@ -504,7 +505,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   <div className="text-3xl font-bold text-[var(--color-primary)]">
                     {plan.completionPercentage.toFixed(1)}%
                   </div>
-                  <div className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>выполнено</div>
+                  <div className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>{t('planDetailPage.completedText')}</div>
                 </div>
               </div>
             )}
@@ -518,8 +519,8 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                 />
               </div>
               <div className="flex justify-between text-sm mt-2" style={{ color: 'var(--color-text-secondary)' }}>
-                <span>{completedTasks} из {totalTasks} дней</span>
-                <span>Серия: {plan.currentStreak} дней</span>
+                <span>{completedTasks} {t('planDetailPage.daysOf')} {totalTasks} {t('planDetailPage.daysWord')}</span>
+                <span>{t('planDetailPage.streakLabel')} {plan.currentStreak} {t('planDetailPage.daysWord')}</span>
               </div>
             </div>
           </div>
@@ -541,7 +542,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   {t('planDetailPage.surah')} {todayTask.surahNumber}, {t('planDetailPage.verses')} {todayTask.fromAyah}-{todayTask.toAyah}
                 </div>
                 <div>
-                  Количество аятов: {todayTask.ayahCount}
+                  {t('planDetailPage.ayahCount')} {todayTask.ayahCount}
                 </div>
               </div>
 
@@ -550,7 +551,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
                   <h3 className="text-lg font-semibold mb-4 text-center flex items-center justify-center">
                     <span className="mr-2">📜</span>
-                    Аяты для изучения
+                    {t('planDetailPage.ayahsForStudy')}
                     <span className="ml-2">🕌</span>
                   </h3>
                   
@@ -563,7 +564,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                             {ayah.numberInSurah}
                           </span>
                           <div className="text-sm opacity-75 mt-1">
-                            Аят {ayah.numberInSurah} • Джуз {ayah.juz}
+                            {t('planDetailPage.ayahNumber')} {ayah.numberInSurah} • {t('planDetailPage.juzNumber')} {ayah.juz}
                           </div>
                         </div>
                         
@@ -586,7 +587,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   
                   <div className="mt-6 text-center">
                     <p className=" text-sm opacity-75 italic">
-                      🌙 "И читай Коран размеренным чтением" (Коран 73:4)
+                      🌙 {t('planDetailPage.quranQuote')}
                     </p>
                   </div>
                 </div>
@@ -594,9 +595,9 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
               {/* Счетчик чтения */}
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold">📊 Счетчик чтения</h3>
+                  <h3 className="text-lg font-semibold">📊 {t('planDetailPage.readingCounter')}</h3>
                   <div className="text-2xl font-bold reading-counter">
-                    {readingCounter} {readingCounter === 1 ? 'раз' : readingCounter > 1 && readingCounter < 5 ? 'раза' : 'раз'}
+                    {readingCounter} {readingCounter === 1 ? t('planDetailPage.timeSingular') : readingCounter > 1 && readingCounter < 5 ? t('planDetailPage.timesPlural') : t('planDetailPage.timesMany')}
                   </div>
                 </div>
                   <button
@@ -607,10 +608,10 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-primary)'}
                 >
                   <span className="text-xl mr-2">📖</span>
-                  +1 Прочитал
+                  {t('planDetailPage.readButtonText')}
                 </button>
                 <p className="text-center text-blue-100 text-sm mt-3 opacity-75">
-                  💡 Нажимайте каждый раз после прочтения аятов
+                  💡 {t('planDetailPage.readingTip')}
                 </p>
               </div>
 
@@ -651,7 +652,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   </div>
                   {todayTask.completedAt && (
                     <div className="text-sm text-green-200 mt-1">
-                      Выполнено в {new Date(todayTask.completedAt).toLocaleTimeString('ru-RU')}
+                      {t('planDetailPage.completedAt')} {new Date(todayTask.completedAt).toLocaleTimeString(locale === 'ru' ? 'ru-RU' : locale === 'en' ? 'en-US' : 'uz-UZ')}
                     </div>
                   )}
                 </div>
