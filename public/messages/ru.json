@@ -646,6 +646,9 @@
     "loadingPlanner": "Загрузка...",
     "noPlansYet": "Планов пока нет",
     "createFirstPlan": "Начните с создания плана чтения Корана",
+    "defaultUserName": "Пользователь",
+    "ayahSingular": "аят",
+    "ayahPlural": "аятов",
     "plannerAchievements": "Достижения",
     "streakAchievement": "Мастер серий",
     "readingAchievement": "Чемпион чтения",
@@ -812,6 +815,126 @@
                 "paused": "Приостановлен",
                 "cancelled": "Отменен",
                 "unknown": "Неизвестно"
+            }
+        },
+        
+        "planDetailPage": {
+            "backToPlanner": "Назад к планировщику",
+            "planNotFound": "План не найден",
+            "returnToPlanner": "Вернуться к планировщику",
+            "calendar": "Календарь",
+            "export": "Экспорт",
+            "edit": "Редактировать",
+            "delete": "Удалить",
+            "actions": "Действия",
+            "editPlan": "Редактировать план",
+            "planTitle": "Название плана",
+            "planDescription": "Описание плана",
+            "saveChanges": "Сохранить изменения",
+            "cancel": "Отмена",
+            "confirmDelete": "Подтвердить удаление",
+            "deleteConfirmMessage": "Вы уверены, что хотите удалить этот план? Это действие нельзя отменить.",
+            "todaysTask": "Задача на сегодня",
+            "completed": "Выполнено",
+            "skip": "Пропустить",
+            "markCompleted": "Отметить как выполненное",
+            "alreadyCompleted": "Уже выполнено!",
+            "skipped": "Пропущено",
+            "planOverview": "Обзор плана",
+            "dailyGoal": "Ежедневная цель",
+            "totalProgress": "Общий прогресс",
+            "daysRemaining": "Осталось дней",
+            "upcomingTasks": "Предстоящие задачи",
+            "noUpcomingTasks": "Нет предстоящих задач",
+            "allTasksCompleted": "Все задачи выполнены! 🎉",
+            "surah": "Сура",
+            "verses": "аяты",
+            "day": "день",
+            "errorUpdating": "Ошибка при обновлении плана",
+            "completedFromPlanPage": "Выполнено со страницы плана",
+            "skippedFromPlanPage": "Пропущено со страницы плана"
+        },
+        
+        "achievementSystem": {
+            "title": "Достижения",
+            "unlockedCount": "разблокировано",
+            "nextAchievement": "Следующее достижение",
+            "unlockedAchievements": "Разблокированные достижения",
+            "lockedAchievements": "Заблокированные достижения",
+            "noUnlockedAchievements": "У вас пока нет достижений",
+            "startStudying": "Начните изучение, чтобы получить первые достижения!",
+            "noLockedAchievements": "Все достижения разблокированы!",
+            "congratulations": "Поздравляем!",
+            "unlockedAt": "Разблокировано:",
+            "progress": "Прогресс:",
+            "requirements": {
+                "streakDays": "дней подряд",
+                "completedPlans": "завершенных планов", 
+                "ayahsRead": "изученных аятов",
+                "daysConsistent": "дней стабильности"
+            },
+            "achievements": {
+                "firstDay": {
+                    "title": "Первый день",
+                    "description": "Завершите свой первый день изучения"
+                },
+                "weekStreak": {
+                    "title": "Неделя постоянства",
+                    "description": "Изучайте 7 дней подряд"
+                },
+                "monthStreak": {
+                    "title": "Месяц стабильности", 
+                    "description": "Изучайте 30 дней подряд"
+                },
+                "hundredAyahs": {
+                    "title": "100 аятов",
+                    "description": "Изучите 100 аятов"
+                },
+                "firstPlan": {
+                    "title": "Первый план",
+                    "description": "Завершите свой первый план изучения"
+                }
+            }
+        },
+        
+        "streakDisplay": {
+            "title": "Отслеживание серий",
+            "daysSingular": "день подряд",
+            "daysPlural": "дней подряд",
+            "currentStreak": "Текущая серия",
+            "longestStreak": "Самая длинная серия",
+            "totalDays": "Всего дней",
+            "weeklyAverage": "Средняя за неделю",
+            "last30Days": "Последние 30 дней",
+            "messages": {
+                "start": {
+                    "title": "Начните новую серию! 🌟",
+                    "message": "Выполните задание сегодня, чтобы начать новую серию изучения."
+                },
+                "firstDay": {
+                    "title": "Отличное начало! 🔥",
+                    "message": "У вас серия в 1 день. Продолжите завтра!"
+                },
+                "growing": {
+                    "title": "Растущая серия! 📈",
+                    "message": "Серия в {days} дня. Формируется привычка!"
+                },
+                "strong": {
+                    "title": "Потрясающая дисциплина! ⭐",
+                    "message": "{days} дней подряд! Привычка почти сформирована."
+                },
+                "master": {
+                    "title": "Невероятное достижение! 🏆",
+                    "message": "{days} дней! Вы мастер дисциплины!"
+                }
+            },
+            "motivation": {
+                "title": "Мотивация дня",
+                "quotes": [
+                    "Постоянство - ключ к изучению Корана 🔑",
+                    "Каждый день изучения приближает к Аллаху 📖",
+                    "Маленькие шаги каждый день ведут к большим результатам ⭐"
+                ]
             }
         }
 

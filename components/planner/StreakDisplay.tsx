@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ProgressStats, StudyPlan } from '../../lib/plannerTypes';
+import { useLocale } from '../../context/LocaleContext';
 
 interface StreakDisplayProps {
   stats: ProgressStats;
@@ -9,6 +10,7 @@ interface StreakDisplayProps {
 }
 
 export default function StreakDisplay({ stats, plans }: StreakDisplayProps) {
+  const { locale, t } = useLocale();
   const [streakHistory, setStreakHistory] = useState<number[]>([]);
 
   useEffect(() => {
@@ -40,32 +42,32 @@ export default function StreakDisplay({ stats, plans }: StreakDisplayProps) {
   const getStreakMessage = () => {
     if (stats.currentStreak === 0) {
       return {
-        title: "Начните новую серию! 🌟",
-        message: "Выполните задание сегодня, чтобы начать новую серию изучения.",
+        title: t('streakDisplay.messages.start.title'),
+        message: t('streakDisplay.messages.start.message'),
         color: "text-gray-600 dark:text-gray-400"
       };
     } else if (stats.currentStreak === 1) {
       return {
-        title: "Отличное начало! 🔥",
-        message: "У вас серия в 1 день. Продолжите завтра!",
+        title: t('streakDisplay.messages.firstDay.title'),
+        message: t('streakDisplay.messages.firstDay.message'),
         color: "text-orange-600 dark:text-orange-400"
       };
     } else if (stats.currentStreak < 7) {
       return {
-        title: "Растущая серия! 📈",
-        message: `Серия в ${stats.currentStreak} дня. Формируется привычка!`,
+        title: t('streakDisplay.messages.growing.title'),
+        message: t('streakDisplay.messages.growing.message').replace('{days}', stats.currentStreak.toString()),
         color: "text-orange-600 dark:text-orange-400"
       };
     } else if (stats.currentStreak < 30) {
       return {
-        title: "Потрясающая дисциплина! ⭐",
-        message: `${stats.currentStreak} дней подряд! Привычка почти сформирована.`,
+        title: t('streakDisplay.messages.strong.title'),
+        message: t('streakDisplay.messages.strong.message').replace('{days}', stats.currentStreak.toString()),
         color: "text-green-600 dark:text-green-400"
       };
     } else {
       return {
-        title: "Невероятное достижение! 🏆",
-        message: `${stats.currentStreak} дней! Вы мастер дисциплины!`,
+        title: t('streakDisplay.messages.master.title'),
+        message: t('streakDisplay.messages.master.message').replace('{days}', stats.currentStreak.toString()),
         color: "text-blue-600 dark:text-blue-400"
       };
     }
@@ -83,7 +85,7 @@ export default function StreakDisplay({ stats, plans }: StreakDisplayProps) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-6">
-        Отслеживание серий
+        {t('streakDisplay.title')}
       </h3>
 
       {/* Главная информация о серии */}
@@ -94,7 +96,7 @@ export default function StreakDisplay({ stats, plans }: StreakDisplayProps) {
             {stats.currentStreak}
           </div>
           <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-            {stats.currentStreak === 1 ? 'день подряд' : 'дней подряд'}
+            {stats.currentStreak === 1 ? t('streakDisplay.daysSingular') : t('streakDisplay.daysPlural')}
           </div>
           <div className={`${streakMsg.color} font-medium`}>
             {streakMsg.title}
@@ -111,20 +113,20 @@ export default function StreakDisplay({ stats, plans }: StreakDisplayProps) {
           <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
             {stats.currentStreak}
           </div>
-          <div className="text-sm text-blue-600 dark:text-blue-400">Текущая</div>
+          <div className="text-sm text-blue-600 dark:text-blue-400">{t('streakDisplay.currentStreak')}</div>
         </div>
         <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4 text-center">
           <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
             {stats.longestStreak}
           </div>
-          <div className="text-sm text-purple-600 dark:text-purple-400">Лучшая</div>
+          <div className="text-sm text-purple-600 dark:text-purple-400">{t('streakDisplay.longestStreak')}</div>
         </div>
       </div>
 
       {/* Визуализация последних 30 дней */}
       <div>
         <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
-          Активность за последние 30 дней
+          {t('streakDisplay.last30Days')}
         </div>
         <div className="flex space-x-1 mb-2">
           {streakHistory.map((day, index) => {

@@ -86,7 +86,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
     if (!plan) return;
     
     try {
-      plannerStore.completeTask(plan.id, taskDate, 5, 'Выполнено со страницы плана');
+      plannerStore.completeTask(plan.id, taskDate, 5, t('planDetailPage.completedFromPlanPage'));
       await loadPlanDetails(); // Обновляем данные
     } catch (error) {
       console.error('Error completing task:', error);
@@ -97,7 +97,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
     if (!plan) return;
     
     try {
-      plannerStore.skipTask(plan.id, taskDate, 'Пропущено со страницы плана');
+      plannerStore.skipTask(plan.id, taskDate, t('planDetailPage.skippedFromPlanPage'));
       await loadPlanDetails();
     } catch (error) {
       console.error('Error skipping task:', error);
@@ -124,11 +124,11 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
         setPlan(updatedResult);
         setShowEditForm(false);
       } else {
-        alert('Ошибка при обновлении плана');
+        alert(t('planDetailPage.errorUpdating'));
       }
     } catch (error) {
       console.error('Error updating plan:', error);
-      alert('Ошибка при обновлении плана');
+      alert(t('planDetailPage.errorUpdating'));
     }
   };
 
@@ -184,10 +184,10 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-            План не найден
+            {t('planDetailPage.planNotFound')}
           </h2>
           <Link href="/planner" className="text-green-500 hover:underline">
-            Вернуться к планировщику
+            {t('planDetailPage.returnToPlanner')}
           </Link>
         </div>
       </div>
@@ -227,7 +227,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
-                Назад к планировщику
+                {t('planDetailPage.backToPlanner')}
               </Link>
             </div>
             
@@ -245,7 +245,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  <span>Календарь</span>
+                  <span>{t('planDetailPage.calendar')}</span>
                 </button>
                 
                 <button
@@ -258,7 +258,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
-                  <span>Экспорт</span>
+                  <span>{t('planDetailPage.export')}</span>
                 </button>
                 
                 <button
@@ -271,7 +271,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
-                  <span>Редактировать</span>
+                  <span>{t('planDetailPage.edit')}</span>
                 </button>
                 
                 <button
@@ -281,7 +281,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
-                  <span>Удалить</span>
+                  <span>{t('planDetailPage.delete')}</span>
                 </button>
               </div>
 
@@ -318,7 +318,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        <span>Календарь</span>
+                        <span>{t('planDetailPage.calendar')}</span>
                       </button>
                       
                       <button
@@ -334,7 +334,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                         </svg>
-                        <span>Экспорт</span>
+                        <span>{t('planDetailPage.export')}</span>
                       </button>
                       
                       <button
@@ -350,7 +350,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
-                        <span>Редактировать</span>
+                        <span>{t('planDetailPage.edit')}</span>
                       </button>
                       
                       <button
@@ -365,7 +365,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                         </svg>
-                        <span>Удалить</span>
+                        <span>{t('planDetailPage.delete')}</span>
                       </button>
                     </div>
                   </div>
@@ -382,13 +382,13 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                   </svg>
-                  Редактировать план
+                  {t('planDetailPage.editPlan')}
                 </h2>
                 
                 <div className="space-y-4">
                   <div>
                     <label htmlFor="editTitle" className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
-                      Название плана
+                      {t('planDetailPage.planTitle')}
                     </label>
                     <input
                       id="editTitle"
@@ -408,7 +408,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   
                   <div>
                     <label htmlFor="editDescription" className="block text-sm font-medium mb-2" style={{ color: 'var(--color-text)' }}>
-                      Описание (необязательно)
+                      {t('planDetailPage.planDescription')}
                     </label>
                     <textarea
                       id="editDescription"
@@ -439,7 +439,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    <span>Сохранить</span>
+                    <span>{t('planDetailPage.saveChanges')}</span>
                   </button>
                   
                   <button
@@ -460,7 +460,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                    <span>Отмена</span>
+                    <span>{t('planDetailPage.cancel')}</span>
                   </button>
                 </div>
               </div>
@@ -492,9 +492,9 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                         plan.status === 'paused' ? 'bg-yellow-100 text-yellow-800' :
                         'bg-red-100 text-red-800'
                       }`}>
-                        {plan.status === 'active' ? 'Активный' :
-                         plan.status === 'completed' ? 'Завершен' :
-                         plan.status === 'paused' ? 'Приостановлен' : 'Отменен'}
+                        {plan.status === 'active' ? t('plannerDashboard.status.active') :
+                         plan.status === 'completed' ? t('plannerDashboard.status.completed') :
+                         plan.status === 'paused' ? t('plannerDashboard.status.paused') : t('plannerDashboard.status.cancelled')}
                       </span>
                     </span>
                   </div>
@@ -530,7 +530,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
           <div className="mb-8">
             <div className=" rounded-xl p-8  shadow-xl" style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold">📖 Задание на сегодня</h2>
+                <h2 className="text-2xl font-bold">📖 {t('planDetailPage.todaysTask')}</h2>
                 <div className="text-lg font-medium">
                   {new Date().toLocaleDateString('ru-RU')}
                 </div>
@@ -538,7 +538,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
 
               <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
                 <div className="text-xl font-semibold mb-2">
-                  Сура {todayTask.surahNumber}, аяты {todayTask.fromAyah}-{todayTask.toAyah}
+                  {t('planDetailPage.surah')} {todayTask.surahNumber}, {t('planDetailPage.verses')} {todayTask.fromAyah}-{todayTask.toAyah}
                 </div>
                 <div>
                   Количество аятов: {todayTask.ayahCount}
@@ -626,7 +626,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    <span>Отметить как выполненное</span>
+                    <span>{t('planDetailPage.markCompleted')}</span>
                   </button>
                   
                   <button
@@ -636,7 +636,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
                     </svg>
-                    <span>Пропустить сегодня</span>
+                    <span>{t('planDetailPage.skip')}</span>
                   </button>
                 </div>
               )}
@@ -647,7 +647,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                     <svg className="w-6 h-6 text-green-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    <span>Сегодняшнее задание выполнено!</span>
+                    <span>{t('planDetailPage.alreadyCompleted')}</span>
                   </div>
                   {todayTask.completedAt && (
                     <div className="text-sm text-green-200 mt-1">
@@ -659,7 +659,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
 
               {todayTask.skipped && (
                 <div className="bg-yellow-500/20 border border-yellow-400/30 rounded-lg p-4 text-center">
-                  <div className="text-lg font-semibold">⏭ Задание пропущено</div>
+                  <div className="text-lg font-semibold">⏭ {t('planDetailPage.skipped')}</div>
                 </div>
               )}
             </div>
@@ -683,7 +683,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
           {/* Ближайшие задачи */}
           <div className="rounded-xl p-6 shadow-xl planner-card-animated" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
             <h3 className="text-xl font-bold mb-6" style={{ color: 'var(--color-text)' }}>
-              📅 Ближайшие задачи
+              📅 {t('planDetailPage.upcomingTasks')}
             </h3>
             <div className="space-y-4">
               {upcomingTasks.length > 0 ? (
@@ -695,7 +695,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                           {new Date(task.date).toLocaleDateString('ru-RU')}
                         </div>
                         <div className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-                          Сура {task.surahNumber}, аяты {task.fromAyah}-{task.toAyah} ({task.ayahCount} аятов)
+                          {t('planDetailPage.surah')} {task.surahNumber}, {t('planDetailPage.verses')} {task.fromAyah}-{task.toAyah} ({task.ayahCount} {t('planDetailPage.verses')})
                         </div>
                       </div>
                       <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
@@ -707,7 +707,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
               ) : (
                 <div className="text-center py-8" style={{ color: 'var(--color-text-secondary)' }}>
                   <div className="text-4xl mb-4">🎉</div>
-                  <p>Все задачи выполнены!</p>
+                  <p>{t('planDetailPage.allTasksCompleted')}</p>
                 </div>
               )}
             </div>
@@ -719,10 +719,10 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="rounded-lg p-6 max-w-md w-full mx-4 planner-card-animated" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}>
               <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-text)' }}>
-                Удалить план?
+                {t('planDetailPage.confirmDelete')}
               </h3>
               <p className="mb-6" style={{ color: 'var(--color-text-secondary)' }}>
-                Вы уверены, что хотите удалить план "{plan.title}"? Это действие нельзя отменить.
+                {t('planDetailPage.deleteConfirmMessage')}
               </p>
               <div className="flex space-x-4">
                 <button
@@ -736,13 +736,13 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-muted)'}
                   onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'transparent'}
                 >
-                  Отмена
+                  {t('planDetailPage.cancel')}
                 </button>
                 <button
                   onClick={handleDeletePlan}
                   className="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                 >
-                  Удалить
+                  {t('planDetailPage.delete')}
                 </button>
               </div>
             </div>

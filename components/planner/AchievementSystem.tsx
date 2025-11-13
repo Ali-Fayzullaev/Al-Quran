@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Achievement, ProgressStats } from '../../lib/plannerTypes';
 import { MotivationSystem } from '../../lib/motivationSystem';
+import { useLocale } from '../../context/LocaleContext';
 
 interface AchievementSystemProps {
   stats: ProgressStats;
@@ -10,6 +11,7 @@ interface AchievementSystemProps {
 }
 
 export default function AchievementSystem({ stats, onAchievementUnlock }: AchievementSystemProps) {
+  const { locale, t } = useLocale();
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [showDetails, setShowDetails] = useState<string | null>(null);
 
@@ -59,13 +61,13 @@ export default function AchievementSystem({ stats, onAchievementUnlock }: Achiev
   const getRequirementText = (achievement: Achievement): string => {
     switch (achievement.type) {
       case 'streak':
-        return `${achievement.requirements.streak} дней подряд`;
+        return `${achievement.requirements.streak} ${t('achievementSystem.requirements.streakDays')}`;
       case 'completion':
-        return `${achievement.requirements.plansCompleted} завершенных планов`;
+        return `${achievement.requirements.plansCompleted} ${t('achievementSystem.requirements.completedPlans')}`;
       case 'milestone':
-        return `${achievement.requirements.ayahsRead} изученных аятов`;
+        return `${achievement.requirements.ayahsRead} ${t('achievementSystem.requirements.ayahsRead')}`;
       case 'consistency':
-        return `${achievement.requirements.daysConsistent} дней стабильности`;
+        return `${achievement.requirements.daysConsistent} ${t('achievementSystem.requirements.daysConsistent')}`;
       default:
         return '';
     }
@@ -90,10 +92,10 @@ export default function AchievementSystem({ stats, onAchievementUnlock }: Achiev
     <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-          Достижения
+          {t('achievementSystem.title')}
         </h3>
         <div className="text-sm text-gray-500">
-          {unlockedAchievements.length}/{achievements.length} разблокировано
+          {unlockedAchievements.length}/{achievements.length} {t('achievementSystem.unlockedCount')}
         </div>
       </div>
 
@@ -107,7 +109,7 @@ export default function AchievementSystem({ stats, onAchievementUnlock }: Achiev
                 <span className="text-2xl">{nextProgress.achievement.icon}</span>
                 <div>
                   <div className="font-medium text-blue-800 dark:text-blue-200">
-                    Следующее достижение
+                    {t('achievementSystem.nextAchievement')}
                   </div>
                   <div className="text-sm text-blue-600 dark:text-blue-300">
                     {nextProgress.achievement.title}
@@ -135,7 +137,7 @@ export default function AchievementSystem({ stats, onAchievementUnlock }: Achiev
       {unlockedAchievements.length > 0 && (
         <div className="mb-6">
           <h4 className="font-medium text-gray-900 dark:text-white mb-3">
-            🏆 Разблокированные ({unlockedAchievements.length})
+            🏆 {t('achievementSystem.unlockedAchievements')} ({unlockedAchievements.length})
           </h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {unlockedAchievements.map((achievement) => (
@@ -175,7 +177,7 @@ export default function AchievementSystem({ stats, onAchievementUnlock }: Achiev
       {lockedAchievements.length > 0 && (
         <div>
           <h4 className="font-medium text-gray-900 dark:text-white mb-3">
-            🔒 К достижению ({lockedAchievements.length})
+            🔒 {t('achievementSystem.lockedAchievements')} ({lockedAchievements.length})
           </h4>
           <div className="space-y-3">
             {lockedAchievements
@@ -212,7 +214,7 @@ export default function AchievementSystem({ stats, onAchievementUnlock }: Achiev
                         </div>
                         
                         <div className="text-xs text-gray-500">
-                          {progress.toFixed(1)}% выполнено
+                          {progress.toFixed(1)}% {t('achievementSystem.progress')}
                         </div>
                       </div>
                     </div>
@@ -256,6 +258,7 @@ interface AchievementNotificationProps {
 }
 
 export function AchievementNotification({ achievement, onClose }: AchievementNotificationProps) {
+  const { t } = useLocale();
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();
@@ -271,7 +274,7 @@ export function AchievementNotification({ achievement, onClose }: AchievementNot
           <span className="text-3xl">{achievement.icon}</span>
           <div className="flex-1">
             <div className="font-semibold text-green-800 dark:text-green-200 mb-1">
-              🎉 Новое достижение!
+              🎉 {t('achievementSystem.congratulations')}
             </div>
             <div className="font-medium text-gray-900 dark:text-white mb-1">
               {achievement.title}

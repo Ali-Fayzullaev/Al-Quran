@@ -651,7 +651,10 @@
     "errorCreatingPlan": "Reja yaratishda xatolik",
     "loadingPlanner": "Yuklanmoqda...",
     "noPlansYet": "Hali rejalar yo'q",
-    "createFirstPlan": "Qur'on o'qish rejangizni yaratishdan boshlang",
+    "createFirstPlan": "Qur'on o'qish rejasini yaratishdan boshlang",
+    "defaultUserName": "Foydalanuvchi",
+    "ayahSingular": "oyat",
+    "ayahPlural": "oyat",
     "plannerAchievements": "Yutuqlar",
     "streakAchievement": "Ketma-ketlik ustasi",
     "readingAchievement": "O'qish chempioni",
@@ -818,6 +821,126 @@
             "paused": "To'xtatilgan",
             "cancelled": "Bekor qilingan",
             "unknown": "Noma'lum"
+        }
+    },
+    
+    "planDetailPage": {
+        "backToPlanner": "Rejaga qaytish",
+        "planNotFound": "Reja topilmadi",
+        "returnToPlanner": "Rejaga qaytish",
+        "calendar": "Taqvim",
+        "export": "Eksport",
+        "edit": "Tahrirlash",
+        "delete": "O'chirish",
+        "actions": "Amallar",
+        "editPlan": "Rejani tahrirlash",
+        "planTitle": "Reja nomi",
+        "planDescription": "Reja tavsifi",
+        "saveChanges": "O'zgarishlarni saqlash",
+        "cancel": "Bekor qilish",
+        "confirmDelete": "O'chirishni tasdiqlash",
+        "deleteConfirmMessage": "Bu rejani o'chirmoqchimisiz? Bu amal bekor qilinmaydi.",
+        "todaysTask": "Bugungi vazifa",
+        "completed": "Bajarildi",
+        "skip": "O'tkazib yuborish",
+        "markCompleted": "Bajarilgan deb belgilash",
+        "alreadyCompleted": "Allaqachon bajarilgan!",
+        "skipped": "O'tkazib yuborildi",
+        "planOverview": "Reja ko'rinishi",
+        "dailyGoal": "Kunlik maqsad",
+        "totalProgress": "Umumiy jarayon",
+        "daysRemaining": "Qolgan kunlar",
+        "upcomingTasks": "Kelayotgan vazifalar",
+        "noUpcomingTasks": "Kelayotgan vazifalar yo'q",
+        "allTasksCompleted": "Barcha vazifalar bajarildi! 🎉",
+        "surah": "Sura",
+        "verses": "oyatlar",
+        "day": "kun",
+        "errorUpdating": "Rejani yangilashda xato",
+        "completedFromPlanPage": "Reja sahifasidan bajarildi",
+        "skippedFromPlanPage": "Reja sahifasidan o'tkazib yuborildi"
+    },
+    
+    "achievementSystem": {
+        "title": "Yutuqlar",
+        "unlockedCount": "ochilgan",
+        "nextAchievement": "Keyingi yutuq",
+        "unlockedAchievements": "Ochilgan yutuqlar",
+        "lockedAchievements": "Yopiq yutuqlar",
+        "noUnlockedAchievements": "Sizda hali yutuqlar yo'q",
+        "startStudying": "Birinchi yutuqlarni olish uchun o'qishni boshlang!",
+        "noLockedAchievements": "Barcha yutuqlar ochilgan!",
+        "congratulations": "Tabriklaymiz!",
+        "unlockedAt": "Ochilgan:",
+        "progress": "Jarayon:",
+        "requirements": {
+            "streakDays": "kun ketma-ket",
+            "completedPlans": "tugallangan rejalar", 
+            "ayahsRead": "o'qilgan oyatlar",
+            "daysConsistent": "barqaror kunlar"
+        },
+        "achievements": {
+            "firstDay": {
+                "title": "Birinchi kun",
+                "description": "Birinchi o'qish kuningizni yakunlang"
+            },
+            "weekStreak": {
+                "title": "Haftalik barqarorlik",
+                "description": "7 kun ketma-ket o'qing"
+            },
+            "monthStreak": {
+                "title": "Oylik barqarorlik", 
+                "description": "30 kun ketma-ket o'qing"
+            },
+            "hundredAyahs": {
+                "title": "100 oyat",
+                "description": "100 oyat o'qing"
+            },
+            "firstPlan": {
+                "title": "Birinchi reja",
+                "description": "Birinchi o'qish rejangizni yakunlang"
+            }
+        }
+    },
+    
+    "streakDisplay": {
+        "title": "Ketma-ketlik kuzatuvi",
+        "daysSingular": "kun ketma-ket",
+        "daysPlural": "kun ketma-ket",
+        "currentStreak": "Joriy ketma-ketlik",
+        "longestStreak": "Eng uzun ketma-ketlik",
+        "totalDays": "Jami kunlar",
+        "weeklyAverage": "Haftalik o'rtacha",
+        "last30Days": "Oxirgi 30 kun",
+        "messages": {
+            "start": {
+                "title": "Yangi ketma-ketlikni boshlang! 🌟",
+                "message": "Yangi o'qish ketma-ketligini boshlash uchun bugungi vazifani bajaring."
+            },
+            "firstDay": {
+                "title": "Ajoyib boshlanish! 🔥",
+                "message": "Sizda 1 kunlik ketma-ketlik bor. Ertaga davom eting!"
+            },
+            "growing": {
+                "title": "O'sib borayotgan ketma-ketlik! 📈",
+                "message": "{days} kunlik ketma-ketlik. Odat shakllanmoqda!"
+            },
+            "strong": {
+                "title": "Ajoyib intizom! ⭐",
+                "message": "{days} kun ketma-ket! Odat deyarli shaklandi."
+            },
+            "master": {
+                "title": "Aql bovar qilmaydigan yutuq! 🏆",
+                "message": "{days} kun! Siz intizom ustasisiz!"
+            }
+        },
+        "motivation": {
+            "title": "Kunlik motivatsiya",
+            "quotes": [
+                "Izchillik Qur'on o'rganishning kalitidir 🔑",
+                "Har kungi o'qish sizni Allohga yaqinlashtiradi 📖",
+                "Har kuni kichik qadamlar katta natijalarga olib keladi ⭐"
+            ]
         }
     }
 

@@ -41,7 +41,20 @@ export default function CalendarView({ year, month, onDateSelect }: CalendarView
       case 'uz':
         return ["Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun", "Iyul", "Avgust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"];
       default:
-        return ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+        return [
+          t('calendarView.months.january'),
+          t('calendarView.months.february'), 
+          t('calendarView.months.march'),
+          t('calendarView.months.april'),
+          t('calendarView.months.may'),
+          t('calendarView.months.june'),
+          t('calendarView.months.july'),
+          t('calendarView.months.august'),
+          t('calendarView.months.september'),
+          t('calendarView.months.october'),
+          t('calendarView.months.november'),
+          t('calendarView.months.december')
+        ];
     }
   };
 
@@ -52,7 +65,15 @@ export default function CalendarView({ year, month, onDateSelect }: CalendarView
       case 'uz':
         return ["Ya", "Du", "Se", "Ch", "Pa", "Ju", "Sh"];
       default:
-        return ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+        return [
+          t('calendarView.weekdays.sunday'),
+          t('calendarView.weekdays.monday'),
+          t('calendarView.weekdays.tuesday'),
+          t('calendarView.weekdays.wednesday'),
+          t('calendarView.weekdays.thursday'),
+          t('calendarView.weekdays.friday'),
+          t('calendarView.weekdays.saturday')
+        ];
     }
   };
 
