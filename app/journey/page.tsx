@@ -82,7 +82,7 @@ export default function JourneyPage() {
             }}
           >
             <div
-              className="flex gap-3 overflow-x-auto pb-3 sm:pb-2 sm:flex-wrap bb"
+              className="flex gap-3 overflow-x-auto pb-3 sm:pb-2 sm:flex-wrap"
               style={tabScrollStyle}
             >
               {tabItems.map(({ id, label, icon: Icon }) => (

@@ -1,7 +1,7 @@
 // src/app/planner/[id]/page.tsx
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { useState, useEffect, use, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { StudyPlan, DailyTask } from '../../../lib/plannerTypes';
@@ -30,26 +30,57 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [editTitle, setEditTitle] = useState('');
   const [editDescription, setEditDescription] = useState('');
-  const [showActionsDropdown, setShowActionsDropdown] = useState(false);
   const [readingCounter, setReadingCounter] = useState(0);
+  const actionsCarouselRef = useRef<HTMLDivElement | null>(null);
+  const [actionsScrollState, setActionsScrollState] = useState({ canScrollLeft: false, canScrollRight: false });
 
   useEffect(() => {
     loadPlanDetails();
   }, [resolvedParams.id]);
 
-  // Закрытие dropdown при клике вне его области
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (showActionsDropdown) {
-        setShowActionsDropdown(false);
-      }
-    };
+  const updateActionsScrollState = useCallback(() => {
+    const container = actionsCarouselRef.current;
+    if (!container) {
+      setActionsScrollState({ canScrollLeft: false, canScrollRight: false });
+      return;
+    }
 
-    document.addEventListener('mousedown', handleClickOutside);
+    const tolerance = 8;
+    const { scrollLeft, clientWidth, scrollWidth } = container;
+    setActionsScrollState({
+      canScrollLeft: scrollLeft > tolerance,
+      canScrollRight: scrollLeft + clientWidth < scrollWidth - tolerance
+    });
+  }, []);
+  
+  useEffect(() => {
+    const container = actionsCarouselRef.current;
+    if (!container) return;
+
+    updateActionsScrollState();
+
+    const handleScroll = () => updateActionsScrollState();
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', updateActionsScrollState);
+
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      container.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', updateActionsScrollState);
     };
-  }, [showActionsDropdown]);
+  }, [updateActionsScrollState]);
+
+  const scrollActionsCarousel = (direction: 'left' | 'right') => {
+    const container = actionsCarouselRef.current;
+    if (!container) return;
+
+    const scrollAmount = Math.max(container.clientWidth * 0.7, 220);
+    container.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth'
+    });
+
+    window.setTimeout(updateActionsScrollState, 350);
+  };
 
   const loadPlanDetails = async () => {
     try {
@@ -216,8 +247,8 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Заголовок с навигацией */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4">
+            <div className="flex items-center gap-4">
               <Link 
                 href="/planner"
                 className="flex items-center transition-colors"
@@ -233,7 +264,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
             </div>
             
             {/* Кнопки действий - адаптивные */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-3">
               {/* Десктоп версия */}
               <div className="hidden md:flex space-x-3">
                 <button
@@ -286,96 +317,117 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                 </button>
               </div>
 
-              {/* Мобильная версия - Dropdown */}
-              <div className="md:hidden relative">
-                <button
-                  onClick={() => setShowActionsDropdown(!showActionsDropdown)}
-                  className="p-2 rounded-lg transition-colors"
-                  style={{ 
-                    backgroundColor: 'var(--color-background-secondary)', 
-                    color: 'var(--color-text)' 
-                  }}
-                  onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-muted)'}
-                  onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-background-secondary)'}
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                  </svg>
-                </button>
-
-                {showActionsDropdown && (
-                  <div className="absolute right-0 top-full mt-2 w-48 rounded-lg shadow-xl z-50" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
-                    <div className="py-2">
+              {/* Мобильная версия - горизонтальный скролл действий */}
+              <div className="relative -mx-4 md:hidden overflow-y-auto">
+                {actionsScrollState.canScrollLeft && (
+                  <div className="pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center bg-gradient-to-r from-[var(--color-background)] to-transparent">
+                    <div className="pointer-events-auto pl-2">
                       <button
-                        onClick={() => {
-                          setShowCalendar(!showCalendar);
-                          setShowActionsDropdown(false);
-                        }}
-                        className="w-full px-4 py-2 text-left rounded flex items-center space-x-2 transition-colors"
-                        style={{ color: 'var(--color-text)' }}
-                        onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-muted)'}
-                        onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'transparent'}
+                        onClick={() => scrollActionsCarousel('left')}
+                        className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/15 text-white shadow-lg backdrop-blur"
+                        aria-label="Scroll actions left"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                         </svg>
-                        <span>{t('planDetailPage.calendar')}</span>
-                      </button>
-                      
-                      <button
-                        onClick={() => {
-                          exportPlanData();
-                          setShowActionsDropdown(false);
-                        }}
-                        className="w-full px-4 py-2 text-left rounded flex items-center space-x-2 transition-colors"
-                        style={{ color: 'var(--color-text)' }}
-                        onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-muted)'}
-                        onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'transparent'}
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                        </svg>
-                        <span>{t('planDetailPage.export')}</span>
-                      </button>
-                      
-                      <button
-                        onClick={() => {
-                          setShowEditForm(!showEditForm);
-                          setShowActionsDropdown(false);
-                        }}
-                        className="w-full px-4 py-2 text-left rounded flex items-center space-x-2 transition-colors"
-                        style={{ color: 'var(--color-text)' }}
-                        onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-muted)'}
-                        onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'transparent'}
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                        <span>{t('planDetailPage.edit')}</span>
-                      </button>
-                      
-                      <button
-                        onClick={() => {
-                          setShowDeleteConfirm(true);
-                          setShowActionsDropdown(false);
-                        }}
-                        className="w-full px-4 py-2 text-left rounded flex items-center space-x-2 transition-colors text-red-600"
-                        onMouseEnter={(e) => (e.target as HTMLElement).style.backgroundColor = 'var(--color-muted)'}
-                        onMouseLeave={(e) => (e.target as HTMLElement).style.backgroundColor = 'transparent'}
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                        <span>{t('planDetailPage.delete')}</span>
                       </button>
                     </div>
                   </div>
                 )}
+
+                {actionsScrollState.canScrollRight && (
+                  <div className="pointer-events-none absolute inset-y-0 right-0 z-10 flex items-center justify-end bg-gradient-to-l from-[var(--color-background)] to-transparent">
+                    <div className="pointer-events-auto pr-2">
+                      <button
+                        onClick={() => scrollActionsCarousel('right')}
+                        className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/15 text-white shadow-lg backdrop-blur"
+                        aria-label="Scroll actions right"
+                      >
+                        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                <div
+                  ref={actionsCarouselRef}
+                  className="flex gap-3 overflow-x-auto px-4 pb-2"
+                  style={{
+                    WebkitOverflowScrolling: 'touch',
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none',
+                    scrollSnapType: 'x mandatory'
+                  }}
+                >
+                  <button
+                    onClick={() => setShowCalendar(!showCalendar)}
+                    className="flex min-w-[10rem] flex-shrink-0 items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-all duration-200 shadow-lg"
+                    style={{
+                      backgroundColor: 'var(--color-primary)',
+                      background: 'linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 25%, transparent), color-mix(in srgb, var(--color-primary) 65%, rgba(0,0,0,0.08)))',
+                      color: 'var(--color-text-on-primary, #ffffff)',
+                      scrollSnapAlign: 'center'
+                    }}
+                    aria-pressed={showCalendar}
+                  >
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <span>{t('planDetailPage.calendar')}</span>
+                  </button>
+
+                  <button
+                    onClick={exportPlanData}
+                    className="flex min-w-[10rem] flex-shrink-0 items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-all duration-200"
+                    style={{
+                      backgroundColor: 'var(--color-background-secondary)',
+                      color: 'var(--color-text)',
+                      scrollSnapAlign: 'center'
+                    }}
+                  >
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>{t('planDetailPage.export')}</span>
+                  </button>
+
+                  <button
+                    onClick={() => setShowEditForm(!showEditForm)}
+                    className="flex min-w-[10rem] flex-shrink-0 items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-medium transition-all duration-200"
+                    style={{
+                      backgroundColor: '#f59e0b',
+                      color: '#ffffff',
+                      scrollSnapAlign: 'center'
+                    }}
+                  >
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    <span>{t('planDetailPage.edit')}</span>
+                  </button>
+
+                  <button
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="flex min-w-[10rem] flex-shrink-0 items-center justify-center gap-2 rounded-2xl border border-red-400/60 px-4 py-3 text-sm font-medium transition-all duration-200 text-red-100"
+                    style={{
+                      backgroundColor: 'rgba(220,38,38,0.9)',
+                      background: 'linear-gradient(135deg, rgba(239,68,68,0.85), rgba(220,38,38,0.9))',
+                      scrollSnapAlign: 'center'
+                    }}
+                  >
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    <span>{t('planDetailPage.delete')}</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="rounded-xl p-8 shadow-xl planner-card-animated" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
+          <div className="rounded-xl p-6 sm:p-8 shadow-xl planner-card-animated" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
             {showEditForm ? (
               /* Форма редактирования */
               <div className="space-y-6">
@@ -467,7 +519,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
               </div>
             ) : (
               /* Обычное отображение */
-              <div className="flex items-start justify-between">
+              <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
                 <div className="flex-1">
                   <h1 className="text-3xl font-bold mb-2" style={{ color: 'var(--color-text)' }}>
                     {plan.title}
@@ -478,7 +530,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                     </p>
                   )}
                   
-                  <div className="flex items-center space-x-6 text-sm">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6 text-sm">
                     <span className="flex items-center">
                       <span style={{ color: 'var(--color-text-secondary)' }}>Создан:</span>
                       <span className="ml-2 font-medium" style={{ color: 'var(--color-text)' }}>
@@ -501,7 +553,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   </div>
                 </div>
                 
-                <div className="text-right">
+                <div className="text-right md:text-right">
                   <div className="text-3xl font-bold text-[var(--color-primary)]">
                     {plan.completionPercentage.toFixed(1)}%
                   </div>
@@ -518,7 +570,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   style={{ width: `${plan.completionPercentage}%` }}
                 />
               </div>
-              <div className="flex justify-between text-sm mt-2" style={{ color: 'var(--color-text-secondary)' }}>
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-sm mt-2" style={{ color: 'var(--color-text-secondary)' }}>
                 <span>{completedTasks} {t('planDetailPage.daysOf')} {totalTasks} {t('planDetailPage.daysWord')}</span>
                 <span>{t('planDetailPage.streakLabel')} {plan.currentStreak} {t('planDetailPage.daysWord')}</span>
               </div>
@@ -529,15 +581,15 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
         {/* Задача на сегодня */}
         {todayTask && (
           <div className="mb-8">
-            <div className=" rounded-xl p-8  shadow-xl" style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
-              <div className="flex items-center justify-between mb-6">
+            <div className="rounded-xl p-6 sm:p-8 shadow-xl" style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
                 <h2 className="text-2xl font-bold">📖 {t('planDetailPage.todaysTask')}</h2>
-                <div className="text-lg font-medium">
+                <div className="text-lg font-medium" style={{ color: 'var(--color-text)' }}>
                   {new Date().toLocaleDateString('ru-RU')}
                 </div>
               </div>
 
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-5 sm:p-6 mb-6">
                 <div className="text-xl font-semibold mb-2">
                   {t('planDetailPage.surah')} {todayTask.surahNumber}, {t('planDetailPage.verses')} {todayTask.fromAyah}-{todayTask.toAyah}
                 </div>
@@ -548,7 +600,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
 
               {/* Арабский текст аятов */}
               {todayAyahs.length > 0 && (
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
+                <div className="bg-white/10 backdrop-blur-sm rounded-lg p-5 sm:p-6 mb-6">
                   <h3 className="text-lg font-semibold mb-4 text-center flex items-center justify-center">
                     <span className="mr-2">📜</span>
                     {t('planDetailPage.ayahsForStudy')}
@@ -557,7 +609,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   
                   <div className="space-y-6">
                     {todayAyahs.map((ayah, index) => (
-                      <div key={index} className=" rounded-lg p-6 border border-white/10">
+                      <div key={index} className="rounded-lg p-5 sm:p-6 border border-white/10">
                         {/* Заголовок аята */}
                         <div className="text-center mb-4">
                           <span className="inline-flex items-center justify-center w-10 h-10 bg-white/20 text-white rounded-full font-bold">
@@ -569,8 +621,8 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                         </div>
                         
                         {/* Арабский текст */}
-                        <div className=" rounded-lg p-6 mb-4">
-                          <div className="quran-text quran-text-animated text-center  text-3xl leading-loose">
+                        <div className="rounded-lg p-4 sm:p-6 mb-4">
+                          <div className="quran-text quran-text-animated text-center text-2xl sm:text-3xl leading-loose">
                             {ayah.text}
                           </div>
                         </div>
@@ -593,8 +645,8 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                 </div>
               )}
               {/* Счетчик чтения */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
-                <div className="flex items-center justify-between mb-4">
+              <div className="bg-white/10 backdrop-blur-sm rounded-lg p-5 sm:p-6 mb-6">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
                   <h3 className="text-lg font-semibold">📊 {t('planDetailPage.readingCounter')}</h3>
                   <div className="text-2xl font-bold reading-counter">
                     {readingCounter} {readingCounter === 1 ? t('planDetailPage.timeSingular') : readingCounter > 1 && readingCounter < 5 ? t('planDetailPage.timesPlural') : t('planDetailPage.timesMany')}
@@ -616,7 +668,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
               </div>
 
               {!todayTask.completed && !todayTask.skipped && (
-                <div className="flex space-x-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:space-x-4 sm:gap-0">
                   <button
                     onClick={() => handleCompleteTask(todayTask.date)}
                     className="flex-1 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center space-x-2"
@@ -682,7 +734,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
           </div>
 
           {/* Ближайшие задачи */}
-          <div className="rounded-xl p-6 shadow-xl planner-card-animated" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
+            <div className="rounded-xl p-6 shadow-xl planner-card-animated" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
             <h3 className="text-xl font-bold mb-6" style={{ color: 'var(--color-text)' }}>
               📅 {t('planDetailPage.upcomingTasks')}
             </h3>
@@ -690,7 +742,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
               {upcomingTasks.length > 0 ? (
                 upcomingTasks.map((task, index) => (
                   <div key={index} className="rounded-lg p-4 transition-colors" style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                       <div>
                         <div className="font-medium" style={{ color: 'var(--color-text)' }}>
                           {new Date(task.date).toLocaleDateString('ru-RU')}
