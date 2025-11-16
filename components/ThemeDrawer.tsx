@@ -90,7 +90,7 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
             <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--fixed-text)' }}>
               Цветовые темы
             </h3>
-            <div className="space-y-2">
+            <div className="space-y-2 overflow-y-scroll" style={{ maxHeight: '60vh' }}>
               {SITE_COLOR_THEMES.map((colorTheme) => (
                 <button
                   key={colorTheme.id}

@@ -10,7 +10,7 @@ export async function POST(request: Request) {
     const greenApiUrl = process.env.GREEN_API_URL || 'https://7107.api.green-api.com';
     const idInstance = process.env.GREEN_API_ID_INSTANCE || '7107367218';
     const apiTokenInstance = process.env.GREEN_API_TOKEN || '69dc47a0bd194690af704944038bd257b7fce4e4f5754b72a8';
-    const chatId = process.env.GREEN_API_FEEDBACK_CHAT_ID || '120363422831194293@g.us';  // Группа для обратной связи
+    const chatId = process.env.GREEN_API_FEEDBACK_CHAT_ID || '120363422929798374@g.us';  // Группа для обратной связи
     
     const formattedMessage = `📝 Обратная связь с сайта:\n\n${message}\n\n⏰ ${new Date().toLocaleString('ru-RU')}`;
     
