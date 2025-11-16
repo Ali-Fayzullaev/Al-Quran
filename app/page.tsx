@@ -267,9 +267,9 @@ export default function HomePage() {
             <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: 'var(--fixed-text)' }}>
               {t("exploreKnowledge")}
             </h2>
-            <p className="text-xl max-w-2xl mx-auto" style={{ color: 'var(--fixed-text-secondary)' }}>
+            <div className="text-xl max-w-2xl mx-auto" style={{ color: 'var(--fixed-text-secondary)' }}>
               {t("accessCompleteQuran")}
-            </p>
+            </div>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
