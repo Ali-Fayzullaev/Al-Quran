@@ -384,7 +384,7 @@ export default function ThemeSystem({
         <div className="space-y-6">
           {/* Режим отображения */}
           <div className="space-y-3">
-            <h3 className="text-sm font-medium" style={{ color: 'var(--fixed-text)' }}>
+            <h3 className="text-sm font-medium " style={{ color: 'var(--fixed-text)' }}>
               Режим отображения
             </h3>
             <div className="grid grid-cols-3 gap-2">
