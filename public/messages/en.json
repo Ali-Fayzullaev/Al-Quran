@@ -63,7 +63,36 @@
   "showTransliteration": "Show Transliteration",
   "quranReading": "Quran Reading",
   "journey": "Journey",
-  "aiHelperNav": "AI Helper",
+    "aiHelperNav": "AI Helper",
+    "liveStreams": {
+        "nav": "Live Streams",
+        "title": "Live Streams from Mecca and Medina",
+        "subtitle": "Immerse yourself in the spiritual atmosphere of the holy sanctuaries and follow the worshippers in real time.",
+        "status": {
+            "live": "Live",
+            "offline": "Offline",
+            "official": "Official source",
+            "currentViewers": "Watching now",
+            "liveSignal": "Live signal",
+            "waiting": "Waiting for stream",
+            "lastUpdated": "Last updated"
+        },
+        "actions": {
+            "refresh": "Refresh Status",
+            "refreshing": "Refreshing...",
+            "openYoutube": "Watch on YouTube"
+        },
+        "locations": {
+            "mecca": {
+                "title": "Masjid al-Haram, Mecca",
+                "description": "Watch the live broadcast from the Grand Mosque and feel the presence among the pilgrims."
+            },
+            "medina": {
+                "title": "Masjid an-Nabawi, Medina",
+                "description": "Follow the events from the Prophet's Mosque and share the blessings of the holy sanctuary."
+            }
+        }
+    },
   "feedback": "Feedback",
   "main": "Main",
   "learning": "Learning",

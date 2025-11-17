@@ -20,6 +20,7 @@ import {
   Brain,
   Map,
   Home,
+  Radio,
   Menu,
   X,
   Bot,
@@ -133,6 +134,12 @@ const Sidebar = memo(function Sidebar() {
         href: "/journey",
         icon: Map,
         category: "learning",
+      },
+      {
+        name: t("liveStreams.nav"),
+        href: "/live",
+        icon: Radio,
+        category: "main",
       },
       {
         name: t("plannerTitle") || "Планировщик",
