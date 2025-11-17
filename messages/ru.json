@@ -1,0 +1,71 @@
+{
+  "Navigation": {
+    "live": "Духовный центр",
+    "quran": "Коран",
+    "surahs": "Суры",
+    "juz": "Джуз",
+    "mushaf": "Мусхаф",
+    "bookmarks": "Закладки",
+    "planner": "Планировщик",
+    "journey": "Путешествие",
+    "quiz": "Викторина",
+    "search": "Поиск",
+    "ai-helper": "ИИ Помощник",
+    "settings": "Настройки",
+    "feedback": "Обратная связь"
+  },
+  "Live": {
+    "title": "Духовный центр",
+    "subtitle": "Прямые трансляции и время намазов",
+    "prayerTimes": "Время намазов",
+    "liveStreams": "Прямые трансляции",
+    "makkahLive": "Мекка - Прямая трансляция",
+    "madinahLive": "Медина - Прямая трансляция"
+  },
+  "PrayerTimes": {
+    "title": "Время намазов",
+    "loading": "Загрузка времени намазов...",
+    "error": "Ошибка загрузки",
+    "retry": "Повторить",
+    "detectLocation": "Определить местоположение",
+    "searchCity": "Поиск города...",
+    "autoDetected": "Автоопределение",
+    "manual": "Ручной выбор",
+    "nextPrayer": "Следующий намаз",
+    "prayers": {
+      "fajr": "Фаджр",
+      "sunrise": "Восход",
+      "dhuhr": "Зухр", 
+      "asr": "Аср",
+      "maghrib": "Магриб",
+      "isha": "Иша"
+    },
+    "prayersArabic": {
+      "fajr": "الفجر",
+      "sunrise": "الشروق",
+      "dhuhr": "الظهر",
+      "asr": "العصر",
+      "maghrib": "المغرب",
+      "isha": "العشاء"
+    },
+    "calculationMethod": "Метод расчета",
+    "hijriDate": "Хиджри",
+    "gregorianDate": "Григорианский",
+    "settings": "Настройки",
+    "location": "Местоположение",
+    "coordinates": "Координаты",
+    "timezone": "Часовой пояс",
+    "lastUpdated": "Обновлено"
+  },
+  "Common": {
+    "loading": "Загрузка...",
+    "error": "Ошибка",
+    "retry": "Повторить",
+    "close": "Закрыть",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "search": "Поиск",
+    "clear": "Очистить",
+    "refresh": "Обновить"
+  }
+}

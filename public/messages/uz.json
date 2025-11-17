@@ -175,9 +175,9 @@
     "journey": "Sayohat",
     "aiHelperNav": "AI Yordamchi",
     "liveStreams": {
-        "nav": "Jonli translyatsiyalar",
-        "title": "Makka va Madinadan jonli translyatsiyalar",
-        "subtitle": "Muqaddas maskanlarning ma'naviy muhitiga sho'ng'ing va ziyoratchilarni real vaqt rejimida kuzating.",
+        "nav": "Ruhiy markaz",
+        "title": "Ruhiy markaz",
+        "subtitle": "Namoz vaqtlari va islomning muqaddas joylaridan jonli translyatsiyalar",
         "status": {
             "live": "Jonli",
             "offline": "Efirdan tashqarida",

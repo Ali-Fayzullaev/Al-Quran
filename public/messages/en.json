@@ -65,9 +65,9 @@
   "journey": "Journey",
     "aiHelperNav": "AI Helper",
     "liveStreams": {
-        "nav": "Live Streams",
-        "title": "Live Streams from Mecca and Medina",
-        "subtitle": "Immerse yourself in the spiritual atmosphere of the holy sanctuaries and follow the worshippers in real time.",
+        "nav": "Spiritual Center",
+        "title": "Spiritual Center",
+        "subtitle": "Prayer times and live streams from the holy places of Islam",
         "status": {
             "live": "Live",
             "offline": "Offline",
