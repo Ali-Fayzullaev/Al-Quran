@@ -62,7 +62,7 @@ class MosqueFinderService {
       mosques = this.addDistancesToMosques(mosques, lat, lng);
       
       // Сортируем по расстоянию
-      mosques.sort((a, b) => (a.distance || 0) - (b.distance || 0));
+      mosques.sort((a: any, b: any) => (a.distance || 0) - (b.distance || 0));
       
       // Сохраняем в кэш
       this.cache.set(cacheKey, mosques);

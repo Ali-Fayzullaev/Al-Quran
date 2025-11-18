@@ -295,27 +295,34 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
           <Clock className="h-5 w-5" />
           <span>Время намазов</span>
         </div>
-        <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ 
+          background: `linear-gradient(135deg, var(--color-primary), var(--color-secondary))`,
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text"
+        }}>
           🕌 Время намазов
         </h2>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+        <p className="text-lg max-w-2xl mx-auto" style={{ color: "var(--fixed-text-secondary)" }}>
           Точное расписание молитв с учетом вашего местоположения
         </p>
       </div>
 
       {/* Основная карточка */}
       <div className="mx-auto max-w-6xl">
-        <div className="overflow-hidden rounded-3xl shadow-2xl transition-all duration-500 relative group" style={{ backgroundColor: "var(--color-background-secondary)", borderColor: "var(--color-border)", borderWidth: "2px", borderStyle: "solid" }}>
+        <div className="overflow-hidden rounded-3xl shadow-2xl transition-all duration-500 relative group" style={{ backgroundColor: "var(--verse-background)", borderColor: "var(--color-border)", borderWidth: "2px", borderStyle: "solid" }}>
           {/* Градиентный фон */}
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-blue-500/10 opacity-50"></div>
+          <div className="absolute inset-0 opacity-30" style={{
+            background: `linear-gradient(135deg, var(--color-primary)15, var(--color-secondary)15)`
+          }}></div>
           
           <div className="relative z-10 p-8 space-y-8">
             {/* Информация о местоположении и поиск */}
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
               <div className="space-y-2">
                 {prayerSystem?.location && (
-                  <div className="flex items-center gap-2 text-lg font-semibold text-gray-800">
-                    <MapPin className="h-5 w-5 text-emerald-600" />
+                  <div className="flex items-center gap-2 text-lg font-semibold" style={{ color: "var(--fixed-text)" }}>
+                    <MapPin className="h-5 w-5" style={{ color: "var(--color-primary)" }} />
                     <span>
                       {prayerSystem.location.city && prayerSystem.location.country 
                         ? `${prayerSystem.location.city}, ${prayerSystem.location.country}`
@@ -323,7 +330,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                       }
                     </span>
                     {prayerSystem.location.autoDetected && (
-                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      <CheckCircle className="h-4 w-4" style={{ color: "var(--color-success)" }} />
                     )}
                   </div>
                 )}
@@ -335,14 +342,34 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                   <div className="flex gap-2">
                     <Button
                       onClick={() => loadPrayerTimes()}
-                      className="px-3 py-1 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center gap-1"
+                      className="px-3 py-1 text-xs text-white rounded-lg transition-colors flex items-center gap-1"
+                      style={{ 
+                        backgroundColor: "var(--color-primary)",
+                        borderColor: "var(--color-primary)"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.opacity = '0.8';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.opacity = '1';
+                      }}
                     >
                       <Navigation className="h-3 w-3" />
                       GPS
                     </Button>
                     <Button
                       onClick={() => loadPrayerTimes()}
-                      className="px-3 py-1 text-xs bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors flex items-center gap-1"
+                      className="px-3 py-1 text-xs text-white rounded-lg transition-colors flex items-center gap-1"
+                      style={{ 
+                        backgroundColor: "var(--color-success)",
+                        borderColor: "var(--color-success)"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.opacity = '0.8';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.opacity = '1';
+                      }}
                     >
                       <RefreshCw className="h-3 w-3" />
                       Обновить
@@ -377,7 +404,11 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                   <Button
                     onClick={performActualSearch}
                     disabled={searchQuery.length < 2 || isSearching}
-                    className="px-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center gap-2"
+                    className="px-4 py-3 text-white rounded-xl transition-colors disabled:cursor-not-allowed flex items-center gap-2"
+                    style={{
+                      backgroundColor: searchQuery.length < 2 || isSearching ? "var(--color-border)" : "var(--color-primary)",
+                      opacity: searchQuery.length < 2 || isSearching ? 0.5 : 1
+                    }}
                   >
                     {isSearching ? (
                       <Loader className="h-4 w-4 animate-spin" />
@@ -430,25 +461,37 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                         <div className="flex flex-wrap gap-1 justify-center">
                           <button 
                             onClick={() => loadPrayerTimesByCity('Moscow', 'Russia')}
-                            className="px-2 py-1 text-xs bg-emerald-500 text-white rounded hover:bg-emerald-600 transition-colors"
+                            className="px-2 py-1 text-xs text-white rounded transition-opacity"
+                            style={{ backgroundColor: "var(--color-primary)" }}
+                            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+                            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
                           >
                             Москва
                           </button>
                           <button 
                             onClick={() => loadPrayerTimesByCity('London', 'UK')}
-                            className="px-2 py-1 text-xs bg-emerald-500 text-white rounded hover:bg-emerald-600 transition-colors"
+                            className="px-2 py-1 text-xs text-white rounded transition-opacity"
+                            style={{ backgroundColor: "var(--color-primary)" }}
+                            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+                            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
                           >
                             Лондон
                           </button>
                             <button 
                               onClick={() => loadPrayerTimesByCity('Dubai', 'UAE')}
-                              className="px-2 py-1 text-xs bg-emerald-500 text-white rounded hover:bg-emerald-600 transition-colors"
+                              className="px-2 py-1 text-xs text-white rounded transition-opacity"
+                              style={{ backgroundColor: "var(--color-primary)" }}
+                              onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+                              onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
                             >
                               Дубай
                             </button>
                             <button 
                               onClick={() => loadPrayerTimesByCity('Almaty', 'Kazakhstan')}
-                              className="px-2 py-1 text-xs bg-emerald-500 text-white rounded hover:bg-emerald-600 transition-colors"
+                              className="px-2 py-1 text-xs text-white rounded transition-opacity"
+                              style={{ backgroundColor: "var(--color-primary)" }}
+                              onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+                              onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
                             >
                               Алматы
                             </button>
@@ -493,7 +536,12 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                 {(() => {
                   const nextPrayer = getTimeUntilNextPrayer();
                   return (
-                    <div className="text-center p-8 rounded-3xl bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-2xl">
+                    <div 
+                      className="text-center p-8 rounded-3xl text-white shadow-2xl"
+                      style={{
+                        background: `linear-gradient(135deg, var(--color-primary), var(--color-secondary))`
+                      }}
+                    >
                       <div className="text-sm font-semibold uppercase tracking-wider opacity-90 mb-2">
                         {nextPrayer?.tomorrow ? 'Завтрашний намаз' : 'Следующий намаз'}
                       </div>
@@ -581,11 +629,14 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                 </div>
 
                 {/* Информация о методе расчета */}
-                <div className="text-center p-6 rounded-2xl border-2 border-emerald-200 bg-emerald-50">
-                  <div className="text-sm font-semibold text-emerald-600 mb-2">
+                <div className="text-center p-6 rounded-2xl border-2" style={{
+                  borderColor: "var(--color-border)",
+                  backgroundColor: "var(--verse-background)"
+                }}>
+                  <div className="text-sm font-semibold mb-2" style={{ color: "var(--color-primary)" }}>
                     Метод расчета
                   </div>
-                  <div className="text-lg font-bold text-emerald-800">
+                  <div className="text-lg font-bold" style={{ color: "var(--fixed-text)" }}>
                     {prayerSystem.calculationMethod.name}
                   </div>
                 </div>
@@ -594,8 +645,13 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button
                     onClick={() => loadPrayerTimes()}
-                    variant="outline"
-                    className="rounded-xl px-6 py-3 font-semibold"
+                    className="rounded-xl px-6 py-3 font-semibold text-white transition-opacity"
+                    style={{ 
+                      backgroundColor: "var(--color-success)",
+                      borderColor: "var(--color-success)"
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+                    onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
                     disabled={loading}
                   >
                     <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
@@ -604,8 +660,13 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                   
                   <Button
                     onClick={() => loadPrayerTimes()}
-                    variant="outline"
-                    className="rounded-xl px-6 py-3 font-semibold"
+                    className="rounded-xl px-6 py-3 font-semibold text-white transition-opacity"
+                    style={{ 
+                      backgroundColor: "var(--color-primary)",
+                      borderColor: "var(--color-primary)"
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+                    onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
                   >
                     <Navigation className="w-4 h-4 mr-2" />
                     Определить местоположение
@@ -617,12 +678,15 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
         </div>
 
         {/* Информационное сообщение */}
-        <div className="mt-8 text-center p-6 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200">
+        <div className="mt-8 text-center p-6 rounded-2xl border" style={{
+          backgroundColor: "var(--verse-background)",
+          borderColor: "var(--color-border)"
+        }}>
           <div className="flex items-center justify-center gap-2 mb-3">
-            <Clock className="w-5 h-5 text-amber-600" />
-            <span className="font-semibold text-amber-800">Информация о расчетах</span>
+            <Clock className="w-5 h-5" style={{ color: "var(--color-primary)" }} />
+            <span className="font-semibold" style={{ color: "var(--fixed-text)" }}>Информация о расчетах</span>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-amber-700">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm" style={{ color: "var(--fixed-text-secondary)" }}>
             <div className="flex items-start gap-2">
               <span className="text-amber-500">🌍</span>
               <span>Время рассчитывается с учетом вашего местоположения</span>

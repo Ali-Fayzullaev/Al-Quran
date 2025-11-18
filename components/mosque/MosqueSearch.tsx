@@ -91,8 +91,10 @@ export default function MosqueSearch({
 
   const clearFilters = () => {
     setFilters({
-      minRating: undefined,
+      minRating: 0,
       hasJumuah: false,
+      hasParking: false,
+      wheelchairAccessible: false,
     });
   };
 
