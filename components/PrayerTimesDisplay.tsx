@@ -46,11 +46,11 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isSearching, setIsSearching] = useState(false);
 
-  // Обновляем текущее время каждую минуту
+  // Обновляем текущее время каждую секунду для обратного отсчета
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(new Date());
-    }, 60000); // Обновляем каждую минуту
+    }, 1000); // Обновляем каждую секунду
 
     return () => clearInterval(interval);
   }, []);
@@ -157,6 +157,70 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
     setSearchResults([]);
     setIsSearching(false);
   }, []);
+
+  // Вычисляем время до следующего намаза
+  const getTimeUntilNextPrayer = useCallback(() => {
+    if (!prayerSystem) return null;
+
+    const now = new Date();
+    const prayerNames = [
+      { key: 'fajr', name: 'Фаджр', arabic: 'الفجر' },
+      { key: 'dhuhr', name: 'Зухр', arabic: 'الظهر' },
+      { key: 'asr', name: 'Аср', arabic: 'العصر' },
+      { key: 'maghrib', name: 'Магриб', arabic: 'المغرب' },
+      { key: 'isha', name: 'Иша', arabic: 'العشاء' }
+    ];
+
+    // Находим следующий намаз
+    for (const prayer of prayerNames) {
+      const prayerTime = new Date();
+      const timeString = prayerSystem.prayerTimes[prayer.key as keyof typeof prayerSystem.prayerTimes] as string;
+      
+      if (typeof timeString === 'string') {
+        const [hours, minutes] = timeString.split(':').map(Number);
+        prayerTime.setHours(hours, minutes, 0, 0);
+        
+        if (prayerTime > now) {
+          const diffMs = prayerTime.getTime() - now.getTime();
+          const hours = Math.floor(diffMs / (1000 * 60 * 60));
+          const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+          
+          return {
+            name: prayer.name,
+            arabic: prayer.arabic,
+            time: timeString,
+            hours,
+            minutes,
+            seconds,
+            totalMs: diffMs
+          };
+        }
+      }
+    }
+
+    // Если все намазы прошли, следующий - завтрашний фаджр
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const [hours, minutes] = prayerSystem.prayerTimes.fajr.split(':').map(Number);
+    tomorrow.setHours(hours, minutes, 0, 0);
+    
+    const diffMs = tomorrow.getTime() - now.getTime();
+    const hoursUntil = Math.floor(diffMs / (1000 * 60 * 60));
+    const minutesUntil = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    const secondsUntil = Math.floor((diffMs % (1000 * 60)) / 1000);
+    
+    return {
+      name: 'Фаджр',
+      arabic: 'الفجر',
+      time: prayerSystem.prayerTimes.fajr,
+      hours: hoursUntil,
+      minutes: minutesUntil,
+      seconds: secondsUntil,
+      totalMs: diffMs,
+      tomorrow: true
+    };
+  }, [prayerSystem, currentTime]);
 
   // Выбор города из поиска
   const selectCity = useCallback((city: SearchResult) => {
@@ -425,21 +489,65 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
             {/* Время намазов */}
             {prayerSystem && !loading && (
               <div className="space-y-8">
-                {/* Следующий намаз */}
-                <div className="text-center p-8 rounded-3xl bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-2xl">
-                  <div className="text-sm font-semibold uppercase tracking-wider opacity-90 mb-2">
-                    Следующий намаз
-                  </div>
-                  <div className="text-4xl font-black mb-2">
-                    {prayerSystem.prayerTimes.nextPrayer.name}
-                  </div>
-                  <div className="text-2xl font-bold mb-2">
-                    {prayerSystem.prayerTimes.nextPrayer.time}
-                  </div>
-                  <div className="text-lg opacity-90">
-                    через {prayerSystem.prayerTimes.nextPrayer.timeUntil}
-                  </div>
-                </div>
+                {/* Следующий намаз с живым обратным отсчетом */}
+                {(() => {
+                  const nextPrayer = getTimeUntilNextPrayer();
+                  return (
+                    <div className="text-center p-8 rounded-3xl bg-gradient-to-r from-emerald-500 to-blue-600 text-white shadow-2xl">
+                      <div className="text-sm font-semibold uppercase tracking-wider opacity-90 mb-2">
+                        {nextPrayer?.tomorrow ? 'Завтрашний намаз' : 'Следующий намаз'}
+                      </div>
+                      <div className="text-4xl font-black mb-2">
+                        {nextPrayer?.name || prayerSystem.prayerTimes.nextPrayer.name}
+                      </div>
+                      <div className="text-2xl font-bold mb-4">
+                        {nextPrayer?.time || prayerSystem.prayerTimes.nextPrayer.time}
+                      </div>
+                      
+                      {nextPrayer && (
+                        <div className="space-y-3">
+                          <div className="text-sm opacity-80 uppercase tracking-wider">
+                            Осталось времени
+                          </div>
+                          <div className="flex justify-center items-center gap-4 text-white">
+                            {/* Часы */}
+                            <div className="text-center">
+                              <div className="text-3xl font-black bg-white/20 rounded-xl px-4 py-2 min-w-[70px]">
+                                {nextPrayer.hours.toString().padStart(2, '0')}
+                              </div>
+                              <div className="text-xs mt-1 opacity-80">часов</div>
+                            </div>
+                            
+                            <div className="text-2xl font-bold opacity-60">:</div>
+                            
+                            {/* Минуты */}
+                            <div className="text-center">
+                              <div className="text-3xl font-black bg-white/20 rounded-xl px-4 py-2 min-w-[70px]">
+                                {nextPrayer.minutes.toString().padStart(2, '0')}
+                              </div>
+                              <div className="text-xs mt-1 opacity-80">минут</div>
+                            </div>
+                            
+                            <div className="text-2xl font-bold opacity-60">:</div>
+                            
+                            {/* Секунды */}
+                            <div className="text-center">
+                              <div className="text-3xl font-black bg-white/20 rounded-xl px-4 py-2 min-w-[70px] transition-all duration-300">
+                                {nextPrayer.seconds.toString().padStart(2, '0')}
+                              </div>
+                              <div className="text-xs mt-1 opacity-80">секунд</div>
+                            </div>
+                          </div>
+                          
+                          {/* Арабское название */}
+                          <div className="text-lg opacity-90 font-arabic">
+                            {nextPrayer.arabic}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
 
                 {/* Расписание намазов */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
