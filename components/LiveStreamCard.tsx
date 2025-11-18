@@ -26,7 +26,6 @@ export function LiveStreamCard({ stream, locale, t }: LiveStreamCardProps) {
           loading="lazy"
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent group-hover:from-black/70"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-gradient-to-r from-red-500 to-red-600 px-4 py-2 text-xs font-bold text-white shadow-lg backdrop-blur-sm">
           <span className="relative flex items-center gap-2">
             <span className="flex h-3 w-3 animate-pulse rounded-full bg-white shadow-lg"></span>
