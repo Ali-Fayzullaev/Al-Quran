@@ -272,7 +272,7 @@ export default function HomePage() {
             </div>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -296,6 +296,34 @@ export default function HomePage() {
                   <div className="flex items-center gap-2 font-semibold relative z-10" style={{ color: 'var(--color-primary)' }}>
                     <span>{t("startReading")}</span>
                     <Play className="w-4 h-4" />
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.3 }}
+            >
+              <Link href="/mosque-finder" className="group block">
+                <div className="relative p-8 rounded-3xl transition-all duration-300 group-hover:shadow-2xl group-hover:scale-105 overflow-hidden theme-card-elegant"
+                  style={{
+                    background: `linear-gradient(135deg, var(--color-secondary) 0%, var(--color-background-secondary) 100%)`,
+                    borderColor: 'var(--color-primary)'
+                  }}>
+                  <div className="absolute top-0 right-0 w-32 h-32 rounded-full -translate-y-16 translate-x-16 opacity-20"
+                    style={{ backgroundColor: 'var(--color-primary)' }}></div>
+                  <Search className="w-12 h-12 mb-6 relative z-10" style={{ color: 'var(--color-primary)' }} />
+                  <h3 className="text-2xl font-bold mb-4 relative z-10" style={{ color: 'var(--fixed-text)' }}>
+                    {locale === "en" ? "Find Mosques" : locale === "ru" ? "Поиск мечетей" : "Masjid topish"}
+                  </h3>
+                  <p className="mb-6 relative z-10" style={{ color: 'var(--fixed-text-secondary)' }}>
+                    {locale === "en" ? "Find nearby mosques with prayer times" : locale === "ru" ? "Найдите мечети рядом с временем молитв" : "Namoz vaqtlari bilan yaqin masjidlarni toping"}
+                  </p>
+                  <div className="flex items-center gap-2 font-semibold relative z-10" style={{ color: 'var(--color-primary)' }}>
+                    <span>{locale === "en" ? "Find Now" : locale === "ru" ? "Найти сейчас" : "Hozir topish"}</span>
+                    <Search className="w-4 h-4" />
                   </div>
                 </div>
               </Link>
@@ -330,7 +358,7 @@ export default function HomePage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1.6 }}
+              transition={{ duration: 0.6, delay: 1.5 }}
             >
               <div className="relative p-8 rounded-3xl transition-all duration-300 hover:shadow-2xl hover:scale-105 overflow-hidden cursor-pointer theme-card-elegant"
                 style={{

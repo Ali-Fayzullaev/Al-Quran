@@ -167,6 +167,12 @@ const Sidebar = memo(function Sidebar() {
         category: "tools",
       },
       {
+        name: locale === "en" ? "Find Mosques" : locale === "ru" ? "Поиск мечетей" : "Masjid topish",
+        href: "/mosque-finder",
+        icon: Map,
+        category: "tools",
+      },
+      {
         name: t("bookmarks"),
         href: "/bookmarks",
         icon: Bookmark,
