@@ -5,10 +5,16 @@
   "language": "Language",
   "theme": "Theme",
   "home": "Home",
+  "quranReading": "Quran Reading",
+  "journey": "Journey",
+  "quiz": "Quiz",
+  "aiHelperNav": "AI Helper",
+  "duaDhikriNav": "Dua & Dhikr",
   "surahs": "Surahs",
   "juz": "Juz",
   "search": "Search",
   "bookmarks": "Bookmarks",
+  "feedback": "Feedback",
   "settings": "Settings",
   "menu": "Menu",
   "close": "Close",
@@ -265,7 +271,6 @@
   "autoPlayMessage": "Would you like to automatically play the next verse after the current one finishes?",
   "yes": "Yes",
   "no": "No",
-  "quiz": "Quiz",
   "quizTitle": "Quran Knowledge Quiz",
   "quizDescription": "Test your knowledge of the Holy Quran",
   "numberOfQuestions": "Number of Questions",
@@ -379,5 +384,37 @@
     "loadingQuran": "Loading Quran",
     "preparingVerses": "Preparing verses for reading",
     "pleaseWait": "Please wait..."
+  },
+  "DuaDhikr": {
+    "title": "Dua & Dhikr",
+    "subtitle": "Sacred prayers and remembrance of Allah",
+    "categories": {
+      "morning-dhikr": "Morning Dhikr",
+      "evening-dhikr": "Evening Dhikr",
+      "dhikr-after-salah": "Dhikr After Salah",
+      "daily-dua": "Daily Duas",
+      "selected-dua": "Selected Duas"
+    },
+    "descriptions": {
+      "morning-dhikr": "Remembrance to recite in the morning",
+      "evening-dhikr": "Remembrance to recite in the evening",
+      "dhikr-after-salah": "Remembrance after completing prayer",
+      "daily-dua": "Prayers for daily life",
+      "selected-dua": "Special prayers from Quran and Sunnah"
+    },
+    "viewAll": "View All",
+    "language": "Language",
+    "arabic": "Arabic",
+    "translation": "Translation",
+    "transliteration": "Transliteration",
+    "benefits": "Benefits",
+    "source": "Source",
+    "recite": "Recite",
+    "times": "times",
+    "languages": {
+      "ru": "Русский",
+      "en": "English",
+      "uz": "O'zbek"
+    }
   }
 }

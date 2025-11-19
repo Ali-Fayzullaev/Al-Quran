@@ -5,6 +5,7 @@
     "surahs": "Суры",
     "juz": "Джуз",
     "mushaf": "Мусхаф",
+    "dua-dhikr": "Дуа и Зикр",
     "bookmarks": "Закладки",
     "planner": "Планировщик",
     "journey": "Путешествие",
@@ -14,6 +15,18 @@
     "settings": "Настройки",
     "feedback": "Обратная связь"
   },
+  "home": "Главная",
+  "quranReading": "Чтение Корана",
+  "journey": "Путешествие",
+  "quiz": "Викторина", 
+  "aiHelperNav": "ИИ Помощник",
+  "duaDhikriNav": "Дуа и Зикр",
+  "surahs": "Суры",
+  "juz": "Джуз",
+  "search": "Поиск",
+  "bookmarks": "Закладки",
+  "feedback": "Обратная связь",
+  "settings": "Настройки",
   "Live": {
     "title": "Духовный центр",
     "subtitle": "Прямые трансляции и время намазов",
@@ -73,5 +86,37 @@
     "loadingQuran": "Загрузка Корана",
     "preparingVerses": "Подготовка аятов для чтения",
     "pleaseWait": "Пожалуйста, подождите..."
+  },
+  "DuaDhikr": {
+    "title": "Дуа и Зикр",
+    "subtitle": "Священные молитвы и поминания Аллаха",
+    "categories": {
+      "morning-dhikr": "Утренние зикры",
+      "evening-dhikr": "Вечерние зикры",
+      "dhikr-after-salah": "Зикры после намаза",
+      "daily-dua": "Ежедневные дуа",
+      "selected-dua": "Избранные дуа"
+    },
+    "descriptions": {
+      "morning-dhikr": "Поминания для чтения утром",
+      "evening-dhikr": "Поминания для чтения вечером",
+      "dhikr-after-salah": "Поминания после завершения намаза",
+      "daily-dua": "Молитвы для повседневной жизни",
+      "selected-dua": "Особые молитвы из Корана и Сунны"
+    },
+    "viewAll": "Посмотреть все",
+    "language": "Язык",
+    "arabic": "Арабский",
+    "translation": "Перевод",
+    "transliteration": "Транслитерация",
+    "benefits": "Польза",
+    "source": "Источник",
+    "recite": "Читать",
+    "times": "раз",
+    "languages": {
+      "ru": "Русский",
+      "en": "English",
+      "uz": "O'zbek"
+    }
   }
 }

@@ -27,6 +27,7 @@ import {
   MessageSquare,
   Star,
   Calendar,
+  Heart,
 } from "lucide-react";
 import { iconPaths, tempIconSvgs } from "@/lib/iconPaths";
 import { AnimatedThemeToggle } from "./AnimatedThemeToggle";
@@ -159,6 +160,13 @@ const Sidebar = memo(function Sidebar() {
         icon: Map,
         customIcon: iconPaths.journey,
         category: "learning",
+      },
+      {
+        name: t("duaDhikriNav"),
+        href: "/dua-dhikr",
+        icon: Heart,
+        customIcon: iconPaths.duaDhikr,
+        category: "main",
       },
       {
         name: t("liveStreams.nav"),
