@@ -577,52 +577,90 @@ export default function QuranReader({
         </motion.div>
       )}
 
-      {/* УЛУЧШЕННАЯ Settings Panel - Полностью адаптивная */}
+      {/* УЛУЧШЕННАЯ Settings Panel - Исправлено для мобильных устройств */}
       <AnimatePresence>
         {showSettings && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="mb-4 sm:mb-6 rounded-xl overflow-hidden"
-            style={{ backgroundColor: 'var(--fixed-background)' }}
-          >
-            <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
-              {/* Header with close button */}
-              <div className="flex items-center justify-between pb-2 border-b" style={{ borderColor: 'var(--color-border)' }}>
-                <h3 className="text-base sm:text-lg font-semibold" style={{ color: 'var(--fixed-text)' }}>
+          <>
+            {/* Backdrop для мобильных устройств */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 mobile-settings-backdrop sm:hidden"
+              style={{ zIndex: 40 }}
+              onClick={() => setShowSettings(false)}
+            />
+            
+            <motion.div
+              initial={{ opacity: 0, height: 0, scale: 0.95 }}
+              animate={{ opacity: 1, height: 'auto', scale: 1 }}
+              exit={{ opacity: 0, height: 0, scale: 0.95 }}
+              className={cn(
+                "mb-4 sm:mb-6 rounded-xl overflow-hidden shadow-xl border-2 mobile-settings-panel",
+                "fixed inset-x-4 top-20 mobile-settings-content sm:relative sm:inset-auto sm:top-auto sm:z-auto",
+                "max-h-[80vh] overflow-y-auto mobile-scroll"
+              )}
+              style={{ 
+                backgroundColor: '#ffffff',
+                borderColor: '#10b981',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(16, 185, 129, 0.1)',
+                zIndex: 50,
+                opacity: 1,
+                transform: 'translateZ(0)'
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+              {/* Header with close button - улучшено для мобильных */}
+              <div className="flex items-center justify-between pb-3 border-b-2 sticky top-0 z-10" 
+                   style={{ 
+                     borderColor: '#10b981',
+                     backgroundColor: '#ffffff'
+                   }}>
+                <h3 className="text-lg sm:text-xl font-bold" style={{ color: '#1f2937' }}>
                   {locale === 'en' ? 'Settings' : 'Настройки'}
                 </h3>
                 <Button
                   variant="ghost"
-                  size="sm"
+                  size="lg"
                   onClick={() => setShowSettings(false)}
-                  onTouchStart={(e) => e.stopPropagation()}
-                  onMouseDown={(e) => e.stopPropagation()}
-                  className="sm:hidden"
+                  className="p-2 rounded-full hover:bg-red-50 touch-manipulation"
+                  style={{ 
+                    minHeight: '44px', 
+                    minWidth: '44px',
+                    backgroundColor: 'transparent',
+                    color: '#ef4444',
+                    border: '1px solid #fecaca'
+                  }}
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-5 h-5" />
                 </Button>
               </div>
 
-              {/* Reciter Selection - Адаптивный */}
+              {/* Reciter Selection - Улучшено для мобильных */}
               <div className="space-y-3">
-                <label className="flex items-center gap-2 text-sm font-medium text-gray-900 dark:text-white">
-                  <User className="w-4 h-4" />
+                <label className="flex items-center gap-2 text-sm font-semibold" style={{ color: '#374151' }}>
+                  <User className="w-4 h-4" style={{ color: '#10b981' }} />
                   {locale === 'en' ? 'Select Reciter (Qari)' : 'Выбрать чтеца (Кари)'}
                 </label>
                 <Select value={audioReciter} onValueChange={setAudioReciter}>
                   <SelectTrigger 
-                    className="w-full"
-                    onTouchStart={(e) => e.stopPropagation()}
-                    onMouseDown={(e) => e.stopPropagation()}
+                    className="w-full h-12 touch-manipulation border-2" 
+                    style={{ 
+                      backgroundColor: '#f9fafb',
+                      borderColor: '#d1d5db',
+                      minHeight: '48px',
+                      color: '#1f2937'
+                    }}
                   >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent 
-                    className="max-h-60"
-                    onTouchStart={(e) => e.stopPropagation()}
-                    onMouseDown={(e) => e.stopPropagation()}
+                    className="max-h-60 z-[60] border-2"
+                    style={{ 
+                      backgroundColor: '#ffffff',
+                      borderColor: '#10b981'
+                    }}
                   >
                     {availableReciters.map((reciter) => (
                       <SelectItem key={reciter.id} value={reciter.id}>
@@ -638,35 +676,42 @@ export default function QuranReader({
 
               {/* Translation Selection - Улучшенный и адаптивный */}
               <div className="space-y-3">
-                <label className="flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--fixed-text)' }}>
-                  <Globe className="w-4 h-4" />
+                <label className="flex items-center gap-2 text-sm font-semibold" style={{ color: '#374151' }}>
+                  <Globe className="w-4 h-4" style={{ color: '#10b981' }} />
                   {locale === 'en' ? 'Select Translations' : 'Выбрать переводы'}
                 </label>
-                <div className="grid grid-cols-1 gap-2 max-h-48 overflow-y-auto border rounded-lg p-2" style={{ borderColor: 'var(--color-border)' }}>
+                <div className="grid grid-cols-1 gap-3 max-h-48 overflow-y-auto border-2 rounded-lg p-3" 
+                     style={{ 
+                       borderColor: '#d1d5db',
+                       backgroundColor: '#f9fafb'
+                     }}>
                   {availableTranslations
                     .filter(t => t.type === 'translation')
                     .map((translation) => (
                       <label
                         key={translation.id}
-                        className="flex items-center space-x-3 p-2 rounded-lg cursor-pointer transition-colors hover:opacity-80"
-                        style={{ backgroundColor: 'var(--verse-background)' }}
+                        className="flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-colors hover:bg-green-50 touch-manipulation border"
+                        style={{ 
+                          backgroundColor: '#ffffff',
+                          minHeight: '48px',
+                          borderColor: '#e5e7eb'
+                        }}
                       >
                         <input
                           type="checkbox"
                           checked={selectedTranslations.includes(translation.id)}
                           onChange={(e) => handleTranslationChange(translation.id, e.target.checked)}
-                          onTouchStart={(e) => e.stopPropagation()}
-                          onMouseDown={(e) => e.stopPropagation()}
-                          className="rounded w-4 h-4"
+                          className="rounded w-5 h-5 touch-manipulation border-2" 
                           style={{
-                            accentColor: 'var(--color-primary)'
+                            accentColor: '#10b981',
+                            borderColor: '#10b981'
                           }}
                         />
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium truncate" style={{ color: 'var(--fixed-text)' }}>
+                          <div className="text-sm font-semibold truncate" style={{ color: '#1f2937' }}>
                             {translation.name}
                           </div>
-                          <div className="text-xs" style={{ color: 'var(--fixed-text-secondary)' }}>
+                          <div className="text-xs" style={{ color: '#6b7280' }}>
                             {translation.language}
                           </div>
                         </div>
@@ -675,33 +720,42 @@ export default function QuranReader({
                 </div>
               </div>
 
-              {/* Audio Settings - Адаптивная сетка */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-900 dark:text-white">
+              {/* Audio Settings - Улучшено для мобильных */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="space-y-3">
+                  <label className="text-sm font-medium" style={{ color: 'var(--fixed-text)' }}>
                     {locale === 'en' ? 'Font Size' : 'Размер шрифта'}
                   </label>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     <Button
                       variant="outline"
-                      size="sm"
+                      size="lg"
                       onClick={() => setFontSize(fontSize - 2)}
-                      onTouchStart={(e) => e.stopPropagation()}
-                      onMouseDown={(e) => e.stopPropagation()}
-                      className="w-8 h-8 p-0"
+                      className="w-12 h-12 p-0 touch-manipulation"
+                      style={{ 
+                        backgroundColor: 'var(--verse-background)',
+                        borderColor: 'var(--color-border)'
+                      }}
                     >
                       -
                     </Button>
-                    <span className="text-sm font-medium w-16 text-center bg-gray-100 dark:bg-gray-700 rounded px-2 py-1">
+                    <span className="text-sm font-medium w-20 text-center rounded-lg px-3 py-2" 
+                          style={{ 
+                            backgroundColor: 'var(--verse-background)',
+                            color: 'var(--fixed-text)',
+                            border: '1px solid var(--color-border)'
+                          }}>
                       {fontSize}px
                     </span>
                     <Button
                       variant="outline"
-                      size="sm"
+                      size="lg"
                       onClick={() => setFontSize(fontSize + 2)}
-                      onTouchStart={(e) => e.stopPropagation()}
-                      onMouseDown={(e) => e.stopPropagation()}
-                      className="w-8 h-8 p-0"
+                      className="w-12 h-12 p-0 touch-manipulation"
+                      style={{ 
+                        backgroundColor: 'var(--verse-background)',
+                        borderColor: 'var(--color-border)'
+                      }}
                     >
                       +
                     </Button>
@@ -781,6 +835,7 @@ export default function QuranReader({
               </div>
             </div>
           </motion.div>
+          </>
         )}
       </AnimatePresence>
 
@@ -1136,22 +1191,25 @@ export default function QuranReader({
         </div>
       </div>
 
-      {/* Mobile Floating Settings Button */}
-      <div className="fixed bottom-4 right-4 z-50 md:hidden">
+      {/* Mobile Floating Settings Button - Улучшено */}
+      <div className="fixed bottom-6 right-6 z-40 md:hidden">
         <Button
           onClick={() => setShowSettings(!showSettings)}
-          className="w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+          className="w-16 h-16 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 touch-manipulation border-2"
           style={{
             backgroundColor: showSettings ? 'var(--color-primary)' : 'var(--fixed-background)',
             borderColor: 'var(--color-primary)',
-            color: showSettings ? 'white' : 'var(--color-primary)'
+            color: showSettings ? 'white' : 'var(--color-primary)',
+            minHeight: '64px',
+            minWidth: '64px',
+            boxShadow: '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
           }}
         >
           <motion.div
             animate={{ rotate: showSettings ? 180 : 0 }}
-            transition={{ duration: 0.3 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
           >
-            <Settings className="w-6 h-6" />
+            <Settings className="w-7 h-7" />
           </motion.div>
         </Button>
       </div>

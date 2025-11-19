@@ -2676,3 +2676,68 @@ mark {
     box-shadow: 0 0 40px rgba(16, 185, 129, 0.15);
   }
 }
+
+/* Оптимизация для мобильных устройств - исправление проблем с настройками */
+@media (max-width: 768px) {
+  /* Улучшенное взаимодействие с касанием */
+  .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Предотвращение блюра/opacity на мобильных */
+  .mobile-settings-panel {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+    opacity: 1 !important;
+    will-change: auto;
+    transform: translateZ(0);
+  }
+
+  /* Исправление z-index проблем */
+  .mobile-settings-backdrop {
+    z-index: 40 !important;
+  }
+
+  .mobile-settings-content {
+    z-index: 50 !important;
+    position: fixed !important;
+    isolation: isolate;
+  }
+
+  /* Улучшенная прокрутка на мобильных */
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Предотвращение случайного масштабирования */
+  input,
+  select,
+  textarea,
+  button {
+    font-size: 16px !important;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Фиксация viewport для предотвращения прыжков */
+  .mobile-fixed-viewport {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+  }
+}
+
+/* Дополнительная оптимизация для очень маленьких экранов */
+@media (max-width: 480px) {
+  .mobile-settings-content {
+    margin: 0.5rem !important;
+    max-height: calc(100vh - 1rem) !important;
+  }
+}
