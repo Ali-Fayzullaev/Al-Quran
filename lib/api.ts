@@ -1,5 +1,26 @@
 const BASE_URL = "https://api.alquran.cloud/v1";
 
+// Кеш для API запросов
+const apiCache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+
+// Функция для получения из кеша
+function getCachedData(key: string) {
+  const cached = apiCache.get(key);
+  if (cached && Date.now() - cached.timestamp < cached.ttl) {
+    return cached.data;
+  }
+  return null;
+}
+
+// Функция для сохранения в кеш
+function setCachedData(key: string, data: any, ttl: number = 10 * 60 * 1000) {
+  apiCache.set(key, {
+    data,
+    timestamp: Date.now(),
+    ttl
+  });
+}
+
 export interface ApiVerse {
   number: number;
   text: string;
@@ -44,11 +65,16 @@ export interface Edition {
 
 // Получить список всех сур
 export async function getSurahs(): Promise<ApiSurah[]> {
+  const cacheKey = 'surahs';
+  const cached = getCachedData(cacheKey);
+  if (cached) return cached;
+
   try {
     const response = await fetch(`${BASE_URL}/surah`);
     if (!response.ok) throw new Error("Failed to fetch surahs");
 
     const data: ApiResponse<ApiSurah[]> = await response.json();
+    setCachedData(cacheKey, data.data, 24 * 60 * 60 * 1000); // 24 часа
     return data.data;
   } catch (error) {
     console.error("Error fetching surahs:", error);
@@ -61,11 +87,16 @@ export async function getSurah(
   surahNumber: number,
   edition: string = "quran-uthmani"
 ): Promise<ApiSurah> {
+  const cacheKey = `surah-${surahNumber}-${edition}`;
+  const cached = getCachedData(cacheKey);
+  if (cached) return cached;
+
   try {
     const response = await fetch(`${BASE_URL}/surah/${surahNumber}/${edition}`);
     if (!response.ok) throw new Error(`Failed to fetch surah ${surahNumber}`);
 
     const data: ApiResponse<ApiSurah> = await response.json();
+    setCachedData(cacheKey, data.data, 10 * 60 * 1000); // 10 минут
     return data.data;
   } catch (error) {
     console.error(`Error fetching surah ${surahNumber}:`, error);
@@ -78,8 +109,15 @@ export async function getSurahMultipleEditions(
   surahNumber: number,
   editions: string[]
 ): Promise<ApiSurah[]> {
+  const editionString = editions.join(",");
+  const cacheKey = `surah-multiple-${surahNumber}-${editionString}`;
+  const cached = getCachedData(cacheKey);
+  if (cached) {
+    console.log(`getSurahMultipleEditions: Using cached data for surah ${surahNumber}`);
+    return cached;
+  }
+
   try {
-    const editionString = editions.join(",");
     const url = `${BASE_URL}/surah/${surahNumber}/editions/${editionString}`;
     console.log(`getSurahMultipleEditions: Fetching from URL: ${url}`);
     
@@ -95,6 +133,8 @@ export async function getSurahMultipleEditions(
 
     const data: ApiResponse<ApiSurah[]> = await response.json();
     console.log(`getSurahMultipleEditions: Success! Got ${data.data?.length} editions`);
+    
+    setCachedData(cacheKey, data.data, 10 * 60 * 1000); // 10 минут
     return data.data;
   } catch (error) {
     console.error(

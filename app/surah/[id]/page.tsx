@@ -10,6 +10,7 @@ import { useQuranStore } from "@/lib/store";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, Home, Book } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import OptimizedSurahLink from "@/components/OptimizedSurahLink";
 
 interface SurahPageProps {
   params: Promise<{ id: string }>;
@@ -20,7 +21,7 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
   const resolvedParams = use(params);
   const resolvedSearchParams = use(searchParams);
   
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const { customQuranTextColor, customQuranTranslationColor } = useQuranStore();
   const surahId = parseInt(resolvedParams.id);
   const initialVerse = resolvedSearchParams.verse ? parseInt(resolvedSearchParams.verse) : 1;
@@ -41,6 +42,35 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
     surahInfo,
     initialVerse
   });
+
+  // Показываем красивый индикатор загрузки
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--background)' }}>
+        <div className="text-center space-y-6">
+          <div className="relative">
+            <div className="w-20 h-20 border-4 border-gray-200 border-t-blue-500 rounded-full animate-spin mx-auto"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Book className="w-8 h-8 text-blue-500" />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-xl font-semibold" style={{ color: 'var(--foreground)' }}>
+              {locale === 'en' ? 'Loading Surah...' : 'Загрузка суры...'}
+            </h3>
+            <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
+              {locale === 'en' ? `Loading Surah ${surahId}...` : `Загрузка суры ${surahId}...`}
+            </p>
+            <div className="flex items-center justify-center space-x-2 mt-4">
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+              <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (error) {
     return (
@@ -117,7 +147,10 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
 
             {/* Right - Navigation */}
             <div className="flex items-center gap-1">
-              <Link href={`/surah/${Math.max(1, surahId - 1)}`}>
+              <OptimizedSurahLink 
+                surahNumber={Math.max(1, surahId - 1)}
+                prefetchNeighbors={true}
+              >
                 <Button 
                   variant="outline" 
                   size="sm"
@@ -126,9 +159,12 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
-              </Link>
+              </OptimizedSurahLink>
               
-              <Link href={`/surah/${Math.min(114, surahId + 1)}`}>
+              <OptimizedSurahLink 
+                surahNumber={Math.min(114, surahId + 1)}
+                prefetchNeighbors={true}
+              >
                 <Button 
                   variant="outline" 
                   size="sm"
@@ -137,7 +173,7 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
                 >
                   <ChevronRight className="w-4 h-4" />
                 </Button>
-              </Link>
+              </OptimizedSurahLink>
             </div>
           </div>
 

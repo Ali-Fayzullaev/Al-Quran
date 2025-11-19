@@ -9,6 +9,8 @@ import { ColorThemeProvider } from "@/context/ColorThemeContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { CriticalResourcePreloader } from "@/lib/critical-preloader";
+import NavigationLoader from "@/components/NavigationLoader";
+import PerformanceMonitor from "@/components/PerformanceMonitor";
 
 // Ленивая загрузка компонентов для ускорения
 const Sidebar = dynamic(() => import("@/components/Sidebar"), { 
@@ -79,6 +81,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <LocaleProvider>
               <ColorThemeProvider>
                 <div className="min-h-screen bg-background">
+                  {/* Глобальный индикатор загрузки */}
+                  <NavigationLoader />
+                  
+                  {/* Мониторинг производительности */}
+                  <PerformanceMonitor />
+                  
                   <Sidebar />
                   
                   {/* Убираем margin-left так как sidebar теперь overlay */}

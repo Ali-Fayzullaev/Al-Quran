@@ -373,5 +373,11 @@
       "What duas are recommended to recite daily?",
       "Tell me about Prophet Muhammad (peace be upon him)"
     ]
+  },
+  "Loading": {
+    "loadingSurah": "Loading Surah",
+    "loadingQuran": "Loading Quran",
+    "preparingVerses": "Preparing verses for reading",
+    "pleaseWait": "Please wait..."
   }
 }

@@ -22,7 +22,8 @@ import {
   SkipBack,
   SkipForward,
   RotateCcw,
-  Loader2
+  Loader2,
+  BookOpen
 } from "lucide-react";
 import { useQuranStore } from "@/lib/store";
 import { useSurahMultipleEditions } from "@/lib/hooks";
@@ -31,6 +32,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
+import { usePrefetchNeighborSurahs } from "@/lib/usePrefetch";
 
 interface QuranReaderProps {
   surahNumber: number;
@@ -91,6 +93,9 @@ export default function QuranReader({
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const verseRefs = useRef<{ [key: number]: HTMLDivElement | null }>({});
+  
+  // Хук для предзагрузки соседних сур
+  const { prefetchNeighbors } = usePrefetchNeighborSurahs();
 
   // ИСПРАВЛЕНИЕ: Мемоизируем список изданий для предотвращения ненужных перезагрузок
   const requestedEditions = useMemo(() => {
@@ -227,6 +232,16 @@ export default function QuranReader({
       }, 300);
     }
   }, [audioReciter]);
+
+  // Предзагружаем соседние суры для быстрой навигации
+  useEffect(() => {
+    // Предзагружаем с небольшой задержкой, чтобы не мешать основной загрузке
+    const timer = setTimeout(() => {
+      prefetchNeighbors(surahNumber, requestedEditions);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [surahNumber, requestedEditions, prefetchNeighbors]);
 
   // ИСПРАВЛЕННАЯ функция для воспроизведения аудио конкретного аята
   const playVerseAudio = useCallback(async (verseNumber: number) => {
@@ -426,14 +441,31 @@ export default function QuranReader({
     );
   }
 
-  // Показываем загрузку если данные еще не готовы
+  // Показываем красивый индикатор загрузки данных Корана
   if (isLoading || !surahData || !arabicSurah) {
     return (
-      <div className="p-4 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 mx-auto mb-4" style={{ borderColor: 'var(--color-primary)' }}></div>
-        <p style={{ color: 'var(--fixed-text-secondary)' }}>
-          {locale === 'en' ? 'Loading Quran data...' : 'Загрузка данных Корана...'}
-        </p>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--background)' }}>
+        <div className="text-center space-y-6">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-gray-200 border-t-green-500 rounded-full animate-spin mx-auto"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <BookOpen className="w-6 h-6 text-green-500" />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold" style={{ color: 'var(--foreground)' }}>
+              {locale === 'en' ? 'Loading Quran...' : 'Загрузка Корана...'}
+            </h3>
+            <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
+              {locale === 'en' ? 'Preparing verses for reading' : 'Подготовка аятов для чтения'}
+            </p>
+            <div className="flex items-center justify-center space-x-1 mt-3">
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse [animation-delay:0.2s]"></div>
+              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse [animation-delay:0.4s]"></div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }

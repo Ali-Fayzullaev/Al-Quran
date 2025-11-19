@@ -67,5 +67,11 @@
     "search": "Поиск",
     "clear": "Очистить",
     "refresh": "Обновить"
+  },
+  "Loading": {
+    "loadingSurah": "Загрузка суры",
+    "loadingQuran": "Загрузка Корана",
+    "preparingVerses": "Подготовка аятов для чтения",
+    "pleaseWait": "Пожалуйста, подождите..."
   }
 }

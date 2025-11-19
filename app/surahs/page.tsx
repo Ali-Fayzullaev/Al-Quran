@@ -9,6 +9,7 @@ import { useLocale } from "@/context/LocaleContext";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import OptimizedSurahLink from "@/components/OptimizedSurahLink";
 
 type ViewMode = 'grid' | 'list';
 type FilterType = 'all' | 'meccan' | 'medinan';
@@ -228,7 +229,11 @@ export default function SurahsPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 + index * 0.05 }}
             >
-              <Link href={`/surah/${surah.number}`}>
+              <OptimizedSurahLink 
+                surahNumber={surah.number} 
+                prefetchNeighbors={true}
+                className="block"
+              >
                 <div 
                   className={cn(
                     "group relative overflow-hidden rounded-2xl border transition-all duration-300 hover:shadow-xl hover:-translate-y-1",
@@ -337,7 +342,7 @@ export default function SurahsPage() {
                   {/* Hover Effect */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style={{ backgroundColor: 'var(--color-primary)', opacity: 0.05 }}></div>
                 </div>
-              </Link>
+              </OptimizedSurahLink>
             </motion.div>
           ))}
         </motion.div>
