@@ -329,7 +329,7 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
               }}>
                 <div className="flex items-center gap-4">
                   <div className="theme-bg-primary w-12 h-12 rounded-full flex items-center justify-center group-hover:animate-pulse">
-                    <ChevronLeft className="w-6 h-6 text-white" />
+                    <ChevronLeft className="w-6 h-6 text-[var(--color-primary)]" />
                   </div>
                   <div>
                     <p className="text-sm font-medium mb-1" style={{ color: 'var(--fixed-text-secondary)' }}>
@@ -352,7 +352,7 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
               borderColor: 'var(--color-border)'
             }}>
               <div className="theme-bg-primary w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
-                <Book className="w-6 h-6 text-white" />
+                <Book className="w-6 h-6 text-[var(--color-primary)]" />
               </div>
               <p className="font-bold theme-text-primary text-lg">
                 {locale === 'en' ? 'All Surahs' : 'Все суры'}
@@ -380,7 +380,7 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
                     </p>
                   </div>
                   <div className="theme-bg-primary w-12 h-12 rounded-full flex items-center justify-center group-hover:animate-pulse">
-                    <ChevronRight className="w-6 h-6 text-white" />
+                    <ChevronRight className="w-6 h-6 text-[var(--color-primary)]" />
                   </div>
                 </div>
                 <div className="mt-3 h-1 gradient-primary rounded-full w-0 group-hover:w-full transition-all duration-500"></div>
