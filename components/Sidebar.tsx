@@ -28,12 +28,14 @@ import {
   Star,
   Calendar,
 } from "lucide-react";
+import { iconPaths, tempIconSvgs } from "@/lib/iconPaths";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
 import dynamic from "next/dynamic";
 import { useLocale } from "@/context/LocaleContext";
 import { useQuranStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 // Ленивая загрузка ThemeDrawer
 const ThemeDrawer = dynamic(() => import("./ThemeDrawer"), {
@@ -57,6 +59,7 @@ const NavigationItem = memo(
     onClose: () => void;
   }) => {
     const Icon = item.icon;
+    const customIconSrc = item.customIcon;
 
     return (
       <Link
@@ -73,7 +76,26 @@ const NavigationItem = memo(
         }
       >
         <div className="relative">
-          <Icon className="h-5 w-5" />
+          {customIconSrc ? (
+            <div className="h-10 w-10 rounded-full overflow-hidden">
+              <img 
+                src={customIconSrc} 
+                alt={item.name}
+                className="w-full h-full object-cover transition-all duration-200 group-hover:scale-110 group-hover:brightness-110"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                  if (fallback) {
+                    fallback.style.display = 'block';
+                    fallback.classList.remove('hidden');
+                  }
+                }}
+              />
+              <Icon className="h-10 w-10 hidden" />
+            </div>
+          ) : (
+            <Icon className="h-6 w-6" />
+          )}
           {item.badge && (
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center text-[10px]">
               {item.badge > 99 ? "99+" : item.badge}
@@ -120,12 +142,14 @@ const Sidebar = memo(function Sidebar() {
         name: t("home"),
         href: "/",
         icon: Home,
+        customIcon: iconPaths.home, // Используем ваши реальные иконки!
         category: "main",
       },
       {
         name: t("quranReading"),
         href: "/quran",
         icon: Book,
+        customIcon: iconPaths.quran,
         isPremium: true,
         category: "main",
       },
@@ -133,30 +157,35 @@ const Sidebar = memo(function Sidebar() {
         name: t("journey"),
         href: "/journey",
         icon: Map,
+        customIcon: iconPaths.journey,
         category: "learning",
       },
       {
         name: t("liveStreams.nav"),
         href: "/live",
         icon: Radio,
+        customIcon: iconPaths.live,
         category: "main",
       },
       {
         name: t("plannerTitle") || "Планировщик",
         href: "/planner",
         icon: Calendar,
+        customIcon: iconPaths.planner,
         category: "learning",
       },
       {
         name: t("quiz"),
         href: "/quiz",
         icon: Brain,
+        customIcon: iconPaths.quiz,
         category: "learning",
       },
       {
         name: t("aiHelperNav"),
         href: "/ai-helper",
         icon: Bot,
+        customIcon: '/iconsPages/ai-page.png', // Используем правильное имя файла
         isPremium: true,
         category: "tools",
       },
@@ -164,18 +193,21 @@ const Sidebar = memo(function Sidebar() {
         name: t("search"),
         href: "/search",
         icon: Search,
+        customIcon: iconPaths.search,
         category: "tools",
       },
       {
         name: locale === "en" ? "Find Mosques" : locale === "ru" ? "Поиск мечетей" : "Masjid topish",
         href: "/mosque-finder",
         icon: Map,
+        customIcon: '/iconsPages/mosque-finder.png', // Используем правильное имя файла
         category: "tools",
       },
       {
         name: t("bookmarks"),
         href: "/bookmarks",
         icon: Bookmark,
+        customIcon: iconPaths.bookmarks,
         badge: bookmarks.length > 0 ? bookmarks.length : undefined,
         category: "tools",
       },
@@ -183,12 +215,14 @@ const Sidebar = memo(function Sidebar() {
         name: t("feedback"),
         href: "/feedback",
         icon: MessageSquare,
+        customIcon: '/iconsPages/feedback.png', // Используем правильное расширение
         category: "settings",
       },
       {
         name: t("settings"),
         href: "/settings",
         icon: Settings,
+        customIcon: iconPaths.settings,
         category: "settings",
       },
     ];
@@ -358,12 +392,13 @@ const Sidebar = memo(function Sidebar() {
             onClick={closeSidebar}
             className="flex items-center space-x-3 group"
           >
-            <div
-              className="flex items-center justify-center w-10 h-10 rounded-xl shadow-md transition-transform group-hover:scale-105"
-              style={{ backgroundColor: "var(--color-primary)" }}
-            >
-              <Book className="h-6 w-6 text-white" />
-            </div>
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              width={40}
+              height={40}
+              className="object-contain rounded-full"
+            />
             <div>
               <h1
                 className="font-bold text-xl"
