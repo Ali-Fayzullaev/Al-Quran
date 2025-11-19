@@ -1,23 +1,23 @@
 {
-  "id": [
+  "ru": [
     {
-      "name": "Dzikir Pagi",
+      "name": "Утренние поминания",
       "slug": "morning-dhikr"
     },
     {
-      "name": "Dzikir Petang",
+      "name": "Вечерние поминания",
       "slug": "evening-dhikr"
     },
     {
-      "name": "Doa Harian",
+      "name": "Ежедневные дуа",
       "slug": "daily-dua"
     },
     {
-      "name": "Doa Pilihan",
+      "name": "Избранные дуа",
       "slug": "selected-dua"
     },
     {
-      "name": "Dzikir Setelah Shalat",
+      "name": "Поминания после намаза",
       "slug": "dhikr-after-salah"
     }
   ],
@@ -40,6 +40,28 @@
     },
     {
       "name": "Dhikr After Salah",
+      "slug": "dhikr-after-salah"
+    }
+  ],
+  "uz": [
+    {
+      "name": "Эрталабги зикр",
+      "slug": "morning-dhikr"
+    },
+    {
+      "name": "Кечқуронги зикр",
+      "slug": "evening-dhikr"
+    },
+    {
+      "name": "Кунлик дуо",
+      "slug": "daily-dua"
+    },
+    {
+      "name": "Танланган дуо",
+      "slug": "selected-dua"
+    },
+    {
+      "name": "Намоздан кейинги зикр",
       "slug": "dhikr-after-salah"
     }
   ]

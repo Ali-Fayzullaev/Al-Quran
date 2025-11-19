@@ -1,10 +1,14 @@
 {
-  "id": {
-    "label": "Bahasa Indonesia",
-    "code": "id"
+  "ru": {
+    "label": "Русский",
+    "code": "ru"
   },
   "en": {
     "label": "English",
     "code": "en"
+  },
+  "uz": {
+    "label": "Ўзбек",
+    "code": "uz"
   }
 }
