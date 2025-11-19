@@ -4,7 +4,7 @@ import { useState, memo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Book, Search, Bookmark, Settings, Palette, Brain, Map, Radio } from "lucide-react";
-import { ThemeToggle } from "./ThemeToggle";
+import { AnimatedThemeToggle } from "./AnimatedThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
 import dynamic from "next/dynamic";
 import { useLocale } from "@/context/LocaleContext";
@@ -164,7 +164,7 @@ const Header = memo(function Header() {
                   <Palette className="h-5 w-5" />
                 </button>
               </ThemeDrawer>
-              <ThemeToggle />
+              <AnimatedThemeToggle />
               <LanguageToggle />
             </div>
 
@@ -289,7 +289,7 @@ const MobileNav = memo(function MobileNav({ navigation, pathname }: { navigation
               backgroundColor: 'var(--verse-background)'
             }}>
               <div className="flex items-center justify-between">
-                <ThemeToggle />
+                <AnimatedThemeToggle />
                 <LanguageToggle />
               </div>
             </div>

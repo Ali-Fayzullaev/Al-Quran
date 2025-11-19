@@ -29,7 +29,7 @@ import {
   Calendar,
 } from "lucide-react";
 import { iconPaths, tempIconSvgs } from "@/lib/iconPaths";
-import { ThemeToggle } from "./ThemeToggle";
+import { AnimatedThemeToggle } from "./AnimatedThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
 import dynamic from "next/dynamic";
 import { useLocale } from "@/context/LocaleContext";
@@ -446,7 +446,7 @@ const Sidebar = memo(function Sidebar() {
               </button>
             </ThemeDrawer>
             <div className="flex space-x-1">
-              <ThemeToggle />
+              <AnimatedThemeToggle />
               <LanguageToggle />
             </div>
           </div>
