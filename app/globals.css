@@ -2758,7 +2758,8 @@ mark {
 
 /* Плавные анимации для завершенных дуа */
 @keyframes pulse-success {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
