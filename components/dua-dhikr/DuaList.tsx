@@ -3,13 +3,18 @@
 import { useState, useEffect } from "react";
 import { useLocale } from "@/context/LocaleContext";
 import DuaCard from "./DuaCard";
-import { 
+import CompletionNotification from './CompletionNotification';
+import { getCategoryCompletionMessage } from '@/lib/duaCounter';
+import {
   Languages, 
   Search, 
   Filter,
   Grid3X3,
   List,
-  ChevronDown
+  ChevronDown,
+  Settings,
+  ToggleLeft,
+  ToggleRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,6 +58,10 @@ export default function DuaList({ category, duaData }: DuaListProps) {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState<'default' | 'alphabetical'>('default');
   const [filteredDuas, setFilteredDuas] = useState<DuaData[]>([]);
+  const [showGlobalSettings, setShowGlobalSettings] = useState(false);
+  const [completedDuas, setCompletedDuas] = useState<Set<string>>(new Set());
+  const [showCategoryNotification, setShowCategoryNotification] = useState(false);
+  const [categoryNotificationMessage, setCategoryNotificationMessage] = useState('');
 
   // Получаем данные для выбранного языка
   const currentDuas = duaData[selectedLanguage as keyof typeof duaData] || duaData.ru;
@@ -76,6 +85,23 @@ export default function DuaList({ category, duaData }: DuaListProps) {
 
     setFilteredDuas(filtered);
   }, [currentDuas, searchTerm, sortBy]);
+
+  const handleDuaComplete = (duaId: string) => {
+    const newCompletedDuas = new Set(completedDuas);
+    newCompletedDuas.add(duaId);
+    setCompletedDuas(newCompletedDuas);
+    
+    // Check if all duas are completed
+    if (newCompletedDuas.size === currentDuas.length) {
+      const message = getCategoryCompletionMessage(category, currentDuas.length);
+      setCategoryNotificationMessage(message);
+      setShowCategoryNotification(true);
+    }
+  };
+
+  const handleCloseCategoryNotification = () => {
+    setShowCategoryNotification(false);
+  };
 
   return (
     <div className="space-y-6">
@@ -132,6 +158,17 @@ export default function DuaList({ category, duaData }: DuaListProps) {
             </Select>
           </div>
 
+          {/* Global Settings */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowGlobalSettings(!showGlobalSettings)}
+            className="gap-2"
+          >
+            <Settings className="w-4 h-4" />
+            Настройки
+          </Button>
+
           {/* View Mode Toggle */}
           <div className="flex border rounded-lg overflow-hidden" style={{ borderColor: 'var(--color-border)' }}>
             <Button
@@ -154,6 +191,82 @@ export default function DuaList({ category, duaData }: DuaListProps) {
         </div>
       </div>
 
+      {/* Global Settings Panel */}
+      {showGlobalSettings && (
+        <div className="p-4 rounded-xl border mb-6 animate-in slide-in-from-top-2 duration-300" style={{
+          backgroundColor: 'var(--color-background-secondary)',
+          borderColor: 'var(--color-border)'
+        }}>
+          <div className="flex items-center gap-2 mb-4">
+            <Settings className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+            <h3 className="font-medium" style={{ color: 'var(--color-primary)' }}>
+              Глобальные настройки отображения
+            </h3>
+          </div>
+          <div className="text-sm mb-3" style={{ color: 'var(--color-text-secondary)' }}>
+            Настройте какие поля будут показаны по умолчанию во всех карточках дуа.
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="p-3 rounded-lg border" style={{
+              backgroundColor: 'var(--color-background)',
+              borderColor: 'var(--color-border)'
+            }}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium">Транслитерация</span>
+                <ToggleLeft className="w-5 h-5" style={{ color: 'var(--color-text-secondary)' }} />
+              </div>
+              <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+                По умолчанию скрыто
+              </p>
+            </div>
+            
+            <div className="p-3 rounded-lg border" style={{
+              backgroundColor: 'var(--color-background)',
+              borderColor: 'var(--color-border)'
+            }}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium">Заметки</span>
+                <ToggleRight className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+              </div>
+              <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+                По умолчанию видимо
+              </p>
+            </div>
+            
+            <div className="p-3 rounded-lg border" style={{
+              backgroundColor: 'var(--color-background)',
+              borderColor: 'var(--color-border)'
+            }}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium">Польза</span>
+                <ToggleLeft className="w-5 h-5" style={{ color: 'var(--color-text-secondary)' }} />
+              </div>
+              <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+                По умолчанию скрыто
+              </p>
+            </div>
+            
+            <div className="p-3 rounded-lg border" style={{
+              backgroundColor: 'var(--color-background)',
+              borderColor: 'var(--color-border)'
+            }}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium">Источник</span>
+                <ToggleLeft className="w-5 h-5" style={{ color: 'var(--color-text-secondary)' }} />
+              </div>
+              <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+                По умолчанию скрыто
+              </p>
+            </div>
+          </div>
+          <div className="mt-4 p-3 rounded-lg" style={{ backgroundColor: 'var(--color-background)' }}>
+            <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+              💡 <strong>Совет:</strong> Каждая карточка дуа имеет свои настройки. Нажмите на шестерёнку в карточке чтобы настроить отображение.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Stats */}
       <div className="flex items-center justify-between text-sm" style={{ color: 'var(--color-text-secondary)' }}>
         <div>
@@ -169,7 +282,7 @@ export default function DuaList({ category, duaData }: DuaListProps) {
       {filteredDuas.length > 0 ? (
         <div className={`
           ${viewMode === 'grid' 
-            ? 'grid grid-cols-1 lg:grid-cols-2 gap-6' 
+            ? 'grid grid-cols-1 gap-6' 
             : 'space-y-4'
           }
         `}>
@@ -178,7 +291,8 @@ export default function DuaList({ category, duaData }: DuaListProps) {
               key={index}
               dua={dua}
               index={index}
-              selectedLanguage={selectedLanguage}
+              onComplete={handleDuaComplete}
+              isCompleted={completedDuas.has(`${dua.title.replace(/\s+/g, '-').toLowerCase()}-${dua.arabic.slice(0, 10)}`)}
             />
           ))}
         </div>
@@ -216,6 +330,15 @@ export default function DuaList({ category, duaData }: DuaListProps) {
           </Button>
         </div>
       )}
+
+      {/* Category Completion Notification */}
+      <CompletionNotification
+        isVisible={showCategoryNotification}
+        message={categoryNotificationMessage}
+        type="category"
+        onClose={handleCloseCategoryNotification}
+        duration={7000}
+      />
     </div>
   );
 }
