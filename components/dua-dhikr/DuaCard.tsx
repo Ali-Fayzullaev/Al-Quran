@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import DuaProgressBar from './DuaProgressBar';
-import CompletionNotification from './CompletionNotification';
 import {
   Copy,
   Eye,
@@ -22,7 +21,6 @@ import {
 import {
   extractCountFromNotes,
   createDuaId,
-  getCompletionMessage,
   getProgressMessage
 } from '@/lib/duaCounter';
 import { useLocale } from "@/context/LocaleContext";
@@ -57,8 +55,6 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false }:
   const duaId = createDuaId(dua.title, dua.arabic);
   const targetCount = extractCountFromNotes(dua.notes);
   const [currentCount, setCurrentCount] = useState(0);
-  const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState('');
   const [isHidden, setIsHidden] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   
@@ -94,12 +90,8 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false }:
         // Could show a small toast here
       }
       
-      // Show completion notification
-      if (newCount >= targetCount) {
-        const message = getCompletionMessage(dua.title, targetCount);
-        setNotificationMessage(message);
-        setShowNotification(true);
-      }
+      // Just mark as completed, no individual notification
+      // Only category completion will show notification
     }
   };
   
@@ -114,9 +106,7 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false }:
     setIsHidden(false);
   };
   
-  const handleCloseNotification = () => {
-    setShowNotification(false);
-  };
+
   
   // Don't render if hidden
   if (isHidden) {
@@ -125,47 +115,46 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false }:
 
   return (
     <div 
-      className={`group relative overflow-hidden rounded-2xl border transition-all duration-500 hover:shadow-2xl hover:-translate-y-1 ${
-        isDuaCompleted ? 'animate-pulse' : ''
-      }`}
+      className={`group relative overflow-hidden rounded-xl md:rounded-2xl transition-all duration-300 md:duration-500 md:hover:shadow-2xl md:hover:-translate-y-1`}
       style={{
-        backgroundColor: 'var(--color-background-secondary)',
+        backgroundColor: 'var(--color-background)',
+        borderStyle: 'solid',
         borderColor: isDuaCompleted ? 'var(--color-success, #10b981)' : 'var(--color-border)',
         borderWidth: isDuaCompleted ? '2px' : '1px'
       }}
     >
-      {/* Gradient overlay on hover */}
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent to-blue-50/20 dark:to-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+      {/* Gradient overlay on hover - Only on desktop */}
+      <div className="hidden md:block absolute inset-0 bg-gradient-to-br from-transparent to-blue-50/20 dark:to-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
       
-      <div className="relative p-6">
+      <div className="relative p-4 md:p-6">
         
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
+        {/* Header - Mobile Optimized */}
+        <div className="flex items-center justify-between mb-3 md:mb-4">
+          <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
             {/* Index Badge */}
             <div 
-              className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white"
+              className="w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs md:text-sm font-bold text-white flex-shrink-0"
               style={{ backgroundColor: isDuaCompleted ? 'var(--color-success, #10b981)' : 'var(--color-primary)' }}
             >
               {isDuaCompleted ? '✓' : index + 1}
             </div>
             
             {/* Title */}
-            <h3 className="text-lg font-bold" style={{ color: 'var(--color-text)' }}>
+            <h3 className="text-base md:text-lg font-bold truncate" style={{ color: 'var(--color-text)' }}>
               {dua.title}
             </h3>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
             {/* Settings Toggle */}
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setShowSettings(!showSettings)}
-              className="w-8 h-8 p-0 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/20"
+              className="w-7 h-7 md:w-8 md:h-8 p-0 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/20"
             >
-              <Settings className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
+              <Settings className="w-3 h-3 md:w-4 md:h-4" style={{ color: 'var(--color-primary)' }} />
             </Button>
             
             {/* Copy Button */}
@@ -173,32 +162,33 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false }:
               variant="ghost"
               size="sm"
               onClick={copyArabicText}
-              className="w-8 h-8 p-0 rounded-full hover:bg-green-100 dark:hover:bg-green-900/20"
+              className="w-7 h-7 md:w-8 md:h-8 p-0 rounded-full hover:bg-green-100 dark:hover:bg-green-900/20"
             >
               {isCopied ? (
-                <Check className="w-4 h-4 text-green-600" />
+                <Check className="w-3 h-3 md:w-4 md:h-4 text-green-600" />
               ) : (
-                <Copy className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
+                <Copy className="w-3 h-3 md:w-4 md:h-4" style={{ color: 'var(--color-primary)' }} />
               )}
             </Button>
           </div>
         </div>
 
-        {/* Progress Bar */}
+        {/* Progress Bar - Only for multi-count duas */}
         {targetCount > 1 && (
-          <div className="mb-4">
+          <div className="mb-3 md:mb-4">
             <DuaProgressBar 
               current={currentCount} 
               target={targetCount}
-              className="mb-3"
+              className="mb-2 md:mb-3"
             />
           </div>
         )}
         
-        {/* Counter Controls */}
-        <div className="flex items-center justify-center gap-4 mb-4 p-3 rounded-lg" style={{
+        {/* Counter Controls - Mobile Optimized */}
+        <div className="flex items-center justify-center gap-2 md:gap-4 mb-4 p-2 md:p-3 rounded-lg" style={{
           backgroundColor: 'var(--color-background-secondary)',
-          border: '2px solid',
+          borderStyle: 'solid',
+          borderWidth: '1px',
           borderColor: isDuaCompleted ? 'var(--color-success, #10b981)' : 'var(--color-border)'
         }}>
           <Button
@@ -206,17 +196,17 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false }:
             size="sm"
             onClick={handleDecrement}
             disabled={currentCount === 0}
-            className="w-10 h-10 rounded-full p-0"
+            className="w-8 h-8 md:w-10 md:h-10 rounded-full p-0"
           >
-            <Minus className="w-4 h-4" />
+            <Minus className="w-3 h-3 md:w-4 md:h-4" />
           </Button>
           
-          <div className="text-center min-w-[120px]">
-            <div className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>
-              {currentCount} / {targetCount}
+          <div className="text-center min-w-[80px] md:min-w-[120px]">
+            <div className="text-lg md:text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>
+              {currentCount}/{targetCount}
             </div>
             <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-              {isDuaCompleted ? '✅ Завершено!' : 'Нажмите + для подсчета'}
+              {isDuaCompleted ? '✅ Готово!' : 'Нажмите +'}
             </div>
           </div>
           
@@ -225,14 +215,14 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false }:
             size="sm"
             onClick={handleIncrement}
             disabled={isDuaCompleted}
-            className={`w-10 h-10 rounded-full p-0 ${!isDuaCompleted ? 'animate-pulse' : ''}`}
+            className="w-8 h-8 md:w-10 md:h-10 rounded-full p-0"
             style={{
               backgroundColor: !isDuaCompleted ? 'var(--color-primary)' : undefined,
               borderColor: !isDuaCompleted ? 'var(--color-primary)' : undefined,
               color: !isDuaCompleted ? 'white' : undefined
             }}
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3 h-3 md:w-4 md:h-4" />
           </Button>
           
           {currentCount > 0 && (
@@ -240,18 +230,20 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false }:
               variant="ghost"
               size="sm"
               onClick={handleReset}
-              className="w-8 h-8 rounded-full p-0"
-              title="Сбросить счетчик"
+              className="w-6 h-6 md:w-8 md:h-8 rounded-full p-0"
+              title="Сбросить"
             >
-              <RotateCcw className="w-3 h-3" />
+              <RotateCcw className="w-2 h-2 md:w-3 md:h-3" />
             </Button>
           )}
         </div>
 
         {/* Settings Panel */}
         {showSettings && (
-          <div className="mb-6 p-4 rounded-xl border animate-in slide-in-from-top-2 duration-300" style={{
+          <div className="mb-6 p-4 rounded-xl animate-in slide-in-from-top-2 duration-300" style={{
             backgroundColor: 'var(--color-background)',
+            borderStyle: 'solid',
+            borderWidth: '1px',
             borderColor: 'var(--color-border)'
           }}>
             <div className="flex items-center gap-2 mb-4">
@@ -321,9 +313,9 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false }:
           </div>
         )}
 
-        {/* Arabic Text */}
-        <div className="text-center mb-6">
-          <p className="text-2xl md:text-3xl leading-relaxed mb-4 font-arabic" 
+        {/* Arabic Text - Mobile Optimized */}
+        <div className="text-center mb-4 md:mb-6">
+          <p className="text-xl md:text-3xl leading-relaxed mb-3 md:mb-4" 
              style={{ 
                color: 'var(--color-primary)',
                direction: 'rtl',
@@ -336,9 +328,9 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false }:
             variant="outline"
             size="sm"
             onClick={copyArabicText}
-            className="gap-2"
+            className="gap-1 md:gap-2 h-8 md:h-9 text-xs md:text-sm"
           >
-            <Copy className="w-4 h-4" />
+            <Copy className="w-3 h-3 md:w-4 md:h-4" />
             Копировать
           </Button>
         </div>
@@ -439,15 +431,6 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false }:
           </div>
         </div>
       </div>
-      
-      {/* Completion Notification */}
-      <CompletionNotification
-        isVisible={showNotification}
-        message={notificationMessage}
-        type="dua"
-        onClose={handleCloseNotification}
-        duration={3000}
-      />
     </div>
   );
 }

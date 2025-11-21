@@ -49,15 +49,17 @@ const CompletionNotification: React.FC<CompletionNotificationProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-60">
       <div 
         className={`
-          relative max-w-md w-full rounded-2xl shadow-2xl p-6 text-white text-center
-          transform transition-all duration-500 ease-out
+          relative max-w-xs sm:max-w-sm md:max-w-md w-full mx-4
+          rounded-xl md:rounded-2xl shadow-2xl p-4 md:p-6 text-white text-center
+          transform transition-all duration-300 md:duration-500 ease-out
           ${isAnimating ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}
         `}
         style={{
           background: getBackgroundColor(),
+          marginTop: '-10vh' // Поднимаем уведомление выше на мобильных
         }}
       >
         {/* Close Button */}
@@ -89,11 +91,11 @@ const CompletionNotification: React.FC<CompletionNotificationProps> = ({
         </div>
 
         {/* Message */}
-        <div className="mb-6">
-          <p className="text-lg font-bold mb-2">
+        <div className="mb-4 md:mb-6">
+          <p className="text-base md:text-lg font-bold mb-2 leading-tight">
             {message}
           </p>
-          <p className="text-sm opacity-90">
+          <p className="text-sm md:text-base opacity-90">
             {type === 'category' 
               ? 'Машаллах! Вы завершили всю категорию дуа!' 
               : 'Баракаллаху фикум за ваше усердие!'
@@ -104,7 +106,7 @@ const CompletionNotification: React.FC<CompletionNotificationProps> = ({
         {/* Action Button */}
         <Button
           onClick={onClose}
-          className="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white border border-white border-opacity-30"
+          className="w-full h-10 md:h-12 bg-white bg-opacity-20 hover:bg-opacity-30 text-white border border-white border-opacity-30 text-sm md:text-base font-medium"
         >
           Продолжить
         </Button>
