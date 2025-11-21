@@ -527,6 +527,7 @@ export default function DuaList({ category, duaData }: DuaListProps) {
               index={index}
               onComplete={handleDuaComplete}
               isCompleted={completedDuas.has(`${dua.title.replace(/\s+/g, '-').toLowerCase()}-${dua.arabic.slice(0, 10)}`)}
+              category={category}
             />
           ))}
         </div>

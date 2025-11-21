@@ -23,7 +23,13 @@ import {
   createDuaId,
   getProgressMessage
 } from '@/lib/duaCounter';
+import {
+  isDuaSaved,
+  toggleDuaSaved,
+  type SavedDua
+} from '@/lib/duaBookmarks';
 import { useLocale } from "@/context/LocaleContext";
+import { cn } from "@/lib/utils";
 
 interface DuaData {
   title: string;
@@ -41,15 +47,20 @@ interface DuaCardProps {
   index: number;
   onComplete?: (duaId: string) => void;
   isCompleted?: boolean;
+  category?: string;
 }
 
-export default function DuaCard({ dua, index, onComplete, isCompleted = false }: DuaCardProps) {
+export default function DuaCard({ dua, index, onComplete, isCompleted = false, category = 'unknown' }: DuaCardProps) {
   const { locale, t } = useLocale();
   const [showTransliteration, setShowTransliteration] = useState(false);
   const [showNotes, setShowNotes] = useState(true);
   const [showBenefits, setShowBenefits] = useState(false);
   const [showSource, setShowSource] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  
+  // Состояние для сохранения дуа
+  const [isSaved, setIsSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   
   // Counter state
   const duaId = createDuaId(dua.title, dua.arabic);
@@ -72,6 +83,11 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false }:
       return () => clearTimeout(timer);
     }
   }, [isDuaCompleted, isCompleted, duaId, onComplete]);
+
+  // Check if dua is saved on mount
+  useEffect(() => {
+    setIsSaved(isDuaSaved(duaId));
+  }, [duaId]);
 
   const copyArabicText = () => {
     navigator.clipboard.writeText(dua.arabic);
@@ -104,6 +120,35 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false }:
   const handleReset = () => {
     setCurrentCount(0);
     setIsHidden(false);
+  };
+
+  const handleSaveDua = async () => {
+    if (isSaving) return;
+    
+    setIsSaving(true);
+    
+    try {
+      const savedDua: Omit<SavedDua, 'createdAt'> = {
+        id: duaId,
+        title: dua.title,
+        arabic: dua.arabic,
+        translation: dua.translation,
+        latin: dua.latin,
+        notes: dua.notes,
+        benefits: dua.benefits || dua.fawaid,
+        source: dua.source,
+        category: category
+      };
+      
+      const newSavedState = toggleDuaSaved(savedDua);
+      setIsSaved(newSavedState);
+      
+      // Небольшая задержка для анимации
+      setTimeout(() => setIsSaving(false), 300);
+    } catch (error) {
+      console.error('Ошибка при сохранении дуа:', error);
+      setIsSaving(false);
+    }
   };
   
 
@@ -423,10 +468,23 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false }:
             <Button
               variant="ghost"
               size="sm"
-              className="gap-1 hover:bg-red-50 dark:hover:bg-red-900/20"
+              onClick={handleSaveDua}
+              disabled={isSaving}
+              className={cn(
+                "gap-1 transition-all duration-200",
+                isSaved 
+                  ? "text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20" 
+                  : "hover:bg-gray-50 dark:hover:bg-gray-800/20"
+              )}
             >
-              <Heart className="w-3 h-3" />
-              <span className="text-xs">Сохранить</span>
+              <Heart className={cn(
+                "w-3 h-3 transition-all duration-200",
+                isSaved ? "fill-current" : "",
+                isSaving && "animate-pulse"
+              )} />
+              <span className="text-xs">
+                {isSaving ? "..." : isSaved ? "Сохранено" : "Сохранить"}
+              </span>
             </Button>
           </div>
         </div>

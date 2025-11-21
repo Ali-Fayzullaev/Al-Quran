@@ -1,3 +1,4 @@
+// src/app/dua-dhikr/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -112,8 +113,15 @@ export default function DuaDhikrPage() {
               </p>
             </div>
 
-            {/* Right - Extra space */}
-            <div className="w-16"></div>
+            {/* Right - Saved Duas */}
+            <div className="flex items-center">
+              <Link href="/dua-dhikr/saved">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Star className="w-4 h-4" />
+                  Сохраненные
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
