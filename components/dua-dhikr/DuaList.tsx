@@ -4,7 +4,9 @@ import { useState, useEffect } from "react";
 import { useLocale } from "@/context/LocaleContext";
 import DuaCard from "./DuaCard";
 import CompletionNotification from './CompletionNotification';
+import MiniProgressToast from './MiniProgressToast';
 import { getCategoryCompletionMessage } from '@/lib/duaCounter';
+import { Trophy, Target, CheckCircle, Clock } from 'lucide-react';
 import {
   Languages, 
   Search, 
@@ -86,6 +88,12 @@ export default function DuaList({ category, duaData }: DuaListProps) {
     setFilteredDuas(filtered);
   }, [currentDuas, searchTerm, sortBy]);
 
+  // Подсчет общего прогресса (после инициализации currentDuas)
+  const totalDuas = currentDuas.length;
+  const completedCount = completedDuas.size;
+  const remainingCount = totalDuas - completedCount;
+  const categoryProgress = totalDuas > 0 ? Math.round((completedCount / totalDuas) * 100) : 0;
+
   const handleDuaComplete = (duaId: string) => {
     const newCompletedDuas = new Set(completedDuas);
     newCompletedDuas.add(duaId);
@@ -106,6 +114,112 @@ export default function DuaList({ category, duaData }: DuaListProps) {
   return (
     <div className="space-y-6">
       
+      {/* Category Progress Panel */}
+      <div className="p-6 rounded-2xl border-2 mb-6" style={{
+        backgroundColor: 'var(--color-background-secondary)',
+        borderColor: categoryProgress === 100 ? 'var(--color-success, #10b981)' : 'var(--color-primary)',
+        borderStyle: categoryProgress === 100 ? 'solid' : 'dashed'
+      }}>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            {categoryProgress === 100 ? (
+              <div className="w-12 h-12 rounded-full flex items-center justify-center bg-green-100 dark:bg-green-900/30">
+                <Trophy className="w-6 h-6 text-green-600 dark:text-green-400" />
+              </div>
+            ) : (
+              <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{
+                backgroundColor: 'var(--color-primary)',
+                opacity: 0.1
+              }}>
+                <Target className="w-6 h-6" style={{ color: 'var(--color-primary)' }} />
+              </div>
+            )}
+            <div>
+              <h3 className="text-xl font-bold" style={{ color: 'var(--color-text)' }}>
+                {categoryProgress === 100 ? '🎉 Категория завершена!' : `Прогресс: ${categoryProgress}%`}
+              </h3>
+              <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+                {categoryProgress === 100 
+                  ? `Все ${totalDuas} дуа прочитаны! Машаллах!`
+                  : `Осталось ${remainingCount} из ${totalDuas} дуа`
+                }
+              </p>
+            </div>
+          </div>
+          
+          <div className="text-right">
+            <div className="text-3xl font-bold" style={{ 
+              color: categoryProgress === 100 ? 'var(--color-success, #10b981)' : 'var(--color-primary)' 
+            }}>
+              {completedCount}/{totalDuas}
+            </div>
+            <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+              {categoryProgress === 100 ? 'Завершено' : 'Выполнено'}
+            </div>
+          </div>
+        </div>
+        
+        {/* Progress Bar */}
+        <div className="relative w-full h-3 rounded-full overflow-hidden mb-3" style={{
+          backgroundColor: 'var(--color-background)'
+        }}>
+          <div 
+            className={`h-full transition-all duration-1000 ease-out rounded-full ${
+              categoryProgress === 100 ? 'animate-pulse' : ''
+            }`}
+            style={{
+              width: `${categoryProgress}%`,
+              backgroundColor: categoryProgress === 100 
+                ? 'var(--color-success, #10b981)' 
+                : 'var(--color-primary)',
+              transform: 'translateZ(0)'
+            }}
+          />
+          
+          {/* Shimmer effect */}
+          {categoryProgress > 0 && categoryProgress < 100 && (
+            <div 
+              className="absolute top-0 h-full w-12 -skew-x-12 animate-shimmer"
+              style={{
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+                left: `${categoryProgress - 15}%`
+              }}
+            />
+          )}
+        </div>
+        
+        {/* Stats */}
+        <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              <CheckCircle className="w-4 h-4 text-green-600" />
+              <span style={{ color: 'var(--color-text-secondary)' }}>Завершено: {completedCount}</span>
+            </div>
+            {remainingCount > 0 && (
+              <div className="flex items-center gap-1">
+                <Clock className="w-4 h-4 text-orange-500" />
+                <span style={{ color: 'var(--color-text-secondary)' }}>Осталось: {remainingCount}</span>
+              </div>
+            )}
+          </div>
+          
+          <div className="text-lg font-bold" style={{ 
+            color: categoryProgress === 100 ? 'var(--color-success, #10b981)' : 'var(--color-primary)' 
+          }}>
+            {categoryProgress}%
+          </div>
+        </div>
+        
+        {/* Motivational message */}
+        {remainingCount > 0 && remainingCount <= 3 && (
+          <div className="mt-3 p-2 rounded-lg animate-pulse" style={{ backgroundColor: 'var(--color-background)' }}>
+            <p className="text-sm text-center font-medium" style={{ color: 'var(--color-primary)' }}>
+              🔥 Почти готово! Осталось всего {remainingCount} дуа!
+            </p>
+          </div>
+        )}
+      </div>
+
       {/* Controls Bar */}
       <div className="flex flex-col md:flex-row gap-4 p-4 rounded-xl border" style={{
         backgroundColor: 'var(--color-background-secondary)',
@@ -267,14 +381,37 @@ export default function DuaList({ category, duaData }: DuaListProps) {
         </div>
       )}
 
-      {/* Stats */}
+      {/* Enhanced Stats */}
       <div className="flex items-center justify-between text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-        <div>
-          Показано {filteredDuas.length} из {currentDuas.length} дуа
+        <div className="flex items-center gap-4">
+          <span>📖 Показано {filteredDuas.length} из {currentDuas.length} дуа</span>
+          {completedCount > 0 && (
+            <span className="px-2 py-1 rounded-full text-xs font-medium animate-pulse" style={{
+              backgroundColor: 'var(--color-success, #10b981)',
+              color: 'white'
+            }}>
+              ✅ {completedCount} завершено
+            </span>
+          )}
+          {remainingCount > 0 && remainingCount <= 3 && (
+            <span className="px-2 py-1 rounded-full text-xs font-medium animate-bounce" style={{
+              backgroundColor: 'var(--color-warning, #f59e0b)',
+              color: 'white'
+            }}>
+              🔥 Осталось {remainingCount}!
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }}></div>
-          <span>{t(`DuaDhikr.categories.${category}`)}</span>
+          <div className={`w-2 h-2 rounded-full ${
+            categoryProgress === 100 ? 'bg-green-500 animate-pulse' : 
+            remainingCount <= 3 ? 'bg-orange-500 animate-pulse' : 'bg-blue-500'
+          }`}></div>
+          <span>
+            {categoryProgress === 100 ? '🏆 Завершено' : 
+             remainingCount <= 3 ? '🔥 Почти готово' : 
+             completedCount > 0 ? '⚡ В процессе' : '📚 Готов к началу'}
+          </span>
         </div>
       </div>
 
@@ -338,6 +475,13 @@ export default function DuaList({ category, duaData }: DuaListProps) {
         type="category"
         onClose={handleCloseCategoryNotification}
         duration={7000}
+      />
+
+      {/* Mini Progress Toast */}
+      <MiniProgressToast
+        remainingCount={remainingCount}
+        totalCount={totalDuas}
+        isVisible={remainingCount > 0 && remainingCount <= 3 && completedCount > 0}
       />
     </div>
   );
