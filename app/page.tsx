@@ -254,6 +254,7 @@ export default function HomePage() {
           </div>
         </section>
       )}
+      
 
       {/* Features Grid */}
       <section className="py-16 px-6">
