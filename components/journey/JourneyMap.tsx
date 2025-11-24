@@ -1238,7 +1238,7 @@ export default function JourneyMap({ onStartQuiz }: JourneyMapProps) {
   const [selectedJuz, setSelectedJuz] = useState<number | null>(null);
 
   const primaryColor = "var(--color-primary)";
-  const filtersLabel = getLocalizedText("Фильтры", "Filters", "Filtrlar");
+  const filtersLabel = t('journey.filters');
 
   useEffect(() => {
     initializeJourney();
@@ -1311,13 +1311,13 @@ export default function JourneyMap({ onStartQuiz }: JourneyMapProps) {
                 className="text-3xl font-bold"
                 style={{ color: "var(--fixed-text)" }}
               >
-                {t('quranJourneyMap')}
+                {t('journey.quranJourney')}
               </h1>
               <p
                 className="text-sm"
                 style={{ color: "var(--fixed-text-secondary)" }}
               >
-                {`${stats.completedSurahs}/114 ${t('surahs')} ${t('completed')} • ${stats.totalProgress}% ${t('progress')}`}
+                {`${stats.completedSurahs}/114 ${t('surahs')} ${t('journey.completed')} • ${stats.totalProgress}% ${t('journey.progress')}`}
               </p>
             </div>
           </div>
@@ -1338,7 +1338,7 @@ export default function JourneyMap({ onStartQuiz }: JourneyMapProps) {
               className={`gap-2 ${viewMode === "juz" ? "text-white bg-[var(--color-primary)]" : "border-2 border-[var(--color-primary)]"}`}
             >
               <Layers className="w-4 h-4" />
-              {t('byJuz')}
+              {t('journey.byJuz')}
             </Button>
           </div>
         </div>
@@ -1353,7 +1353,7 @@ export default function JourneyMap({ onStartQuiz }: JourneyMapProps) {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t('searchSurahs')}
+            placeholder={t('journey.searchSurahs')}
             className="w-full pl-12 pr-4 py-3 rounded-xl border-2 transition-all focus:outline-none focus:ring-2"
             style={{
               backgroundColor: "var(--fixed-background)",
@@ -1399,7 +1399,7 @@ export default function JourneyMap({ onStartQuiz }: JourneyMapProps) {
                   aria-pressed={filter === id}
                 >
                   <Icon className="w-4 h-4" />
-                  <span className="whitespace-nowrap">{t(labelKey)}</span>
+                  <span className="whitespace-nowrap">{t(`journey.${labelKey}`)}</span>
                 </button>
               ))}
             </div>
@@ -1474,7 +1474,7 @@ export default function JourneyMap({ onStartQuiz }: JourneyMapProps) {
                         style={{ color: "var(--fixed-text-secondary)" }}
                       >
                         {juzProgress}/{surahs.length}{" "}
-                        {locale === "en" ? "completed" : "завершено"}
+                        {t('journey.completed')}
                       </span>
                       <div
                         className="w-24 h-2 rounded-full overflow-hidden"
@@ -1525,12 +1525,10 @@ export default function JourneyMap({ onStartQuiz }: JourneyMapProps) {
             className="text-xl font-semibold mb-2"
             style={{ color: "var(--fixed-text)" }}
           >
-            {locale === "en" ? "No surahs found" : "Суры не найдены"}
+            {t('journey.noSurahsFound')}
           </p>
           <p style={{ color: "var(--fixed-text-secondary)" }}>
-            {locale === "en"
-              ? "Try adjusting your filters or search query"
-              : "Попробуйте изменить фильтры или поисковый запрос"}
+            {t('journey.tryAdjustingFilters')}
           </p>
         </div>
       )}

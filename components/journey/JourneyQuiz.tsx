@@ -323,7 +323,7 @@ export default function JourneyQuiz({ onBack }: JourneyQuizProps) {
                         border: isSmall ? `1px solid ${primaryColor}40` : '1px solid var(--color-border)',
                       }}
                     >
-                      {isSmall ? '🌟' : '📖'} {index + 1}. {locale === 'en' ? `Surah ${surahNumber}` : `${t('surah')} ${surahNumber}`}
+                      {isSmall ? '🌟' : '📖'} {index + 1}. {t('surah')} {surahNumber}
                     </span>
                   );
                 })}

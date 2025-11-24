@@ -97,7 +97,7 @@ export default function PlannerDashboard() {
     const profile = plannerStore.getUserProfile();
     if (!profile) {
       // Создаем базовый профиль
-      plannerStore.createUserProfile(t('defaultUserName'), {
+      plannerStore.createUserProfile(t('planner.defaultUserName'), {
         language: 'ru',
         theme: 'light',
         notifications: true
@@ -155,23 +155,23 @@ export default function PlannerDashboard() {
     
     if (currentStreak === 0) {
       return {
-        title: t('welcomeTitle') + " 🌟",
-        message: t('welcomeMessage')
+        title: t('planner.welcomeTitle') + " 🌟",
+        message: t('planner.welcomeMessage')
       };
     } else if (currentStreak < 7) {
       return {
-        title: t('greatStartTitle') + " 🔥",
-        message: t('greatStartMessage').replace('{{streak}}', currentStreak.toString()).replace('{{days}}', t('days'))
+        title: t('planner.greatStartTitle') + " 🔥",
+        message: t('planner.greatStartMessage').replace('{{streak}}', currentStreak.toString()).replace('{{days}}', t('planner.days'))
       };
     } else if (currentStreak < 30) {
       return {
-        title: t('amazingDisciplineTitle') + " ⭐",
-        message: t('amazingDisciplineMessage').replace('{{streak}}', currentStreak.toString()).replace('{{days}}', t('days'))
+        title: t('planner.amazingDisciplineTitle') + " ⭐",
+        message: t('planner.amazingDisciplineMessage').replace('{{streak}}', currentStreak.toString()).replace('{{days}}', t('planner.days'))
       };
     } else {
       return {
-        title: t('incredibleAchievementTitle') + " 🏆",
-        message: t('incredibleAchievementMessage').replace('{{streak}}', currentStreak.toString()).replace('{{days}}', t('days'))
+        title: t('planner.incredibleAchievementTitle') + " 🏆",
+        message: t('planner.incredibleAchievementMessage').replace('{{streak}}', currentStreak.toString()).replace('{{days}}', t('planner.days'))
       };
     }
   };
@@ -186,9 +186,9 @@ export default function PlannerDashboard() {
           </div>
           <div className="mt-6">
             <h2 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-2">
-              📖 {t('loadingPlannerTitle')}
+              📎 {t('planner.loadingPlannerTitle')}
             </h2>
-            <p className="text-gray-600 dark:text-gray-400">{t('loadingPlannerMessage')}</p>
+            <p className="text-gray-600 dark:text-gray-400">{t('planner.loadingPlannerMessage')}</p>
           </div>
         </div>
       </div>
@@ -217,10 +217,10 @@ export default function PlannerDashboard() {
         {/* Заголовок */}
         <div className="mb-8 text-center">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-[var(--color-primary)] via-[var(--color-primary)] to-purple-600 bg-clip-text text-transparent mb-4">
-            📖 {t('studyPlanner')} 🕌
+            📎 {t('planner.title')} 🕌
           </h1>
           <p className="mt-2 text-base sm:text-lg md:text-xl max-w-2xl mx-auto" style={{ color: 'var(--color-text-secondary)' }}>
-            {t('plannerSubtitle')}
+            {t('planner.subtitle')}
           </p>
         </div>
 
@@ -245,7 +245,7 @@ export default function PlannerDashboard() {
               <div className="rounded-3xl p-12 shadow-2xl" style={{ backgroundColor: 'var(--color-background)' }}>
                 <div className="text-8xl mb-8">�</div>
                 <h2 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-6">
-                  {t('startSpiritualJourney')}
+                  {t('planner.startSpiritualJourney')}
                 </h2>
                 <p className="text-xl mb-12 leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
                   {t('firstPlanDescription')}

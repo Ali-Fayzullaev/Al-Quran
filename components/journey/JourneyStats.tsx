@@ -26,42 +26,42 @@ export default function JourneyStats() {
   const statCards = [
     {
       icon: <Target className="w-6 h-6" />,
-      label: t('completedSurahs'),
+      label: t('journey.completedSurahs'),
       value: `${stats.completedSurahs}/114`,
       color: primaryColor,
       progress: (stats.completedSurahs / 114) * 100,
     },
     {
       icon: <Trophy className="w-6 h-6" />,
-      label: t('perfectSurahs'),
+      label: t('journey.perfectSurahs'),
       value: stats.perfectSurahs.toString(),
       color: '#f59e0b',
       progress: (stats.perfectSurahs / stats.completedSurahs) * 100 || 0,
     },
     {
       icon: <Star className="w-6 h-6" />,
-      label: t('averageScore'),
+      label: t('journey.averageScore'),
       value: `${stats.averageScore}%`,
       color: '#8b5cf6',
       progress: stats.averageScore,
     },
     {
       icon: <Flame className="w-6 h-6" />,
-      label: t('dayStreak'),
+      label: t('journey.dayStreak'),
       value: streakDays.toString(),
       color: '#ef4444',
       progress: Math.min((streakDays / 30) * 100, 100),
     },
     {
       icon: <Clock className="w-6 h-6" />,
-      label: locale === 'en' ? 'Time Spent' : 'Времени затрачено',
+      label: t('journey.timeSpent'),
       value: formatTime(stats.totalTimeSpent),
       color: '#06b6d4',
       progress: Math.min((stats.totalTimeSpent / 36000) * 100, 100), // 10 часов макс
     },
     {
       icon: <TrendingUp className="w-6 h-6" />,
-      label: locale === 'en' ? 'Total Progress' : 'Общий прогресс',
+      label: t('journey.totalProgress'),
       value: `${stats.totalProgress}%`,
       color: '#10b981',
       progress: stats.totalProgress,
@@ -73,9 +73,9 @@ export default function JourneyStats() {
     const minutes = Math.floor((seconds % 3600) / 60);
     
     if (hours > 0) {
-      return `${hours}${locale === 'en' ? 'h' : 'ч'} ${minutes}${locale === 'en' ? 'm' : 'м'}`;
+      return `${hours}${t('journey.hourShort')} ${minutes}${t('journey.minuteShort')}`;
     }
-    return `${minutes}${locale === 'en' ? 'min' : 'мин'}`;
+    return `${minutes}${t('journey.minuteLong')}`;
   }
 
   return (
@@ -152,7 +152,7 @@ export default function JourneyStats() {
       >
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold" style={{ color: 'var(--fixed-text)' }}>
-            {locale === 'en' ? 'Overall Journey Progress' : 'Общий прогресс путешествия'}
+            {t('journey.overallJourneyProgress')}
           </h3>
           <span className="text-2xl font-bold" style={{ color: primaryColor }}>
             {stats.totalProgress}%
@@ -179,8 +179,8 @@ export default function JourneyStats() {
         </div>
 
         <div className="flex items-center justify-between mt-3 text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-          <span>{stats.completedSurahs} {locale === 'en' ? 'completed' : 'завершено'}</span>
-          <span>{114 - stats.completedSurahs} {locale === 'en' ? 'remaining' : 'осталось'}</span>
+          <span>{stats.completedSurahs} {t('journey.completed')}</span>
+          <span>{114 - stats.completedSurahs} {t('journey.remaining')}</span>
         </div>
       </div>
 

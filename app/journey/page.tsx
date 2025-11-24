@@ -22,10 +22,10 @@ export default function JourneyPage() {
   };
 
   const tabItems: Array<{ id: JourneyTabId; label: string; icon: LucideIcon }> = [
-    { id: "map", label: t("journeyMap"), icon: Map },
-    { id: "stats", label: t("statistics"), icon: BarChart3 },
-    { id: "achievements", label: t("achievements"), icon: Trophy },
-    { id: "quiz", label: t("quiz"), icon: Brain },
+    { id: "map", label: t("journey.journeyMap"), icon: Map },
+    { id: "stats", label: t("journey.statistics"), icon: BarChart3 },
+    { id: "achievements", label: t("journey.achievements"), icon: Trophy },
+    { id: "quiz", label: t("journey.quiz"), icon: Brain },
   ];
 
   const handleStartQuiz = (surahNumber: number) => {
@@ -61,13 +61,13 @@ export default function JourneyPage() {
               className="text-4xl md:text-5xl font-bold"
               style={{ color: "var(--fixed-text)" }}
             >
-              {t("quranJourney")}
+              {t("journey.quranJourney")}
             </h1>
             <p
               className="text-lg max-w-2xl mx-auto"
               style={{ color: "var(--fixed-text-secondary)" }}
             >
-              {t("journeyDescription")}
+              {t("journey.journeyDescription")}
             </p>
           </div>
         </div>

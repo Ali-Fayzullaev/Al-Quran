@@ -704,7 +704,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   </div>
                   {todayTask.completedAt && (
                     <div className="text-sm text-green-200 mt-1">
-                      {t('planDetailPage.completedAt')} {new Date(todayTask.completedAt).toLocaleTimeString(locale === 'ru' ? 'ru-RU' : locale === 'en' ? 'en-US' : 'uz-UZ')}
+                      {t('planDetailPage.completedAt')} {new Date(todayTask.completedAt).toLocaleTimeString(locale === 'en' ? 'en-US' : locale === 'ru' ? 'ru-RU' : 'uz-UZ')}
                     </div>
                   )}
                 </div>

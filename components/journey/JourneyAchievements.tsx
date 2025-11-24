@@ -7,7 +7,7 @@ import { Trophy, Lock, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function JourneyAchievements() {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const { achievements, stats } = useJourneyStore();
 
   const primaryColor = 'var(--color-primary)';
@@ -22,7 +22,7 @@ export default function JourneyAchievements() {
         <div className="flex items-center gap-3">
           <Trophy className="w-7 h-7" style={{ color: primaryColor }} />
           <h2 className="text-2xl font-bold" style={{ color: 'var(--fixed-text)' }}>
-            {locale === 'en' ? 'Achievements' : 'Достижения'}
+            {t('journey.achievements')}
           </h2>
         </div>
         <div className="flex items-center gap-4">
@@ -46,7 +46,7 @@ export default function JourneyAchievements() {
         {achievementsList.map((achievement) => {
           const isUnlocked = !!achievement.unlockedAt;
           const unlockedDate = achievement.unlockedAt 
-            ? new Date(achievement.unlockedAt).toLocaleDateString(locale === 'en' ? 'en-US' : 'ru-RU')
+            ? new Date(achievement.unlockedAt).toLocaleDateString(locale === 'en' ? 'en-US' : locale === 'ru' ? 'ru-RU' : 'uz-UZ')
             : null;
 
           return (
@@ -104,17 +104,17 @@ export default function JourneyAchievements() {
               {/* Информация */}
               <div className="space-y-2 text-center">
                 <h3 className="font-bold text-lg" style={{ color: 'var(--fixed-text)' }}>
-                  {locale === 'en' ? achievement.title.en : achievement.title.ru}
+                  {achievement.title[locale as keyof typeof achievement.title] || achievement.title.ru}
                 </h3>
                 <p className="text-sm leading-relaxed" style={{ color: 'var(--fixed-text-secondary)' }}>
-                  {locale === 'en' ? achievement.description.en : achievement.description.ru}
+                  {achievement.description[locale as keyof typeof achievement.description] || achievement.description.ru}
                 </p>
 
                 {/* Дата разблокировки */}
                 {isUnlocked && unlockedDate && (
                   <div className="pt-3 border-t" style={{ borderColor: 'var(--color-border)' }}>
                     <p className="text-xs" style={{ color: 'var(--fixed-text-muted)' }}>
-                      {locale === 'en' ? 'Unlocked on' : 'Разблокировано'}: {unlockedDate}
+                      {t('journey.unlockedOn')}: {unlockedDate}
                     </p>
                   </div>
                 )}
@@ -123,7 +123,7 @@ export default function JourneyAchievements() {
                 {!isUnlocked && achievement.progress !== undefined && achievement.requirement && (
                   <div className="pt-3 space-y-2">
                     <div className="flex items-center justify-between text-xs" style={{ color: 'var(--fixed-text-secondary)' }}>
-                      <span>{locale === 'en' ? 'Progress' : 'Прогресс'}</span>
+                      <span>{t('journey.progress')}</span>
                       <span>{achievement.progress}/{achievement.requirement}</span>
                     </div>
                     <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--color-border)' }}>
@@ -166,16 +166,10 @@ export default function JourneyAchievements() {
         >
           <Trophy className="w-12 h-12 mx-auto mb-3" style={{ color: primaryColor }} />
           <p className="text-lg font-semibold mb-2" style={{ color: 'var(--fixed-text)' }}>
-            {locale === 'en' 
-              ? `${achievementsList.length - unlockedCount} achievements waiting for you!`
-              : `${achievementsList.length - unlockedCount} достижений ждут вас!`
-            }
+            {achievementsList.length - unlockedCount} {t('journey.achievementsWaiting')}
           </p>
           <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {locale === 'en'
-              ? 'Keep learning to unlock more achievements'
-              : 'Продолжайте учиться, чтобы разблокировать больше достижений'
-            }
+            {t('journey.keepLearning')}
           </p>
         </div>
       )}
@@ -191,13 +185,10 @@ export default function JourneyAchievements() {
         >
           <div className="text-6xl mb-4">🎉</div>
           <p className="text-2xl font-bold mb-2" style={{ color: primaryColor }}>
-            {locale === 'en' ? 'Master of the Journey!' : 'Мастер путешествия!'}
+            {t('journey.masterOfJourney')}
           </p>
           <p className="text-lg" style={{ color: 'var(--fixed-text)' }}>
-            {locale === 'en'
-              ? 'You have unlocked all achievements!'
-              : 'Вы разблокировали все достижения!'
-            }
+            {t('journey.allAchievementsUnlocked')}
           </p>
         </div>
       )}

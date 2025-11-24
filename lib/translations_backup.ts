@@ -170,9 +170,7 @@ export const translations = {
       overallJourneyProgress: "Общий прогресс путешествия",
       completed: "завершено",
       remaining: "осталось",
-      progress: "Прогресс",
-      byJuz: "По джузам",
-      filters: "Фильтры"
+      progress: "Прогресс"
     },
     
     // Mosque Finder
@@ -405,20 +403,7 @@ export const translations = {
       currentStreak: "Текущая серия",
       longestStreak: "Лучшая серия",
       totalAyahs: "Всего аятов",
-      totalTime: "Всего времени",
-      defaultUserName: "Пользователь",
-      days: "дней",
-      welcomeTitle: "Добро пожаловать",
-      welcomeMessage: "Начните свое духовное путешествие с изучения Священного Корана",
-      greatStartTitle: "Отличное начало",
-      greatStartMessage: "Вы занимаетесь уже {{streak}} {{days}} подряд! Продолжайте в том же духе",
-      amazingDisciplineTitle: "Потрясающая дисциплина",
-      amazingDisciplineMessage: "Ваша серия {{streak}} {{days}} - это впечатляет! Вы на правильном пути",
-      incredibleAchievementTitle: "Невероятное достижение",
-      incredibleAchievementMessage: "{{streak}} {{days}} непрерывного изучения! Вы истинный пример для подражания",
-      loadingPlannerTitle: "Загрузка планировщика",
-      loadingPlannerMessage: "Подготавливаем ваше духовное путешествие...",
-      startSpiritualJourney: "Начать духовное путешествие"
+      totalTime: "Всего времени"
     }
   },
   
@@ -692,20 +677,7 @@ export const translations = {
       currentStreak: "Current Streak",
       longestStreak: "Longest Streak",
       totalAyahs: "Total Ayahs",
-      totalTime: "Total Time",
-      defaultUserName: "User",
-      days: "days",
-      welcomeTitle: "Welcome",
-      welcomeMessage: "Start your spiritual journey with studying the Holy Quran",
-      greatStartTitle: "Great Start",
-      greatStartMessage: "You've been studying for {{streak}} {{days}} in a row! Keep up the great work",
-      amazingDisciplineTitle: "Amazing Discipline",
-      amazingDisciplineMessage: "Your streak of {{streak}} {{days}} is impressive! You're on the right path",
-      incredibleAchievementTitle: "Incredible Achievement",
-      incredibleAchievementMessage: "{{streak}} {{days}} of continuous study! You're a true inspiration",
-      loadingPlannerTitle: "Loading Planner",
-      loadingPlannerMessage: "Preparing your spiritual journey...",
-      startSpiritualJourney: "Start Spiritual Journey"
+      totalTime: "Total Time"
     },
     
     // Live Streams
@@ -828,9 +800,7 @@ export const translations = {
       overallJourneyProgress: "Overall Journey Progress",
       completed: "completed",
       remaining: "remaining",
-      progress: "Progress",
-      byJuz: "By Juz",
-      filters: "Filters"
+      progress: "Progress"
     }
 
   },
@@ -1110,20 +1080,7 @@ export const translations = {
       currentStreak: "Joriy ketma-ketlik",
       longestStreak: "Eng uzun ketma-ketlik",
       totalAyahs: "Jami oyatlar",
-      totalTime: "Jami vaqt",
-      defaultUserName: "Foydalanuvchi",
-      days: "kunlar",
-      welcomeTitle: "Xush kelibsiz",
-      welcomeMessage: "Muqaddas Qur'onni o'rganish bilan ma'naviy sayohatingizni boshlang",
-      greatStartTitle: "Ajoyib boshlanish",
-      greatStartMessage: "Siz {{streak}} {{days}} ketma-ket o'rganib kelmoqdasiz! Davom eting",
-      amazingDisciplineTitle: "Ajoyib intizom",
-      amazingDisciplineMessage: "Sizning {{streak}} {{days}}lik ketma-ketligingiz ta'sirli! Siz to'g'ri yo'ldasiz",
-      incredibleAchievementTitle: "Aql bovar qilmaydigan yutuq",
-      incredibleAchievementMessage: "{{streak}} {{days}} uzluksiz o'rganish! Siz haqiqiy namuna",
-      loadingPlannerTitle: "Rejachi yuklanmoqda",
-      loadingPlannerMessage: "Sizning ma'naviy sayohatingizni tayyorlamoqdamiz...",
-      startSpiritualJourney: "Ma'naviy sayohatni boshlash"
+      totalTime: "Jami vaqt"
     },
     
     // Live Streams
@@ -1254,9 +1211,7 @@ export const translations = {
       overallJourneyProgress: "Umumiy Safari Taraqqiyoti",
       completed: "tugatilgan",
       remaining: "qolgan",
-      progress: "Taraqqiyot",
-      byJuz: "Juz bo'yicha",
-      filters: "Filtrlar"
+      progress: "Taraqqiyot"
     }
 
   }
