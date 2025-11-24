@@ -34,7 +34,7 @@ function QuizGenerationLoader({ surahNumber }: { surahNumber?: string }) {
 
         {/* Заголовок */}
         <h2 className="text-2xl font-bold mb-4" style={{ color: 'var(--fixed-text)' }}>
-          {t('generatingQuizQuestions')}
+          {t('quiz.generatingQuizQuestions')}
         </h2>
 
         {/* Подзаголовок с информацией о суре */}
@@ -52,7 +52,7 @@ function QuizGenerationLoader({ surahNumber }: { surahNumber?: string }) {
               <BookOpen className="w-4 h-4 text-white" />
             </div>
             <span style={{ color: 'var(--fixed-text-secondary)' }}>
-              {t('analyzingVerses')}
+              {t('quiz.analyzingVerses')}
             </span>
           </div>
           
@@ -62,7 +62,7 @@ function QuizGenerationLoader({ surahNumber }: { surahNumber?: string }) {
               <Target className="w-4 h-4 text-white" />
             </div>
             <span style={{ color: 'var(--fixed-text-secondary)' }}>
-              {t('preparingQuizFormat')}
+              {t('quiz.preparingQuizFormat')}
             </span>
           </div>
         </div>
@@ -78,7 +78,7 @@ function QuizGenerationLoader({ surahNumber }: { surahNumber?: string }) {
         </div>
 
         <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)', opacity: 0.7 }}>
-          {t('usuallyTakesFewSeconds')}
+          {t('quiz.usuallyTakesFewSeconds')}
         </p>
       </div>
 

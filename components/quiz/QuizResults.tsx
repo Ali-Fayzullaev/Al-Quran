@@ -75,42 +75,42 @@ export function QuizResults({ result, onRetry }: QuizResultsProps) {
     if (percentage >= 90) {
       return {
         level: "excellent",
-        title: t("excellentTitle"),
-        message: t("excellentMessage"),
+        title: t("quiz.excellentTitle"),
+        message: t("quiz.excellentMessage"),
         motivation: MOTIVATIONS.excellent,
         recommendations: [
-          t("recExcellent1"),
-          t("recExcellent2"),
-          t("recExcellent3"),
+          t("quiz.recExcellent1"),
+          t("quiz.recExcellent2"),
+          t("quiz.recExcellent3"),
         ],
       };
     } else if (percentage >= 70) {
       return {
         level: "good",
-        title: t("goodTitle"),
-        message: t("goodMessage"),
+        title: t("quiz.goodTitle"),
+        message: t("quiz.goodMessage"),
         motivation: MOTIVATIONS.good,
-        recommendations: [t("recGood1"), t("recGood2"), t("recGood3")],
+        recommendations: [t("quiz.recGood1"), t("quiz.recGood2"), t("quiz.recGood3")],
       };
     } else if (percentage >= 50) {
       return {
         level: "average",
-        title: t("averageTitle"),
-        message: t("averageMessage"),
+        title: t("quiz.averageTitle"),
+        message: t("quiz.averageMessage"),
         motivation: MOTIVATIONS.average,
-        recommendations: [t("recAverage1"), t("recAverage2"), t("recAverage3")],
+        recommendations: [t("quiz.recAverage1"), t("quiz.recAverage2"), t("quiz.recAverage3")],
       };
     } else {
       return {
         level: "needs-improvement",
-        title: t("needsImprovementTitle"),
-        message: t("needsImprovementMessage"),
+        title: t("quiz.needsImprovementTitle"),
+        message: t("quiz.needsImprovementMessage"),
         motivation: MOTIVATIONS["needs-improvement"],
         recommendations: [
-          t("recNeedsImprovement1"),
-          t("recNeedsImprovement2"),
-          t("recNeedsImprovement3"),
-          t("recNeedsImprovement4"),
+          t("quiz.recNeedsImprovement1"),
+          t("quiz.recNeedsImprovement2"),
+          t("quiz.recNeedsImprovement3"),
+          t("quiz.recNeedsImprovement4"),
         ],
       };
     }
@@ -164,44 +164,44 @@ export function QuizResults({ result, onRetry }: QuizResultsProps) {
         <div className="p-6 rounded-lg bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950 dark:to-teal-950 border border-emerald-200 dark:border-emerald-800">
           <div className="flex items-center gap-2 mb-2 text-emerald-600 dark:text-emerald-400">
             <Target className="w-5 h-5" />
-            <span className="text-sm font-medium">{t("score")}</span>
+            <span className="text-sm font-medium">{t("quiz.score")}</span>
           </div>
           <div className="text-3xl font-bold">
             <CountUp end={percentage} duration={2} decimals={1} />%
           </div>
           <p className="text-sm text-muted-foreground mt-1">
-            {score}/{totalPoints} {t("points")}
+            {score}/{totalPoints} {t("quiz.points")}
           </p>
         </div>
 
         <div className="p-6 rounded-lg bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950 dark:to-cyan-950 border border-blue-200 dark:border-blue-800">
           <div className="flex items-center gap-2 mb-2 text-blue-600 dark:text-blue-400">
             <Award className="w-5 h-5" />
-            <span className="text-sm font-medium">{t("correct")}</span>
+            <span className="text-sm font-medium">{t("quiz.correct")}</span>
           </div>
           <div className="text-3xl font-bold">
             <CountUp end={correctAnswers} duration={2} />
           </div>
           <p className="text-sm text-muted-foreground mt-1">
-            {t("outOf")} {answers.length}
+            {t("quiz.outOf")} {answers.length}
           </p>
         </div>
 
         <div className="p-6 rounded-lg bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950 border border-purple-200 dark:border-purple-800">
           <div className="flex items-center gap-2 mb-2 text-purple-600 dark:text-purple-400">
             <Clock className="w-5 h-5" />
-            <span className="text-sm font-medium">{t("time")}</span>
+            <span className="text-sm font-medium">{t("quiz.time")}</span>
           </div>
           <div className="text-3xl font-bold">{formatTime(timeSpent)}</div>
           <p className="text-sm text-muted-foreground mt-1">
-            {t("avg")}: {avgTimePerQuestion}s
+            {t("quiz.avg")}: {avgTimePerQuestion}s
           </p>
         </div>
 
         <div className="p-6 rounded-lg bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950 dark:to-red-950 border border-orange-200 dark:border-orange-800">
           <div className="flex items-center gap-2 mb-2 text-orange-600 dark:text-orange-400">
             <TrendingUp className="w-5 h-5" />
-            <span className="text-sm font-medium">{t("accuracy")}</span>
+            <span className="text-sm font-medium">{t("quiz.accuracy")}</span>
           </div>
           <div className="text-3xl font-bold">
             <CountUp
@@ -223,7 +223,7 @@ export function QuizResults({ result, onRetry }: QuizResultsProps) {
       >
         <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
           <BookOpen className="w-5 h-5" />
-          {t("performanceByType")}
+          {t("quiz.performanceByType")}
         </h3>
         <div className="space-y-3">
           {Object.entries(performance.byType).map(([type, stats]) => {
@@ -271,7 +271,7 @@ export function QuizResults({ result, onRetry }: QuizResultsProps) {
       >
         <div className="flex items-center gap-2 mb-3 text-amber-700 dark:text-amber-300">
           <Heart className="w-5 h-5" />
-          <span className="font-semibold">{t("spiritualReminder")}</span>
+          <span className="font-semibold">{t("quiz.spiritualReminder")}</span>
         </div>
         <p className="text-xl text-right mb-2 leading-relaxed arabic-text text-amber-900 dark:text-amber-100">
           {performanceLevel.motivation.arabic}
@@ -293,7 +293,7 @@ export function QuizResults({ result, onRetry }: QuizResultsProps) {
       >
         <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
           <Star className="w-5 h-5" />
-          {t("recommendations")}
+          {t("quiz.recommendations")}
         </h3>
         <ul className="space-y-2">
           {performanceLevel.recommendations.map((rec, index) => (
@@ -326,7 +326,7 @@ export function QuizResults({ result, onRetry }: QuizResultsProps) {
           className="flex-1 w-full py-6 text-lg border-2 border-[var(--color-primary)] font-semibold rounded-2xl shadow-lg transition-all duration-300 hover:shadow-xl"
         >
           <RefreshCw className="w-5 h-5 mr-2" />
-          {t("tryAgain")}
+          {t("quiz.tryAgain")}
         </Button>
 
         <Button
@@ -334,7 +334,7 @@ export function QuizResults({ result, onRetry }: QuizResultsProps) {
           className="w-full flex-1 py-6 text-white text-lg bg-[var(--color-primary)] "
         >
           <Home className="w-5 h-5 mr-2" />
-          {t("backToHome")}
+          {t("quiz.backToHome")}
         </Button>
         
       </motion.div>

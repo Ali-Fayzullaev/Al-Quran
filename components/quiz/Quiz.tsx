@@ -73,10 +73,10 @@ export function Quiz() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
-              {t('quizInProgress')}
+              {t('quiz.quizInProgress')}
             </h2>
             <p className="text-sm mt-1" style={{ color: 'var(--fixed-text-secondary)' }}>
-              {t('answerAllQuestions')}
+              {t('quiz.answerAllQuestions')}
             </p>
           </div>
           <Button
@@ -148,12 +148,10 @@ export function Quiz() {
                 <Pause className="w-10 h-10 text-white" />
               </motion.div>
               <h3 className="text-3xl font-bold mb-4" style={{ color: 'var(--fixed-text)' }}>
-                {locale === 'en' ? 'Quiz Paused' : 'Викторина на паузе'}
+                {t('quiz.pauseQuiz')}
               </h3>
               <p className="mb-8 text-lg" style={{ color: 'var(--fixed-text-secondary)' }}>
-                {locale === 'en' 
-                  ? 'Take your time. Click resume when you\'re ready to continue.' 
-                  : 'Не торопитесь. Нажмите "Продолжить", когда будете готовы.'}
+                {t('quiz.pauseMessage')}
               </p>
               <Button 
                 onClick={resumeQuiz} 
@@ -164,7 +162,7 @@ export function Quiz() {
                 }}
               >
                 <Play className="w-5 h-5 mr-2" />
-                {locale === 'en' ? 'Resume Quiz' : 'Продолжить викторину'}
+                {t('quiz.resumeQuiz')}
               </Button>
             </motion.div>
           </motion.div>
@@ -196,7 +194,7 @@ export function Quiz() {
             className="shadow-lg"
           >
             <ChevronLeft className="w-5 h-5 mr-2" />
-            {locale === 'en' ? 'Previous' : 'Назад'}
+            {t('quiz.back')}
           </Button>
           
           {/* Progress Dots */}
@@ -243,11 +241,11 @@ export function Quiz() {
                 {isLastQuestion ? (
                   <>
                     <Flag className="w-5 h-5 mr-2" />
-                    {locale === 'en' ? 'Finish Quiz' : 'Завершить'}
+                    {t('quiz.finishQuiz')}
                   </>
                 ) : (
                   <>
-                    {locale === 'en' ? 'Next' : 'Далее'}
+                    {t('quiz.next')}
                     <ChevronRight className="w-5 h-5 ml-2" />
                   </>
                 )}

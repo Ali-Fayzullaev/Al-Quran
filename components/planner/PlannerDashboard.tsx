@@ -289,24 +289,24 @@ export default function PlannerDashboard() {
               <div className="rounded-2xl p-8 shadow-xl" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
                 <h3 className="text-2xl font-bold mb-6 flex items-center" style={{ color: 'var(--color-text)' }}>
                   <span className="mr-3">📊</span>
-                  {t('overallStatistics')}
+                  {t('planner.overallStatistics')}
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                   <div className="text-center bg-gradient-to-br from-green-50 to-emerald-100 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-4">
                     <div className="text-3xl font-bold text-green-600 dark:text-green-400">{stats?.activePlans || 0}</div>
-                    <div className="text-sm font-medium text-green-700 dark:text-green-300">{t('activePlans')}</div>
+                    <div className="text-sm font-medium text-green-700 dark:text-green-300">{t('planner.activePlans')}</div>
                   </div>
                   <div className="text-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-4">
                     <div className="text-3xl font-bold text-blue-600 dark:text-blue-400">{stats?.currentStreak || 0}</div>
-                    <div className="text-sm font-medium text-blue-700 dark:text-blue-300">{t('currentStreak')}</div>
+                    <div className="text-sm font-medium text-blue-700 dark:text-blue-300">{t('planner.currentStreak')}</div>
                   </div>
                   <div className="text-center bg-gradient-to-br from-purple-50 to-violet-100 dark:from-purple-900/20 dark:to-violet-900/20 rounded-xl p-4">
                     <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">{stats?.totalAyahsRead || 0}</div>
-                    <div className="text-sm font-medium text-purple-700 dark:text-purple-300">Изучено аятов</div>
+                    <div className="text-sm font-medium text-purple-700 dark:text-purple-300">{t('planner.studiedAyahs')}</div>
                   </div>
                   <div className="text-center bg-gradient-to-br from-orange-50 to-amber-100 dark:from-orange-900/20 dark:to-amber-900/20 rounded-xl p-4">
                     <div className="text-3xl font-bold text-orange-600 dark:text-orange-400">{Math.round(stats?.totalTimeSpent || 0)}</div>
-                    <div className="text-sm font-medium text-orange-700 dark:text-orange-300">Минут изучения</div>
+                    <div className="text-sm font-medium text-orange-700 dark:text-orange-300">{t('planner.studyMinutes')}</div>
                   </div>
                 </div>
               </div>
@@ -315,14 +315,14 @@ export default function PlannerDashboard() {
               <div className="rounded-2xl p-8 shadow-xl" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
                 <h3 className="text-2xl font-bold mb-6 flex items-center" style={{ color: 'var(--color-text)' }}>
                   <span className="mr-3">📖</span>
-                  Задачи на сегодня
+                  {t('planner.todayTasks')}
                 </h3>
                 {todayTasks.length === 0 ? (
                   <div className="text-center py-12">
                     <div className="text-6xl mb-6">🎉</div>
-                    <h4 className="text-xl font-semibold mb-2" style={{ color: 'var(--color-text)' }}>Отличная работа!</h4>
+                    <h4 className="text-xl font-semibold mb-2" style={{ color: 'var(--color-text)' }}>{t('planner.excellentWork')}</h4>
                     <p className="text-lg" style={{ color: 'var(--color-text-secondary)' }}>
-                      На сегодня все задачи выполнены. Отдохните или создайте новый план!
+                      {t('planner.allTasksCompleted')}
                     </p>
                   </div>
                 ) : (
@@ -338,9 +338,9 @@ export default function PlannerDashboard() {
                                 <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{plan?.title}</div>
                               </div>
                               <div className="text-base mb-4" style={{ color: 'var(--color-primary)' }}>
-                                🕌 Сура {task.surahNumber}, аяты {task.fromAyah}-{task.toAyah}
+                                🕌 {t('surah')} {task.surahNumber}, {t('ayahs')} {task.fromAyah}-{task.toAyah}
                                 <span className="ml-2 px-2 py-1 rounded-full text-sm" style={{ backgroundColor: 'var(--color-muted)', color: 'var(--color-text)' }}>
-                                  {task.ayahCount} {task.ayahCount === 1 ? t('ayahSingular') : t('ayahPlural')}
+                                  {task.ayahCount} {task.ayahCount === 1 ? t('planner.ayahSingular') : t('planner.ayahPlural')}
                                 </span>
                               </div>
                               
@@ -352,7 +352,7 @@ export default function PlannerDashboard() {
                                     className="inline-flex items-center text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium"
                                   >
                                     <span className="mr-1">📖</span>
-                                    Перейти к изучению аятов
+                                    {t('planner.goToStudyAyahs')}
                                     <span className="ml-1">→</span>
                                   </a>
                                 </div>
@@ -371,7 +371,7 @@ export default function PlannerDashboard() {
                                     <span className="mr-2">
                                         <Check className="w-5 h-5" />
                                     </span>
-                                    Выполнено
+                                    {t('planner.completed')}
                                   </button>
                                   <button
                                     onClick={() => handleSkipTask(plan!.id, task.date)}
@@ -380,7 +380,7 @@ export default function PlannerDashboard() {
                                     <span className="mr-2">
                                         <SkipForward className="w-5 h-5" />
                                     </span>
-                                    Пропустить
+                                    {t('planner.skip')}
                                   </button>
                                 </>
                               )}
@@ -389,7 +389,7 @@ export default function PlannerDashboard() {
                                   <span className="mr-2">
                                     <PartyPopper className="w-6 h-6" />
                                   </span>
-                                  Выполнено!
+                                  {t('planner.completed')}!
                                 </div>
                               )}
                               {task.skipped && (
@@ -397,7 +397,7 @@ export default function PlannerDashboard() {
                                   <span className="mr-2">
                                     <Play className="w-6 h-6" />
                                   </span>
-                                  Пропущено
+                                  {t('planner.skipped')}
                                 </div>
                               )}
                             </div>
@@ -414,7 +414,7 @@ export default function PlannerDashboard() {
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-6">
                   <h3 className="text-2xl font-bold flex items-center" style={{ color: 'var(--color-text)' }}>
                     <span className="mr-3">📋</span>
-                    Активные планы
+                    {t('planner.activePlansTitle')}
                   </h3>
                   <button
                     onClick={handleCreatePlan}
@@ -423,7 +423,7 @@ export default function PlannerDashboard() {
                     <span className="mr-2">
                         <Plus className="w-5 h-5" />
                     </span>
-                    Создать план
+                    {t('planner.createPlan')}
                   </button>
                 </div>
                 
@@ -441,7 +441,7 @@ export default function PlannerDashboard() {
                           <div className="text-2xl font-bold text-[var(--color-primary)]">
                             {plan.completionPercentage.toFixed(1)}%
                           </div>
-                          <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>выполнено</div>
+                          <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>{t('planner.completed')}</div>
                         </div>
                       </div>
                       
@@ -463,11 +463,11 @@ export default function PlannerDashboard() {
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex items-center text-sm text-blue-600 dark:text-blue-400">
                           <span className="mr-2">🔥</span>
-                          <span className="font-medium">Серия: {plan.currentStreak} дней</span>
+                          <span className="font-medium">{t('planner.streak')}: {plan.currentStreak} {t('planner.days')}</span>
                         </div>
                         <div className="flex items-center text-sm text-purple-600 dark:text-purple-400">
                           <span className="mr-2">📊</span>
-                          <span className="font-medium">{plan.totalDaysCompleted}/{plan.tasks.length} дней</span>
+                          <span className="font-medium">{plan.totalDaysCompleted}/{plan.tasks.length} {t('planner.days')}</span>
                         </div>
                       </div>
                       </div>
@@ -483,15 +483,15 @@ export default function PlannerDashboard() {
               <div className="rounded-2xl p-8 shadow-xl" style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
                 <h3 className="text-2xl font-bold mb-6 flex items-center" style={{ color: 'var(--color-text)' }}>
                   <span className="mr-3">🏆</span>
-                  Достижения
+                  {t('planner.achievements')}
                 </h3>
                 <div className="space-y-4">
                   {stats?.longestStreak && stats.longestStreak > 0 ? (
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 rounded-xl p-4" style={{ backgroundColor: 'var(--color-muted)' }}>
                       <span className="text-4xl">🔥</span>
                       <div>
-                        <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{t('longestStreak')}</div>
-                        <div className="font-semibold" style={{ color: 'var(--color-primary)' }}>{stats.longestStreak} {t('daysInARow')}!</div>
+                        <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{t('planner.longestStreak')}</div>
+                        <div className="font-semibold" style={{ color: 'var(--color-primary)' }}>{stats.longestStreak} {t('planner.daysInARow')}!</div>
                       </div>
                     </div>
                   ) : null}
@@ -500,8 +500,8 @@ export default function PlannerDashboard() {
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 rounded-xl p-4" style={{ backgroundColor: 'var(--color-muted)' }}>
                       <span className="text-4xl">🎯</span>
                       <div>
-                        <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{t('completedPlans')}</div>
-                        <div className="font-semibold" style={{ color: 'var(--color-primary)' }}>{stats.completedPlans} {t('plansCompleted')}</div>
+                        <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{t('planner.completedPlans')}</div>
+                        <div className="font-semibold" style={{ color: 'var(--color-primary)' }}>{stats.completedPlans} {t('planner.plansCompleted')}</div>
                       </div>
                     </div>
                   ) : null}
@@ -510,8 +510,8 @@ export default function PlannerDashboard() {
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 rounded-xl p-4" style={{ backgroundColor: 'var(--color-muted)' }}>
                       <span className="text-4xl">📚</span>
                       <div>
-                        <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{t('scholarlyReader')}</div>
-                        <div className="font-semibold" style={{ color: 'var(--color-primary)' }}>{stats.totalAyahsRead} {t('studiedAyahs')}</div>
+                        <div className="font-bold text-lg" style={{ color: 'var(--color-text)' }}>{t('planner.scholarlyReader')}</div>
+                        <div className="font-semibold" style={{ color: 'var(--color-primary)' }}>{stats.totalAyahsRead} {t('planner.studiedAyahs')}</div>
                       </div>
                     </div>
                   ) : null}
@@ -520,7 +520,7 @@ export default function PlannerDashboard() {
                     <div className="text-center py-8">
                       <div className="text-6xl mb-4">🌟</div>
                       <p className="font-medium text-lg" style={{ color: 'var(--color-text-secondary)' }}>
-                        {t('startStudyingToEarnAchievements')}
+                        {t('planner.startStudyingToEarnAchievements')}
                       </p>
                     </div>
                   )}
@@ -531,7 +531,7 @@ export default function PlannerDashboard() {
               <div className="rounded-2xl p-8 shadow-xl" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
                 <h3 className="text-2xl font-bold mb-6 flex items-center" style={{ color: 'var(--color-text)' }}>
                   <span className="mr-3">⚡</span>
-                  {t('quickActions')}
+                  {t('planner.quickActions')}
                 </h3>
                 <div className="space-y-4">
                   <button 
@@ -544,7 +544,7 @@ export default function PlannerDashboard() {
                     <span className="mr-3 text-xl">
                         <Plus className="w-6 h-6" />
                     </span>
-                    {t('newPlan')}
+                    {t('planner.newPlan')}
                   </button>
                   
                   <button 
@@ -554,14 +554,14 @@ export default function PlannerDashboard() {
                     <span className="mr-3 text-xl">
                         <Calendar className="w-6 h-6" />
                     </span>
-                    {showCalendar ? t('hideCalendar') : t('viewCalendar')}
+                    {showCalendar ? t('planner.hideCalendar') : t('planner.viewCalendar')}
                   </button>
                   
                   <button 
                     onClick={handleExportData}
                     className="w-full px-6 py-4 bg-gradient-to-r from-purple-500 to-violet-600 text-white rounded-xl font-bold hover:from-purple-600 hover:to-violet-700 transition-all duration-200 shadow-lg hover:shadow-xl flex items-center justify-center"
                   >
-                    {t('exportData')}
+                    {t('planner.exportData')}
                   </button>
                 </div>
               </div>
@@ -572,10 +572,10 @@ export default function PlannerDashboard() {
                 <div className="relative z-10">
                   <h3 className="text-2xl font-bold mb-4 flex items-center" style={{ color: 'var(--color-text)' }}>
                     <span className="mr-3">💡</span>
-                    {t('tipOfTheDay')}
+                    {t('planner.tipOfTheDay')}
                   </h3>
                   <p className="text-lg leading-relaxed font-medium" style={{ color: 'var(--color-text-secondary)' }}>
-                    {t('dailyTipMessage')}
+                    {t('planner.dailyTipMessage')}
                   </p>
                 </div>
                 <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/30 rounded-full"></div>
@@ -592,7 +592,7 @@ export default function PlannerDashboard() {
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
                 <h2 className="text-3xl font-bold flex items-center bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   <span className="mr-4">📅</span>
-                  {t('studyCalendar')}
+                  {t('planner.studyCalendar')}
                 </h2>
                 <button 
                   onClick={() => setShowCalendar(false)}

@@ -144,10 +144,10 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
             <Brain className="w-12 h-12 text-white" />
           </motion.div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r text-[var(--color-primary)] bg-clip-text ">
-            {t('quranQuiz')}
+            {t('quiz.quranQuiz')}
           </h1>
           <p className="text-lg" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {t('testYourKnowledge')}
+            {t('quiz.testYourKnowledge')}
           </p>
         </div>
         
@@ -164,7 +164,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                 <BookOpen className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
               </div>
               <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
-                {t('numberOfQuestions')}
+                {t('quiz.numberOfQuestions')}
               </h3>
             </div>
             <div className="grid grid-cols-4 gap-3">
@@ -205,7 +205,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                 <Sparkles className="w-5 h-5 text-purple-600 dark:text-purple-400" />
               </div>
               <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
-                {t('difficultyLevel')}
+                {t('quiz.difficultyLevel')}
               </h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -228,7 +228,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                   }}>
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-lg font-bold capitalize" style={{ color: 'var(--fixed-text)' }}>
-                        {t(`${level}Level`)}
+                        {t(`quiz.${level}Level`)}
                       </span>
                       <Trophy className={`w-6 h-6 ${
                         level === 'easy' ? 'text-green-500' : 
@@ -242,9 +242,9 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                       ${level === 'medium' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300' : ''}
                       ${level === 'hard' ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300' : ''}
                     `}>
-                      {level === 'easy' && `10 ${t('pointsShort')}`}
-                      {level === 'medium' && `20 ${t('pointsShort')}`}
-                      {level === 'hard' && `30 ${t('pointsShort')}`}
+                      {level === 'easy' && `10 ${t('quiz.pointsShort')}`}
+                      {level === 'medium' && `20 ${t('quiz.pointsShort')}`}
+                      {level === 'hard' && `30 ${t('quiz.pointsShort')}`}
                     </div>
                   </div>
                 </label>
@@ -264,7 +264,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                 <Settings2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
               </div>
               <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
-                {t('questionTypes')}
+                {t('quiz.questionTypes')}
               </h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -293,7 +293,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                       </div>
                       <div className="flex-1">
                         <p className="font-semibold text-lg" style={{ color: 'var(--fixed-text)' }}>
-                          {t(type.labelKey)}
+                          {t(`quiz.${type.labelKey}`)}
                         </p>
                       </div>
                       {selectedTypes.includes(type.value) && (
@@ -334,7 +334,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                 <Clock className="w-5 h-5 text-orange-600 dark:text-orange-400" />
               </div>
               <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
-                {t('timeLimitConfig')}
+                {t('quiz.timeLimitConfig')}
               </h3>
             </div>
             <div className="p-6 rounded-2xl border-2" style={{
@@ -351,7 +351,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                 <div className="flex items-center gap-3">
                   <Zap className="w-5 h-5 text-orange-500" />
                   <span className="text-base font-medium" style={{ color: 'var(--fixed-text)' }}>
-                    {t('enableTimeLimitPerQuestion')}
+                    {t('quiz.enableTimeLimitPerQuestion')}
                   </span>
                 </div>
               </label>
@@ -365,7 +365,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                   <input
                     type="number"
                     {...register('timePerQuestion', { valueAsNumber: true })}
-                    placeholder={t('secondsPerQuestionPlaceholder')}
+                    placeholder={t('quiz.secondsPerQuestionPlaceholder')}
                     min={10}
                     max={120}
                     defaultValue={30}
@@ -400,7 +400,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                 className="w-5 h-5 rounded border-gray-300 text-emerald-500 focus:ring-emerald-500"
               />
               <span className="text-base font-medium" style={{ color: 'var(--fixed-text)' }}>
-                {t('showTranslationInQuizConfig')}
+                {t('quiz.showTranslationInQuizConfig')}
               </span>
             </label>
           </motion.div>
@@ -418,12 +418,12 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
           >
             <h3 className="text-xl font-bold mb-6 flex items-center gap-3" style={{ color: 'var(--fixed-text)' }}>
               <Sparkles className="w-6 h-6" style={{ color: customButtonColor || '#10b981' }} />
-              {t('quizSummary')}
+              {t('quiz.quizSummary')}
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
                 <p className="text-sm mb-1" style={{ color: 'var(--fixed-text-secondary)' }}>
-                  {t('questions')}
+                  {t('quiz.questions')}
                 </p>
                 <p className="text-2xl font-bold" style={{ color: 'var(--fixed-text)' }}>
                   {questionCount}
@@ -431,15 +431,15 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
               </div>
               <div>
                 <p className="text-sm mb-1" style={{ color: 'var(--fixed-text-secondary)' }}>
-                  {t('difficulty')}
+                  {t('quiz.difficulty')}
                 </p>
                 <p className="text-2xl font-bold capitalize" style={{ color: 'var(--fixed-text)' }}>
-                  {t(`${difficulty}Level`)}
+                  {t(`quiz.${difficulty}Level`)}
                 </p>
               </div>
               <div>
                 <p className="text-sm mb-1" style={{ color: 'var(--fixed-text-secondary)' }}>
-                  {t('typesConfig')}
+                  {t('quiz.typesConfig')}
                 </p>
                 <p className="text-2xl font-bold" style={{ color: 'var(--fixed-text)' }}>
                   {selectedTypes.length}
@@ -447,7 +447,7 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
               </div>
               <div>
                 <p className="text-sm mb-1" style={{ color: 'var(--fixed-text-secondary)' }}>
-                  {t('timerConfig')}
+                  {t('quiz.timerConfig')}
                 </p>
                 <p className="text-2xl font-bold" style={{ color: 'var(--fixed-text)' }}>
                   {useTimer ? '✓' : '✗'}
@@ -477,12 +477,12 @@ export function QuizConfiguration({ onStart, isLoading }: QuizConfigurationProps
                     transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
                     className="w-6 h-6 border-3 border-white border-t-transparent rounded-full"
                   />
-                  {t('generatingQuestions')}
+                  {t('quiz.generatingQuizQuestions')}
                 </span>
               ) : (
                 <span className="flex items-center justify-center gap-3">
                   <Play className="w-6 h-6" />
-                  {t('startQuiz')}
+                  {t('quiz.startQuiz')}
                 </span>
               )}
             </Button>

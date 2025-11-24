@@ -68,7 +68,7 @@ export function QuestionCard({
         return (
           <div className="space-y-4">
             <p className="text-sm font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>
-              {t('whichSurahIsThisFromQ')}
+              {t('quiz.whichSurahIsThisFromQ')}
             </p>
             <div className="p-8 rounded-3xl shadow-2xl" style={{
               background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(20, 184, 166, 0.15) 100%)',
@@ -158,7 +158,7 @@ export function QuestionCard({
         <div className="flex justify-between items-center mb-4">
           <div>
             <p className="text-sm font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>
-              {t('questionOfTotal')} {questionNumber} {t('ofTotal')} {totalQuestions}
+              {t('quiz.questionOfTotal')} {questionNumber} {t('quiz.ofTotal')} {totalQuestions}
             </p>
             <div className="flex items-center gap-2 mt-1">
               <div className="h-2 w-32 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
@@ -179,10 +179,8 @@ export function QuestionCard({
               question.difficulty === 'medium' && "bg-gradient-to-r from-yellow-400 to-yellow-600 text-white",
               question.difficulty === 'hard' && "bg-gradient-to-r from-red-400 to-red-600 text-white"
             )}>
-              {locale === 'en' 
-                ? question.difficulty.toUpperCase() 
-                : question.difficulty === 'easy' ? 'ЛЕГКИЙ' : 
-                  question.difficulty === 'medium' ? 'СРЕДНИЙ' : 'СЛОЖНЫЙ'}
+              {question.difficulty === 'easy' ? t('quiz.easyLevel').toUpperCase() :
+                  question.difficulty === 'medium' ? t('quiz.mediumLevel').toUpperCase() : t('quiz.hardLevel').toUpperCase()}
             </span>
             <span className="text-lg font-bold px-4 py-2 rounded-full shadow-lg" style={{
               backgroundColor: customButtonColor || '#10b981',
