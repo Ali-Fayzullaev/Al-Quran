@@ -1,7 +1,7 @@
 // src/app/dua-dhikr/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocale } from "@/context/LocaleContext";
 import Link from "next/link";
 import { 
@@ -71,7 +71,21 @@ const duaCategories = [
 
 export default function DuaDhikrPage() {
   const { locale, t } = useLocale();
-  const selectedLanguage = 'ru'; // Только русский язык
+  const [isMounted, setIsMounted] = useState(false);
+  
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: 'var(--color-background)' }}>
+        <div className="flex items-center justify-center h-screen">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: 'var(--color-primary)' }}></div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: 'var(--color-background)' }}>
@@ -98,7 +112,7 @@ export default function DuaDhikrPage() {
               <Link href="/quran">
                 <Button variant="ghost" size="sm" className="gap-2">
                   <Home className="w-4 h-4" />
-                  Главная
+                  {t("home")}
                 </Button>
               </Link>
             </div>
@@ -106,10 +120,10 @@ export default function DuaDhikrPage() {
             {/* Center - Title */}
             <div className="text-center">
               <h1 className="font-bold text-2xl" style={{ color: 'var(--color-primary)' }}>
-                Дуа и Зикр
+                {t("DuaDhikr.title")}
               </h1>
               <p className="text-sm mt-1" style={{ color: 'var(--color-text-secondary)' }}>
-                Священные молитвы и поминания Аллаха
+                {t("DuaDhikr.subtitle")}
               </p>
             </div>
 
@@ -118,7 +132,7 @@ export default function DuaDhikrPage() {
               <Link href="/dua-dhikr/saved">
                 <Button variant="outline" size="sm" className="gap-2">
                   <Star className="w-4 h-4" />
-                  Сохраненные
+                  {t("saved")}
                 </Button>
               </Link>
             </div>
@@ -218,7 +232,7 @@ export default function DuaDhikrPage() {
                       <div className="flex items-center gap-1">
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }}></div>
                         <span className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
-                          РУС
+                          {locale === 'ru' ? 'РУС' : locale === 'en' ? 'ENG' : 'UZ'}
                         </span>
                       </div>
                     </div>
@@ -246,6 +260,7 @@ export default function DuaDhikrPage() {
             { label: 'Ежедневно', count: '30+', icon: Heart }
           ].map((stat, index) => {
             const IconComponent = stat.icon;
+            const labels = [t("morning"), t("evening"), t("afterPrayer"), t("daily")];
             
             return (
               <div 
@@ -265,7 +280,7 @@ export default function DuaDhikrPage() {
                   {stat.count}
                 </div>
                 <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-                  {stat.label}
+                  {labels[index]}
                 </div>
               </div>
             );
@@ -275,40 +290,33 @@ export default function DuaDhikrPage() {
         {/* Features Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
-            {
-              title: 'Арабский текст',
-              description: 'Оригинальный арабский текст с правильным произношением',
-              icon: '️'
-            },
-            {
-              title: 'Переводы', 
-              description: 'Доступно на русском языке с подробными объяснениями',
-              icon: '🌐'
-            },
-            {
-              title: 'Польза',
-              description: 'Узнайте о духовной пользе каждого дуа',
-              icon: '✨'
-            }
-          ].map((feature, index) => (
-            <div 
-              key={index}
-              className="p-6 rounded-xl border hover:shadow-lg transition-all duration-300"
-              style={{
-                backgroundColor: 'var(--color-background-secondary)',
-                borderColor: 'var(--color-border)',
-                borderWidth: '1px'
-              }}
-            >
-              <div className="text-3xl mb-4 text-center">{feature.icon}</div>
-              <h3 className="text-lg font-semibold mb-2 text-center" style={{ color: 'var(--color-text)' }}>
-                {feature.title}
-              </h3>
-              <p className="text-sm text-center" style={{ color: 'var(--color-text-secondary)' }}>
-                {feature.description}
-              </p>
-            </div>
-          ))}
+            { icon: '📖' },
+            { icon: '🌐' },
+            { icon: '✨' }
+          ].map((feature, index) => {
+            const titles = [t("arabicText"), t("translations"), t("benefits")];
+            const descriptions = [t("arabicTextDesc"), t("translationsDesc"), t("benefitsDesc")];
+            
+            return (
+              <div 
+                key={index}
+                className="p-6 rounded-xl border hover:shadow-lg transition-all duration-300"
+                style={{
+                  backgroundColor: 'var(--color-background-secondary)',
+                  borderColor: 'var(--color-border)',
+                  borderWidth: '1px'
+                }}
+              >
+                <div className="text-3xl mb-4 text-center">{feature.icon}</div>
+                <h3 className="text-lg font-semibold mb-2 text-center" style={{ color: 'var(--color-text)' }}>
+                  {titles[index]}
+                </h3>
+                <p className="text-sm text-center" style={{ color: 'var(--color-text-secondary)' }}>
+                  {descriptions[index]}
+                </p>
+              </div>
+            );
+          })}
         </div>
 
       </div>

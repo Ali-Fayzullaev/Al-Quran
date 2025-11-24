@@ -205,10 +205,10 @@ const Sidebar = memo(function Sidebar() {
         category: "tools",
       },
       {
-        name: locale === "en" ? "Find Mosques" : locale === "ru" ? "Поиск мечетей" : "Masjid topish",
+        name: t("mosqueFinder"),
         href: "/mosque-finder",
         icon: Map,
-        customIcon: '/iconsPages/mosque-finder.png', // Используем правильное имя файла
+        customIcon: '/iconsPages/mosque-finder.png',
         category: "tools",
       },
       {

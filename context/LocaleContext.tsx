@@ -1,49 +1,58 @@
 "use client";
 
-import { createContext, useContext, useMemo, type ReactNode } from "react";
-
-import ruMessages from "../public/messages/ru.json";
-
-type Messages = Record<string, unknown>;
+import { createContext, useContext, useMemo, useState, useEffect, type ReactNode } from "react";
+import { translations, getTranslation, type Locale } from "@/lib/translations";
 
 type LocaleContextType = {
-  locale: string;
-  setLocale: (loc: string) => void;
-  messages: Messages;
+  locale: Locale;
+  setLocale: (loc: Locale) => void;
   t: (key: string) => string;
   isLoading: boolean;
 };
 
 const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
 
-// Helper to walk nested keys inside plain objects
-const getMessageValue = (messages: Messages, key: string): string => {
-  const segments = key.split(".");
-  let current: unknown = messages;
-
-  for (const segment of segments) {
-    if (current && typeof current === "object" && segment in (current as Record<string, unknown>)) {
-      current = (current as Record<string, unknown>)[segment];
-    } else {
-      return key;
-    }
-  }
-
-  return typeof current === "string" ? current : key;
-};
-
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const locale = "ru";
-  const messages = useMemo<Messages>(() => ruMessages as Messages, []);
+  const [locale, setCurrentLocale] = useState<Locale>(() => {
+    // Пытаемся восстановить язык из localStorage
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('locale') as Locale;
+      return saved && ['ru', 'en', 'uz'].includes(saved) ? saved : 'ru';
+    }
+    return 'ru';
+  });
+  
+  const [isLoading, setIsLoading] = useState(false);
 
-  const t = (key: string) => getMessageValue(messages, key);
-
-  const setLocale = () => {
-    console.warn("Locale change is disabled. Russian locale is enforced for the planner module.");
+  // Сохраняем выбранный язык в localStorage
+  const setLocale = (newLocale: Locale) => {
+    console.log('Setting locale to:', newLocale);
+    setCurrentLocale(newLocale);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('locale', newLocale);
+    }
   };
 
+  // Функция для получения переводов
+  const t = (key: string): string => {
+    const result = getTranslation(locale, key);
+    // Дополнительная защита от возврата объектов
+    if (typeof result !== 'string') {
+      console.error(`Translation function returned non-string value for key: ${key}`, result);
+      return key; // Возвращаем сам ключ как fallback
+    }
+    return result;
+  };
+
+  const value = useMemo(() => ({
+    locale,
+    setLocale,
+    t,
+    isLoading
+  }), [locale, isLoading]);
+
   return (
-    <LocaleContext.Provider value={{ locale, setLocale, messages, t, isLoading: false }}>
+    <LocaleContext.Provider value={value}>
       {children}
     </LocaleContext.Provider>
   );

@@ -235,7 +235,7 @@ export default function HomePage() {
                   backgroundColor: 'var(--color-primary)'
                 }}>
                   <Quote className="w-4 h-4" />
-                  {locale === "en" ? `Verse ${randomAyah.numberInSurah}` : locale === "ru" ? `Аят ${randomAyah.numberInSurah}` : `Oyat ${randomAyah.numberInSurah}`}
+                  {t("verse")} {randomAyah.numberInSurah}
                 </div>
               </div>
               
@@ -245,9 +245,7 @@ export default function HomePage() {
               
               <div className="text-center">
                 <p className="font-semibold" style={{ color: 'var(--color-primary)' }}>
-                  {locale === "en" ? `Juz ${randomAyah.juz} • Page ${randomAyah.page}` : 
-                   locale === "ru" ? `Джуз ${randomAyah.juz} • Страница ${randomAyah.page}` : 
-                   `Juz ${randomAyah.juz} • Sahifa ${randomAyah.page}`}
+                  {t("juz")} {randomAyah.juz} • {t("page")} {randomAyah.page}
                 </p>
               </div>
             </motion.div>
@@ -317,13 +315,13 @@ export default function HomePage() {
                     style={{ backgroundColor: 'var(--color-primary)' }}></div>
                   <Search className="w-12 h-12 mb-6 relative z-10" style={{ color: 'var(--color-primary)' }} />
                   <h3 className="text-2xl font-bold mb-4 relative z-10" style={{ color: 'var(--fixed-text)' }}>
-                    {locale === "en" ? "Find Mosques" : locale === "ru" ? "Поиск мечетей" : "Masjid topish"}
+                    {t("mosqueFinder")}
                   </h3>
                   <p className="mb-6 relative z-10" style={{ color: 'var(--fixed-text-secondary)' }}>
-                    {locale === "en" ? "Find nearby mosques with prayer times" : locale === "ru" ? "Найдите мечети рядом с временем молитв" : "Namoz vaqtlari bilan yaqin masjidlarni toping"}
+                    {t("findNearbyMosques")}
                   </p>
                   <div className="flex items-center gap-2 font-semibold relative z-10" style={{ color: 'var(--color-primary)' }}>
-                    <span>{locale === "en" ? "Find Now" : locale === "ru" ? "Найти сейчас" : "Hozir topish"}</span>
+                    <span>{t("findNow")}</span>
                     <Search className="w-4 h-4" />
                   </div>
                 </div>

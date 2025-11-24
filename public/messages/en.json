@@ -1,5 +1,6 @@
 {
   "title": "Quran AI",
+  "plannerTitle": "Study Planner",
   "welcome": "Welcome to Quran AI",
   "language": "Language",
   "theme": "Theme",
@@ -64,6 +65,12 @@
   "quranReading": "Quran Reading",
   "journey": "Journey",
     "aiHelperNav": "AI Helper",
+    "duaDhikriNav": "Dua & Dhikr",
+    "DuaDhikr": {
+        "title": "Dua & Dhikr",
+        "subtitle": "Learn and practice daily duas and remembrance of Allah",
+        "viewAll": "View All"
+    },
     "liveStreams": {
         "nav": "Spiritual Center",
         "title": "Spiritual Center",

@@ -1,3 +1,4 @@
+// src/app/dua-dhikr/[id]/page.tsx
 "use client";
 
 import { use, useState, useEffect } from "react";
@@ -113,7 +114,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
         });
       } catch (err) {
         console.error('Error loading dua data:', err);
-        setError(locale === 'en' ? 'Failed to load dua data' : 'Ошибка загрузки данных дуа');
+        setError(t('errorLoadingDuas'));
       } finally {
         setIsLoading(false);
       }
@@ -135,10 +136,10 @@ export default function CategoryPage({ params }: CategoryPageProps) {
           </div>
           <div className="space-y-2">
             <h3 className="text-xl font-semibold" style={{ color: 'var(--color-text)' }}>
-              Загрузка дуа...
+              {t('loading')}
             </h3>
             <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-              Пожалуйста, подождите, пока мы подготавливаем контент
+              {locale === 'en' ? 'Please wait while we prepare the content' : locale === 'ru' ? 'Пожалуйста, подождите, пока мы подготавливаем контент' : 'Kontent tayyorlaganimizni kuting'}
             </p>
             <div className="flex items-center justify-center space-x-2 mt-4">
               <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
@@ -160,18 +161,18 @@ export default function CategoryPage({ params }: CategoryPageProps) {
             <Book className="w-8 h-8 text-red-500" />
           </div>
           <h3 className="text-xl font-semibold text-red-600 dark:text-red-400">
-            Ошибка загрузки контента
+            {t('errorLoadingDuas')}
           </h3>
           <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
             {error}
           </p>
           <div className="flex gap-2 justify-center">
             <Button variant="outline" onClick={() => window.location.reload()}>
-              Повторить
+              {locale === 'en' ? 'Retry' : locale === 'ru' ? 'Повторить' : 'Qayta urinish'}
             </Button>
             <Link href="/dua-dhikr">
               <Button variant="outline">
-                Вернуться к категориям
+                {locale === 'en' ? 'Back to Categories' : locale === 'ru' ? 'Вернуться к категориям' : 'Kategoriyalarga qaytish'}
               </Button>
             </Link>
           </div>
@@ -233,14 +234,14 @@ export default function CategoryPage({ params }: CategoryPageProps) {
               <Link href="/dua-dhikr">
                 <Button variant="ghost" size="sm" className="gap-2">
                   <ArrowLeft className="w-4 h-4" />
-                  Все категории
+                  {t('back')}
                 </Button>
               </Link>
               
               <Link href="/quran">
                 <Button variant="ghost" size="sm" className="gap-2">
                   <Home className="w-4 h-4" />
-                  Главная
+                  {t('home')}
                 </Button>
               </Link>
             </div>
@@ -271,7 +272,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                 {duaData?.ru?.length || 0}
               </div>
               <div className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-                Всего дуа
+                {t('totalDuas')}
               </div>
             </div>
           </div>
@@ -296,15 +297,15 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                   {duaData?.ru?.length || 0}
                 </div>
                 <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-                  Дуа
+                  {t('duasCount')}
                 </div>
               </div>
               <div className="text-center">
                 <div className="text-lg font-bold" style={{ color: 'var(--color-primary)' }}>
-                  РУС
+                  {locale === 'ru' ? 'РУС' : locale === 'en' ? 'ENG' : 'UZ'}
                 </div>
                 <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-                  Язык
+                  {t('language')}
                 </div>
               </div>
             </div>

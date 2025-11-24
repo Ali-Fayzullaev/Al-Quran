@@ -56,7 +56,6 @@ interface DuaListProps {
 
 export default function DuaList({ category, duaData }: DuaListProps) {
   const { locale, t } = useLocale();
-  const selectedLanguage = 'ru'; // Только русский язык
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState<'default' | 'alphabetical'>('default');
@@ -67,7 +66,7 @@ export default function DuaList({ category, duaData }: DuaListProps) {
   const [categoryNotificationMessage, setCategoryNotificationMessage] = useState('');
 
   // Получаем данные для выбранного языка
-  const currentDuas = duaData[selectedLanguage as keyof typeof duaData] || duaData.ru;
+  const currentDuas = duaData[locale as keyof typeof duaData] || duaData.ru;
 
   useEffect(() => {
     let filtered = currentDuas;
