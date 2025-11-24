@@ -110,10 +110,10 @@ export default function LiveStreamsPage() {
       <section className="mx-auto max-w-7xl px-6 py-16">
         <div className="mb-12 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
-            🕌 Святые места
+            {t('liveStreams.holyPlacesTitle')}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Прямые трансляции из самых священных мест ислама
+            {t('liveStreams.holyPlacesDescription')}
           </p>
         </div>
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 xl:gap-12">

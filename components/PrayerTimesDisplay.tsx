@@ -1,3 +1,5 @@
+// src/components/PrayerTimesDisplay.tsx
+
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
@@ -164,11 +166,11 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
 
     const now = new Date();
     const prayerNames = [
-      { key: 'fajr', name: 'Фаджр', arabic: 'الفجر' },
-      { key: 'dhuhr', name: 'Зухр', arabic: 'الظهر' },
-      { key: 'asr', name: 'Аср', arabic: 'العصر' },
-      { key: 'maghrib', name: 'Магриб', arabic: 'المغرب' },
-      { key: 'isha', name: 'Иша', arabic: 'العشاء' }
+      { key: 'fajr', name: t('prayerTimes.prayers.fajr'), arabic: 'الفجر' },
+      { key: 'dhuhr', name: t('prayerTimes.prayers.dhuhr'), arabic: 'الظهر' },
+      { key: 'asr', name: t('prayerTimes.prayers.asr'), arabic: 'العصر' },
+      { key: 'maghrib', name: t('prayerTimes.prayers.maghrib'), arabic: 'المغرب' },
+      { key: 'isha', name: t('prayerTimes.prayers.isha'), arabic: 'العشاء' }
     ];
 
     // Находим следующий намаз
@@ -211,7 +213,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
     const secondsUntil = Math.floor((diffMs % (1000 * 60)) / 1000);
     
     return {
-      name: 'Фаджр',
+      name: t('prayerTimes.prayers.fajr'),
       arabic: 'الفجر',
       time: prayerSystem.prayerTimes.fajr,
       hours: hoursUntil,
@@ -279,12 +281,12 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
   };
 
   const prayers = [
-    { key: 'fajr', nameRu: 'Фаджр', nameEn: 'Fajr' },
-    { key: 'sunrise', nameRu: 'Восход', nameEn: 'Sunrise' },
-    { key: 'dhuhr', nameRu: 'Зухр', nameEn: 'Dhuhr' },
-    { key: 'asr', nameRu: 'Аср', nameEn: 'Asr' },
-    { key: 'maghrib', nameRu: 'Магриб', nameEn: 'Maghrib' },
-    { key: 'isha', nameRu: 'Иша', nameEn: 'Isha' }
+    { key: 'fajr', name: t('prayerTimes.prayers.fajr') },
+    { key: 'sunrise', name: t('prayerTimes.prayers.sunrise') },
+    { key: 'dhuhr', name: t('prayerTimes.prayers.dhuhr') },
+    { key: 'asr', name: t('prayerTimes.prayers.asr') },
+    { key: 'maghrib', name: t('prayerTimes.prayers.maghrib') },
+    { key: 'isha', name: t('prayerTimes.prayers.isha') }
   ];
 
   return (
@@ -293,7 +295,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
       <div className="text-center space-y-4">
         <div className="inline-flex items-center gap-3 rounded-full px-6 py-3 text-sm font-bold uppercase tracking-[0.4em] backdrop-blur-sm shadow-lg" style={{ backgroundColor: "var(--color-primary)", color: "white" }}>
           <Clock className="h-5 w-5" />
-          <span>Время намазов</span>
+          <span>{t('prayerTimes.title')}</span>
         </div>
         <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ 
           background: `linear-gradient(135deg, var(--color-primary), var(--color-secondary))`,
@@ -301,10 +303,10 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
           WebkitTextFillColor: "transparent",
           backgroundClip: "text"
         }}>
-          🕌 Время намазов
+          🕌 {t('prayerTimes.title')}
         </h2>
         <p className="text-lg max-w-2xl mx-auto" style={{ color: "var(--fixed-text-secondary)" }}>
-          Точное расписание молитв с учетом вашего местоположения
+          {t('prayerTimes.subtitle')}
         </p>
       </div>
 
@@ -337,7 +339,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                 
                 <div className="flex items-center gap-4">
                   <div className="text-sm text-gray-500">
-                    Обновлено: {prayerSystem?.lastUpdated.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
+                    {t('prayerTimes.updated')}: {prayerSystem?.lastUpdated.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
                   </div>
                   <div className="flex gap-2">
                     <Button
@@ -355,7 +357,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                       }}
                     >
                       <Navigation className="h-3 w-3" />
-                      GPS
+                      {t('prayerTimes.gps')}
                     </Button>
                     <Button
                       onClick={() => loadPrayerTimes()}
@@ -372,7 +374,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                       }}
                     >
                       <RefreshCw className="h-3 w-3" />
-                      Обновить
+                      {t('prayerTimes.refresh')}
                     </Button>
 
                   </div>
@@ -386,7 +388,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                     <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                     <input
                       type="text"
-                      placeholder="Поиск города..."
+                      placeholder={t('prayerTimes.searchPlaceholder')}
                       value={searchQuery}
                       onChange={(e) => handleSearch(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && performActualSearch()}
@@ -416,7 +418,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                       <Search className="h-4 w-4" />
                     )}
                     <span className="hidden sm:inline">
-                      {isSearching ? 'Поиск...' : 'Найти'}
+                      {isSearching ? t('prayerTimes.searching') : t('prayerTimes.find')}
                     </span>
                   </Button>
                 </div>
@@ -427,7 +429,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                     {isSearching ? (
                       <div className="px-4 py-6 text-center">
                         <Loader className="h-6 w-6 animate-spin mx-auto mb-2 text-emerald-600" />
-                        <div className="text-sm text-gray-500">Поиск городов...</div>
+                        <div className="text-sm text-gray-500">{t('prayerTimes.searchingCities')}</div>
                       </div>
                     ) : searchResults.length > 0 ? (
                       searchResults.map((city, index) => (
@@ -452,12 +454,12 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                     ) : searchQuery.length >= 2 ? (
                       <div className="px-4 py-6 text-center">
                         <div className="text-gray-500 mb-2">
-                          Города не найдены для "{searchQuery}"
+                          {t('prayerTimes.noResults').replace('{query}', searchQuery)}
                         </div>
                         <div className="text-xs text-gray-400 mb-3">
-                          Попробуйте английские названия: Moscow, London, Istanbul, Dubai, Almaty
+                          {t('prayerTimes.tryEnglish')}
                         </div>
-                        <div className="text-xs text-gray-600 mb-2">Быстрые тесты:</div>
+                        <div className="text-xs text-gray-600 mb-2">{t('prayerTimes.quickTests')}</div>
                         <div className="flex flex-wrap gap-1 justify-center">
                           <button 
                             onClick={() => loadPrayerTimesByCity('Moscow', 'Russia')}
@@ -466,7 +468,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                             onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
                             onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
                           >
-                            Москва
+                            {t('prayerTimes.cities.moscow')}
                           </button>
                           <button 
                             onClick={() => loadPrayerTimesByCity('London', 'UK')}
@@ -475,7 +477,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                             onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
                             onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
                           >
-                            Лондон
+                            {t('prayerTimes.cities.london')}
                           </button>
                             <button 
                               onClick={() => loadPrayerTimesByCity('Dubai', 'UAE')}
@@ -484,7 +486,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                               onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
                               onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
                             >
-                              Дубай
+                              {t('prayerTimes.cities.dubai')}
                             </button>
                             <button 
                               onClick={() => loadPrayerTimesByCity('Almaty', 'Kazakhstan')}
@@ -493,7 +495,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                               onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
                               onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
                             >
-                              Алматы
+                              {t('prayerTimes.cities.almaty')}
                             </button>
                         </div>
                       </div>
@@ -509,7 +511,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                 <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center shadow-2xl mb-4">
                   <Loader className="w-10 h-10 text-white animate-spin" />
                 </div>
-                <p className="text-lg font-semibold text-gray-700">Определение времени намазов...</p>
+                <p className="text-lg font-semibold text-gray-700">{t('prayerTimes.loading')}</p>
               </div>
             )}
 
@@ -524,7 +526,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                   className="rounded-xl px-6 py-3"
                 >
                   <RefreshCw className="w-4 h-4 mr-2" />
-                  Попробовать снова
+                  {t('prayerTimes.tryAgain')}
                 </Button>
               </div>
             )}
@@ -543,7 +545,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                       }}
                     >
                       <div className="text-sm font-semibold uppercase tracking-wider opacity-90 mb-2">
-                        {nextPrayer?.tomorrow ? 'Завтрашний намаз' : 'Следующий намаз'}
+                        {nextPrayer?.tomorrow ? t('prayerTimes.tomorrowPrayer') : t('prayerTimes.nextPrayer')}
                       </div>
                       <div className="text-4xl font-black mb-2">
                         {nextPrayer?.name || prayerSystem.prayerTimes.nextPrayer.name}
@@ -555,7 +557,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                       {nextPrayer && (
                         <div className="space-y-3">
                           <div className="text-sm opacity-80 uppercase tracking-wider">
-                            Осталось времени
+                            {t('prayerTimes.timeRemaining')}
                           </div>
                           <div className="flex justify-center items-center gap-4 text-white">
                             {/* Часы */}
@@ -563,7 +565,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                               <div className="text-3xl font-black bg-white/20 rounded-xl px-4 py-2 min-w-[70px]">
                                 {nextPrayer.hours.toString().padStart(2, '0')}
                               </div>
-                              <div className="text-xs mt-1 opacity-80">часов</div>
+                              <div className="text-xs mt-1 opacity-80">{t('prayerTimes.hours')}</div>
                             </div>
                             
                             <div className="text-2xl font-bold opacity-60">:</div>
@@ -573,7 +575,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                               <div className="text-3xl font-black bg-white/20 rounded-xl px-4 py-2 min-w-[70px]">
                                 {nextPrayer.minutes.toString().padStart(2, '0')}
                               </div>
-                              <div className="text-xs mt-1 opacity-80">минут</div>
+                              <div className="text-xs mt-1 opacity-80">{t('prayerTimes.minutes')}</div>
                             </div>
                             
                             <div className="text-2xl font-bold opacity-60">:</div>
@@ -583,7 +585,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                               <div className="text-3xl font-black bg-white/20 rounded-xl px-4 py-2 min-w-[70px] transition-all duration-300">
                                 {nextPrayer.seconds.toString().padStart(2, '0')}
                               </div>
-                              <div className="text-xs mt-1 opacity-80">секунд</div>
+                              <div className="text-xs mt-1 opacity-80">{t('prayerTimes.seconds')}</div>
                             </div>
                           </div>
                           
@@ -615,8 +617,8 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                               <Icon className="w-6 h-6" />
                             </div>
                             <div>
-                              <div className="font-bold text-lg">{prayer.nameRu}</div>
-                              <div className="text-sm opacity-90">{prayer.nameEn}</div>
+                              <div className="font-bold text-lg">{prayer.name}</div>
+                              <div className="text-sm opacity-90">{t(`prayerTimes.prayersEn.${prayer.key}`)}</div>
                             </div>
                           </div>
                         </div>
@@ -634,7 +636,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                   backgroundColor: "var(--verse-background)"
                 }}>
                   <div className="text-sm font-semibold mb-2" style={{ color: "var(--color-primary)" }}>
-                    Метод расчета
+                    {t('prayerTimes.calculationMethod')}
                   </div>
                   <div className="text-lg font-bold" style={{ color: "var(--fixed-text)" }}>
                     {prayerSystem.calculationMethod.name}
@@ -655,7 +657,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                     disabled={loading}
                   >
                     <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                    Обновить
+                    {t('prayerTimes.refresh')}
                   </Button>
                   
                   <Button
@@ -669,7 +671,7 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
                     onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
                   >
                     <Navigation className="w-4 h-4 mr-2" />
-                    Определить местоположение
+                    {t('prayerTimes.detectLocation')}
                   </Button>
                 </div>
               </div>
@@ -684,24 +686,24 @@ export function PrayerTimesDisplay({ className = "" }: PrayerTimesDisplayProps) 
         }}>
           <div className="flex items-center justify-center gap-2 mb-3">
             <Clock className="w-5 h-5" style={{ color: "var(--color-primary)" }} />
-            <span className="font-semibold" style={{ color: "var(--fixed-text)" }}>Информация о расчетах</span>
+            <span className="font-semibold" style={{ color: "var(--fixed-text)" }}>{t('prayerTimes.infoTitle')}</span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm" style={{ color: "var(--fixed-text-secondary)" }}>
             <div className="flex items-start gap-2">
               <span className="text-amber-500">🌍</span>
-              <span>Время рассчитывается с учетом вашего местоположения</span>
+              <span>{t('prayerTimes.infoLocation')}</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-amber-500">⚙️</span>
-              <span>Используется метод расчета для вашего региона</span>
+              <span>{t('prayerTimes.infoMethod')}</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-amber-500">🕐</span>
-              <span>Время обновляется автоматически</span>
+              <span>{t('prayerTimes.infoUpdates')}</span>
             </div>
             <div className="flex items-start gap-2">
               <span className="text-amber-500">📍</span>
-              <span>Поиск доступен по названию города</span>
+              <span>{t('prayerTimes.infoSearch')}</span>
             </div>
           </div>
         </div>

@@ -41,7 +41,92 @@ export const translations = {
     
     // Live Streams
     liveStreams: {
-      nav: "Духовный центр"
+      nav: "Духовный центр",
+      title: "Прямые трансляции",
+      subtitle: "Посмотрите прямые трансляции из самых священных мест Ислама, включая Масджид аль-Харам в Мекке и Масджид ан-Набави в Медине.",
+      holyPlacesTitle: "🕌 Святые места",
+      holyPlacesDescription: "Прямые трансляции из самых священных мест ислама",
+      status: {
+        live: "ПРЯМОЙ ЭФИР",
+        offline: "ОФЛАЙН",
+        official: "ОФИЦИАЛЬНО",
+        lastUpdated: "ПОСЛЕДНЕЕ ОБНОВЛЕНИЕ",
+        liveSignal: "Прямой сигнал",
+        waiting: "Ожидание сигнала",
+        currentViewers: "Зрителей сейчас"
+      },
+      actions: {
+        refresh: "Обновить",
+        refreshing: "Обновление...",
+        openYoutube: "Открыть в YouTube"
+      },
+      locations: {
+        mecca: {
+          title: "Масджид аль-Харам, Мекка",
+          description: "Прямая трансляция из самой священной мечети Ислама, окружающей Каабу. Наблюдайте за молитвами, Тавафом и другими ритуалами."
+        },
+        medina: {
+          title: "Масджид ан-Набави, Медина",
+          description: "Прямая трансляция из Мечети Пророка в Медине, где похоронен Пророк Мухаммад (мир ему). Посещайте молитвы и ритуалы."
+        }
+      }
+    },
+    
+    // Prayer Times Display
+    prayerTimes: {
+      title: "Время намазов",
+      subtitle: "Точное расписание молитв с учетом вашего местоположения",
+      loading: "Определение времени намазов...",
+      error: "Произошла ошибка при загрузке времени намазов",
+      locationError: "Не удалось определить координаты",
+      updated: "Обновлено",
+      refresh: "Обновить",
+      gps: "GPS",
+      searchPlaceholder: "Поиск города...",
+      searching: "Поиск...",
+      find: "Найти",
+      searchingCities: "Поиск городов...",
+      noResults: 'Города не найдены для "{query}"',
+      tryEnglish: "Попробуйте английские названия: Moscow, London, Istanbul, Dubai, Almaty",
+      quickTests: "Быстрые тесты:",
+      nextPrayer: "Следующий намаз",
+      tomorrowPrayer: "Завтрашний намаз",
+      timeLeft: "Осталось времени",
+      hours: "часов",
+      minutes: "минут",
+      seconds: "секунд",
+      tryAgain: "Попробовать снова",
+      calculationMethod: "Метод расчета",
+      detectLocation: "Определить местоположение",
+      calculationInfo: "Информация о расчетах",
+      info: {
+        location: "Время рассчитывается с учетом вашего местоположения",
+        method: "Используется метод расчета для вашего региона",
+        autoUpdate: "Время обновляется автоматически",
+        search: "Поиск доступен по названию города"
+      },
+      prayers: {
+        fajr: "Фаджр",
+        sunrise: "Восход",
+        dhuhr: "Зухр",
+        asr: "Аср",
+        maghrib: "Магриб",
+        isha: "Иша"
+      },
+      prayersEn: {
+        fajr: "Fajr",
+        sunrise: "Sunrise",
+        dhuhr: "Dhuhr",
+        asr: "Asr",
+        maghrib: "Maghrib",
+        isha: "Isha"
+      },
+      cities: {
+        moscow: "Москва",
+        london: "Лондон",
+        dubai: "Дубай",
+        almaty: "Алматы"
+      }
     },
     
     // Mosque Finder
@@ -91,6 +176,33 @@ export const translations = {
     selectLanguage: "Выберите язык",
     totalDuas: "Всего дуа",
     duasCount: "Дуа",
+    waitingContent: "Пожалуйста, подождите, пока мы подготавливаем контент",
+    retry: "Повторить",
+    backToCategories: "Вернуться к категориям",
+
+    sortBy: "Сортировать по",
+    newest: "Новые",
+    oldest: "Старые",
+    category: "Категория",
+    clearAll: "Очистить все",
+    exportDuas: "Экспорт дуа",
+    importDuas: "Импорт дуа",
+    
+    // Saved duas page
+    savedDuas: "Сохраненные дуа",
+    favoriteDuas: "любимых дуа",
+    backToDuas: "Назад к дуа",
+    export: "Экспорт",
+    import: "Импорт",
+    searchSavedDuas: "Поиск в сохраненных дуа...",
+    allCategories: "Все категории",
+    byDate: "По дате",
+    byTitle: "По названию",
+    byCategory: "По категории",
+    copy: "Копировать",
+    delete: "Удалить",
+    notes: "Заметки",
+    source: "Источник",
 
     // AI Helper
     arabicTitle: "مساعد القرآن الذكي",
@@ -137,7 +249,86 @@ export const translations = {
         "dhikr-after-salah": "Зикры и дуа после завершения намаза",
         "daily-dua": "Повседневные молитвы для всех жизненных ситуаций",
         "selected-dua": "Особые дуа от Корана и Сунны"
-      }
+      },
+      languageIndicator: "РУС",
+      loadingContent: "Пожалуйста, подождите, пока мы подготавливаем контент",
+      retry: "Повторить",
+      backToCategories: "Вернуться к категориям",
+      sortDefault: "По умолчанию",
+      sortAlphabetical: "А-Я",
+      progress: "Прогресс",
+      categoryCompleted: "🎉 Категория завершена!",
+      allDuasCompleted: "Все {total} дуа прочитаны! Машаллах!",
+      remainingDuas: "Осталось {remaining} из {total} дуа",
+      completed: "Завершено",
+      remaining: "Осталось",
+      almostDone: "🔥 Почти готово! Осталось {remaining} дуа!",
+      globalSettings: "Глобальные настройки отображения",
+      globalSettingsDescription: "Настройте какие поля будут показаны по умолчанию во всех карточках дуа.",
+      transliteration: "Транслитерация",
+      notes: "Заметки",
+      benefits: "Польза",
+      source: "Источник",
+      defaultHidden: "По умолчанию скрыто",
+      defaultVisible: "По умолчанию видимо",
+      settings: "Настройки",
+      searchPlaceholder: "Поиск дуа...",
+      tip: "Совет",
+      tipText: "Каждая карточка дуа имеет свои настройки. Нажмите на шестерёнку в карточке чтобы настроить отображение.",
+      languageIndicatorText: "РУС",
+      noResults: "Дуа не найдены",
+      noResultsDescription: "Попробуйте изменить поисковые запросы или фильтры",
+      clearSearch: "Очистить поиск",
+      loadMoreDuas: "Загрузить больше дуа",
+      statusReady: "🏆 Готово",
+      statusAlmostDone: "🔥 Скоро",
+      statusInProgress: "⚡ Идёт",
+      statusStart: "📚 Начать"
+    },
+    
+    // Переводы названий сур
+    surahTranslations: {
+      "Al-Fatiha": "Открывающая",
+      "Al-Baqarah": "Корова",
+      "Al-Kahf": "Пещера",
+      "Ya-Sin": "Я Син",
+      "Ar-Rahman": "Милостивый",
+      "Al-Mulk": "Власть"
+    },
+    
+    // Переводы для списка сур
+    surahsList: {
+      loading: "Загрузка сур...",
+      error: "Ошибка загрузки сур",
+      refreshPage: "Пожалуйста, обновите страницу",
+      title: "Суры Священного Корана",
+      description: "Полное собрание 114 сур Священного Корана с переводом на русский язык",
+      searchPlaceholder: "Поиск сур...",
+      filterAll: "Все",
+      filterMeccan: "Мекканские",
+      filterMedinan: "Мединские",
+      sortNumber: "Номер",
+      sortName: "Название",
+      sortVerses: "Аяты",
+      sortRevelation: "Откровение",
+      verses: "аятов",
+      noResults: "Суры не найдены",
+      noResultsDesc: "Попробуйте с другими ключевыми словами поиска"
+    },
+    
+    // Переводы для Quran Reader
+    quranReader: {
+      audioNotAvailableReciter: "Аудио недоступно для этого чтеца",
+      audioNotAvailable: "Аудио недоступно",
+      errorLoadingSurah: "Ошибка загрузки данных суры",
+      loadingQuran: "Загрузка Корана...",
+      preparingVerses: "Подготовка аятов для чтения",
+      verses: "аятов",
+      prev: "Пред",
+      audio: "Аудио",
+      next: "След",
+      translation: "Перевод",
+      settings: "Настройки"
     },
     
     // Предустановленные вопросы
@@ -209,11 +400,6 @@ export const translations = {
     openMenu: "Open menu",
     closeMenu: "Close menu",
     
-    // Live Streams
-    liveStreams: {
-      nav: "Spiritual Center"
-    },
-    
     // Mosque Finder
     mosqueFinder: "Find Mosques",
     
@@ -261,6 +447,33 @@ export const translations = {
     selectLanguage: "Select Language",
     totalDuas: "Total Duas",
     duasCount: "Duas",
+    waitingContent: "Please wait while we prepare the content",
+    retry: "Retry",
+    backToCategories: "Back to Categories",
+
+    sortBy: "Sort by",
+    newest: "Newest",
+    oldest: "Oldest",
+    category: "Category",
+    clearAll: "Clear All",
+    exportDuas: "Export Duas",
+    importDuas: "Import Duas",
+    
+    // Saved duas page
+    savedDuas: "Saved Duas",
+    favoriteDuas: "favorite duas",
+    backToDuas: "Back to Duas",
+    export: "Export",
+    import: "Import",
+    searchSavedDuas: "Search in saved duas...",
+    allCategories: "All Categories",
+    byDate: "By Date",
+    byTitle: "By Title",
+    byCategory: "By Category",
+    copy: "Copy",
+    delete: "Delete",
+    notes: "Notes",
+    source: "Source",
 
     // AI Helper
     arabicTitle: "مساعد القرآن الذكي",
@@ -307,7 +520,86 @@ export const translations = {
         "dhikr-after-salah": "Dhikrs and duas after completing prayer",
         "daily-dua": "Daily prayers for all life situations",
         "selected-dua": "Special duas from Quran and Sunnah"
-      }
+      },
+      languageIndicator: "ENG",
+      loadingContent: "Please wait while we prepare the content",
+      retry: "Retry",
+      backToCategories: "Back to Categories",
+      sortDefault: "Default",
+      sortAlphabetical: "A-Z",
+      progress: "Progress",
+      categoryCompleted: "🎉 Category Completed!",
+      allDuasCompleted: "All {total} duas completed! Mashallah!",
+      remainingDuas: "{remaining} out of {total} duas remaining",
+      completed: "Completed",
+      remaining: "Remaining",
+      almostDone: "🔥 Almost done! {remaining} duas left!",
+      globalSettings: "Global Display Settings",
+      globalSettingsDescription: "Configure which fields will be shown by default in all dua cards.",
+      transliteration: "Transliteration",
+      notes: "Notes",
+      benefits: "Benefits",
+      source: "Source",
+      defaultHidden: "Hidden by default",
+      defaultVisible: "Visible by default",
+      settings: "Settings",
+      searchPlaceholder: "Search duas...",
+      tip: "Tip",
+      tipText: "Each dua card has its own settings. Click on the gear icon in the card to configure display.",
+      languageIndicatorText: "ENG",
+      noResults: "No duas found",
+      noResultsDescription: "Try different search terms or filters",
+      clearSearch: "Clear search",
+      loadMoreDuas: "Load more duas",
+      statusReady: "🏆 Ready",
+      statusAlmostDone: "🔥 Almost",
+      statusInProgress: "⚡ Going",
+      statusStart: "📚 Start"
+    },
+    
+    // Surah name translations
+    surahTranslations: {
+      "Al-Fatiha": "The Opening",
+      "Al-Baqarah": "The Cow",
+      "Al-Kahf": "The Cave",
+      "Ya-Sin": "Ya-Sin",
+      "Ar-Rahman": "The Beneficent",
+      "Al-Mulk": "The Sovereignty"
+    },
+    
+    // Surahs list translations
+    surahsList: {
+      loading: "Loading Surahs...",
+      error: "Error loading Surahs",
+      refreshPage: "Please try refreshing the page",
+      title: "Surahs of the Holy Quran",
+      description: "Complete collection of 114 chapters of the Holy Quran with English translation",
+      searchPlaceholder: "Search surahs...",
+      filterAll: "All",
+      filterMeccan: "Meccan",
+      filterMedinan: "Medinan",
+      sortNumber: "Number",
+      sortName: "Name",
+      sortVerses: "Verses",
+      sortRevelation: "Revelation",
+      verses: "verses",
+      noResults: "No surahs found",
+      noResultsDesc: "Try different search terms"
+    },
+    
+    // Quran Reader translations
+    quranReader: {
+      audioNotAvailableReciter: "Audio not available for this reciter",
+      audioNotAvailable: "Audio not available",
+      errorLoadingSurah: "Error loading surah data",
+      loadingQuran: "Loading Quran...",
+      preparingVerses: "Preparing verses for reading",
+      verses: "verses",
+      prev: "Prev",
+      audio: "Audio",
+      next: "Next",
+      translation: "Translation",
+      settings: "Settings"
     },
     
     // Предустановленные вопросы
@@ -339,6 +631,110 @@ export const translations = {
       longestStreak: "Longest Streak",
       totalAyahs: "Total Ayahs",
       totalTime: "Total Time"
+    },
+    
+    // Live Streams
+    liveStreams: {
+      nav: "Spiritual Center",
+      title: "Live Streams",
+      subtitle: "Watch live streams from Islam's most sacred places, including Masjid al-Haram in Mecca and Masjid an-Nabawi in Medina.",
+      holyPlacesTitle: "🕌 Holy Places",
+      holyPlacesDescription: "Live streams from the most sacred places of Islam",
+      status: {
+        live: "LIVE",
+        offline: "OFFLINE",
+        official: "OFFICIAL",
+        lastUpdated: "LAST UPDATED",
+        liveSignal: "Live Signal",
+        waiting: "Waiting for Signal",
+        currentViewers: "Current Viewers"
+      },
+      actions: {
+        refresh: "Refresh",
+        refreshing: "Refreshing...",
+        openYoutube: "Open in YouTube"
+      },
+      locations: {
+        mecca: {
+          title: "Masjid al-Haram, Mecca",
+          description: "Live stream from Islam's holiest mosque surrounding the Kaaba. Watch prayers, Tawaf and other rituals."
+        },
+        medina: {
+          title: "Masjid an-Nabawi, Medina",
+          description: "Live stream from the Prophet's Mosque in Medina, where Prophet Muhammad (peace be upon him) is buried. Witness prayers and rituals."
+        }
+      }
+    },
+    
+    // Prayer Times Display
+    prayerTimes: {
+      title: "Prayer Times",
+      subtitle: "Accurate prayer schedule based on your location",
+      loading: "Determining prayer times...",
+      error: "Error occurred while loading prayer times",
+      locationError: "Could not determine coordinates",
+      updated: "Updated",
+      refresh: "Refresh",
+      gps: "GPS",
+      searchPlaceholder: "Search city...",
+      searching: "Searching...",
+      find: "Find",
+      searchingCities: "Searching cities...",
+      noResults: 'No cities found for "{query}"',
+      tryEnglish: "Try English names: Moscow, London, Istanbul, Dubai, Almaty",
+      quickTests: "Quick tests:",
+      nextPrayer: "Next Prayer",
+      tomorrowPrayer: "Tomorrow's Prayer",
+      timeLeft: "Time Remaining",
+      hours: "hours",
+      minutes: "minutes",
+      seconds: "seconds",
+      tryAgain: "Try Again",
+      calculationMethod: "Calculation Method",
+      detectLocation: "Detect Location",
+      calculationInfo: "Calculation Information",
+      info: {
+        location: "Time calculated based on your location",
+        method: "Uses calculation method for your region",
+        autoUpdate: "Time updates automatically",
+        search: "Search available by city name"
+      },
+      prayers: {
+        fajr: "Fajr",
+        sunrise: "Sunrise",
+        dhuhr: "Dhuhr",
+        asr: "Asr",
+        maghrib: "Maghrib",
+        isha: "Isha"
+      },
+      cities: {
+        moscow: "Moscow",
+        london: "London",
+        dubai: "Dubai",
+        almaty: "Almaty"
+      },
+      tryAgain: "Try again",
+      nextPrayer: "Next prayer",
+      tomorrowPrayer: "Tomorrow's prayer",
+      timeRemaining: "Time remaining",
+      hours: "hours",
+      minutes: "minutes",
+      seconds: "seconds",
+      calculationMethod: "Calculation method",
+      detectLocation: "Detect location",
+      infoTitle: "Calculation information",
+      infoLocation: "Time is calculated based on your location",
+      infoMethod: "Regional calculation method is used",
+      infoUpdates: "Time updates automatically",
+      infoSearch: "Search by city name available",
+      prayersEn: {
+        fajr: "Fajr",
+        sunrise: "Sunrise",
+        dhuhr: "Dhuhr",
+        asr: "Asr",
+        maghrib: "Maghrib",
+        isha: "Isha"
+      }
     }
   },
   
@@ -379,10 +775,6 @@ export const translations = {
     openMenu: "Menyuni ochish",
     closeMenu: "Menyuni yopish",
     
-    // Live Streams
-    liveStreams: {
-      nav: "Ruhiy markaz"
-    },
     
     // Mosque Finder
     mosqueFinder: "Masjid topish",
@@ -431,6 +823,38 @@ export const translations = {
     selectLanguage: "Tilni tanlang",
     totalDuas: "Jami duolar",
     duasCount: "Duolar",
+    waitingContent: "Kontent tayyorlaganimizni kuting",
+    retry: "Qayta urinish",
+    backToCategories: "Kategoriyalarga qaytish",
+
+    sortBy: "Saralash",
+    newest: "Yangilari",
+    oldest: "Eskilari",
+    category: "Kategoriya",
+    clearAll: "Barchasini tozalash",
+    exportDuas: "Duolarni eksport qilish",
+    importDuas: "Duolarni import qilish",
+    
+    // Saved duas page
+    savedDuas: "Saqlangan duolar",
+    favoriteDuas: "sevimli duolar",
+    backToDuas: "Duolarga qaytish",
+    export: "Eksport",
+    import: "Import",
+    searchSavedDuas: "Saqlangan duolardan qidirish...",
+    allCategories: "Barcha kategoriyalar",
+    byDate: "Sana bo'yicha",
+    byTitle: "Nom bo'yicha",
+    byCategory: "Kategoriya bo'yicha",
+    noSavedDuas: "Sizning sevimli duolaringiz tez kirish uchun shu yerda ko'rsatiladi",
+    goToDuas: "Duolarga o'tish",
+    mainPage: "Bosh sahifa",
+    noDuasFoundQuery: "So'rov bo'yicha duolar topilmadi",
+    copy: "Nusxalash",
+    delete: "O'chirish",
+    notes: "Izohlar",
+    benefitsLabel: "Foyda",
+    source: "Manba",
 
     // AI Helper
     arabicTitle: "مساعد القرآن الذكي",
@@ -477,7 +901,86 @@ export const translations = {
         "dhikr-after-salah": "Namozdan keyin qilinadigan zikr va duolar",
         "daily-dua": "Hayotning barcha holatlari uchun kundalik duolar",
         "selected-dua": "Qur'on va Sunnatdan maxsus duolar"
-      }
+      },
+      languageIndicator: "UZ",
+      loadingContent: "Kontent tayyorlaganimizni kuting",
+      retry: "Qayta urinish",
+      backToCategories: "Kategoriyalarga qaytish",
+      sortDefault: "Standart",
+      sortAlphabetical: "A-Z",
+      progress: "Progress",
+      categoryCompleted: "🎉 Kategoriya tugatildi!",
+      allDuasCompleted: "Barcha {total} ta duo o'qildi! Mashalloh!",
+      remainingDuas: "{total} tadan {remaining} ta duo qoldi",
+      completed: "Tugallangan",
+      remaining: "Qolgan",
+      almostDone: "🔥 Deyarli tayyor! {remaining} ta duo qoldi!",
+      globalSettings: "Global ko'rsatish sozlamalari",
+      globalSettingsDescription: "Barcha duo kartalarida sukut bo'yicha qaysi maydonlar ko'rsatilishini sozlang.",
+      transliteration: "Transliteratsiya",
+      notes: "Eslatmalar",
+      benefits: "Foyda",
+      source: "Manba",
+      defaultHidden: "Sukut bo'yicha yashirin",
+      defaultVisible: "Sukut bo'yicha ko'rinadigan",
+      settings: "Sozlamalar",
+      searchPlaceholder: "Duolarni qidirish...",
+      tip: "Maslahat",
+      tipText: "Har bir duo kartasi o'z sozlamalariga ega. Ko'rsatishni sozlash uchun kartadagi vites belgisini bosing.",
+      languageIndicatorText: "UZ",
+      noResults: "Duolar topilmadi",
+      noResultsDescription: "Boshqa qidiruv so'zlari yoki filtrlarni sinab ko'ring",
+      clearSearch: "Qidiruvni tozalash",
+      loadMoreDuas: "Ko'proq duolarni yuklash",
+      statusReady: "🏆 Tayyor",
+      statusAlmostDone: "🔥 Deyarli",
+      statusInProgress: "⚡ Ketmoqda",
+      statusStart: "📚 Boshlash"
+    },
+    
+    // Suralar nomi tarjimalari
+    surahTranslations: {
+      "Al-Fatiha": "Ochuvchi",
+      "Al-Baqarah": "Sigir",
+      "Al-Kahf": "G'or",
+      "Ya-Sin": "Yo Sin",
+      "Ar-Rahman": "Rahmon",
+      "Al-Mulk": "Mulk"
+    },
+    
+    // Suralar ro'yxati tarjimalari
+    surahsList: {
+      loading: "Suralar yuklanmoqda...",
+      error: "Suralarni yuklashda xato",
+      refreshPage: "Sahifani yangilashga harakat qiling",
+      title: "Muqaddas Qur'on suralari",
+      description: "Muqaddas Qur'onning 114 ta surasining to'liq to'plami o'zbek tilidagi tarjima bilan",
+      searchPlaceholder: "Suralarni qidirish...",
+      filterAll: "Hammasi",
+      filterMeccan: "Makkiy",
+      filterMedinan: "Madaniy",
+      sortNumber: "Raqam",
+      sortName: "Nom",
+      sortVerses: "Oyatlar",
+      sortRevelation: "Nozil bo'lish",
+      verses: "oyat",
+      noResults: "Suralar topilmadi",
+      noResultsDesc: "Boshqa qidiruv so'zlarini sinab ko'ring"
+    },
+    
+    // Qur'on o'qish sahifasi tarjimalari
+    quranReader: {
+      audioNotAvailableReciter: "Bu qori uchun audio mavjud emas",
+      audioNotAvailable: "Audio mavjud emas",
+      errorLoadingSurah: "Sura ma'lumotlarini yuklashda xato",
+      loadingQuran: "Qur'on yuklanmoqda...",
+      preparingVerses: "Oyatlar o'qish uchun tayyorlanmoqda",
+      verses: "oyat",
+      prev: "Oldin",
+      audio: "Audio",
+      next: "Keyin",
+      translation: "Tarjima",
+      settings: "Sozlamalar"
     },
     
     // Предустановленные вопросы
@@ -509,6 +1012,118 @@ export const translations = {
       longestStreak: "Eng uzun ketma-ketlik",
       totalAyahs: "Jami oyatlar",
       totalTime: "Jami vaqt"
+    },
+    
+    // Live Streams
+    liveStreams: {
+      nav: "Ma'naviy markaz",
+      title: "Jonli translyatsiyalar",
+      subtitle: "Islomning eng muqaddas joylaridan, jumladan Makkadagi Masjid al-Haram va Madinadagi Masjid an-Nabaviydan jonli translyatsiyalarni tomosha qiling.",
+      holyPlacesTitle: "🕌 Muqaddas joylar",
+      holyPlacesDescription: "Islomning eng muqaddas joylaridan jonli translyatsiyalar",
+      status: {
+        live: "JONLI",
+        offline: "OFLAYN",
+        official: "RASMIY",
+        lastUpdated: "OXIRGI YANGILANISH",
+        liveSignal: "Jonli signal",
+        waiting: "Signalni kutish",
+        currentViewers: "Hozirgi tomoshabinlar"
+      },
+      actions: {
+        refresh: "Yangilash",
+        refreshing: "Yangilanmoqda...",
+        openYoutube: "YouTube'da ochish"
+      },
+      locations: {
+        mecca: {
+          title: "Masjid al-Haram, Makka",
+          description: "Ka'bani o'rab olgan Islomning eng muqaddas masjididan jonli translyatsiya. Namozlar, Tavof va boshqa marosimlarni kuzating."
+        },
+        medina: {
+          title: "Masjid an-Nabaviy, Madina",
+          description: "Paygambar Muhammad (s.a.v.) dafn etilgan Madinadagi Paygambar masjididan jonli translyatsiya. Namozlar va marosimlarni tomosha qiling."
+        }
+      }
+    },
+    
+    // Prayer Times Display
+    prayerTimes: {
+      title: "Namoz vaqtlari",
+      subtitle: "Joylashuvingizga asoslangan aniq namoz jadvali",
+      loading: "Namoz vaqtlarini aniqlash...",
+      error: "Namoz vaqtlarini yuklashda xato yuz berdi",
+      locationError: "Koordinatalarni aniqlab bo'lmadi",
+      updated: "Yangilangan",
+      refresh: "Yangilash",
+      gps: "GPS",
+      searchPlaceholder: "Shaharni qidirish...",
+      searching: "Qidirilmoqda...",
+      find: "Topish",
+      searchingCities: "Shaharlar qidirilmoqda...",
+      noResults: '"{query}" uchun shaharlar topilmadi',
+      tryEnglish: "Inglizcha nomlarni sinab ko'ring: Moscow, London, Istanbul, Dubai, Almaty",
+      quickTests: "Tezkor testlar:",
+      nextPrayer: "Keyingi namoz",
+      tomorrowPrayer: "Ertangi namoz",
+      timeLeft: "Qolgan vaqt",
+      hours: "soat",
+      minutes: "daqiqa",
+      seconds: "soniya",
+      tryAgain: "Qayta urinish",
+      calculationMethod: "Hisoblash usuli",
+      detectLocation: "Joylashuvni aniqlash",
+      calculationInfo: "Hisoblash ma'lumotlari",
+      info: {
+        location: "Vaqt sizning joylashuvingizga asoslanib hisoblanadi",
+        method: "Hududingiz uchun hisoblash usuli qo'llaniladi",
+        autoUpdate: "Vaqt avtomatik yangilanadi",
+        search: "Shahar nomi bo'yicha qidiruv mavjud"
+      },
+      prayers: {
+        fajr: "Bomdod",
+        sunrise: "Quyosh chiqishi",
+        dhuhr: "Peshin",
+        asr: "Asr",
+        maghrib: "Shom",
+        isha: "Xufton"
+      },
+      prayersEn: {
+        fajr: "Fajr",
+        sunrise: "Sunrise",
+        dhuhr: "Dhuhr",
+        asr: "Asr",
+        maghrib: "Maghrib",
+        isha: "Isha"
+      },
+      cities: {
+        moscow: "Moskva",
+        london: "London",
+        dubai: "Dubay",
+        almaty: "Almati"
+      },
+      tryAgain: "Qayta urinib ko'ring",
+      nextPrayer: "Keyingi namoz",
+      tomorrowPrayer: "Ertangi namoz",
+      timeRemaining: "Qolgan vaqt",
+      hours: "soat",
+      minutes: "daqiqa",
+      seconds: "soniya",
+      calculationMethod: "Hisoblash usuli",
+      detectLocation: "Joyni aniqlash",
+      infoTitle: "Hisoblash haqida ma'lumot",
+      infoLocation: "Vaqt sizning joylashuvingizga qarab hisoblanadi",
+      infoMethod: "Mintaqangiz uchun hisoblash usuli qo'llaniladi",
+      infoUpdates: "Vaqt avtomatik yangilanadi",
+      infoSearch: "Shahar nomi bo'yicha qidiruv mavjud",
+      prayersEn: {
+        fajr: "Fajr",
+        sunrise: "Sunrise",
+        dhuhr: "Dhuhr",
+        asr: "Asr",
+        maghrib: "Maghrib",
+        isha: "Isha"
+      }
     }
   }
 } as const;

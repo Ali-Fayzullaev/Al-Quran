@@ -13,14 +13,19 @@ type LocaleContextType = {
 const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, setCurrentLocale] = useState<Locale>(() => {
-    // Пытаемся восстановить язык из localStorage
+  const [locale, setCurrentLocale] = useState<Locale>('ru'); // Всегда начинаем с 'ru' для предотвращения ошибок гидратации
+  const [isClientReady, setIsClientReady] = useState(false);
+  
+  // Восстанавливаем язык из localStorage после монтирования
+  useEffect(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('locale') as Locale;
-      return saved && ['ru', 'en', 'uz'].includes(saved) ? saved : 'ru';
+      if (saved && ['ru', 'en', 'uz'].includes(saved) && saved !== locale) {
+        setCurrentLocale(saved);
+      }
+      setIsClientReady(true);
     }
-    return 'ru';
-  });
+  }, []);
   
   const [isLoading, setIsLoading] = useState(false);
 

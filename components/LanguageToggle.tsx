@@ -5,21 +5,22 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Globe, Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
+import { Locale } from "@/lib/translations";
 
 export function LanguageToggle() {
   const { locale, setLocale, isLoading } = useLocale();
   const [open, setOpen] = useState(false);
 
   const languages = [
-    { code: "en", name: "English", flag: "🇬🇧" },
-    { code: "ru", name: "Русский", flag: "🇷🇺" },
-    { code: "uz", name: "O'zbek", flag: "🇺🇿" },
+    { code: "ru" as Locale, name: "Русский", flag: "🇷🇺" },
+    { code: "en" as Locale, name: "English", flag: "🇺🇸" },
+    { code: "uz" as Locale, name: "O'zbek", flag: "🇺🇿" }
   ];
 
   const currentLanguage =
     languages.find((lang) => lang.code === locale) || languages[0];
 
-  const handleLanguageChange = (newLocale: string) => {
+  const handleLanguageChange = (newLocale: Locale) => {
     if (isLoading) return;
     setLocale(newLocale);
     setOpen(false);

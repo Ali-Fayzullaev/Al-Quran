@@ -70,32 +70,32 @@ export default function HomePage() {
     { 
       number: 1, 
       name: "Al-Fatiha", 
-      translation: locale === "en" ? "The Opening" : locale === "ru" ? "Открывающая" : "Ochuvchi"
+      translation: t('surahTranslations.Al-Fatiha')
     },
     { 
       number: 2, 
       name: "Al-Baqarah", 
-      translation: locale === "en" ? "The Cow" : locale === "ru" ? "Корова" : "Sigir"
+      translation: t('surahTranslations.Al-Baqarah')
     },
     { 
       number: 18, 
       name: "Al-Kahf", 
-      translation: locale === "en" ? "The Cave" : locale === "ru" ? "Пещера" : "G'or"
+      translation: t('surahTranslations.Al-Kahf')
     },
     { 
       number: 36, 
       name: "Ya-Sin", 
-      translation: locale === "en" ? "Ya-Sin" : locale === "ru" ? "Я Син" : "Yo Sin"
+      translation: t('surahTranslations.Ya-Sin')
     },
     { 
       number: 55, 
       name: "Ar-Rahman", 
-      translation: locale === "en" ? "The Beneficent" : locale === "ru" ? "Милостивый" : "Rahmon"
+      translation: t('surahTranslations.Ar-Rahman')
     },
     { 
       number: 67, 
       name: "Al-Mulk", 
-      translation: locale === "en" ? "The Sovereignty" : locale === "ru" ? "Власть" : "Mulk"
+      translation: t('surahTranslations.Al-Mulk')
     },
   ];
 

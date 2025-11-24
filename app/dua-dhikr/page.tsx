@@ -232,7 +232,7 @@ export default function DuaDhikrPage() {
                       <div className="flex items-center gap-1">
                         <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }}></div>
                         <span className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
-                          {locale === 'ru' ? 'РУС' : locale === 'en' ? 'ENG' : 'UZ'}
+                          {t('DuaDhikr.languageIndicator')}
                         </span>
                       </div>
                     </div>

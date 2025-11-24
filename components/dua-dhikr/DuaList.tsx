@@ -1,3 +1,4 @@
+// src/components/dua-dhikr/DuaList.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -64,6 +65,37 @@ export default function DuaList({ category, duaData }: DuaListProps) {
   const [completedDuas, setCompletedDuas] = useState<Set<string>>(new Set());
   const [showCategoryNotification, setShowCategoryNotification] = useState(false);
   const [categoryNotificationMessage, setCategoryNotificationMessage] = useState('');
+  const [isClient, setIsClient] = useState(false);
+  
+  // Глобальные настройки отображения
+  const [globalSettings, setGlobalSettings] = useState({
+    transliteration: false,
+    notes: true,
+    benefits: false,
+    source: false
+  });
+  
+  // Helper function to format translations with parameters
+  const formatTranslation = (key: string, params: Record<string, string | number>) => {
+    let translation = t(key);
+    Object.keys(params).forEach(param => {
+      translation = translation.replace(`{${param}}`, String(params[param]));
+    });
+    return translation;
+  };
+  
+  // Функция для переключения настроек
+  const toggleGlobalSetting = (setting: keyof typeof globalSettings) => {
+    setGlobalSettings(prev => ({
+      ...prev,
+      [setting]: !prev[setting]
+    }));
+  };
+
+  // Отслеживаем монтирование компонента для предотвращения ошибок гидратации
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Получаем данные для выбранного языка
   const currentDuas = duaData[locale as keyof typeof duaData] || duaData.ru;
@@ -111,6 +143,23 @@ export default function DuaList({ category, duaData }: DuaListProps) {
     setShowCategoryNotification(false);
   };
 
+  // Ожидаем завершения гидратации
+  if (!isClient) {
+    return (
+      <div className="space-y-4 md:space-y-6">
+        <div className="animate-pulse">
+          <div className="h-6 bg-gray-200 rounded mb-4"></div>
+          <div className="h-32 bg-gray-200 rounded mb-4"></div>
+          <div className="space-y-3">
+            <div className="h-20 bg-gray-200 rounded"></div>
+            <div className="h-20 bg-gray-200 rounded"></div>
+            <div className="h-20 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       
@@ -144,8 +193,8 @@ export default function DuaList({ category, duaData }: DuaListProps) {
           </div>
           <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
             {categoryProgress === 100 
-              ? `Все ${totalDuas} дуа прочитаны! Машаллах!`
-              : `Осталось ${remainingCount} из ${totalDuas} дуа`
+              ? formatTranslation('DuaDhikr.allDuasCompleted', { total: totalDuas })
+              : formatTranslation('DuaDhikr.remainingDuas', { remaining: remainingCount, total: totalDuas })
             }
           </p>
         </div>
@@ -167,12 +216,12 @@ export default function DuaList({ category, duaData }: DuaListProps) {
             )}
             <div>
               <h3 className="text-xl font-bold" style={{ color: 'var(--color-text)' }}>
-                {categoryProgress === 100 ? '🎉 Категория завершена!' : `Прогресс: ${categoryProgress}%`}
+                {categoryProgress === 100 ? t('DuaDhikr.categoryCompleted') : `${t('DuaDhikr.progress')}: ${categoryProgress}%`}
               </h3>
               <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
                 {categoryProgress === 100 
-                  ? `Все ${totalDuas} дуа прочитаны! Машаллах!`
-                  : `Осталось ${remainingCount} из ${totalDuas} дуа`
+                  ? formatTranslation('DuaDhikr.allDuasCompleted', { total: totalDuas })
+                  : formatTranslation('DuaDhikr.remainingDuas', { remaining: remainingCount, total: totalDuas })
                 }
               </p>
             </div>
@@ -185,7 +234,7 @@ export default function DuaList({ category, duaData }: DuaListProps) {
               {completedCount}/{totalDuas}
             </div>
             <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-              {categoryProgress === 100 ? 'Завершено' : 'Выполнено'}
+              {categoryProgress === 100 ? t('DuaDhikr.completed') : t('DuaDhikr.completed')}
             </div>
           </div>
         </div>
@@ -210,13 +259,13 @@ export default function DuaList({ category, duaData }: DuaListProps) {
           <div className="flex items-center gap-2 md:gap-4">
             <div className="flex items-center gap-1">
               <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-green-600" />
-              <span style={{ color: 'var(--color-text-secondary)' }} className="hidden sm:inline">Завершено:</span>
+              <span style={{ color: 'var(--color-text-secondary)' }} className="hidden sm:inline">{t('DuaDhikr.completed')}:</span>
               <span style={{ color: 'var(--color-text-secondary)' }}>{completedCount}</span>
             </div>
             {remainingCount > 0 && (
               <div className="flex items-center gap-1">
                 <Clock className="w-3 h-3 md:w-4 md:h-4 text-orange-500" />
-                <span style={{ color: 'var(--color-text-secondary)' }} className="hidden sm:inline">Осталось:</span>
+                <span style={{ color: 'var(--color-text-secondary)' }} className="hidden sm:inline">{t('DuaDhikr.remaining')}:</span>
                 <span style={{ color: 'var(--color-text-secondary)' }}>{remainingCount}</span>
               </div>
             )}
@@ -233,7 +282,7 @@ export default function DuaList({ category, duaData }: DuaListProps) {
         {remainingCount > 0 && remainingCount <= 3 && (
           <div className="mt-2 md:mt-3 p-2 rounded-lg" style={{ backgroundColor: 'var(--color-background)' }}>
             <p className="text-xs md:text-sm text-center font-medium" style={{ color: 'var(--color-primary)' }}>
-              🔥 Почти готово! Осталось {remainingCount} дуа!
+              {formatTranslation('DuaDhikr.almostDone', { remaining: remainingCount })}
             </p>
           </div>
         )}
@@ -255,7 +304,7 @@ export default function DuaList({ category, duaData }: DuaListProps) {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" 
                     style={{ color: 'var(--color-text-secondary)' }} />
             <Input
-              placeholder="Поиск дуа..."
+              placeholder={t('DuaDhikr.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-9 h-10 text-sm"
@@ -272,7 +321,7 @@ export default function DuaList({ category, duaData }: DuaListProps) {
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--color-text-secondary)' }}>
               <Languages className="w-3 h-3" />
-              <span>РУС</span>
+              <span>{t('DuaDhikr.languageIndicatorText')}</span>
             </div>
             
             <div className="flex items-center gap-1">
@@ -318,7 +367,7 @@ export default function DuaList({ category, duaData }: DuaListProps) {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" 
                     style={{ color: 'var(--color-text-secondary)' }} />
             <Input
-              placeholder="Поиск дуа..."
+              placeholder={t('DuaDhikr.searchPlaceholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10"
@@ -333,13 +382,6 @@ export default function DuaList({ category, duaData }: DuaListProps) {
 
           {/* Desktop Controls */}
           <div className="flex items-center gap-2">
-            
-            {/* Русский язык по умолчанию */}
-            <div className="flex items-center gap-2 text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-              <Languages className="w-4 h-4" />
-              <span>Русский</span>
-            </div>
-
             {/* Sort Select */}
             <div className="flex items-center gap-2">
               <Filter className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
@@ -354,10 +396,10 @@ export default function DuaList({ category, duaData }: DuaListProps) {
                 </SelectTrigger>
                 <SelectContent style={{ backgroundColor: 'var(--color-background-secondary)' }}>
                   <SelectItem value="default">
-                    {locale === 'en' ? 'Default' : 'По умолчанию'}
+                    {t('DuaDhikr.sortDefault')}
                   </SelectItem>
                   <SelectItem value="alphabetical">
-                    {locale === 'en' ? 'A-Z' : 'А-Я'}
+                    {t('DuaDhikr.sortAlphabetical')}
                   </SelectItem>
                 </SelectContent>
               </Select>
@@ -371,7 +413,7 @@ export default function DuaList({ category, duaData }: DuaListProps) {
               className="gap-2"
             >
               <Settings className="w-4 h-4" />
-              Настройки
+              {t('DuaDhikr.settings')}
             </Button>
 
             {/* View Mode Toggle */}
@@ -410,68 +452,104 @@ export default function DuaList({ category, duaData }: DuaListProps) {
           <div className="flex items-center gap-2 mb-4">
             <Settings className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
             <h3 className="font-medium" style={{ color: 'var(--color-primary)' }}>
-              Глобальные настройки отображения
+              {t('DuaDhikr.globalSettings')}
             </h3>
           </div>
           <div className="text-sm mb-3" style={{ color: 'var(--color-text-secondary)' }}>
-            Настройте какие поля будут показаны по умолчанию во всех карточках дуа.
+            {t('DuaDhikr.globalSettingsDescription')}
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="p-3 rounded-lg border" style={{
-              backgroundColor: 'var(--color-background)',
-              borderColor: 'var(--color-border)'
-            }}>
+            {/* Транслитерация */}
+            <div 
+              className="p-3 rounded-lg border cursor-pointer transition-colors hover:bg-opacity-80" 
+              style={{
+                backgroundColor: 'var(--color-background)',
+                borderColor: 'var(--color-border)'
+              }}
+              onClick={() => toggleGlobalSetting('transliteration')}
+            >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Транслитерация</span>
-                <ToggleLeft className="w-5 h-5" style={{ color: 'var(--color-text-secondary)' }} />
+                <span className="text-sm font-medium">{t('DuaDhikr.transliteration')}</span>
+                {globalSettings.transliteration ? (
+                  <ToggleRight className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+                ) : (
+                  <ToggleLeft className="w-5 h-5" style={{ color: 'var(--color-text-secondary)' }} />
+                )}
               </div>
               <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-                По умолчанию скрыто
+                {globalSettings.transliteration ? t('DuaDhikr.defaultVisible') : t('DuaDhikr.defaultHidden')}
               </p>
             </div>
             
-            <div className="p-3 rounded-lg border" style={{
-              backgroundColor: 'var(--color-background)',
-              borderColor: 'var(--color-border)'
-            }}>
+            {/* Заметки */}
+            <div 
+              className="p-3 rounded-lg border cursor-pointer transition-colors hover:bg-opacity-80" 
+              style={{
+                backgroundColor: 'var(--color-background)',
+                borderColor: 'var(--color-border)'
+              }}
+              onClick={() => toggleGlobalSetting('notes')}
+            >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Заметки</span>
-                <ToggleRight className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+                <span className="text-sm font-medium">{t('DuaDhikr.notes')}</span>
+                {globalSettings.notes ? (
+                  <ToggleRight className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+                ) : (
+                  <ToggleLeft className="w-5 h-5" style={{ color: 'var(--color-text-secondary)' }} />
+                )}
               </div>
               <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-                По умолчанию видимо
+                {globalSettings.notes ? t('DuaDhikr.defaultVisible') : t('DuaDhikr.defaultHidden')}
               </p>
             </div>
             
-            <div className="p-3 rounded-lg border" style={{
-              backgroundColor: 'var(--color-background)',
-              borderColor: 'var(--color-border)'
-            }}>
+            {/* Польза */}
+            <div 
+              className="p-3 rounded-lg border cursor-pointer transition-colors hover:bg-opacity-80" 
+              style={{
+                backgroundColor: 'var(--color-background)',
+                borderColor: 'var(--color-border)'
+              }}
+              onClick={() => toggleGlobalSetting('benefits')}
+            >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Польза</span>
-                <ToggleLeft className="w-5 h-5" style={{ color: 'var(--color-text-secondary)' }} />
+                <span className="text-sm font-medium">{t('DuaDhikr.benefits')}</span>
+                {globalSettings.benefits ? (
+                  <ToggleRight className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+                ) : (
+                  <ToggleLeft className="w-5 h-5" style={{ color: 'var(--color-text-secondary)' }} />
+                )}
               </div>
               <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-                По умолчанию скрыто
+                {globalSettings.benefits ? t('DuaDhikr.defaultVisible') : t('DuaDhikr.defaultHidden')}
               </p>
             </div>
             
-            <div className="p-3 rounded-lg border" style={{
-              backgroundColor: 'var(--color-background)',
-              borderColor: 'var(--color-border)'
-            }}>
+            {/* Источник */}
+            <div 
+              className="p-3 rounded-lg border cursor-pointer transition-colors hover:bg-opacity-80" 
+              style={{
+                backgroundColor: 'var(--color-background)',
+                borderColor: 'var(--color-border)'
+              }}
+              onClick={() => toggleGlobalSetting('source')}
+            >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Источник</span>
-                <ToggleLeft className="w-5 h-5" style={{ color: 'var(--color-text-secondary)' }} />
+                <span className="text-sm font-medium">{t('DuaDhikr.source')}</span>
+                {globalSettings.source ? (
+                  <ToggleRight className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+                ) : (
+                  <ToggleLeft className="w-5 h-5" style={{ color: 'var(--color-text-secondary)' }} />
+                )}
               </div>
               <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-                По умолчанию скрыто
+                {globalSettings.source ? t('DuaDhikr.defaultVisible') : t('DuaDhikr.defaultHidden')}
               </p>
             </div>
           </div>
           <div className="mt-4 p-3 rounded-lg" style={{ backgroundColor: 'var(--color-background)' }}>
             <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-              💡 <strong>Совет:</strong> Каждая карточка дуа имеет свои настройки. Нажмите на шестерёнку в карточке чтобы настроить отображение.
+              💡 <strong>{t('DuaDhikr.tip')}:</strong> {t('DuaDhikr.tipText')}
             </p>
           </div>
         </div>
@@ -504,9 +582,9 @@ export default function DuaList({ category, duaData }: DuaListProps) {
             remainingCount <= 3 ? 'bg-orange-500' : 'bg-blue-500'
           }`}></div>
           <span className="text-xs">
-            {categoryProgress === 100 ? '🏆 Готово' : 
-             remainingCount <= 3 ? '🔥 Скоро' : 
-             completedCount > 0 ? '⚡ Идёт' : '📚 Начать'}
+            {categoryProgress === 100 ? t('DuaDhikr.statusReady') : 
+             remainingCount <= 3 ? t('DuaDhikr.statusAlmostDone') : 
+             completedCount > 0 ? t('DuaDhikr.statusInProgress') : t('DuaDhikr.statusStart')}
           </span>
         </div>
       </div>
@@ -538,10 +616,10 @@ export default function DuaList({ category, duaData }: DuaListProps) {
             <Search className="w-8 h-8" style={{ color: 'var(--color-text-secondary)' }} />
           </div>
           <h3 className="text-lg font-medium mb-2" style={{ color: 'var(--color-text)' }}>
-            Дуа не найдены
+            {t('DuaDhikr.noResults')}
           </h3>
           <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-            Попробуйте изменить поисковые запросы или фильтры
+            {t('DuaDhikr.noResultsDescription')}
           </p>
           {searchTerm && (
             <Button
@@ -549,7 +627,7 @@ export default function DuaList({ category, duaData }: DuaListProps) {
               onClick={() => setSearchTerm('')}
               className="mt-4"
             >
-              Очистить поиск
+              {t('DuaDhikr.clearSearch')}
             </Button>
           )}
         </div>
@@ -559,7 +637,7 @@ export default function DuaList({ category, duaData }: DuaListProps) {
       {filteredDuas.length > 10 && (
         <div className="text-center pt-8">
           <Button variant="outline" className="gap-2">
-            Загрузить больше дуа
+            {t('DuaDhikr.loadMoreDuas')}
             <ChevronDown className="w-4 h-4" />
           </Button>
         </div>

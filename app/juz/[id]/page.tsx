@@ -394,9 +394,6 @@ export default function JuzPage({ params }: JuzPageProps) {
     const readVerses = versesRead.size;
     const percentage = (readVerses / totalVerses) * 100;
     
-    console.log(`Прогресс: ${readVerses}/${totalVerses} = ${percentage.toFixed(1)}%`);
-    console.log('versesRead:', Array.from(versesRead));
-    
     return percentage;
   };
 

@@ -81,8 +81,16 @@ export default function CategoryPage({ params }: CategoryPageProps) {
   } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isLocaleReady, setIsLocaleReady] = useState(false);
 
   const categoryId = resolvedParams.id;
+
+  // Отслеживаем готовность локали для предотвращения ошибки гидратации
+  useEffect(() => {
+    if (locale) {
+      setIsLocaleReady(true);
+    }
+  }, [locale]);
 
   // Проверяем валидность категории
   const validCategories = ["morning-dhikr", "evening-dhikr", "dhikr-after-salah", "daily-dua", "selected-dua"];
@@ -123,8 +131,8 @@ export default function CategoryPage({ params }: CategoryPageProps) {
     loadDuaData();
   }, [categoryId, locale]);
 
-  // Показываем индикатор загрузки
-  if (isLoading) {
+  // Показываем индикатор загрузки или ожидаем готовности локали
+  if (isLoading || !isLocaleReady) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--color-background)' }}>
         <div className="text-center space-y-6">
@@ -139,7 +147,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
               {t('loading')}
             </h3>
             <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-              {locale === 'en' ? 'Please wait while we prepare the content' : locale === 'ru' ? 'Пожалуйста, подождите, пока мы подготавливаем контент' : 'Kontent tayyorlaganimizni kuting'}
+              {t('DuaDhikr.loadingContent')}
             </p>
             <div className="flex items-center justify-center space-x-2 mt-4">
               <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
@@ -168,11 +176,11 @@ export default function CategoryPage({ params }: CategoryPageProps) {
           </p>
           <div className="flex gap-2 justify-center">
             <Button variant="outline" onClick={() => window.location.reload()}>
-              {locale === 'en' ? 'Retry' : locale === 'ru' ? 'Повторить' : 'Qayta urinish'}
+              {t('DuaDhikr.retry')}
             </Button>
             <Link href="/dua-dhikr">
               <Button variant="outline">
-                {locale === 'en' ? 'Back to Categories' : locale === 'ru' ? 'Вернуться к категориям' : 'Kategoriyalarga qaytish'}
+                {t('DuaDhikr.backToCategories')}
               </Button>
             </Link>
           </div>
@@ -302,7 +310,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
               </div>
               <div className="text-center">
                 <div className="text-lg font-bold" style={{ color: 'var(--color-primary)' }}>
-                  {locale === 'ru' ? 'РУС' : locale === 'en' ? 'ENG' : 'UZ'}
+                  {t('DuaDhikr.languageIndicator')}
                 </div>
                 <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
                   {t('language')}
