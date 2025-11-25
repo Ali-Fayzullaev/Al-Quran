@@ -1,5 +1,66 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Функция для удаления диакритических знаков из арабского текста
+function removeDiacritics(text: string): string {
+  return text.replace(/[\u064B-\u065F\u0670\u06D6-\u06ED]/g, '');
+}
+
+// Функция для создания уникального ID для аята
+function getVerseId(surahNumber: number, verseNumber: number): string {
+  return `${surahNumber}:${verseNumber}`;
+}
+
+// Расширенная функция локального поиска с нормализацией
+async function enhancedLocalSearch(query: string, mode: string = 'both') {
+  try {
+    // Получаем весь Коран на арабском
+    const arabicResponse = await fetch('https://api.alquran.cloud/v1/quran/quran-uthmani');
+    if (!arabicResponse.ok) {
+      throw new Error('Failed to fetch Arabic Quran');
+    }
+    const arabicData = await arabicResponse.json();
+    
+    const normalizedQuery = removeDiacritics(query.trim());
+    const results: any[] = [];
+    
+    console.log(`Локальный поиск: "${query}" -> "${normalizedQuery}"`);
+    
+    if (arabicData.data && arabicData.data.surahs) {
+      arabicData.data.surahs.forEach((surah: any) => {
+        surah.ayahs.forEach((ayah: any) => {
+          const normalizedAyah = removeDiacritics(ayah.text);
+          
+          // Поиск по нормализованному тексту
+          if (normalizedAyah.includes(normalizedQuery)) {
+            results.push({
+              number: ayah.number,
+              numberInSurah: ayah.numberInSurah,
+              text: ayah.text,
+              translation: ayah.text,
+              surah: {
+                number: surah.number,
+                name: surah.name,
+                englishName: surah.englishName,
+                englishNameTranslation: surah.englishNameTranslation
+              },
+              surahName: surah.englishName,
+              surahNameArabic: surah.name,
+              juz: ayah.juz,
+              source: 'local-normalized'
+            });
+          }
+        });
+      });
+    }
+    
+    console.log(`Локальный поиск нашел: ${results.length} результатов`);
+    return results;
+  } catch (error) {
+    console.error('Ошибка локального поиска:', error);
+    return [];
+  }
+}
+
 // Функция для получения данных из внешнего API
 async function fetchFromQuranAPI(keyword: string, surah: string = 'all', edition: string = 'en') {
   try {
@@ -134,13 +195,21 @@ export async function GET(request: NextRequest) {
       // Поиск в арабском тексте
       if (mode === 'arabic' || mode === 'both') {
         console.log('Поиск в арабском тексте...');
+        
+        // Поиск с диакритиками
         const arabicData = await fetchFromQuranAPI(query, searchSurah, 'quran-uthmani');
+        
+        // Поиск без диакритик
+        const normalizedQuery = removeDiacritics(query);
+        const arabicDataNormalized = normalizedQuery !== query ? 
+          await fetchFromQuranAPI(normalizedQuery, searchSurah, 'quran-uthmani') : null;
+        // Обрабатываем результаты поиска с диакритиками
         if (arabicData && arabicData.data && arabicData.data.matches) {
           const arabicResults = arabicData.data.matches.map((match: any) => ({
             number: match.number,
             numberInSurah: match.numberInSurah,
             text: match.text,
-            translation: match.text, // Арабский текст как основной
+            translation: match.text,
             surah: {
               number: match.surah.number,
               name: match.surah.name,
@@ -153,7 +222,29 @@ export async function GET(request: NextRequest) {
             source: 'arabic-api'
           }));
           allResults.push(...arabicResults);
-          console.log(`Найдено ${arabicResults.length} арабских результатов`);
+          console.log(`Найдено ${arabicResults.length} арабских результатов с диакритиками`);
+        }
+        
+        // Обрабатываем результаты поиска без диакритик
+        if (arabicDataNormalized && arabicDataNormalized.data && arabicDataNormalized.data.matches) {
+          const normalizedResults = arabicDataNormalized.data.matches.map((match: any) => ({
+            number: match.number,
+            numberInSurah: match.numberInSurah,
+            text: match.text,
+            translation: match.text,
+            surah: {
+              number: match.surah.number,
+              name: match.surah.name,
+              englishName: match.surah.englishName,
+              englishNameTranslation: match.surah.englishNameTranslation
+            },
+            surahName: match.surah.englishName,
+            surahNameArabic: match.surah.name,
+            juz: match.juz,
+            source: 'arabic-normalized'
+          }));
+          allResults.push(...normalizedResults);
+          console.log(`Найдено ${normalizedResults.length} арабских результатов без диакритик`);
         }
       }
 
@@ -207,33 +298,48 @@ export async function GET(request: NextRequest) {
       allResults = fallbackSearch(query, mode, language);
     }
 
-    // Если нет результатов, пробуем резервный поиск
+    // Если нет результатов, пробуем расширенный локальный поиск
     if (allResults.length === 0) {
-      console.log('Нет результатов от внешнего API, пробуем локальный поиск...');
-      allResults = fallbackSearch(query, mode, language);
+      console.log('Нет результатов от внешнего API, пробуем расширенный локальный поиск...');
+      try {
+        const localResults = await enhancedLocalSearch(query, mode);
+        allResults = localResults;
+      } catch (localError) {
+        console.error('Ошибка локального поиска, используем fallback:', localError);
+        allResults = fallbackSearch(query, mode, language);
+      }
+    }
+    
+    // Дополнительно: если API результатов мало и запрос содержит арабский текст, добавляем локальный поиск
+    if (allResults.length < 5 && /[\u0600-\u06FF]/.test(query)) {
+      console.log('Мало результатов от API, дополняем локальным поиском...');
+      try {
+        const additionalResults = await enhancedLocalSearch(query, mode);
+        allResults.push(...additionalResults);
+      } catch (error) {
+        console.error('Ошибка дополнительного локального поиска:', error);
+      }
     }
 
-    // Удаляем дубликаты (по номеру суры и аяту)
-    const uniqueResults = allResults.reduce((acc: any[], current: any) => {
-      const exists = acc.find(
-        (item) =>
-          item.numberInSurah === current.numberInSurah &&
-          item.surah?.number === current.surah?.number
-      );
+    // Удаляем дубликаты по уникальному ID (номер суры:номер аята)
+    const uniqueMap = new Map();
+    
+    allResults.forEach((result: any) => {
+      const verseId = getVerseId(result.surah?.number || 0, result.numberInSurah || 0);
       
-      if (!exists) {
-        acc.push(current);
-      } else {
-        // Если найден дубликат, объединяем информацию
-        if (current.source?.includes('arabic') && current.text) {
-          exists.arabicText = current.text;
-        }
-        if (current.source?.includes('translation') && current.translation) {
-          exists.translation = current.translation;
-        }
+      if (!uniqueMap.has(verseId)) {
+        // Первый раз встречаем этот аят
+        uniqueMap.set(verseId, {
+          ...result,
+          verseId,
+          // Убираем диакритические знаки для поиска
+          normalizedText: result.text ? removeDiacritics(result.text) : '',
+        });
       }
-      return acc;
-    }, []);
+      // Игнорируем дубликаты
+    });
+    
+    const uniqueResults = Array.from(uniqueMap.values());
 
     // Сортируем по номеру суры и аяту
     uniqueResults.sort((a, b) => {

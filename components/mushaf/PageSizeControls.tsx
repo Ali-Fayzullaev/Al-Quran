@@ -143,7 +143,7 @@ export default function PageSizeControls({ className }: PageSizeControlsProps) {
             {/* Tooltip - только для десктопа */}
             {!isMobile && (
               <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 whitespace-nowrap">
-                {locale === 'ar' ? sizeConfig.nameArabic : sizeConfig.name}
+                {locale === 'ru' ? sizeConfig.nameArabic : sizeConfig.name}
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
               </div>
             )}
@@ -157,10 +157,10 @@ export default function PageSizeControls({ className }: PageSizeControlsProps) {
           <div className="w-px h-6 bg-border mx-1" />
           <div className="flex items-center gap-2 px-2">
             <span className="text-xs text-muted-foreground">
-              {locale === 'ar' ? 'الحجم' : 'Размер'}:
+              {locale === 'ru' ? 'الحجم' : 'Размер'}:
             </span>
             <span className="text-sm font-medium text-primary">
-              {locale === 'ar' 
+              {locale === 'ru' 
                 ? MUSHAF_CONFIG.PAGE_SIZES[mushafPageSize].nameArabic 
                 : MUSHAF_CONFIG.PAGE_SIZES[mushafPageSize].name
               }

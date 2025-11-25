@@ -669,6 +669,33 @@ export const translations = {
       recAverage1: "Повторяйте регулярно",
       recAverage2: "Концентрируйтесь на слабых местах",
       recAverage3: "Проверяйте понимание"
+    },
+
+    // Search
+    search: {
+      searchTheQuran: "Поиск по Корану",
+      searchDescription: "Найдите суры, аяты или слова в Коране",
+      searchPlaceholder: "Поиск сур, аятов или слов...",
+      searchTips: "Советы по поиску",
+      arabicSearchTip: "Поиск на арабском",
+      arabicSearchDescription: "Используйте арабские слова для точного поиска",
+      useArabicForExactMatch: "Используйте арабский для точного совпадения",
+      tryDifferentWordForms: "Попробуйте различные формы слов",
+      translationSearchTip: "Поиск по переводу",
+      translationSearchDescription: "Поиск по переводу на выбранном языке",
+      searchInPreferredLanguage: "Поиск на предпочитаемом языке",
+      useKeywordsAndPhrases: "Используйте ключевые слова и фразы",
+      searchResultsCount: "результатов поиска",
+      readFullSurah: "Читать полную суру",
+      searchFailed: "Ошибка поиска",
+      searching: "Поиск...",
+      advancedSearch: "Расширенный поиск",
+      searchMode: "Режим поиска",
+      searchModeBoth: "Оба (арабский и перевод)",
+      searchModeArabic: "Только арабский",
+      searchModeTranslation: "Только перевод",
+      copyVerse: "Копировать аят",
+      bookmarkVerse: "Добавить в закладки"
     }
   },
   
@@ -1331,6 +1358,33 @@ export const translations = {
       recAverage1: "Review regularly",
       recAverage2: "Focus on weak areas",
       recAverage3: "Check understanding"
+    },
+
+    // Search
+    search: {
+      searchTheQuran: "Search the Quran",
+      searchDescription: "Find surahs, verses or words in the Quran",
+      searchPlaceholder: "Search surahs, verses or words...",
+      searchTips: "Search Tips",
+      arabicSearchTip: "Arabic Search",
+      arabicSearchDescription: "Use Arabic words for exact search",
+      useArabicForExactMatch: "Use Arabic for exact match",
+      tryDifferentWordForms: "Try different word forms",
+      translationSearchTip: "Translation Search",
+      translationSearchDescription: "Search in translation in selected language",
+      searchInPreferredLanguage: "Search in preferred language",
+      useKeywordsAndPhrases: "Use keywords and phrases",
+      searchResultsCount: "search results",
+      readFullSurah: "Read full surah",
+      searchFailed: "Search failed",
+      searching: "Searching...",
+      advancedSearch: "Advanced Search",
+      searchMode: "Search Mode",
+      searchModeBoth: "Both (Arabic and Translation)",
+      searchModeArabic: "Arabic Only",
+      searchModeTranslation: "Translation Only",
+      copyVerse: "Copy verse",
+      bookmarkVerse: "Bookmark verse"
     }
 
   },
@@ -2007,6 +2061,33 @@ export const translations = {
       recAverage1: "Muntazam takrorlang",
       recAverage2: "Zaif joylarga e'tibor bering",
       recAverage3: "Tushunishni tekshiring"
+    },
+
+    // Search
+    search: {
+      searchTheQuran: "Qur'ondan qidirish",
+      searchDescription: "Suralar, oyatlar yoki so'zlarni qidiring",
+      searchPlaceholder: "Suralar, oyatlar yoki so'zlarni qidirish...",
+      searchTips: "Qidiruv maslahatlari",
+      arabicSearchTip: "Arabcha qidiruv",
+      arabicSearchDescription: "Aniq qidiruv uchun arabcha so'zlardan foydalaning",
+      useArabicForExactMatch: "Aniq moslash uchun arabchadan foydalaning",
+      tryDifferentWordForms: "Turli so'z shakllarini sinab ko'ring",
+      translationSearchTip: "Tarjima qidiruvi",
+      translationSearchDescription: "Tanlangan tilda tarjimadan qidiring",
+      searchInPreferredLanguage: "Afzal tilda qidiring",
+      useKeywordsAndPhrases: "Kalit so'zlar va iboralardan foydalaning",
+      searchResultsCount: "qidiruv natijalari",
+      readFullSurah: "To'liq surani o'qish",
+      searchFailed: "Qidiruv muvaffaqiyatsiz",
+      searching: "Qidirilmoqda...",
+      advancedSearch: "Kengaytirilgan qidiruv",
+      searchMode: "Qidiruv rejimi",
+      searchModeBoth: "Ikkalasi ham (Arabcha va Tarjima)",
+      searchModeArabic: "Faqat arabcha",
+      searchModeTranslation: "Faqat tarjima",
+      copyVerse: "Oyatni nusxalash",
+      bookmarkVerse: "Oyatni xatcho'plash"
     }
 
   }

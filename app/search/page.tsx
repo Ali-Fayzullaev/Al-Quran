@@ -129,7 +129,7 @@ function SearchContent() {
     } catch (searchError) {
       console.error("Search error:", searchError);
       setError(
-        t('searchFailed')
+        t('search.searchFailed')
       );
       setSearchResults([]);
       setTotalResults(0);
@@ -200,7 +200,7 @@ function SearchContent() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={t('searchPlaceholder')}
+          placeholder={t('search.searchPlaceholder')}
           className="w-full p-4 text-lg border-2 rounded-xl focus:outline-none"
           style={{
             backgroundColor: "var(--verse-background)",
@@ -243,7 +243,7 @@ function SearchContent() {
             className="font-semibold text-lg"
             style={{ color: "var(--fixed-text)" }}
           >
-            {t('advancedSearch')}
+            {t('search.advancedSearch')}
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -253,7 +253,7 @@ function SearchContent() {
                 className="block text-sm font-medium mb-2"
                 style={{ color: "var(--fixed-text-secondary)" }}
               >
-                {t('searchMode')}
+                {t('search.searchMode')}
               </label>
               <select
                 value={searchMode}
@@ -266,13 +266,13 @@ function SearchContent() {
                 }}
               >
                 <option value="both">
-                  {t('searchModeBoth')}
+                  {t('search.searchModeBoth')}
                 </option>
                 <option value="arabic">
-                  {t('searchModeArabic')}
+                  {t('search.searchModeArabic')}
                 </option>
                 <option value="translation">
-                  {t('searchModeTranslation')}
+                  {t('search.searchModeTranslation')}
                 </option>
               </select>
             </div>
@@ -384,7 +384,7 @@ function SearchContent() {
           }}
         >
           <p style={{ color: "var(--color-primary)" }}>
-            {`${totalResults} ${t('searchResultsCount')} "${debouncedQuery}"`}
+            {`${totalResults} ${t('search.searchResultsCount')} "${debouncedQuery}"`}
           </p>
         </div>
       )}
@@ -397,7 +397,7 @@ function SearchContent() {
             style={{ borderColor: "var(--color-primary)" }}
           ></div>
           <p className="mt-2" style={{ color: "var(--fixed-text-secondary)" }}>
-            {t('searching')}
+            {t('search.searching')}
           </p>
         </div>
       )}
@@ -441,21 +441,9 @@ function SearchContent() {
                       copyVerse(result);
                     }}
                     className="p-1 text-gray-500 hover:text-blue-500 transition-colors"
-                    title={t('copyVerse')}
+                    title={t('search.copyVerse')}
                   >
                     <Copy size={16} />
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      // Add to bookmarks functionality
-                    }}
-                    className="p-1 text-gray-500 hover:text-yellow-500 transition-colors"
-                    title={
-                      t('bookmarkVerse')
-                    }
-                  >
-                    <Bookmark size={16} />
                   </button>
                 </div>
               </div>
@@ -499,7 +487,7 @@ function SearchContent() {
                       : "Найдено в переводе")}
                 </span>
                 <span className="flex items-center gap-1 text-blue-500 hover:text-blue-600">
-                  {t('readFullSurah')}
+                  {t('search.readFullSurah')}
                   <ExternalLink size={12} />
                 </span>
               </div>
@@ -552,38 +540,38 @@ function SearchContent() {
           }}
         >
           <h3 className="text-lg font-semibold  mb-4">
-            {t('searchTips')}
+            {t('search.searchTips')}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
               <h4 className="font-medium mb-2">
-                {t('arabicSearchTip')}
+                {t('search.arabicSearchTip')}
               </h4>
               <ul className="space-y-1">
                 <li>
-                  • {t('arabicSearchDescription')}
+                  • {t('search.arabicSearchDescription')}
                 </li>
                 <li>
-                  • {t('useArabicForExactMatch')}
+                  • {t('search.useArabicForExactMatch')}
                 </li>
                 <li>
-                  • {t('tryDifferentWordForms')}
+                  • {t('search.tryDifferentWordForms')}
                 </li>
               </ul>
             </div>
             <div>
               <h4 className="font-medium mb-2">
-                {t('translationSearchTip')}
+                {t('search.translationSearchTip')}
               </h4>
               <ul className="space-y-1">
                 <li>
-                  • {t('translationSearchDescription')}
+                  • {t('search.translationSearchDescription')}
                 </li>
                 <li>
-                  • {t('searchInPreferredLanguage')}
+                  • {t('search.searchInPreferredLanguage')}
                 </li>
                 <li>
-                  • {t('useKeywordsAndPhrases')}
+                  • {t('search.useKeywordsAndPhrases')}
                 </li>
               </ul>
             </div>
