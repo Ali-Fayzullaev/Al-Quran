@@ -15,7 +15,7 @@ export function LanguageToggle() {
     { code: "ru" as Locale, name: "Русский", flag: "🇷🇺" },
     { code: "en" as Locale, name: "English", flag: "🇺🇸" },
     { code: "uz" as Locale, name: "O'zbek", flag: "🇺🇿" },
-    { code: "uzKril" as Locale, name: "Ўзбек (Кирилл)", flag: "🇺🇿" }
+    { code: "уз" as Locale, name: "Ўзбек (Кирилл)", flag: "🇺🇿" }
   ];
 
   const currentLanguage =
@@ -39,6 +39,7 @@ export function LanguageToggle() {
             "disabled:opacity-50 disabled:pointer-events-none",
             "min-w-[100px] justify-between"
           )}
+          style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}
         >
           <div className="flex items-center gap-2">
             <Globe className="w-4 h-4" />
@@ -62,6 +63,7 @@ export function LanguageToggle() {
             "data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
             "z-50"
           )}
+          style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}
           align="end"
           sideOffset={5}
         >

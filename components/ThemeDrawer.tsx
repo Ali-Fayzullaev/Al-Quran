@@ -1,3 +1,4 @@
+// src/components/ThemeDrawer.tsx
 'use client';
 
 import { memo, useCallback } from 'react';
@@ -5,6 +6,7 @@ import { Palette, Monitor, Sun, Moon, Check } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { cn } from '@/lib/utils';
 import { useColorTheme } from '@/lib/useColorTheme';
+import { useLocale } from '@/context/LocaleContext';
 import { SITE_COLOR_THEMES } from '@/lib/colorThemes';
 import { useQuranStore } from '@/lib/store';
 import {
@@ -23,6 +25,7 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
   const { theme, setTheme } = useTheme();
   const { siteColorTheme, setSiteColorTheme } = useQuranStore();
   const { applySiteTheme } = useColorTheme();
+  const { t } = useLocale();
 
   const handleThemeChange = useCallback((themeId: string) => {
     setSiteColorTheme(themeId);
@@ -41,7 +44,7 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
         <SheetHeader className="pb-6">
           <SheetTitle className="flex items-center gap-2 text-left" style={{ color: 'var(--fixed-text)' }}>
             <Palette className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
-            Настройки темы
+            {t('themeDrawerSection.themeSettings')}
           </SheetTitle>
         </SheetHeader>
 
@@ -49,14 +52,14 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
           {/* Display Mode */}
           <div>
             <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--fixed-text)' }}>
-              Режим отображения
+              {t('themeDrawerSection.displayMode')}
             </h3>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { id: 'light', icon: Sun, label: 'Светлый' },
-                { id: 'dark', icon: Moon, label: 'Темный' },
-                { id: 'system', icon: Monitor, label: 'Авто' }
-              ].map(({ id, icon: Icon, label }) => (
+                { id: 'light', icon: Sun, labelKey: 'lightMode' },
+                { id: 'dark', icon: Moon, labelKey: 'darkMode' },
+                { id: 'system', icon: Monitor, labelKey: 'autoMode' }
+              ].map(({ id, icon: Icon, labelKey }) => (
                 <button
                   key={id}
                   onClick={() => setTheme(id)}
@@ -78,7 +81,7 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
                   }}
                 >
                   <Icon size={18} style={{ color: 'var(--fixed-text-secondary)' }} />
-                  <span className="font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>{label}</span>
+                  <span className="font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>{t(`themeDrawerSection.${labelKey}`)}</span>
                   {theme === id && <Check size={12} style={{ color: 'var(--color-primary)' }} />}
                 </button>
               ))}
@@ -88,7 +91,7 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
           {/* Color Themes */}
           <div>
             <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--fixed-text)' }}>
-              Цветовые темы
+              {t('themeDrawerSection.colorThemes')}
             </h3>
             <div className="space-y-2 overflow-y-scroll" style={{ maxHeight: '60vh' }}>
               {SITE_COLOR_THEMES.map((colorTheme) => (
@@ -143,7 +146,7 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
         {/* Footer */}
         <div className="mt-8 pt-4 border-t" style={{ borderColor: 'var(--color-border)' }}>
           <p className="text-xs text-center" style={{ color: 'var(--fixed-text-secondary)' }}>
-            Настройки автоматически сохраняются
+            {t('themeDrawerSection.autoSave')}
           </p>
         </div>
       </SheetContent>

@@ -20,7 +20,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('locale') as Locale;
-      if (saved && ['ru', 'en', 'uz', 'uzKril'].includes(saved) && saved !== locale) {
+      if (saved && ['ru', 'en', 'uz', 'уз'].includes(saved) && saved !== locale) {
         setCurrentLocale(saved);
       }
       setIsClientReady(true);

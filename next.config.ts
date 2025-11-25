@@ -1,7 +1,5 @@
 // next.config.ts
-const withNextIntl = require('next-intl/plugin')('./next-intl.config.ts');
-
-module.exports = withNextIntl({
+module.exports = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
@@ -106,4 +104,4 @@ module.exports = withNextIntl({
     
     return config;
   },
-});
+};

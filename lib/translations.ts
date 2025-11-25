@@ -1,5 +1,5 @@
 // lib/translations.ts
-export type Locale = 'ru' | 'en' | 'uz' | 'uzKril';
+export type Locale = "ru" | "en" | "uz" | "уз";
 
 export const translations = {
   ru: {
@@ -16,12 +16,13 @@ export const translations = {
     juz: "Джуз",
     searchNav: "Поиск",
     bookmarks: "Закладки",
-    
+
     bookmarksSection: {
       yourBookmarks: "Ваши закладки",
       startSavingVerses: "Начните сохранять аяты",
       noBookmarksYet: "У вас пока нет закладок",
-      noBookmarksDescription: "Начните добавлять аяты в закладки во время чтения Корана. Ваши сохраненные аяты появятся здесь.",
+      noBookmarksDescription:
+        "Начните добавлять аяты в закладки во время чтения Корана. Ваши сохраненные аяты появятся здесь.",
       browseSurahs: "Просмотр сур",
       searchQuran: "Поиск в Коране",
       bookmarksFound: "закладок найдено",
@@ -39,31 +40,31 @@ export const translations = {
       playAudio: "Воспроизвести аудио",
       goToVerse: "Перейти к аяту",
       note: "Заметка",
-      noNote: "Без заметки"
+      noNote: "Без заметки",
     },
     settings: "Настройки",
-    
+
     settingsSection: {
       settingsTitle: "Настройки",
       settingsDescription: "Настройте приложение под свои предпочтения",
       audio: "Аудио",
-      translation: "Перевод", 
+      translation: "Перевод",
       reading: "Чтение",
       colors: "Цвета",
       resetToDefault: "Сбросить по умолчанию",
       settingsSaved: "Настройки сохранены",
       autoSaveEnabled: "Автосохранение включено",
       settingsAutoSave: "Настройки автоматически сохраняются",
-      
+
       audioSettings: "Настройки аудио",
       selectReciterQari: "Выберите чтеца Корана",
       showAll: "Показать все",
       searchReciters: "Поиск чтецов...",
       volume: "Громкость",
-      speed: "Скорость", 
+      speed: "Скорость",
       autoplayNext: "Автовоспроизведение следующего",
       autoPlayNext: "Автовоспроизведение следующего аята",
-      
+
       displaySettings: "Настройки отображения",
       fontSizeLabel: "Размер шрифта",
       selectTranslations: "Выберите переводы",
@@ -72,7 +73,7 @@ export const translations = {
       showTranslation: "Показывать перевод",
       showTranslations: "Показывать переводы",
       showTransliteration: "Показывать транслитерацию",
-      
+
       customColors: "Пользовательские цвета",
       customColorsDesc: "Настройте цвета под свои предпочтения",
       themeMode: "Режим темы",
@@ -83,10 +84,10 @@ export const translations = {
       darkThemeDesc: "Темный режим для вечернего чтения",
       siteColorTheme: "Цветовая схема сайта",
       siteColorThemeDesc: "Выберите основной цвет интерфейса",
-      
+
       colorBlue: "Синий",
       colorGreen: "Зеленый",
-      colorPurple: "Фиолетовый", 
+      colorPurple: "Фиолетовый",
       colorAmber: "Янтарный",
       colorPink: "Розовый",
       colorOrange: "Оранжевый",
@@ -96,13 +97,13 @@ export const translations = {
       colorYellow: "Желтый",
       colorGray: "Серый",
       colorSepia: "Сепия",
-      
+
       readyMadeColorSchemes: "Готовые цветовые схемы",
       clickToApplyInstantly: "Нажмите, чтобы применить мгновенно",
-      
+
       schemeClassicName: "Классическая",
       schemeClassicDesc: "Традиционная зелено-золотая схема",
-      schemeOceanName: "Океан", 
+      schemeOceanName: "Океан",
       schemeOceanDesc: "Успокаивающие синие тона",
       schemeRoyalName: "Королевская",
       schemeRoyalDesc: "Элегантные фиолетовые оттенки",
@@ -117,33 +118,44 @@ export const translations = {
       schemeDarkemeraldName: "Темный изумруд",
       schemeDarkemeraldDesc: "Глубокие зеленые тона для темной темы",
       schemeDarkamberName: "Темный янтарь",
-      schemeDarkamberDesc: "Теплые золотистые тона для темной темы", 
+      schemeDarkamberDesc: "Теплые золотистые тона для темной темы",
       schemeMidnightName: "Полночь",
       schemeMidnightDesc: "Элегантная темно-синяя схема",
-      
+
       orCustomizeManually: "Или настройте вручную",
       buttonColorLabel: "Цвет кнопок",
       quickColors: "Быстрые цвета",
       applyColor: "Применить цвет",
       resetColorBtn: "Сбросить цвет",
-      quranTextColorFull: "Цвет текста Корана", 
+      quranTextColorFull: "Цвет текста Корана",
       translationTextColor: "Цвет текста перевода",
-      preview: "Предварительный просмотр"
+      preview: "Предварительный просмотр",
     },
     
+    themeDrawerSection: {
+      themeSettings: "Настройки темы",
+      displayMode: "Режим отображения",
+      lightMode: "Светлый",
+      darkMode: "Темный",
+      autoMode: "Авто",
+      colorThemes: "Цветовые темы",
+      autoSave: "Настройки автоматически сохраняются"
+    },
+
     menu: "Меню",
     close: "Закрыть",
-    
+
     // Навигация
     quranReading: "Чтение Корана",
     journeyNav: "Путешествие",
     aiHelperNav: "AI Помощник",
     duaDhikriNav: "Дуа и Зикр",
     feedback: "Обратная связь",
-    
+
     feedbackSection: {
       feedbackAndSupport: "Обратная связь и поддержка",
-      feedbackSubtitle: "Помогите нам улучшить приложение, поделившись своим мнением",
+      feedbackSubtitle:
+        "Помогите нам улучшить приложение, поделившись своим мнением",
       feedbackType: "Тип обращения",
       bugReport: "Сообщить об ошибке",
       featureRequest: "Запрос функции",
@@ -152,22 +164,24 @@ export const translations = {
       issueTitle: "Заголовок *",
       titlePlaceholder: "Кратко опишите вашу проблему или предложение...",
       description: "Описание *",
-      descriptionPlaceholder: "Подробно опишите вашу проблему, предложение или отзыв...",
+      descriptionPlaceholder:
+        "Подробно опишите вашу проблему, предложение или отзыв...",
       submitFeedback: "Отправить отзыв",
       submitting: "Отправляем...",
       successTitle: "Спасибо за ваш отзыв!",
-      successMessage: "Мы получили ваше сообщение и рассмотрим его в ближайшее время.",
+      successMessage:
+        "Мы получили ваше сообщение и рассмотрим его в ближайшее время.",
       backToSite: "Вернуться на сайт",
       fillAllFields: "Пожалуйста, заполните все обязательные поля",
-      submitError: "Ошибка при отправке. Попробуйте еще раз."
+      submitError: "Ошибка при отправке. Попробуйте еще раз.",
     },
-    
+
     // Категории
     main: "Основное",
-    learning: "Обучение", 
+    learning: "Обучение",
     tools: "Инструменты",
     settingsCategory: "Настройки",
-    
+
     // Дополнительные ключи
     inTheNameOfAllah: "Во имя Аллаха",
     islamicLearningPlatform: "Платформа изучения ислама",
@@ -175,12 +189,13 @@ export const translations = {
     quizNav: "Викторина",
     openMenu: "Открыть меню",
     closeMenu: "Закрыть меню",
-    
+
     // Live Streams
     liveStreams: {
       nav: "Духовный центр",
       title: "Прямые трансляции",
-      subtitle: "Посмотрите прямые трансляции из самых священных мест Ислама, включая Масджид аль-Харам в Мекке и Масджид ан-Набави в Медине.",
+      subtitle:
+        "Посмотрите прямые трансляции из самых священных мест Ислама, включая Масджид аль-Харам в Мекке и Масджид ан-Набави в Медине.",
       holyPlacesTitle: "🕌 Святые места",
       holyPlacesDescription: "Прямые трансляции из самых священных мест ислама",
       status: {
@@ -190,25 +205,27 @@ export const translations = {
         lastUpdated: "ПОСЛЕДНЕЕ ОБНОВЛЕНИЕ",
         liveSignal: "Прямой сигнал",
         waiting: "Ожидание сигнала",
-        currentViewers: "Зрителей сейчас"
+        currentViewers: "Зрителей сейчас",
       },
       actions: {
         refresh: "Обновить",
         refreshing: "Обновление...",
-        openYoutube: "Открыть в YouTube"
+        openYoutube: "Открыть в YouTube",
       },
       locations: {
         mecca: {
           title: "Масджид аль-Харам, Мекка",
-          description: "Прямая трансляция из самой священной мечети Ислама, окружающей Каабу. Наблюдайте за молитвами, Тавафом и другими ритуалами."
+          description:
+            "Прямая трансляция из самой священной мечети Ислама, окружающей Каабу. Наблюдайте за молитвами, Тавафом и другими ритуалами.",
         },
         medina: {
           title: "Масджид ан-Набави, Медина",
-          description: "Прямая трансляция из Мечети Пророка в Медине, где похоронен Пророк Мухаммад (мир ему). Посещайте молитвы и ритуалы."
-        }
-      }
+          description:
+            "Прямая трансляция из Мечети Пророка в Медине, где похоронен Пророк Мухаммад (мир ему). Посещайте молитвы и ритуалы.",
+        },
+      },
     },
-    
+
     // Prayer Times Display
     prayerTimes: {
       title: "Время намазов",
@@ -224,7 +241,8 @@ export const translations = {
       find: "Найти",
       searchingCities: "Поиск городов...",
       noResults: 'Города не найдены для "{query}"',
-      tryEnglish: "Попробуйте английские названия: Moscow, London, Istanbul, Dubai, Almaty",
+      tryEnglish:
+        "Попробуйте английские названия: Moscow, London, Istanbul, Dubai, Almaty",
       quickTests: "Быстрые тесты:",
       nextPrayer: "Следующий намаз",
       tomorrowPrayer: "Завтрашний намаз",
@@ -240,7 +258,7 @@ export const translations = {
         location: "Время рассчитывается с учетом вашего местоположения",
         method: "Используется метод расчета для вашего региона",
         autoUpdate: "Время обновляется автоматически",
-        search: "Поиск доступен по названию города"
+        search: "Поиск доступен по названию города",
       },
       prayers: {
         fajr: "Фаджр",
@@ -248,7 +266,7 @@ export const translations = {
         dhuhr: "Зухр",
         asr: "Аср",
         maghrib: "Магриб",
-        isha: "Иша"
+        isha: "Иша",
       },
       prayersEn: {
         fajr: "Fajr",
@@ -256,23 +274,24 @@ export const translations = {
         dhuhr: "Dhuhr",
         asr: "Asr",
         maghrib: "Maghrib",
-        isha: "Isha"
+        isha: "Isha",
       },
       cities: {
         moscow: "Москва",
         london: "Лондон",
         dubai: "Дубай",
-        almaty: "Алматы"
-      }
+        almaty: "Алматы",
+      },
     },
-    
+
     // Common words
     progress: "Прогресс",
-    
+
     // Journey section
     journey: {
       quranJourney: "Путешествие по Корану",
-      journeyDescription: "Отправьтесь в интерактивное путешествие по всем 114 сурам Священного Корана. Проверьте свои знания, разблокируйте достижения и отслеживайте свой прогресс!",
+      journeyDescription:
+        "Отправьтесь в интерактивное путешествие по всем 114 сурам Священного Корана. Проверьте свои знания, разблокируйте достижения и отслеживайте свой прогресс!",
       journeyMap: "Карта",
       statistics: "Статистика",
       achievements: "Достижения",
@@ -296,7 +315,8 @@ export const translations = {
       listView: "Список",
       unlockedOn: "Разблокировано",
       achievementsWaiting: "достижений ждут вас!",
-      keepLearning: "Продолжайте учиться, чтобы разблокировать больше достижений",
+      keepLearning:
+        "Продолжайте учиться, чтобы разблокировать больше достижений",
       masterOfJourney: "Мастер путешествия!",
       allAchievementsUnlocked: "Вы разблокировали все достижения!",
       timeSpent: "Времени затрачено",
@@ -309,30 +329,32 @@ export const translations = {
       remaining: "осталось",
       progress: "Прогресс",
       byJuz: "По джузам",
-      filters: "Фильтры"
+      filters: "Фильтры",
     },
-    
+
     // Mosque Finder
     mosqueFinder: "Поиск мечетей",
-    
+
     mosqueFinderSection: {
       title: "Поиск мечетей",
-      description: "Найдите мечети рядом с вами или в любом городе мира. Получите информацию о времени молитв, услугах и контактах.",
+      description:
+        "Найдите мечети рядом с вами или в любом городе мира. Получите информацию о времени молитв, услугах и контактах.",
       back: "Назад",
       welcomeTitle: "Добро пожаловать в поиск мечетей",
-      welcomeDescription: "Начните поиск, введя название мечети, город или используя геолокацию",
+      welcomeDescription:
+        "Начните поиск, введя название мечети, город или используя геолокацию",
       searchByName: "🔍 Поиск по названию",
       searchByNameExample: "Мечеть Кул Шариф, Москва, Казань",
       searchNearby: "📍 Поиск рядом",
-      searchNearbyDescription: "Используйте кнопку \"Найти рядом\"",
+      searchNearbyDescription: 'Используйте кнопку "Найти рядом"',
       information: "Информация",
       mosquesFound: "Найдено мечетей:",
       clearResults: "Очистить результаты",
       dataDisclaimer: "• Данные предоставляются Google Places API",
       prayerTimesNote: "• Время молитв может отличаться",
-      verifyInfo: "• Уточняйте информацию в мечети"
+      verifyInfo: "• Уточняйте информацию в мечети",
     },
-    
+
     mosque: {
       searchTitle: "Поиск мечетей",
       searchPlaceholder: "Название мечети или город...",
@@ -363,12 +385,13 @@ export const translations = {
       openHours: "Часы работы",
       phone: "Телефон",
       website: "Сайт",
-      address: "Адрес"
+      address: "Адрес",
     },
-    
+
     // Home page
     bestQuranExperience: "Лучший опыт изучения Корана",
-    heroDescription: "Изучайте Священный Коран с переводами, толкованиями и аудио на русском, английском и узбекском языках",
+    heroDescription:
+      "Изучайте Священный Коран с переводами, толкованиями и аудио на русском, английском и узбекском языках",
     searchPlaceholder: "Поиск сур, аятов или слов...",
     verseOfTheDay: "Аят дня",
     verse: "Аят",
@@ -421,7 +444,7 @@ export const translations = {
     clearAll: "Очистить все",
     exportDuas: "Экспорт дуа",
     importDuas: "Импорт дуа",
-    
+
     // Saved duas page
     savedDuas: "Сохраненные дуа",
     favoriteDuas: "любимых дуа",
@@ -441,30 +464,36 @@ export const translations = {
     // AI Helper
     arabicTitle: "مساعد القرآن الذكي",
     smartQuranAssistant: "Умный помощник по Корану",
-    aiHelperSubtitle: "Задавайте вопросы о Коране, исламе и религиозной практике. Получайте мудрые ответы с ссылками на священные тексты.",
+    aiHelperSubtitle:
+      "Задавайте вопросы о Коране, исламе и религиозной практике. Получайте мудрые ответы с ссылками на священные тексты.",
     popularQuestions: "Популярные вопросы:",
-    startConversation: "Начните разговор, задав вопрос или выбрав один из предложенных",
+    startConversation:
+      "Начните разговор, задав вопрос или выбрав один из предложенных",
     askQuestion: "Введите ваш вопрос...",
     send: "Отправить",
     clearChat: "Очистить чат",
     thinking: "Думаю...",
-    disclaimer: "Этот AI-помощник предоставляет информацию в образовательных целях. По важным религиозным вопросам консультируйтесь с квалифицированными учеными.",
+    disclaimer:
+      "Этот AI-помощник предоставляет информацию в образовательных целях. По важным религиозным вопросам консультируйтесь с квалифицированными учеными.",
     complexQuestion: "Сложный вопрос",
-    complexQuestionDesc: "Наши ученые лично рассмотрят и ответят на ваш вопрос с подробным объяснением",
+    complexQuestionDesc:
+      "Наши ученые лично рассмотрят и ответят на ваш вопрос с подробным объяснением",
     yourContact: "Ваш контакт (телефон или email)",
     yourQuestion: "Ваш вопрос",
     submitQuestion: "Отправить вопрос",
     responseTime: "Мы ответим в течение 1-7 дней, ИншаАллах",
     questionSent: "Ваш вопрос успешно отправлен!",
-    thankYou: "Спасибо за ваш вопрос. Наши ученые рассмотрят его и скоро ответят.",
+    thankYou:
+      "Спасибо за ваш вопрос. Наши ученые рассмотрят его и скоро ответят.",
     backToChat: "Назад к чату",
     contactPlaceholder: "Введите номер телефона или email",
     questionPlaceholder: "Опишите ваш вопрос подробно...",
-    hadithQuote: "Каждый сын Адама совершает ошибки, но лучшие из совершающих ошибки - те, кто раскаивается.",
+    hadithQuote:
+      "Каждый сын Адама совершает ошибки, но лучшие из совершающих ошибки - те, кто раскаивается.",
     cancel: "Отмена",
     sendingMessage: "Отправляем...",
     pleaseWait: "Подождите",
-    
+
     // Dua Dhikr
     DuaDhikr: {
       title: "Дуа и Зикр",
@@ -475,14 +504,14 @@ export const translations = {
         "evening-dhikr": "Вечерний зикр",
         "dhikr-after-salah": "Зикр после намаза",
         "daily-dua": "Ежедневные дуа",
-        "selected-dua": "Избранные дуа"
+        "selected-dua": "Избранные дуа",
       },
       descriptions: {
         "morning-dhikr": "Поминания Аллаха для начала дня с благословением",
         "evening-dhikr": "Вечерние зикры для защиты и умиротворения",
         "dhikr-after-salah": "Зикры и дуа после завершения намаза",
         "daily-dua": "Повседневные молитвы для всех жизненных ситуаций",
-        "selected-dua": "Особые дуа от Корана и Сунны"
+        "selected-dua": "Особые дуа от Корана и Сунны",
       },
       languageIndicator: "РУС",
       loadingContent: "Пожалуйста, подождите, пока мы подготавливаем контент",
@@ -498,7 +527,8 @@ export const translations = {
       remaining: "Осталось",
       almostDone: "🔥 Почти готово! Осталось {remaining} дуа!",
       globalSettings: "Глобальные настройки отображения",
-      globalSettingsDescription: "Настройте какие поля будут показаны по умолчанию во всех карточках дуа.",
+      globalSettingsDescription:
+        "Настройте какие поля будут показаны по умолчанию во всех карточках дуа.",
       transliteration: "Транслитерация",
       notes: "Заметки",
       benefits: "Польза",
@@ -508,7 +538,8 @@ export const translations = {
       settings: "Настройки",
       searchPlaceholder: "Поиск дуа...",
       tip: "Совет",
-      tipText: "Каждая карточка дуа имеет свои настройки. Нажмите на шестерёнку в карточке чтобы настроить отображение.",
+      tipText:
+        "Каждая карточка дуа имеет свои настройки. Нажмите на шестерёнку в карточке чтобы настроить отображение.",
       languageIndicatorText: "РУС",
       noResults: "Дуа не найдены",
       noResultsDescription: "Попробуйте изменить поисковые запросы или фильтры",
@@ -517,9 +548,9 @@ export const translations = {
       statusReady: "🏆 Готово",
       statusAlmostDone: "🔥 Скоро",
       statusInProgress: "⚡ Идёт",
-      statusStart: "📚 Начать"
+      statusStart: "📚 Начать",
     },
-    
+
     // Переводы названий сур
     surahTranslations: {
       "Al-Fatiha": "Открывающая",
@@ -527,16 +558,17 @@ export const translations = {
       "Al-Kahf": "Пещера",
       "Ya-Sin": "Я Син",
       "Ar-Rahman": "Милостивый",
-      "Al-Mulk": "Власть"
+      "Al-Mulk": "Власть",
     },
-    
+
     // Переводы для списка сур
     surahsList: {
       loading: "Загрузка сур...",
       error: "Ошибка загрузки сур",
       refreshPage: "Пожалуйста, обновите страницу",
       title: "Суры Священного Корана",
-      description: "Полное собрание 114 сур Священного Корана с переводом на русский язык",
+      description:
+        "Полное собрание 114 сур Священного Корана с переводом на русский язык",
       searchPlaceholder: "Поиск сур...",
       filterAll: "Все",
       filterMeccan: "Мекканские",
@@ -547,9 +579,9 @@ export const translations = {
       sortRevelation: "Откровение",
       verses: "аятов",
       noResults: "Суры не найдены",
-      noResultsDesc: "Попробуйте с другими ключевыми словами поиска"
+      noResultsDesc: "Попробуйте с другими ключевыми словами поиска",
     },
-    
+
     // Переводы для Quran Reader
     quranReader: {
       audioNotAvailableReciter: "Аудио недоступно для этого чтеца",
@@ -562,23 +594,24 @@ export const translations = {
       audio: "Аудио",
       next: "След",
       translation: "Перевод",
-      settings: "Настройки"
+      settings: "Настройки",
     },
-    
+
     // Предустановленные вопросы
     presetQuestion1: "Что означает Аль-Фатиха?",
-    presetQuestion2: "Как правильно совершать намаз?", 
+    presetQuestion2: "Как правильно совершать намаз?",
     presetQuestion3: "В чем мудрость поста в Рамадан?",
     presetQuestion4: "Что говорит Коран о терпении?",
     presetQuestion5: "Объясните значение 99 имен Аллаха",
     presetQuestion6: "Что такое Таухид в исламе?",
     presetQuestion7: "Какие дуа рекомендуется читать ежедневно?",
     presetQuestion8: "Расскажите о Пророке Мухаммаде (мир ему)",
-    
+
     // Planner
     planner: {
       title: "Планировщик изучения Корана",
-      subtitle: "Создавайте персональные планы изучения и отслеживайте свой прогресс",
+      subtitle:
+        "Создавайте персональные планы изучения и отслеживайте свой прогресс",
       createPlan: "Создать план",
       myPlans: "Мои планы",
       todayTasks: "Задачи на сегодня",
@@ -597,22 +630,27 @@ export const translations = {
       defaultUserName: "Пользователь",
       days: "дней",
       welcomeTitle: "Добро пожаловать",
-      welcomeMessage: "Начните свое духовное путешествие с изучения Священного Корана",
+      welcomeMessage:
+        "Начните свое духовное путешествие с изучения Священного Корана",
       greatStartTitle: "Отличное начало",
-      greatStartMessage: "Вы занимаетесь уже {{streak}} {{days}} подряд! Продолжайте в том же духе",
+      greatStartMessage:
+        "Вы занимаетесь уже {{streak}} {{days}} подряд! Продолжайте в том же духе",
       amazingDisciplineTitle: "Потрясающая дисциплина",
-      amazingDisciplineMessage: "Ваша серия {{streak}} {{days}} - это впечатляет! Вы на правильном пути",
+      amazingDisciplineMessage:
+        "Ваша серия {{streak}} {{days}} - это впечатляет! Вы на правильном пути",
       incredibleAchievementTitle: "Невероятное достижение",
-      incredibleAchievementMessage: "{{streak}} {{days}} непрерывного изучения! Вы истинный пример для подражания",
+      incredibleAchievementMessage:
+        "{{streak}} {{days}} непрерывного изучения! Вы истинный пример для подражания",
       loadingPlannerTitle: "Загрузка планировщика",
       loadingPlannerMessage: "Подготавливаем ваше духовное путешествие...",
       startSpiritualJourney: "Начать духовное путешествие",
       overallStatistics: "Общая статистика",
       activePlans: "Активных планов",
       studiedAyahs: "Изучено аятов",
-      studyMinutes: "Минут изучения", 
+      studyMinutes: "Минут изучения",
       excellentWork: "Отличная работа!",
-      allTasksCompleted: "На сегодня все задачи выполнены. Отдохните или создайте новый план!",
+      allTasksCompleted:
+        "На сегодня все задачи выполнены. Отдохните или создайте новый план!",
       ayahSingular: "аят",
       ayahPlural: "аятов",
       goToStudyAyahs: "Перейти к изучению аятов",
@@ -623,14 +661,16 @@ export const translations = {
       completedPlans: "Завершенные планы",
       plansCompleted: "планов завершено",
       scholarlyReader: "Знаток Корана",
-      startStudyingToEarnAchievements: "Начните изучение, чтобы получить достижения!",
+      startStudyingToEarnAchievements:
+        "Начните изучение, чтобы получить достижения!",
       quickActions: "Быстрые действия",
       newPlan: "Новый план",
       hideCalendar: "Скрыть календарь",
       viewCalendar: "Показать календарь",
       exportData: "Экспорт данных",
       tipOfTheDay: "Совет дня",
-      dailyTipMessage: "Регулярность - ключ к успешному изучению Корана. Даже 10-15 минут в день дают отличный результат!",
+      dailyTipMessage:
+        "Регулярность - ключ к успешному изучению Корана. Даже 10-15 минут в день дают отличный результат!",
       studyCalendar: "Календарь изучения",
       backToPlanner: "Назад к планировщику",
       planNotFound: "План не найден",
@@ -646,7 +686,8 @@ export const translations = {
       saveChanges: "Сохранить изменения",
       cancel: "Отмена",
       confirmDelete: "Подтвердить удаление",
-      deleteConfirmMessage: "Вы уверены, что хотите удалить этот план? Это действие нельзя отменить.",
+      deleteConfirmMessage:
+        "Вы уверены, что хотите удалить этот план? Это действие нельзя отменить.",
       todaysTask: "Задача на сегодня",
       markCompleted: "Отметить как выполненное",
       alreadyCompleted: "Уже выполнено!",
@@ -670,7 +711,7 @@ export const translations = {
       ayahsForStudy: "Аяты для изучения",
       ayahNumber: "Аят",
       juzNumber: "Джуз",
-      quranQuote: "\"И читай Коран размеренным чтением\" (Коран 73:4)",
+      quranQuote: '"И читай Коран размеренным чтением" (Коран 73:4)',
       readingCounter: "Счетчик чтения",
       readButtonText: "+1 Прочитал",
       readingTip: "Нажимайте каждый раз после прочтения аятов",
@@ -690,7 +731,7 @@ export const translations = {
       statusPaused: "Приостановлен",
       statusCancelled: "Отменен",
       statusUnknown: "Неизвестно",
-      totalDays: "Всего дней"
+      totalDays: "Всего дней",
     },
 
     // Calendar View
@@ -700,8 +741,8 @@ export const translations = {
         completed: "Выполнено",
         skipped: "Пропущено",
         pending: "Ожидает",
-        future: "Будущие"
-      }
+        future: "Будущие",
+      },
     },
 
     // Create Plan Form
@@ -720,7 +761,7 @@ export const translations = {
         mediumTitle: "Углубленное изучение",
         mediumDesc: "Для тех, кто хочет больше погрузиться",
         mediumPlanName: "Углубленное изучение",
-        mediumPlanDesc: "Изучение средних и больших сур"
+        mediumPlanDesc: "Изучение средних и больших сур",
       },
       customPlan: "Настроить свой план",
       basicInfoTitle: "Основная информация",
@@ -746,7 +787,7 @@ export const translations = {
         wed: "Ср",
         thu: "Чт",
         fri: "Пт",
-        sat: "Сб"
+        sat: "Сб",
       },
       selectedDays: "Выбрано дней:",
       days: "дней",
@@ -772,11 +813,11 @@ export const translations = {
         back: "Назад",
         next: "Далее",
         cancel: "Отмена",
-        create: "Создать план"
+        create: "Создать план",
       },
       errors: {
-        creationError: "Ошибка при создании плана"
-      }
+        creationError: "Ошибка при создании плана",
+      },
     },
 
     // Quiz
@@ -819,11 +860,12 @@ export const translations = {
       ptsShort: "б.",
       resumeQuiz: "Продолжить викторину",
       finishQuiz: "Завершить викторину",
-      pauseMessage: "Не торопитесь. Нажмите \"Продолжить\", когда будете готовы.",
+      pauseMessage: 'Не торопитесь. Нажмите "Продолжить", когда будете готовы.',
       secondsPerQuestionPlaceholder: "Секунд на вопрос",
       // Результаты квиза
       needsImprovementTitle: "Нуждается в улучшении",
-      needsImprovementMessage: "Продолжайте с уверенностью - каждый шаг в изучении Корана ценен!",
+      needsImprovementMessage:
+        "Продолжайте с уверенностью - каждый шаг в изучении Корана ценен!",
       score: "Очки",
       points: "баллов",
       correct: "Правильно",
@@ -854,7 +896,7 @@ export const translations = {
       recGood3: "Изучайте контекст",
       recAverage1: "Повторяйте регулярно",
       recAverage2: "Концентрируйтесь на слабых местах",
-      recAverage3: "Проверяйте понимание"
+      recAverage3: "Проверяйте понимание",
     },
 
     // Search
@@ -881,16 +923,16 @@ export const translations = {
       searchModeArabic: "Только арабский",
       searchModeTranslation: "Только перевод",
       copyVerse: "Копировать аят",
-      bookmarkVerse: "Добавить в закладки"
-    }
+      bookmarkVerse: "Добавить в закладки",
+    },
   },
-  
+
   en: {
     // Основные
     title: "Quran AI",
     plannerTitle: "Study Planner",
     welcome: "Welcome to Quran AI",
-    language: "Language", 
+    language: "Language",
     theme: "Theme",
     home: "Home",
     surahs: "Surahs",
@@ -899,12 +941,13 @@ export const translations = {
     juz: "Juz",
     searchNav: "Search",
     bookmarks: "Bookmarks",
-    
+
     bookmarksSection: {
       yourBookmarks: "Your bookmarks",
       startSavingVerses: "Start saving verses",
       noBookmarksYet: "No bookmarks yet",
-      noBookmarksDescription: "Start adding verses to bookmarks while reading the Quran. Your saved verses will appear here.",
+      noBookmarksDescription:
+        "Start adding verses to bookmarks while reading the Quran. Your saved verses will appear here.",
       browseSurahs: "Browse surahs",
       searchQuran: "Search Quran",
       bookmarksFound: "bookmarks found",
@@ -922,10 +965,10 @@ export const translations = {
       playAudio: "Play audio",
       goToVerse: "Go to verse",
       note: "Note",
-      noNote: "No note"
+      noNote: "No note",
     },
     settings: "Settings",
-    
+
     settingsSection: {
       settingsTitle: "Settings",
       settingsDescription: "Configure the app to your preferences",
@@ -937,8 +980,8 @@ export const translations = {
       settingsSaved: "Settings Saved",
       autoSaveEnabled: "Auto-save Enabled",
       settingsAutoSave: "Settings are automatically saved",
-      
-      audioSettings: "Audio Settings", 
+
+      audioSettings: "Audio Settings",
       selectReciterQari: "Select Quran Reciter",
       showAll: "Show All",
       searchReciters: "Search reciters...",
@@ -946,7 +989,7 @@ export const translations = {
       speed: "Speed",
       autoplayNext: "Autoplay Next",
       autoPlayNext: "Autoplay next verse",
-      
+
       displaySettings: "Display Settings",
       fontSizeLabel: "Font Size",
       selectTranslations: "Select Translations",
@@ -955,7 +998,7 @@ export const translations = {
       showTranslation: "Show Translation",
       showTranslations: "Show Translations",
       showTransliteration: "Show Transliteration",
-      
+
       customColors: "Custom Colors",
       customColorsDesc: "Customize colors to your preferences",
       themeMode: "Theme Mode",
@@ -966,27 +1009,27 @@ export const translations = {
       darkThemeDesc: "Dark mode for evening reading",
       siteColorTheme: "Site Color Theme",
       siteColorThemeDesc: "Choose the main interface color",
-      
+
       colorBlue: "Blue",
       colorGreen: "Green",
       colorPurple: "Purple",
       colorAmber: "Amber",
       colorPink: "Pink",
       colorOrange: "Orange",
-      colorTeal: "Teal", 
+      colorTeal: "Teal",
       colorIndigo: "Indigo",
       colorRed: "Red",
       colorYellow: "Yellow",
       colorGray: "Gray",
       colorSepia: "Sepia",
-      
+
       readyMadeColorSchemes: "Ready-made Color Schemes",
       clickToApplyInstantly: "Click to apply instantly",
-      
+
       schemeClassicName: "Classic",
       schemeClassicDesc: "Traditional green-gold scheme",
       schemeOceanName: "Ocean",
-      schemeOceanDesc: "Calming blue tones", 
+      schemeOceanDesc: "Calming blue tones",
       schemeRoyalName: "Royal",
       schemeRoyalDesc: "Elegant purple shades",
       schemeSunsetName: "Sunset",
@@ -1003,7 +1046,7 @@ export const translations = {
       schemeDarkamberDesc: "Warm golden tones for dark theme",
       schemeMidnightName: "Midnight",
       schemeMidnightDesc: "Elegant dark blue scheme",
-      
+
       orCustomizeManually: "Or customize manually",
       buttonColorLabel: "Button Color",
       quickColors: "Quick Colors",
@@ -1011,19 +1054,29 @@ export const translations = {
       resetColorBtn: "Reset Color",
       quranTextColorFull: "Quran Text Color",
       translationTextColor: "Translation Text Color",
-      preview: "Preview"
+      preview: "Preview",
     },
     
+    themeDrawerSection: {
+      themeSettings: "Theme Settings",
+      displayMode: "Display Mode",
+      lightMode: "Light",
+      darkMode: "Dark",
+      autoMode: "Auto",
+      colorThemes: "Color Themes",
+      autoSave: "Settings are automatically saved"
+    },
+
     menu: "Menu",
     close: "Close",
-    
+
     // Навигация
     quranReading: "Quran Reading",
     journeyNav: "Journey",
     aiHelperNav: "AI Helper",
     duaDhikriNav: "Dua & Dhikr",
     feedback: "Feedback",
-    
+
     feedbackSection: {
       feedbackAndSupport: "Feedback and Support",
       feedbackSubtitle: "Help us improve the app by sharing your thoughts",
@@ -1035,22 +1088,24 @@ export const translations = {
       issueTitle: "Title *",
       titlePlaceholder: "Briefly describe your issue or suggestion...",
       description: "Description *",
-      descriptionPlaceholder: "Describe your problem, suggestion or feedback in detail...",
+      descriptionPlaceholder:
+        "Describe your problem, suggestion or feedback in detail...",
       submitFeedback: "Submit Feedback",
       submitting: "Submitting...",
       successTitle: "Thank you for your feedback!",
-      successMessage: "We have received your message and will review it shortly.",
+      successMessage:
+        "We have received your message and will review it shortly.",
       backToSite: "Back to Site",
       fillAllFields: "Please fill in all required fields",
-      submitError: "Error submitting. Please try again."
+      submitError: "Error submitting. Please try again.",
     },
-    
+
     // Категории
     main: "Main",
     learning: "Learning",
-    tools: "Tools", 
+    tools: "Tools",
     settingsCategory: "Settings",
-    
+
     // Дополнительные ключи
     inTheNameOfAllah: "In the name of Allah",
     islamicLearningPlatform: "Islamic Learning Platform",
@@ -1058,31 +1113,33 @@ export const translations = {
     quizNav: "Quiz",
     openMenu: "Open menu",
     closeMenu: "Close menu",
-    
+
     // Common words
     progress: "Progress",
-    
+
     // Mosque Finder
     mosqueFinder: "Find Mosques",
-    
+
     mosqueFinderSection: {
       title: "Find Mosques",
-      description: "Find mosques near you or in any city worldwide. Get information about prayer times, services and contacts.",
+      description:
+        "Find mosques near you or in any city worldwide. Get information about prayer times, services and contacts.",
       back: "Back",
       welcomeTitle: "Welcome to mosque finder",
-      welcomeDescription: "Start searching by entering a mosque name, city or using geolocation",
+      welcomeDescription:
+        "Start searching by entering a mosque name, city or using geolocation",
       searchByName: "🔍 Search by name",
       searchByNameExample: "Blue Mosque, Istanbul, London",
       searchNearby: "📍 Search nearby",
-      searchNearbyDescription: "Use the \"Find nearby\" button",
+      searchNearbyDescription: 'Use the "Find nearby" button',
       information: "Information",
       mosquesFound: "Mosques found:",
       clearResults: "Clear results",
       dataDisclaimer: "• Data provided by Google Places API",
       prayerTimesNote: "• Prayer times may vary",
-      verifyInfo: "• Verify information with the mosque"
+      verifyInfo: "• Verify information with the mosque",
     },
-    
+
     mosque: {
       searchTitle: "Find Mosques",
       searchPlaceholder: "Mosque name or city...",
@@ -1113,12 +1170,13 @@ export const translations = {
       openHours: "Opening hours",
       phone: "Phone",
       website: "Website",
-      address: "Address"
+      address: "Address",
     },
-    
+
     // Home page
     bestQuranExperience: "Best Quran Learning Experience",
-    heroDescription: "Study the Holy Quran with translations, interpretations and audio in Russian, English and Uzbek languages",
+    heroDescription:
+      "Study the Holy Quran with translations, interpretations and audio in Russian, English and Uzbek languages",
     searchPlaceholder: "Search surahs, verses or words...",
     verseOfTheDay: "Verse of the Day",
     verse: "Verse",
@@ -1171,7 +1229,7 @@ export const translations = {
     clearAll: "Clear All",
     exportDuas: "Export Duas",
     importDuas: "Import Duas",
-    
+
     // Saved duas page
     savedDuas: "Saved Duas",
     favoriteDuas: "favorite duas",
@@ -1191,30 +1249,36 @@ export const translations = {
     // AI Helper
     arabicTitle: "مساعد القرآن الذكي",
     smartQuranAssistant: "Smart Quran Assistant",
-    aiHelperSubtitle: "Ask questions about Quran, Islam and religious practices. Get wise answers with references to sacred texts.",
+    aiHelperSubtitle:
+      "Ask questions about Quran, Islam and religious practices. Get wise answers with references to sacred texts.",
     popularQuestions: "Popular Questions:",
-    startConversation: "Start a conversation by asking a question or selecting one of the suggested ones",
+    startConversation:
+      "Start a conversation by asking a question or selecting one of the suggested ones",
     askQuestion: "Type your question...",
     send: "Send",
     clearChat: "Clear Chat",
     thinking: "Thinking...",
-    disclaimer: "This AI assistant provides information for educational purposes. For important religious questions, consult qualified scholars.",
+    disclaimer:
+      "This AI assistant provides information for educational purposes. For important religious questions, consult qualified scholars.",
     complexQuestion: "Complex Question",
-    complexQuestionDesc: "Our scholars will personally review and answer your question with detailed explanation",
+    complexQuestionDesc:
+      "Our scholars will personally review and answer your question with detailed explanation",
     yourContact: "Your contact (phone or email)",
     yourQuestion: "Your question",
     submitQuestion: "Submit Question",
     responseTime: "We will respond within 1-7 days, InshaAllah",
     questionSent: "Your question has been sent successfully!",
-    thankYou: "Thank you for your question. Our scholars will review it and respond soon.",
+    thankYou:
+      "Thank you for your question. Our scholars will review it and respond soon.",
     backToChat: "Back to Chat",
     contactPlaceholder: "Enter your phone number or email",
     questionPlaceholder: "Describe your question in detail...",
-    hadithQuote: "Every son of Adam makes mistakes, but the best of those who make mistakes are those who repent.",
+    hadithQuote:
+      "Every son of Adam makes mistakes, but the best of those who make mistakes are those who repent.",
     cancel: "Cancel",
     sendingMessage: "Sending...",
     pleaseWait: "Please wait",
-    
+
     // Dua Dhikr
     DuaDhikr: {
       title: "Dua & Dhikr",
@@ -1225,14 +1289,15 @@ export const translations = {
         "evening-dhikr": "Evening Dhikr",
         "dhikr-after-salah": "Dhikr after Salah",
         "daily-dua": "Daily Duas",
-        "selected-dua": "Selected Duas"
+        "selected-dua": "Selected Duas",
       },
       descriptions: {
-        "morning-dhikr": "Remembrance of Allah to start your day with blessings",
+        "morning-dhikr":
+          "Remembrance of Allah to start your day with blessings",
         "evening-dhikr": "Evening dhikrs for protection and tranquility",
         "dhikr-after-salah": "Dhikrs and duas after completing prayer",
         "daily-dua": "Daily prayers for all life situations",
-        "selected-dua": "Special duas from Quran and Sunnah"
+        "selected-dua": "Special duas from Quran and Sunnah",
       },
       languageIndicator: "ENG",
       loadingContent: "Please wait while we prepare the content",
@@ -1248,7 +1313,8 @@ export const translations = {
       remaining: "Remaining",
       almostDone: "🔥 Almost done! {remaining} duas left!",
       globalSettings: "Global Display Settings",
-      globalSettingsDescription: "Configure which fields will be shown by default in all dua cards.",
+      globalSettingsDescription:
+        "Configure which fields will be shown by default in all dua cards.",
       transliteration: "Transliteration",
       notes: "Notes",
       benefits: "Benefits",
@@ -1258,7 +1324,8 @@ export const translations = {
       settings: "Settings",
       searchPlaceholder: "Search duas...",
       tip: "Tip",
-      tipText: "Each dua card has its own settings. Click on the gear icon in the card to configure display.",
+      tipText:
+        "Each dua card has its own settings. Click on the gear icon in the card to configure display.",
       languageIndicatorText: "ENG",
       noResults: "No duas found",
       noResultsDescription: "Try different search terms or filters",
@@ -1267,9 +1334,9 @@ export const translations = {
       statusReady: "🏆 Ready",
       statusAlmostDone: "🔥 Almost",
       statusInProgress: "⚡ Going",
-      statusStart: "📚 Start"
+      statusStart: "📚 Start",
     },
-    
+
     // Surah name translations
     surahTranslations: {
       "Al-Fatiha": "The Opening",
@@ -1277,16 +1344,17 @@ export const translations = {
       "Al-Kahf": "The Cave",
       "Ya-Sin": "Ya-Sin",
       "Ar-Rahman": "The Beneficent",
-      "Al-Mulk": "The Sovereignty"
+      "Al-Mulk": "The Sovereignty",
     },
-    
+
     // Surahs list translations
     surahsList: {
       loading: "Loading Surahs...",
       error: "Error loading Surahs",
       refreshPage: "Please try refreshing the page",
       title: "Surahs of the Holy Quran",
-      description: "Complete collection of 114 chapters of the Holy Quran with English translation",
+      description:
+        "Complete collection of 114 chapters of the Holy Quran with English translation",
       searchPlaceholder: "Search surahs...",
       filterAll: "All",
       filterMeccan: "Meccan",
@@ -1297,9 +1365,9 @@ export const translations = {
       sortRevelation: "Revelation",
       verses: "verses",
       noResults: "No surahs found",
-      noResultsDesc: "Try different search terms"
+      noResultsDesc: "Try different search terms",
     },
-    
+
     // Quran Reader translations
     quranReader: {
       audioNotAvailableReciter: "Audio not available for this reciter",
@@ -1312,9 +1380,9 @@ export const translations = {
       audio: "Audio",
       next: "Next",
       translation: "Translation",
-      settings: "Settings"
+      settings: "Settings",
     },
-    
+
     // Предустановленные вопросы
     presetQuestion1: "What does Al-Fatiha mean?",
     presetQuestion2: "How to perform prayer correctly?",
@@ -1324,14 +1392,14 @@ export const translations = {
     presetQuestion6: "What is Tawhid in Islam?",
     presetQuestion7: "What duas are recommended to recite daily?",
     presetQuestion8: "Tell me about Prophet Muhammad (peace be upon him)",
-    
+
     // Planner
     planner: {
       title: "Quran Study Planner",
       subtitle: "Create personalized study plans and track your progress",
       createPlan: "Create Plan",
       myPlans: "My Plans",
-      todayTasks: "Today's Tasks", 
+      todayTasks: "Today's Tasks",
       completed: "Completed",
       skip: "Skip",
       skipped: "Skipped",
@@ -1347,13 +1415,17 @@ export const translations = {
       defaultUserName: "User",
       days: "days",
       welcomeTitle: "Welcome",
-      welcomeMessage: "Start your spiritual journey with studying the Holy Quran",
+      welcomeMessage:
+        "Start your spiritual journey with studying the Holy Quran",
       greatStartTitle: "Great Start",
-      greatStartMessage: "You've been studying for {{streak}} {{days}} in a row! Keep up the great work",
+      greatStartMessage:
+        "You've been studying for {{streak}} {{days}} in a row! Keep up the great work",
       amazingDisciplineTitle: "Amazing Discipline",
-      amazingDisciplineMessage: "Your streak of {{streak}} {{days}} is impressive! You're on the right path",
+      amazingDisciplineMessage:
+        "Your streak of {{streak}} {{days}} is impressive! You're on the right path",
       incredibleAchievementTitle: "Incredible Achievement",
-      incredibleAchievementMessage: "{{streak}} {{days}} of continuous study! You're a true inspiration",
+      incredibleAchievementMessage:
+        "{{streak}} {{days}} of continuous study! You're a true inspiration",
       loadingPlannerTitle: "Loading Planner",
       loadingPlannerMessage: "Preparing your spiritual journey...",
       startSpiritualJourney: "Start Spiritual Journey",
@@ -1362,7 +1434,8 @@ export const translations = {
       studiedAyahs: "Studied Ayahs",
       studyMinutes: "Study Minutes",
       excellentWork: "Excellent Work!",
-      allTasksCompleted: "All tasks for today are completed. Rest or create a new plan!",
+      allTasksCompleted:
+        "All tasks for today are completed. Rest or create a new plan!",
       ayahSingular: "ayah",
       ayahPlural: "ayahs",
       goToStudyAyahs: "Go to Study Ayahs",
@@ -1380,7 +1453,8 @@ export const translations = {
       viewCalendar: "View Calendar",
       exportData: "Export Data",
       tipOfTheDay: "Tip of the Day",
-      dailyTipMessage: "Consistency is key to successful Quran study. Even 10-15 minutes a day gives excellent results!",
+      dailyTipMessage:
+        "Consistency is key to successful Quran study. Even 10-15 minutes a day gives excellent results!",
       studyCalendar: "Study Calendar",
       backToPlanner: "Back to planner",
       planNotFound: "Plan not found",
@@ -1396,7 +1470,8 @@ export const translations = {
       saveChanges: "Save changes",
       cancel: "Cancel",
       confirmDelete: "Confirm delete",
-      deleteConfirmMessage: "Are you sure you want to delete this plan? This action cannot be undone.",
+      deleteConfirmMessage:
+        "Are you sure you want to delete this plan? This action cannot be undone.",
       todaysTask: "Today's task",
       markCompleted: "Mark as completed",
       alreadyCompleted: "Already completed!",
@@ -1420,7 +1495,8 @@ export const translations = {
       ayahsForStudy: "Ayahs for study",
       ayahNumber: "Ayah",
       juzNumber: "Juz",
-      quranQuote: "\"And recite the Quran with measured recitation\" (Quran 73:4)",
+      quranQuote:
+        '"And recite the Quran with measured recitation" (Quran 73:4)',
       readingCounter: "Reading counter",
       readButtonText: "+1 Read",
       readingTip: "Click each time after reading the ayahs",
@@ -1440,7 +1516,7 @@ export const translations = {
       statusPaused: "Paused",
       statusCancelled: "Cancelled",
       statusUnknown: "Unknown",
-      totalDays: "Total Days"
+      totalDays: "Total Days",
     },
 
     // Calendar View
@@ -1450,8 +1526,8 @@ export const translations = {
         completed: "Completed",
         skipped: "Skipped",
         pending: "Pending",
-        future: "Future"
-      }
+        future: "Future",
+      },
     },
 
     // Create Plan Form
@@ -1470,7 +1546,7 @@ export const translations = {
         mediumTitle: "In-depth Study",
         mediumDesc: "For those who want to dive deeper",
         mediumPlanName: "In-depth Study",
-        mediumPlanDesc: "Study of medium and long surahs"
+        mediumPlanDesc: "Study of medium and long surahs",
       },
       customPlan: "Customize your plan",
       basicInfoTitle: "Basic Information",
@@ -1496,7 +1572,7 @@ export const translations = {
         wed: "Wed",
         thu: "Thu",
         fri: "Fri",
-        sat: "Sat"
+        sat: "Sat",
       },
       selectedDays: "Selected days:",
       days: "days",
@@ -1522,20 +1598,22 @@ export const translations = {
         back: "Back",
         next: "Next",
         cancel: "Cancel",
-        create: "Create Plan"
+        create: "Create Plan",
       },
       errors: {
-        creationError: "Error creating plan"
-      }
+        creationError: "Error creating plan",
+      },
     },
-    
+
     // Live Streams
     liveStreams: {
       nav: "Spiritual Center",
       title: "Live Streams",
-      subtitle: "Watch live streams from Islam's most sacred places, including Masjid al-Haram in Mecca and Masjid an-Nabawi in Medina.",
+      subtitle:
+        "Watch live streams from Islam's most sacred places, including Masjid al-Haram in Mecca and Masjid an-Nabawi in Medina.",
       holyPlacesTitle: "🕌 Holy Places",
-      holyPlacesDescription: "Live streams from the most sacred places of Islam",
+      holyPlacesDescription:
+        "Live streams from the most sacred places of Islam",
       status: {
         live: "LIVE",
         offline: "OFFLINE",
@@ -1543,25 +1621,27 @@ export const translations = {
         lastUpdated: "LAST UPDATED",
         liveSignal: "Live Signal",
         waiting: "Waiting for Signal",
-        currentViewers: "Current Viewers"
+        currentViewers: "Current Viewers",
       },
       actions: {
         refresh: "Refresh",
         refreshing: "Refreshing...",
-        openYoutube: "Open in YouTube"
+        openYoutube: "Open in YouTube",
       },
       locations: {
         mecca: {
           title: "Masjid al-Haram, Mecca",
-          description: "Live stream from Islam's holiest mosque surrounding the Kaaba. Watch prayers, Tawaf and other rituals."
+          description:
+            "Live stream from Islam's holiest mosque surrounding the Kaaba. Watch prayers, Tawaf and other rituals.",
         },
         medina: {
           title: "Masjid an-Nabawi, Medina",
-          description: "Live stream from the Prophet's Mosque in Medina, where Prophet Muhammad (peace be upon him) is buried. Witness prayers and rituals."
-        }
-      }
+          description:
+            "Live stream from the Prophet's Mosque in Medina, where Prophet Muhammad (peace be upon him) is buried. Witness prayers and rituals.",
+        },
+      },
     },
-    
+
     // Prayer Times Display
     prayerTimes: {
       title: "Prayer Times",
@@ -1593,7 +1673,7 @@ export const translations = {
         location: "Time calculated based on your location",
         method: "Uses calculation method for your region",
         autoUpdate: "Time updates automatically",
-        search: "Search available by city name"
+        search: "Search available by city name",
       },
       prayers: {
         fajr: "Fajr",
@@ -1601,20 +1681,21 @@ export const translations = {
         dhuhr: "Dhuhr",
         asr: "Asr",
         maghrib: "Maghrib",
-        isha: "Isha"
+        isha: "Isha",
       },
       cities: {
         moscow: "Moscow",
         london: "London",
         dubai: "Dubai",
-        almaty: "Almaty"
-      }
+        almaty: "Almaty",
+      },
     },
-    
+
     // Journey section
     journey: {
       quranJourney: "Quran Journey",
-      journeyDescription: "Embark on an interactive journey through all 114 surahs of the Holy Quran. Test your knowledge, unlock achievements, and track your progress!",
+      journeyDescription:
+        "Embark on an interactive journey through all 114 surahs of the Holy Quran. Test your knowledge, unlock achievements, and track your progress!",
       journeyMap: "Journey Map",
       statistics: "Statistics",
       achievements: "Achievements",
@@ -1651,7 +1732,7 @@ export const translations = {
       remaining: "remaining",
       progress: "Progress",
       byJuz: "By Juz",
-      filters: "Filters"
+      filters: "Filters",
     },
 
     // Quiz
@@ -1694,11 +1775,13 @@ export const translations = {
       ptsShort: "pts",
       resumeQuiz: "Resume Quiz",
       finishQuiz: "Finish Quiz",
-      pauseMessage: "Take your time. Click resume when you're ready to continue.",
+      pauseMessage:
+        "Take your time. Click resume when you're ready to continue.",
       secondsPerQuestionPlaceholder: "Seconds per question",
       // Quiz Results
       needsImprovementTitle: "Needs Improvement",
-      needsImprovementMessage: "Keep going with confidence - every step in studying the Quran is valuable!",
+      needsImprovementMessage:
+        "Keep going with confidence - every step in studying the Quran is valuable!",
       score: "Score",
       points: "points",
       correct: "Correct",
@@ -1729,7 +1812,7 @@ export const translations = {
       recGood3: "Study context",
       recAverage1: "Review regularly",
       recAverage2: "Focus on weak areas",
-      recAverage3: "Check understanding"
+      recAverage3: "Check understanding",
     },
 
     // Search
@@ -1743,7 +1826,8 @@ export const translations = {
       useArabicForExactMatch: "Use Arabic for exact match",
       tryDifferentWordForms: "Try different word forms",
       translationSearchTip: "Translation Search",
-      translationSearchDescription: "Search in translation in selected language",
+      translationSearchDescription:
+        "Search in translation in selected language",
       searchInPreferredLanguage: "Search in preferred language",
       useKeywordsAndPhrases: "Use keywords and phrases",
       searchResultsCount: "search results",
@@ -1756,11 +1840,10 @@ export const translations = {
       searchModeArabic: "Arabic Only",
       searchModeTranslation: "Translation Only",
       copyVerse: "Copy verse",
-      bookmarkVerse: "Bookmark verse"
-    }
-
+      bookmarkVerse: "Bookmark verse",
+    },
   },
-  
+
   uz: {
     // Основные
     title: "Qur'on AI",
@@ -1775,12 +1858,13 @@ export const translations = {
     juz: "Juz",
     searchNav: "Qidiruv",
     bookmarks: "Xatcho'plar",
-    
+
     bookmarksSection: {
       yourBookmarks: "Sizning xatcho'plaringiz",
       startSavingVerses: "Oyatlarni saqlashni boshlang",
       noBookmarksYet: "Hali xatcho'plar yo'q",
-      noBookmarksDescription: "Qur'onni o'qiyotganingizda oyatlarni xatcho'plashni boshlang. Saqlangan oyatlaringiz shu yerda paydo bo'ladi.",
+      noBookmarksDescription:
+        "Qur'onni o'qiyotganingizda oyatlarni xatcho'plashni boshlang. Saqlangan oyatlaringiz shu yerda paydo bo'ladi.",
       browseSurahs: "Suralarni ko'rish",
       searchQuran: "Qur'onda qidirish",
       bookmarksFound: "xatcho'p topildi",
@@ -1798,10 +1882,10 @@ export const translations = {
       playAudio: "Audio ijro etish",
       goToVerse: "Oyatga o'tish",
       note: "Eslatma",
-      noNote: "Eslatma yo'q"
+      noNote: "Eslatma yo'q",
     },
     settings: "Sozlamalar",
-    
+
     settingsSection: {
       settingsTitle: "Sozlamalar",
       settingsDescription: "Ilovani o'z xohishingizga moslang",
@@ -1813,7 +1897,7 @@ export const translations = {
       settingsSaved: "Sozlamalar saqlandi",
       autoSaveEnabled: "Avtomatik saqlash yoqilgan",
       settingsAutoSave: "Sozlamalar avtomatik saqlanadi",
-      
+
       audioSettings: "Audio sozlamalari",
       selectReciterQari: "Qur'on qorini tanlang",
       showAll: "Barchasini ko'rsatish",
@@ -1822,16 +1906,16 @@ export const translations = {
       speed: "Tezlik",
       autoplayNext: "Keyingisini avtomatik ijro etish",
       autoPlayNext: "Keyingi oyatni avtomatik ijro etish",
-      
+
       displaySettings: "Ko'rsatish sozlamalari",
       fontSizeLabel: "Shrift o'lchami",
       selectTranslations: "Tarjimalarni tanlash",
       quickSetup: "Tez sozlash",
       searchTranslations: "Tarjimalarni qidirish...",
       showTranslation: "Tarjimani ko'rsatish",
-      showTranslations: "Tarjimalarni ko'rsatish", 
+      showTranslations: "Tarjimalarni ko'rsatish",
       showTransliteration: "Transliteratsiyani ko'rsatish",
-      
+
       customColors: "Maxsus ranglar",
       customColorsDesc: "Ranglarni o'z xohishingizga moslang",
       themeMode: "Mavzu rejimi",
@@ -1842,7 +1926,7 @@ export const translations = {
       darkThemeDesc: "Kechki o'qish uchun qorong'i rejim",
       siteColorTheme: "Sayt rang mavzusi",
       siteColorThemeDesc: "Asosiy interfeys rangini tanlang",
-      
+
       colorBlue: "Ko'k",
       colorGreen: "Yashil",
       colorPurple: "Binafsha",
@@ -1851,14 +1935,14 @@ export const translations = {
       colorOrange: "To'q sariq",
       colorTeal: "Ko'k-yashil",
       colorIndigo: "Indigo",
-      colorRed: "Qizil", 
+      colorRed: "Qizil",
       colorYellow: "Sariq",
       colorGray: "Kulrang",
       colorSepia: "Sepiya",
-      
+
       readyMadeColorSchemes: "Tayyor rang sxemalari",
       clickToApplyInstantly: "Darhol qo'llash uchun bosing",
-      
+
       schemeClassicName: "Klassik",
       schemeClassicDesc: "An'anaviy yashil-oltin sxemasi",
       schemeOceanName: "Okean",
@@ -1879,54 +1963,68 @@ export const translations = {
       schemeDarkamberDesc: "Qorong'i mavzu uchun issiq oltin ohanglar",
       schemeMidnightName: "Yarim tun",
       schemeMidnightDesc: "Nafis qorong'i-ko'k sxemasi",
-      
+
       orCustomizeManually: "Yoki qo'lda sozlang",
       buttonColorLabel: "Tugma rangi",
       quickColors: "Tez ranglar",
       applyColor: "Rangni qo'llash",
-      resetColorBtn: "Rangni qaytarish", 
+      resetColorBtn: "Rangni qaytarish",
       quranTextColorFull: "Qur'on matni rangi",
       translationTextColor: "Tarjima matni rangi",
-      preview: "Oldindan ko'rish"
+      preview: "Oldindan ko'rish",
     },
     
+    themeDrawerSection: {
+      themeSettings: "Mavzu sozlamalari",
+      displayMode: "Ko'rsatish rejimi",
+      lightMode: "Yorug'",
+      darkMode: "Qorong'i",
+      autoMode: "Avtomatik",
+      colorThemes: "Rang mavzulari",
+      autoSave: "Sozlamalar avtomatik saqlanadi"
+    },
+
     menu: "Menyu",
     close: "Yopish",
-    
+
     // Навигация
     quranReading: "Qur'on o'qish",
     journeyNav: "Sayohat",
     aiHelperNav: "AI Yordamchi",
     duaDhikriNav: "Duo va Zikr",
     feedback: "Fikr-mulohaza",
-    
+
     feedbackSection: {
       feedbackAndSupport: "Fikr-mulohaza va qo'llab-quvvatlash",
-      feedbackSubtitle: "O'z fikrlaringizni bo'lishib, ilovani yaxshilashga yordam bering",
+      feedbackSubtitle:
+        "O'z fikrlaringizni bo'lishib, ilovani yaxshilashga yordam bering",
       feedbackType: "Murojaat turi",
       bugReport: "Xato haqida xabar berish",
       featureRequest: "Funksiya so'rovi",
       improvement: "Yaxshilash taklifi",
       other: "Boshqa",
       issueTitle: "Sarlavha *",
-      titlePlaceholder: "Muammo yoki taklifingizni qisqacha tasvirlab bering...",
+      titlePlaceholder:
+        "Muammo yoki taklifingizni qisqacha tasvirlab bering...",
       description: "Tavsif *",
-      descriptionPlaceholder: "Muammongiz, taklifingiz yoki fikr-mulohazangizni batafsil tasvirlab bering...",
+      descriptionPlaceholder:
+        "Muammongiz, taklifingiz yoki fikr-mulohazangizni batafsil tasvirlab bering...",
       submitFeedback: "Fikr-mulohaza yuborish",
       submitting: "Yuborilmoqda...",
       successTitle: "Fikr-mulohazangiz uchun rahmat!",
-      successMessage: "Biz sizning xabaringizni oldik va tez orada ko'rib chiqamiz.",
+      successMessage:
+        "Biz sizning xabaringizni oldik va tez orada ko'rib chiqamiz.",
       backToSite: "Saytga qaytish",
       fillAllFields: "Iltimos, barcha majburiy maydonlarni to'ldiring",
-      submitError: "Yuborishda xato. Qaytadan urinib ko'ring."
+      submitError: "Yuborishda xato. Qaytadan urinib ko'ring.",
     },
-    
+
     // Категории
     main: "Asosiy",
     learning: "O'rganish",
     tools: "Vositalar",
     settingsCategory: "Sozlamalar",
-    
+
     // Дополнительные ключи
     inTheNameOfAllah: "Allah nomi bilan",
     islamicLearningPlatform: "Islomni o'rganish platformasi",
@@ -1934,31 +2032,34 @@ export const translations = {
     quizNav: "Viktorina",
     openMenu: "Menyuni ochish",
     closeMenu: "Menyuni yopish",
-    
+
     // Common words
     progress: "Taraqqiyot",
-    
+
     // Mosque Finder
     mosqueFinder: "Masjid topish",
-    
+
     mosqueFinderSection: {
       title: "Masjid topish",
-      description: "Yaqiningizdagi yoki dunyo bo'ylab istalgan shahardagi masjidlarni toping. Namaz vaqtlari, xizmatlar va kontaktlar haqida ma'lumot oling.",
+      description:
+        "Yaqiningizdagi yoki dunyo bo'ylab istalgan shahardagi masjidlarni toping. Namaz vaqtlari, xizmatlar va kontaktlar haqida ma'lumot oling.",
       back: "Orqaga",
       welcomeTitle: "Masjid qidirgichga xush kelibsiz",
-      welcomeDescription: "Masjid nomi, shahar nomini kiritish yoki geolokatsiyadan foydalanib qidirishni boshlang",
+      welcomeDescription:
+        "Masjid nomi, shahar nomini kiritish yoki geolokatsiyadan foydalanib qidirishni boshlang",
       searchByName: "🔍 Nom bo'yicha qidirish",
       searchByNameExample: "Hazrati Imom masjidi, Toshkent, Samarqand",
       searchNearby: "📍 Yaqinroqni qidirish",
-      searchNearbyDescription: "\"Yaqindan topish\" tugmasidan foydalaning",
+      searchNearbyDescription: '"Yaqindan topish" tugmasidan foydalaning',
       information: "Ma'lumot",
       mosquesFound: "Topilgan masjidlar:",
       clearResults: "Natijalarni tozalash",
-      dataDisclaimer: "• Ma'lumotlar Google Places API tomonidan taqdim etiladi",
+      dataDisclaimer:
+        "• Ma'lumotlar Google Places API tomonidan taqdim etiladi",
       prayerTimesNote: "• Namaz vaqtlari farq qilishi mumkin",
-      verifyInfo: "• Masjiddan ma'lumotlarni tekshiring"
+      verifyInfo: "• Masjiddan ma'lumotlarni tekshiring",
     },
-    
+
     mosque: {
       searchTitle: "Masjid topish",
       searchPlaceholder: "Masjid nomi yoki shahar...",
@@ -1989,12 +2090,13 @@ export const translations = {
       openHours: "Ish vaqti",
       phone: "Telefon",
       website: "Veb-sayt",
-      address: "Manzil"
+      address: "Manzil",
     },
-    
+
     // Home page
     bestQuranExperience: "Eng yaxshi Qur'on o'rganish tajribasi",
-    heroDescription: "Muqaddas Qur'onni rus, ingliz va o'zbek tillarida tarjima, tafsir va audio bilan o'rganing",
+    heroDescription:
+      "Muqaddas Qur'onni rus, ingliz va o'zbek tillarida tarjima, tafsir va audio bilan o'rganing",
     searchPlaceholder: "Suralar, oyatlar yoki so'zlarni qidirish...",
     verseOfTheDay: "Kun oyati",
     verse: "Oyat",
@@ -2047,7 +2149,7 @@ export const translations = {
     clearAll: "Barchasini tozalash",
     exportDuas: "Duolarni eksport qilish",
     importDuas: "Duolarni import qilish",
-    
+
     // Saved duas page
     savedDuas: "Saqlangan duolar",
     favoriteDuas: "sevimli duolar",
@@ -2059,7 +2161,8 @@ export const translations = {
     byDate: "Sana bo'yicha",
     byTitle: "Nom bo'yicha",
     byCategory: "Kategoriya bo'yicha",
-    noSavedDuas: "Sizning sevimli duolaringiz tez kirish uchun shu yerda ko'rsatiladi",
+    noSavedDuas:
+      "Sizning sevimli duolaringiz tez kirish uchun shu yerda ko'rsatiladi",
     goToDuas: "Duolarga o'tish",
     mainPage: "Bosh sahifa",
     noDuasFoundQuery: "So'rov bo'yicha duolar topilmadi",
@@ -2072,30 +2175,36 @@ export const translations = {
     // AI Helper
     arabicTitle: "مساعد القرآن الذكي",
     smartQuranAssistant: "Aqlli Qur'on yordamchisi",
-    aiHelperSubtitle: "Qur'on, Islam va diniy amallar haqida savollar bering. Muqaddas matnlarga havolalar bilan dono javoblarni oling.",
+    aiHelperSubtitle:
+      "Qur'on, Islam va diniy amallar haqida savollar bering. Muqaddas matnlarga havolalar bilan dono javoblarni oling.",
     popularQuestions: "Mashhur savollar:",
-    startConversation: "Savol berish yoki taklif qilinganlardan birini tanlash orqali suhbatni boshlang",
+    startConversation:
+      "Savol berish yoki taklif qilinganlardan birini tanlash orqali suhbatni boshlang",
     askQuestion: "Savolingizni yozing...",
     send: "Yuborish",
     clearChat: "Chatni tozalash",
     thinking: "O'ylayapman...",
-    disclaimer: "Ushbu AI yordamchi ta'lim maqsadlari uchun ma'lumot beradi. Muhim diniy savollar bo'yicha malakali ulamo bilan maslahatlashing.",
+    disclaimer:
+      "Ushbu AI yordamchi ta'lim maqsadlari uchun ma'lumot beradi. Muhim diniy savollar bo'yicha malakali ulamo bilan maslahatlashing.",
     complexQuestion: "Murakkab savol",
-    complexQuestionDesc: "Ulamolarimiz shaxsan ko'rib chiqadi va savolingizga batafsil tushuntirish bilan javob beradi",
+    complexQuestionDesc:
+      "Ulamolarimiz shaxsan ko'rib chiqadi va savolingizga batafsil tushuntirish bilan javob beradi",
     yourContact: "Aloqa ma'lumotlaringiz (telefon yoki email)",
     yourQuestion: "Savolingiz",
     submitQuestion: "Savol yuborish",
     responseTime: "1-7 kun ichida javob beramiz, InshaAlloh",
     questionSent: "Savolingiz muvaffaqiyatli yuborildi!",
-    thankYou: "Savolingiz uchun rahmat. Ulamolarimiz uni ko'rib chiqib, tez orada javob berishadi.",
+    thankYou:
+      "Savolingiz uchun rahmat. Ulamolarimiz uni ko'rib chiqib, tez orada javob berishadi.",
     backToChat: "Chatga qaytish",
     contactPlaceholder: "Telefon raqam yoki emailingizni kiriting",
     questionPlaceholder: "Savolingizni batafsil yozing...",
-    hadithQuote: "Odam o'g'li xato qiladi, lekin xato qiluvchilarning eng yaxshilari tavba qiluvchilardir.",
+    hadithQuote:
+      "Odam o'g'li xato qiladi, lekin xato qiluvchilarning eng yaxshilari tavba qiluvchilardir.",
     cancel: "Bekor qilish",
     sendingMessage: "Yuborilmoqda...",
     pleaseWait: "Iltimos kuting",
-    
+
     // Dua Dhikr
     DuaDhikr: {
       title: "Duo va Zikr",
@@ -2106,14 +2215,14 @@ export const translations = {
         "evening-dhikr": "Kechqurungi zikr",
         "dhikr-after-salah": "Namozdan keyin zikr",
         "daily-dua": "Kundalik duolar",
-        "selected-dua": "Tanlangan duolar"
+        "selected-dua": "Tanlangan duolar",
       },
       descriptions: {
         "morning-dhikr": "Kunni barakah bilan boshlash uchun Allohni eslash",
         "evening-dhikr": "Himoya va xotirjamlik uchun kechki zikrlar",
         "dhikr-after-salah": "Namozdan keyin qilinadigan zikr va duolar",
         "daily-dua": "Hayotning barcha holatlari uchun kundalik duolar",
-        "selected-dua": "Qur'on va Sunnatdan maxsus duolar"
+        "selected-dua": "Qur'on va Sunnatdan maxsus duolar",
       },
       languageIndicator: "UZ",
       loadingContent: "Kontent tayyorlaganimizni kuting",
@@ -2129,7 +2238,8 @@ export const translations = {
       remaining: "Qolgan",
       almostDone: "🔥 Deyarli tayyor! {remaining} ta duo qoldi!",
       globalSettings: "Global ko'rsatish sozlamalari",
-      globalSettingsDescription: "Barcha duo kartalarida sukut bo'yicha qaysi maydonlar ko'rsatilishini sozlang.",
+      globalSettingsDescription:
+        "Barcha duo kartalarida sukut bo'yicha qaysi maydonlar ko'rsatilishini sozlang.",
       transliteration: "Transliteratsiya",
       notes: "Eslatmalar",
       benefits: "Foyda",
@@ -2139,18 +2249,20 @@ export const translations = {
       settings: "Sozlamalar",
       searchPlaceholder: "Duolarni qidirish...",
       tip: "Maslahat",
-      tipText: "Har bir duo kartasi o'z sozlamalariga ega. Ko'rsatishni sozlash uchun kartadagi vites belgisini bosing.",
+      tipText:
+        "Har bir duo kartasi o'z sozlamalariga ega. Ko'rsatishni sozlash uchun kartadagi vites belgisini bosing.",
       languageIndicatorText: "UZ",
       noResults: "Duolar topilmadi",
-      noResultsDescription: "Boshqa qidiruv so'zlari yoki filtrlarni sinab ko'ring",
+      noResultsDescription:
+        "Boshqa qidiruv so'zlari yoki filtrlarni sinab ko'ring",
       clearSearch: "Qidiruvni tozalash",
       loadMoreDuas: "Ko'proq duolarni yuklash",
       statusReady: "🏆 Tayyor",
       statusAlmostDone: "🔥 Deyarli",
       statusInProgress: "⚡ Ketmoqda",
-      statusStart: "📚 Boshlash"
+      statusStart: "📚 Boshlash",
     },
-    
+
     // Suralar nomi tarjimalari
     surahTranslations: {
       "Al-Fatiha": "Ochuvchi",
@@ -2158,16 +2270,17 @@ export const translations = {
       "Al-Kahf": "G'or",
       "Ya-Sin": "Yo Sin",
       "Ar-Rahman": "Rahmon",
-      "Al-Mulk": "Mulk"
+      "Al-Mulk": "Mulk",
     },
-    
+
     // Suralar ro'yxati tarjimalari
     surahsList: {
       loading: "Suralar yuklanmoqda...",
       error: "Suralarni yuklashda xato",
       refreshPage: "Sahifani yangilashga harakat qiling",
       title: "Muqaddas Qur'on suralari",
-      description: "Muqaddas Qur'onning 114 ta surasining to'liq to'plami o'zbek tilidagi tarjima bilan",
+      description:
+        "Muqaddas Qur'onning 114 ta surasining to'liq to'plami o'zbek tilidagi tarjima bilan",
       searchPlaceholder: "Suralarni qidirish...",
       filterAll: "Hammasi",
       filterMeccan: "Makkiy",
@@ -2178,9 +2291,9 @@ export const translations = {
       sortRevelation: "Nozil bo'lish",
       verses: "oyat",
       noResults: "Suralar topilmadi",
-      noResultsDesc: "Boshqa qidiruv so'zlarini sinab ko'ring"
+      noResultsDesc: "Boshqa qidiruv so'zlarini sinab ko'ring",
     },
-    
+
     // Qur'on o'qish sahifasi tarjimalari
     quranReader: {
       audioNotAvailableReciter: "Bu qori uchun audio mavjud emas",
@@ -2193,9 +2306,9 @@ export const translations = {
       audio: "Audio",
       next: "Keyin",
       translation: "Tarjima",
-      settings: "Sozlamalar"
+      settings: "Sozlamalar",
     },
-    
+
     // Предустановленные вопросы
     presetQuestion1: "Al-Fotiha nima degani?",
     presetQuestion2: "Namozni qanday to'g'ri o'qish kerak?",
@@ -2205,11 +2318,12 @@ export const translations = {
     presetQuestion6: "Islamda Tavhid nima?",
     presetQuestion7: "Har kuni qanday duolarni o'qish tavsiya etiladi?",
     presetQuestion8: "Payg'ambar Muhammad (s.a.v.) haqida gapirib bering",
-    
+
     // Planner
     planner: {
       title: "Qur'on o'rganish rejachisi",
-      subtitle: "Shaxsiy o'rganish rejalarini yarating va taraqqiyotingizni kuzatib boring",
+      subtitle:
+        "Shaxsiy o'rganish rejalarini yarating va taraqqiyotingizni kuzatib boring",
       createPlan: "Reja yaratish",
       myPlans: "Mening rejalarim",
       todayTasks: "Bugungi vazifalar",
@@ -2228,22 +2342,28 @@ export const translations = {
       defaultUserName: "Foydalanuvchi",
       days: "kunlar",
       welcomeTitle: "Xush kelibsiz",
-      welcomeMessage: "Muqaddas Qur'onni o'rganish bilan ma'naviy sayohatingizni boshlang",
+      welcomeMessage:
+        "Muqaddas Qur'onni o'rganish bilan ma'naviy sayohatingizni boshlang",
       greatStartTitle: "Ajoyib boshlanish",
-      greatStartMessage: "Siz {{streak}} {{days}} ketma-ket o'rganib kelmoqdasiz! Davom eting",
+      greatStartMessage:
+        "Siz {{streak}} {{days}} ketma-ket o'rganib kelmoqdasiz! Davom eting",
       amazingDisciplineTitle: "Ajoyib intizom",
-      amazingDisciplineMessage: "Sizning {{streak}} {{days}}lik ketma-ketligingiz ta'sirli! Siz to'g'ri yo'ldasiz",
+      amazingDisciplineMessage:
+        "Sizning {{streak}} {{days}}lik ketma-ketligingiz ta'sirli! Siz to'g'ri yo'ldasiz",
       incredibleAchievementTitle: "Aql bovar qilmaydigan yutuq",
-      incredibleAchievementMessage: "{{streak}} {{days}} uzluksiz o'rganish! Siz haqiqiy namuna",
+      incredibleAchievementMessage:
+        "{{streak}} {{days}} uzluksiz o'rganish! Siz haqiqiy namuna",
       loadingPlannerTitle: "Rejachi yuklanmoqda",
-      loadingPlannerMessage: "Sizning ma'naviy sayohatingizni tayyorlamoqdamiz...",
+      loadingPlannerMessage:
+        "Sizning ma'naviy sayohatingizni tayyorlamoqdamiz...",
       startSpiritualJourney: "Ma'naviy sayohatni boshlash",
       overallStatistics: "Umumiy statistika",
       activePlans: "Faol rejalar",
       studiedAyahs: "O'rganilgan oyatlar",
       studyMinutes: "O'rganish daqiqalari",
       excellentWork: "Ajoyib ish!",
-      allTasksCompleted: "Bugungi barcha vazifalar bajarildi. Dam oling yoki yangi reja yarating!",
+      allTasksCompleted:
+        "Bugungi barcha vazifalar bajarildi. Dam oling yoki yangi reja yarating!",
       ayahSingular: "oyat",
       ayahPlural: "oyatlar",
       goToStudyAyahs: "Oyatlarni o'rganishga o'tish",
@@ -2254,14 +2374,16 @@ export const translations = {
       completedPlans: "Tugatilgan rejalar",
       plansCompleted: "reja tugatilgan",
       scholarlyReader: "Qur'on bilimchisi",
-      startStudyingToEarnAchievements: "Yutuqlar qo'lga kiritish uchun o'rganishni boshlang!",
+      startStudyingToEarnAchievements:
+        "Yutuqlar qo'lga kiritish uchun o'rganishni boshlang!",
       quickActions: "Tez harakatlar",
       newPlan: "Yangi reja",
       hideCalendar: "Kalendarni yashirish",
       viewCalendar: "Kalendarni ko'rsatish",
       exportData: "Ma'lumotlarni eksport qilish",
       tipOfTheDay: "Kunning maslahati",
-      dailyTipMessage: "Muntazamlik Qur'onni muvaffaqiyatli o'rganishning kalitidir. Hatto kuniga 10-15 daqiqa ham ajoyib natija beradi!",
+      dailyTipMessage:
+        "Muntazamlik Qur'onni muvaffaqiyatli o'rganishning kalitidir. Hatto kuniga 10-15 daqiqa ham ajoyib natija beradi!",
       studyCalendar: "O'rganish kalendari",
       backToPlanner: "Rejaga qaytish",
       planNotFound: "Reja topilmadi",
@@ -2277,7 +2399,8 @@ export const translations = {
       saveChanges: "O'zgarishlarni saqlash",
       cancel: "Bekor qilish",
       confirmDelete: "O'chirishni tasdiqlash",
-      deleteConfirmMessage: "Bu rejani o'chirmoqchimisiz? Bu amal bekor qilinmaydi.",
+      deleteConfirmMessage:
+        "Bu rejani o'chirmoqchimisiz? Bu amal bekor qilinmaydi.",
       todaysTask: "Bugungi vazifa",
       markCompleted: "Bajarilgan deb belgilash",
       alreadyCompleted: "Allaqachon bajarilgan!",
@@ -2321,7 +2444,7 @@ export const translations = {
       statusPaused: "To'xtatilgan",
       statusCancelled: "Bekor qilingan",
       statusUnknown: "Noma'lum",
-      totalDays: "Jami kunlar"
+      totalDays: "Jami kunlar",
     },
 
     // Calendar View
@@ -2331,8 +2454,8 @@ export const translations = {
         completed: "Bajarilgan",
         skipped: "O'tkazib yuborilgan",
         pending: "Kutilmoqda",
-        future: "Kelajakdagi"
-      }
+        future: "Kelajakdagi",
+      },
     },
 
     // Create Plan Form
@@ -2351,7 +2474,7 @@ export const translations = {
         mediumTitle: "Chuqur o'rganish",
         mediumDesc: "Ko'proq sho'ng'ishni xohlaydiganlar uchun",
         mediumPlanName: "Chuqur o'rganish",
-        mediumPlanDesc: "O'rta va uzun suralarni o'rganish"
+        mediumPlanDesc: "O'rta va uzun suralarni o'rganish",
       },
       customPlan: "O'z rejangizni sozlang",
       basicInfoTitle: "Asosiy ma'lumotlar",
@@ -2377,7 +2500,7 @@ export const translations = {
         wed: "Ch",
         thu: "Pa",
         fri: "Ju",
-        sat: "Sh"
+        sat: "Sh",
       },
       selectedDays: "Tanlangan kunlar:",
       days: "kun",
@@ -2403,20 +2526,22 @@ export const translations = {
         back: "Orqaga",
         next: "Keyingisi",
         cancel: "Bekor qilish",
-        create: "Reja yaratish"
+        create: "Reja yaratish",
       },
       errors: {
-        creationError: "Reja yaratishda xatolik"
-      }
+        creationError: "Reja yaratishda xatolik",
+      },
     },
-    
+
     // Live Streams
     liveStreams: {
       nav: "Ma'naviy markaz",
       title: "Jonli translyatsiyalar",
-      subtitle: "Islomning eng muqaddas joylaridan, jumladan Makkadagi Masjid al-Haram va Madinadagi Masjid an-Nabaviydan jonli translyatsiyalarni tomosha qiling.",
+      subtitle:
+        "Islomning eng muqaddas joylaridan, jumladan Makkadagi Masjid al-Haram va Madinadagi Masjid an-Nabaviydan jonli translyatsiyalarni tomosha qiling.",
       holyPlacesTitle: "🕌 Muqaddas joylar",
-      holyPlacesDescription: "Islomning eng muqaddas joylaridan jonli translyatsiyalar",
+      holyPlacesDescription:
+        "Islomning eng muqaddas joylaridan jonli translyatsiyalar",
       status: {
         live: "JONLI",
         offline: "OFLAYN",
@@ -2424,25 +2549,27 @@ export const translations = {
         lastUpdated: "OXIRGI YANGILANISH",
         liveSignal: "Jonli signal",
         waiting: "Signalni kutish",
-        currentViewers: "Hozirgi tomoshabinlar"
+        currentViewers: "Hozirgi tomoshabinlar",
       },
       actions: {
         refresh: "Yangilash",
         refreshing: "Yangilanmoqda...",
-        openYoutube: "YouTube'da ochish"
+        openYoutube: "YouTube'da ochish",
       },
       locations: {
         mecca: {
           title: "Masjid al-Haram, Makka",
-          description: "Ka'bani o'rab olgan Islomning eng muqaddas masjididan jonli translyatsiya. Namozlar, Tavof va boshqa marosimlarni kuzating."
+          description:
+            "Ka'bani o'rab olgan Islomning eng muqaddas masjididan jonli translyatsiya. Namozlar, Tavof va boshqa marosimlarni kuzating.",
         },
         medina: {
           title: "Masjid an-Nabaviy, Madina",
-          description: "Paygambar Muhammad (s.a.v.) dafn etilgan Madinadagi Paygambar masjididan jonli translyatsiya. Namozlar va marosimlarni tomosha qiling."
-        }
-      }
+          description:
+            "Paygambar Muhammad (s.a.v.) dafn etilgan Madinadagi Paygambar masjididan jonli translyatsiya. Namozlar va marosimlarni tomosha qiling.",
+        },
+      },
     },
-    
+
     // Prayer Times Display
     prayerTimes: {
       title: "Namoz vaqtlari",
@@ -2458,7 +2585,8 @@ export const translations = {
       find: "Topish",
       searchingCities: "Shaharlar qidirilmoqda...",
       noResults: '"{query}" uchun shaharlar topilmadi',
-      tryEnglish: "Inglizcha nomlarni sinab ko'ring: Moscow, London, Istanbul, Dubai, Almaty",
+      tryEnglish:
+        "Inglizcha nomlarni sinab ko'ring: Moscow, London, Istanbul, Dubai, Almaty",
       quickTests: "Tezkor testlar:",
       nextPrayer: "Keyingi namoz",
       tomorrowPrayer: "Ertangi namoz",
@@ -2474,7 +2602,7 @@ export const translations = {
         location: "Vaqt sizning joylashuvingizga asoslanib hisoblanadi",
         method: "Hududingiz uchun hisoblash usuli qo'llaniladi",
         autoUpdate: "Vaqt avtomatik yangilanadi",
-        search: "Shahar nomi bo'yicha qidiruv mavjud"
+        search: "Shahar nomi bo'yicha qidiruv mavjud",
       },
       prayers: {
         fajr: "Bomdod",
@@ -2482,7 +2610,7 @@ export const translations = {
         dhuhr: "Peshin",
         asr: "Asr",
         maghrib: "Shom",
-        isha: "Xufton"
+        isha: "Xufton",
       },
       prayersEn: {
         fajr: "Fajr",
@@ -2490,20 +2618,21 @@ export const translations = {
         dhuhr: "Dhuhr",
         asr: "Asr",
         maghrib: "Maghrib",
-        isha: "Isha"
+        isha: "Isha",
       },
       cities: {
         moscow: "Moskva",
         london: "London",
         dubai: "Dubay",
-        almaty: "Almati"
-      }
+        almaty: "Almati",
+      },
     },
-    
+
     // Journey section
     journey: {
       quranJourney: "Qur'on Safari",
-      journeyDescription: "Muqaddas Qur'onning barcha 114 surasida interaktiv sayohatga chiqing. Bilimingizni sinab ko'ring, yutuqlarni oching va taraqqiyotingizni kuzatib boring!",
+      journeyDescription:
+        "Muqaddas Qur'onning barcha 114 surasida interaktiv sayohatga chiqing. Bilimingizni sinab ko'ring, yutuqlarni oching va taraqqiyotingizni kuzatib boring!",
       journeyMap: "Safari Xaritasi",
       statistics: "Statistika",
       achievements: "Yutuqlar",
@@ -2514,7 +2643,8 @@ export const translations = {
       averageScore: "O'rtacha Ball",
       dayStreak: "Kunlik Silsila",
       noSurahsFound: "Suralar topilmadi",
-      tryAdjustingFilters: "Filtrlar yoki qidiruv so'rovini o'zgartirib ko'ring",
+      tryAdjustingFilters:
+        "Filtrlar yoki qidiruv so'rovini o'zgartirib ko'ring",
       filterBySurah: "Suralar bo'yicha filtr",
       searchSurahs: "Suralarni qidirish...",
       allSurahs: "Barcha Suralar",
@@ -2533,14 +2663,14 @@ export const translations = {
       timeSpent: "Sarflangan Vaqt",
       totalProgress: "Umumiy Taraqqiyot",
       hourShort: "s",
-      minuteShort: "d", 
+      minuteShort: "d",
       minuteLong: "daqiqa",
       overallJourneyProgress: "Umumiy Safari Taraqqiyoti",
       completed: "tugatilgan",
       remaining: "qolgan",
       progress: "Taraqqiyot",
       byJuz: "Juz bo'yicha",
-      filters: "Filtrlar"
+      filters: "Filtrlar",
     },
 
     // Quiz
@@ -2583,11 +2713,13 @@ export const translations = {
       ptsShort: "b.",
       resumeQuiz: "Viktorinani davom ettirish",
       finishQuiz: "Viktorinani tugatish",
-      pauseMessage: "Shoshilmang. Tayyor bo'lganda davom etish tugmasini bosing.",
+      pauseMessage:
+        "Shoshilmang. Tayyor bo'lganda davom etish tugmasini bosing.",
       secondsPerQuestionPlaceholder: "Savol uchun soniyalar",
       // Viktorina Natijalari
       needsImprovementTitle: "Yaxshilash kerak",
-      needsImprovementMessage: "Ishonch bilan davom eting - Qur'onni o'rganishdagi har bir qadam qimmatli!",
+      needsImprovementMessage:
+        "Ishonch bilan davom eting - Qur'onni o'rganishdagi har bir qadam qimmatli!",
       score: "Ball",
       points: "ball",
       correct: "To'g'ri",
@@ -2618,7 +2750,7 @@ export const translations = {
       recGood3: "Kontekstni o'rganing",
       recAverage1: "Muntazam takrorlang",
       recAverage2: "Zaif joylarga e'tibor bering",
-      recAverage3: "Tushunishni tekshiring"
+      recAverage3: "Tushunishni tekshiring",
     },
 
     // Search
@@ -2628,7 +2760,8 @@ export const translations = {
       searchPlaceholder: "Suralar, oyatlar yoki so'zlarni qidirish...",
       searchTips: "Qidiruv maslahatlari",
       arabicSearchTip: "Arabcha qidiruv",
-      arabicSearchDescription: "Aniq qidiruv uchun arabcha so'zlardan foydalaning",
+      arabicSearchDescription:
+        "Aniq qidiruv uchun arabcha so'zlardan foydalaning",
       useArabicForExactMatch: "Aniq moslash uchun arabchadan foydalaning",
       tryDifferentWordForms: "Turli so'z shakllarini sinab ko'ring",
       translationSearchTip: "Tarjima qidiruvi",
@@ -2645,11 +2778,10 @@ export const translations = {
       searchModeArabic: "Faqat arabcha",
       searchModeTranslation: "Faqat tarjima",
       copyVerse: "Oyatni nusxalash",
-      bookmarkVerse: "Oyatni xatcho'plash"
-    }
-
+      bookmarkVerse: "Oyatni xatcho'plash",
+    },
   },
-  uzKril: {
+  уз: {
     // Асосий
     title: "Қуръон AI",
     plannerTitle: "Ўрганиш режачиси",
@@ -2663,12 +2795,13 @@ export const translations = {
     juz: "Жуз",
     searchNav: "Қидирув",
     bookmarks: "Хатчўплар",
-    
+
     bookmarksSection: {
       yourBookmarks: "Сизнинг хатчўпларингиз",
       startSavingVerses: "Оятларни сақлашни бошланг",
       noBookmarksYet: "Ҳали хатчўплар йўқ",
-      noBookmarksDescription: "Қуръонни ўқиётганингизда оятларни хатчўплашни бошланг. Сақланган оятларингиз шу ерда пайдо бўлади.",
+      noBookmarksDescription:
+        "Қуръонни ўқиётганингизда оятларни хатчўплашни бошланг. Сақланган оятларингиз шу ерда пайдо бўлади.",
       browseSurahs: "Сураларни кўриш",
       searchQuran: "Қуръонда қидириш",
       bookmarksFound: "хатчўп топилди",
@@ -2686,10 +2819,10 @@ export const translations = {
       playAudio: "Аудио ижро этиш",
       goToVerse: "Оятга ўтиш",
       note: "Эслатма",
-      noNote: "Эслатма йўқ"
+      noNote: "Эслатма йўқ",
     },
     settings: "Созламалар",
-    
+
     settingsSection: {
       settingsTitle: "Созламалар",
       settingsDescription: "Иловани ўз хоҳишингизга мосланг",
@@ -2701,7 +2834,7 @@ export const translations = {
       settingsSaved: "Созламалар сақланди",
       autoSaveEnabled: "Автоматик сақлаш ёқилган",
       settingsAutoSave: "Созламалар автоматик сақланади",
-      
+
       audioSettings: "Аудио созламалари",
       selectReciterQari: "Қуръон қорини танланг",
       showAll: "Барчасини кўрсатиш",
@@ -2710,16 +2843,16 @@ export const translations = {
       speed: "Тезлик",
       autoplayNext: "Кейингисини автоматик ижро этиш",
       autoPlayNext: "Кейинги оятни автоматик ижро этиш",
-      
+
       displaySettings: "Кўрсатиш созламалари",
       fontSizeLabel: "Шрифт ўлчами",
       selectTranslations: "Таржималарни танлаш",
       quickSetup: "Тез созлаш",
       searchTranslations: "Таржималарни қидириш...",
       showTranslation: "Таржимани кўрсатиш",
-      showTranslations: "Таржималарни кўрсатиш", 
+      showTranslations: "Таржималарни кўрсатиш",
       showTransliteration: "Транслитерацияни кўрсатиш",
-      
+
       customColors: "Махсус ранглар",
       customColorsDesc: "Рангларни ўз хоҳишингизга мосланг",
       themeMode: "Мавзу режими",
@@ -2730,7 +2863,7 @@ export const translations = {
       darkThemeDesc: "Кечки ўқиш учун қоронғи режим",
       siteColorTheme: "Сайт ранг мавзуси",
       siteColorThemeDesc: "Асосий интерфейс рангини танланг",
-      
+
       colorBlue: "Кўк",
       colorGreen: "Яшил",
       colorPurple: "Бинафша",
@@ -2739,14 +2872,14 @@ export const translations = {
       colorOrange: "Тўқ сариқ",
       colorTeal: "Кўк-яшил",
       colorIndigo: "Индиго",
-      colorRed: "Қизил", 
+      colorRed: "Қизил",
       colorYellow: "Сариқ",
       colorGray: "Кулранг",
       colorSepia: "Сепия",
-      
+
       readyMadeColorSchemes: "Тайёр ранг схемалари",
       clickToApplyInstantly: "Дарҳол қўллаш учун босинг",
-      
+
       schemeClassicName: "Классик",
       schemeClassicDesc: "Анъанавий яшил-олтин схемаси",
       schemeOceanName: "Океан",
@@ -2767,30 +2900,31 @@ export const translations = {
       schemeDarkamberDesc: "Қоронғи мавзу учун иссиқ олтин оҳанглар",
       schemeMidnightName: "Ярим тун",
       schemeMidnightDesc: "Нафис қоронғи-кўк схемаси",
-      
+
       orCustomizeManually: "Ёки қўлда созланг",
       buttonColorLabel: "Тугма ранги",
       quickColors: "Тез ранглар",
       applyColor: "Рангни қўллаш",
-      resetColorBtn: "Рангни қайтариш", 
+      resetColorBtn: "Рангни қайтариш",
       quranTextColorFull: "Қуръон матни ранги",
       translationTextColor: "Таржима матни ранги",
-      preview: "Олдиндан кўриш"
+      preview: "Олдиндан кўриш",
     },
-    
+
     menu: "Меню",
     close: "Ёпиш",
-    
+
     // Навигация
     quranReading: "Қуръон ўқиш",
     journeyNav: "Саёҳат",
     aiHelperNav: "AI Ёрдамчи",
     duaDhikriNav: "Дуо ва Зикр",
     feedback: "Фикр-мулоҳаза",
-    
+
     feedbackSection: {
       feedbackAndSupport: "Фикр-мулоҳаза ва қўллаб-қувватлаш",
-      feedbackSubtitle: "Ўз фикрларингизни бўлишиб, иловани яхшилашга ёрдам беринг",
+      feedbackSubtitle:
+        "Ўз фикрларингизни бўлишиб, иловани яхшилашга ёрдам беринг",
       feedbackType: "Мурожаат тури",
       bugReport: "Хато ҳақида хабар бериш",
       featureRequest: "Функция сўрови",
@@ -2799,22 +2933,24 @@ export const translations = {
       issueTitle: "Сарлавҳа *",
       titlePlaceholder: "Муаммо ёки таклифингизни қисқача тасвирлаб беринг...",
       description: "Тавсиф *",
-      descriptionPlaceholder: "Муаммонгиз, таклифингиз ёки фикр-мулоҳазангизни батафсил тасвирлаб беринг...",
+      descriptionPlaceholder:
+        "Муаммонгиз, таклифингиз ёки фикр-мулоҳазангизни батафсил тасвирлаб беринг...",
       submitFeedback: "Фикр-мулоҳаза юбориш",
       submitting: "Юборилмоқда...",
       successTitle: "Фикр-мулоҳазангиз учун раҳмат!",
-      successMessage: "Биз сизнинг хабарингизни олдик ва тез орада кўриб чиқамиз.",
+      successMessage:
+        "Биз сизнинг хабарингизни олдик ва тез орада кўриб чиқамиз.",
       backToSite: "Сайтга қайтиш",
       fillAllFields: "Илтимос, барча мажбурий майдонларни тўлдиринг",
-      submitError: "Юборишда хато. Қайтадан уриниб кўринг."
+      submitError: "Юборишда хато. Қайтадан уриниб кўринг.",
     },
-    
+
     // Категориялар
     main: "Асосий",
     learning: "Ўрганиш",
     tools: "Воситалар",
     settingsCategory: "Созламалар",
-    
+
     // Қўшимча калитлар
     inTheNameOfAllah: "Аллоҳ номи билан",
     islamicLearningPlatform: "Исломни ўрганиш платформаси",
@@ -2822,31 +2958,34 @@ export const translations = {
     quizNav: "Викторина",
     openMenu: "Менюни очиш",
     closeMenu: "Менюни ёпиш",
-    
+
     // Common words
     progress: "Тараққиёт",
-    
+
     // Mosque Finder
     mosqueFinder: "Масжид топиш",
-    
+
     mosqueFinderSection: {
       title: "Масжид топиш",
-      description: "Яқинингиздаги ёки дунё бўйлаб исталган шаҳардаги масжидларни топинг. Намоз вақтлари, хизматлар ва контактлар ҳақида маълумот олинг.",
+      description:
+        "Яқинингиздаги ёки дунё бўйлаб исталган шаҳардаги масжидларни топинг. Намоз вақтлари, хизматлар ва контактлар ҳақида маълумот олинг.",
       back: "Орқага",
       welcomeTitle: "Масжид қидиргичга хуш келибсиз",
-      welcomeDescription: "Масжид номи, шаҳар номини киритиш ёки геолокациядан фойдаланиб қидиришни бошланг",
+      welcomeDescription:
+        "Масжид номи, шаҳар номини киритиш ёки геолокациядан фойдаланиб қидиришни бошланг",
       searchByName: "🔍 Ном бўйича қидириш",
       searchByNameExample: "Ҳазрати Имом масжиди, Тошкент, Самарқанд",
       searchNearby: "📍 Яқинроқни қидириш",
-      searchNearbyDescription: "\"Яқиндан топиш\" тугмасидан фойдаланинг",
+      searchNearbyDescription: '"Яқиндан топиш" тугмасидан фойдаланинг',
       information: "Маълумот",
       mosquesFound: "Топилган масжидлар:",
       clearResults: "Натижаларни тозалаш",
-      dataDisclaimer: "• Маълумотлар Google Places API томонидан тақдим этилади",
+      dataDisclaimer:
+        "• Маълумотлар Google Places API томонидан тақдим этилади",
       prayerTimesNote: "• Намоз вақтлари фарқ қилиши мумкин",
-      verifyInfo: "• Масжиддан маълумотларни текширинг"
+      verifyInfo: "• Масжиддан маълумотларни текширинг",
     },
-    
+
     mosque: {
       searchTitle: "Масжид топиш",
       searchPlaceholder: "Масжид номи ёки шаҳар...",
@@ -2877,12 +3016,13 @@ export const translations = {
       openHours: "Иш вақти",
       phone: "Телефон",
       website: "Веб-сайт",
-      address: "Манзил"
+      address: "Манзил",
     },
-    
+
     // Home page
     bestQuranExperience: "Энг яхши Қуръон ўрганиш тажрибаси",
-    heroDescription: "Муқаддас Қуръонни рус, инглиз ва ўзбек тилларида таржима, тафсир ва аудио билан ўрганинг",
+    heroDescription:
+      "Муқаддас Қуръонни рус, инглиз ва ўзбек тилларида таржима, тафсир ва аудио билан ўрганинг",
     searchPlaceholder: "Суралар, оятлар ёки сўзларни қидириш...",
     verseOfTheDay: "Кун ояти",
     verse: "Оят",
@@ -2935,7 +3075,7 @@ export const translations = {
     clearAll: "Барчасини тозалаш",
     exportDuas: "Дуоларни экспорт қилиш",
     importDuas: "Дуоларни импорт қилиш",
-    
+
     // Saved duas page
     savedDuas: "Сақланган дуолар",
     favoriteDuas: "севимли дуолар",
@@ -2947,7 +3087,8 @@ export const translations = {
     byDate: "Сана бўйича",
     byTitle: "Ном бўйича",
     byCategory: "Категория бўйича",
-    noSavedDuas: "Сизнинг севимли дуоларингиз тез кириш учун шу ерда кўрсатилади",
+    noSavedDuas:
+      "Сизнинг севимли дуоларингиз тез кириш учун шу ерда кўрсатилади",
     goToDuas: "Дуоларга ўтиш",
     mainPage: "Бош саҳифа",
     noDuasFoundQuery: "Сўров бўйича дуолар топилмади",
@@ -2960,30 +3101,36 @@ export const translations = {
     // AI Helper
     arabicTitle: "مساعد القرآن الذكي",
     smartQuranAssistant: "Ақлли Қуръон ёрдамчиси",
-    aiHelperSubtitle: "Қуръон, Ислом ва диний амаллар ҳақида саволлар беринг. Муқаддас матнларга ҳаволалар билан доно жавобларни олинг.",
+    aiHelperSubtitle:
+      "Қуръон, Ислом ва диний амаллар ҳақида саволлар беринг. Муқаддас матнларга ҳаволалар билан доно жавобларни олинг.",
     popularQuestions: "Машҳур саволлар:",
-    startConversation: "Савол бериш ёки таклиф қилинганлардан бирини танлаш орқали суҳбатни бошланг",
+    startConversation:
+      "Савол бериш ёки таклиф қилинганлардан бирини танлаш орқали суҳбатни бошланг",
     askQuestion: "Саволингизни ёзинг...",
     send: "Юбориш",
     clearChat: "Чатни тозалаш",
     thinking: "Ўйлаяпман...",
-    disclaimer: "Ушбу AI ёрдамчи таълим мақсадлари учун маълумот беради. Муҳим диний саволлар бўйича малакали уламо билан маслаҳатлашинг.",
+    disclaimer:
+      "Ушбу AI ёрдамчи таълим мақсадлари учун маълумот беради. Муҳим диний саволлар бўйича малакали уламо билан маслаҳатлашинг.",
     complexQuestion: "Мураккаб савол",
-    complexQuestionDesc: "Уламоларимиз шахсан кўриб чиқади ва саволингизга батафсил тушунтириш билан жавоб беради",
+    complexQuestionDesc:
+      "Уламоларимиз шахсан кўриб чиқади ва саволингизга батафсил тушунтириш билан жавоб беради",
     yourContact: "Алоқа маълумотларингиз (телефон ёки эмаил)",
     yourQuestion: "Саволингиз",
     submitQuestion: "Савол юбориш",
     responseTime: "1-7 кун ичида жавоб берамиз, ИншаАллоҳ",
     questionSent: "Саволингиз муваффақиятли юборилди!",
-    thankYou: "Саволингиз учун раҳмат. Уламоларимиз уни кўриб чиқиб, тез орада жавоб беришади.",
+    thankYou:
+      "Саволингиз учун раҳмат. Уламоларимиз уни кўриб чиқиб, тез орада жавоб беришади.",
     backToChat: "Чатга қайтиш",
     contactPlaceholder: "Телефон рақам ёки эмаилингизни киритинг",
     questionPlaceholder: "Саволингизни батафсил ёзинг...",
-    hadithQuote: "Одам ўғли хато қилади, лекин хато қилувчиларнинг энг яхшилари тавба қилувчилардир.",
+    hadithQuote:
+      "Одам ўғли хато қилади, лекин хато қилувчиларнинг энг яхшилари тавба қилувчилардир.",
     cancel: "Бекор қилиш",
     sendingMessage: "Юборилмоқда...",
     pleaseWait: "Илтимос кутинг",
-    
+
     // Dua Dhikr
     DuaDhikr: {
       title: "Дуо ва Зикр",
@@ -2994,14 +3141,14 @@ export const translations = {
         "evening-dhikr": "Кечқурунги зикр",
         "dhikr-after-salah": "Намоздан кейин зикр",
         "daily-dua": "Кундалик дуолар",
-        "selected-dua": "Танланган дуолар"
+        "selected-dua": "Танланган дуолар",
       },
       descriptions: {
         "morning-dhikr": "Кунни барака билан бошлаш учун Аллоҳни эслаш",
         "evening-dhikr": "Ҳимоя ва хотиржамлик учун кечки зикрлар",
         "dhikr-after-salah": "Намоздан кейин қилинадиган зикр ва дуолар",
         "daily-dua": "Ҳаётнинг барча ҳолатлари учун кундалик дуолар",
-        "selected-dua": "Қуръон ва Суннатдан махсус дуолар"
+        "selected-dua": "Қуръон ва Суннатдан махсус дуолар",
       },
       languageIndicator: "UZ",
       loadingContent: "Контент тайёрлаганимизни кутинг",
@@ -3017,7 +3164,8 @@ export const translations = {
       remaining: "Қолган",
       almostDone: "🔥 Деярли тайёр! {remaining} та дуо қолди!",
       globalSettings: "Глобал кўрсатиш созламалари",
-      globalSettingsDescription: "Барча дуо карталарида сукут бўйича қайси майдонлар кўрсатилишини созланг.",
+      globalSettingsDescription:
+        "Барча дуо карталарида сукут бўйича қайси майдонлар кўрсатилишини созланг.",
       transliteration: "Транслитерация",
       notes: "Эслатмалар",
       benefits: "Фойда",
@@ -3027,7 +3175,8 @@ export const translations = {
       settings: "Созламалар",
       searchPlaceholder: "Дуоларни қидириш...",
       tip: "Маслаҳат",
-      tipText: "Ҳар бир дуо картаси ўз созламаларига эга. Кўрсатишни созлаш учун картадаги витес белгисини босинг.",
+      tipText:
+        "Ҳар бир дуо картаси ўз созламаларига эга. Кўрсатишни созлаш учун картадаги витес белгисини босинг.",
       languageIndicatorText: "UZ",
       noResults: "Дуолар топилмади",
       noResultsDescription: "Бошқа қидирув сўзлари ёки филтрларни синаб кўринг",
@@ -3036,9 +3185,9 @@ export const translations = {
       statusReady: "🏆 Тайёр",
       statusAlmostDone: "🔥 Деярли",
       statusInProgress: "⚡ Кетмоқда",
-      statusStart: "📚 Бошлаш"
+      statusStart: "📚 Бошлаш",
     },
-    
+
     // Суралар номи таржималари
     surahTranslations: {
       "Al-Fatiha": "Очувчи",
@@ -3046,16 +3195,17 @@ export const translations = {
       "Al-Kahf": "Ғор",
       "Ya-Sin": "Йо Син",
       "Ar-Rahman": "Раҳмон",
-      "Al-Mulk": "Мулк"
+      "Al-Mulk": "Мулк",
     },
-    
+
     // Суралар рўйхати таржималари
     surahsList: {
       loading: "Суралар юкланмоқда...",
       error: "Сураларни юклашда хато",
       refreshPage: "Саҳифани янгилашга ҳаракат қилинг",
       title: "Муқаддас Қуръон суралари",
-      description: "Муқаддас Қуръоннинг 114 та сурасининг тўлиқ тўплами ўзбек тилидаги таржима билан",
+      description:
+        "Муқаддас Қуръоннинг 114 та сурасининг тўлиқ тўплами ўзбек тилидаги таржима билан",
       searchPlaceholder: "Сураларни қидириш...",
       filterAll: "Ҳаммаси",
       filterMeccan: "Маккий",
@@ -3066,9 +3216,9 @@ export const translations = {
       sortRevelation: "Нозил бўлиш",
       verses: "оят",
       noResults: "Суралар топилмади",
-      noResultsDesc: "Бошқа қидирув сўзларини синаб кўринг"
+      noResultsDesc: "Бошқа қидирув сўзларини синаб кўринг",
     },
-    
+
     // Қуръон ўқиш саҳифаси таржималари
     quranReader: {
       audioNotAvailableReciter: "Бу қори учун аудио мавжуд эмас",
@@ -3081,9 +3231,9 @@ export const translations = {
       audio: "Аудио",
       next: "Кейин",
       translation: "Таржима",
-      settings: "Созламалар"
+      settings: "Созламалар",
     },
-    
+
     // Предустановленные вопросы
     presetQuestion1: "Ал-Фотиҳа нима дегани?",
     presetQuestion2: "Намозни қандай тўғри ўқиш керак?",
@@ -3093,11 +3243,12 @@ export const translations = {
     presetQuestion6: "Исломда Тавҳид нима?",
     presetQuestion7: "Ҳар куни қандай дуоларни ўқиш тавсия этилади?",
     presetQuestion8: "Пайғамбар Муҳаммад (с.а.в.) ҳақида гапириб беринг",
-    
+
     // Planner
     planner: {
       title: "Қуръон ўрганиш режачиси",
-      subtitle: "Шахсий ўрганиш режаларини яратинг ва тараққиётингизни кузатиб боринг",
+      subtitle:
+        "Шахсий ўрганиш режаларини яратинг ва тараққиётингизни кузатиб боринг",
       createPlan: "Режа яратиш",
       myPlans: "Менинг режаларим",
       todayTasks: "Бугунги вазифалар",
@@ -3116,22 +3267,28 @@ export const translations = {
       defaultUserName: "Фойдаланувчи",
       days: "кунлар",
       welcomeTitle: "Хуш келибсиз",
-      welcomeMessage: "Муқаддас Қуръонни ўрганиш билан маънавий саёҳатингизни бошланг",
+      welcomeMessage:
+        "Муқаддас Қуръонни ўрганиш билан маънавий саёҳатингизни бошланг",
       greatStartTitle: "Ажойиб бошланиш",
-      greatStartMessage: "Сиз {{streak}} {{days}} кетма-кет ўрганиб келмоқдасиз! Давом этинг",
+      greatStartMessage:
+        "Сиз {{streak}} {{days}} кетма-кет ўрганиб келмоқдасиз! Давом этинг",
       amazingDisciplineTitle: "Ажойиб интизом",
-      amazingDisciplineMessage: "Сизнинг {{streak}} {{days}}лик кетма-кетлигингиз таъсирли! Сиз тўғри йўлдасиз",
+      amazingDisciplineMessage:
+        "Сизнинг {{streak}} {{days}}лик кетма-кетлигингиз таъсирли! Сиз тўғри йўлдасиз",
       incredibleAchievementTitle: "Ақл бовар қилмайдиган ютуқ",
-      incredibleAchievementMessage: "{{streak}} {{days}} узлуксиз ўрганиш! Сиз ҳақиқий намуна",
+      incredibleAchievementMessage:
+        "{{streak}} {{days}} узлуксиз ўрганиш! Сиз ҳақиқий намуна",
       loadingPlannerTitle: "Режачи юкланмоқда",
-      loadingPlannerMessage: "Сизнинг маънавий саёҳатингизни тайёрламоқдамиз...",
+      loadingPlannerMessage:
+        "Сизнинг маънавий саёҳатингизни тайёрламоқдамиз...",
       startSpiritualJourney: "Маънавий саёҳатни бошлаш",
       overallStatistics: "Умумий статистика",
       activePlans: "Фаол режалар",
       studiedAyahs: "Ўрганилган оятлар",
       studyMinutes: "Ўрганиш дақиқалари",
       excellentWork: "Ажойиб иш!",
-      allTasksCompleted: "Бугунги барча вазифалар бажарилди. Дам олинг ёки янги режа яратинг!",
+      allTasksCompleted:
+        "Бугунги барча вазифалар бажарилди. Дам олинг ёки янги режа яратинг!",
       ayahSingular: "оят",
       ayahPlural: "оятлар",
       goToStudyAyahs: "Оятларни ўрганишга ўтиш",
@@ -3142,14 +3299,16 @@ export const translations = {
       completedPlans: "Тугатилган режалар",
       plansCompleted: "режа тугатилган",
       scholarlyReader: "Қуръон билимчиси",
-      startStudyingToEarnAchievements: "Ютуқлар қўлга киритиш учун ўрганишни бошланг!",
+      startStudyingToEarnAchievements:
+        "Ютуқлар қўлга киритиш учун ўрганишни бошланг!",
       quickActions: "Тез ҳаракатлар",
       newPlan: "Янги режа",
       hideCalendar: "Календарни яшириш",
       viewCalendar: "Календарни кўрсатиш",
       exportData: "Маълумотларни экспорт қилиш",
       tipOfTheDay: "Куннинг маслаҳати",
-      dailyTipMessage: "Мунтазамлик Қуръонни муваффақиятли ўрганишнинг калитидир. Ҳатто кунига 10-15 дақиқа ҳам ажойиб натижа беради!",
+      dailyTipMessage:
+        "Мунтазамлик Қуръонни муваффақиятли ўрганишнинг калитидир. Ҳатто кунига 10-15 дақиқа ҳам ажойиб натижа беради!",
       studyCalendar: "Ўрганиш календари",
       backToPlanner: "Режага қайтиш",
       planNotFound: "Режа топилмади",
@@ -3165,7 +3324,8 @@ export const translations = {
       saveChanges: "Ўзгаришларни сақлаш",
       cancel: "Бекор қилиш",
       confirmDelete: "Ўчиришни тасдиқлаш",
-      deleteConfirmMessage: "Бу режани ўчирмоқчимисиз? Бу амал бекор қилинмайди.",
+      deleteConfirmMessage:
+        "Бу режани ўчирмоқчимисиз? Бу амал бекор қилинмайди.",
       todaysTask: "Бугунги вазифа",
       markCompleted: "Бажарилган деб белгилаш",
       alreadyCompleted: "Аллақачон бажарилган!",
@@ -3189,7 +3349,7 @@ export const translations = {
       ayahsForStudy: "Ўрганиш учун оятлар",
       ayahNumber: "Оят",
       juzNumber: "Жуз",
-      quranQuote: "\"Ва Қуръонни тартиб билан ўқи\" (Қуръон 73:4)",
+      quranQuote: '"Ва Қуръонни тартиб билан ўқи" (Қуръон 73:4)',
       readingCounter: "Ўқиш ҳисоблагичи",
       readButtonText: "+1 Ўқилди",
       readingTip: "Оятларни ўқиб бўлгач ҳар сафар босинг",
@@ -3209,7 +3369,7 @@ export const translations = {
       statusPaused: "Тўхтатилган",
       statusCancelled: "Бекор қилинган",
       statusUnknown: "Номаълум",
-      totalDays: "Жами кунлар"
+      totalDays: "Жами кунлар",
     },
 
     // Calendar View
@@ -3219,8 +3379,8 @@ export const translations = {
         completed: "Бажарилган",
         skipped: "Ўтказиб юборилган",
         pending: "Кутилмоқда",
-        future: "Келажакдаги"
-      }
+        future: "Келажакдаги",
+      },
     },
 
     // Create Plan Form
@@ -3239,7 +3399,7 @@ export const translations = {
         mediumTitle: "Чуқур ўрганиш",
         mediumDesc: "Кўпроқ шўнғишни хоҳлайдиганлар учун",
         mediumPlanName: "Чуқур ўрганиш",
-        mediumPlanDesc: "Ўрта ва узун сураларни ўрганиш"
+        mediumPlanDesc: "Ўрта ва узун сураларни ўрганиш",
       },
       customPlan: "Ўз режангизни созланг",
       basicInfoTitle: "Асосий маълумотлар",
@@ -3265,7 +3425,7 @@ export const translations = {
         wed: "Чо",
         thu: "Па",
         fri: "Жу",
-        sat: "Ша"
+        sat: "Ша",
       },
       selectedDays: "Танланган кунлар:",
       days: "кун",
@@ -3291,20 +3451,22 @@ export const translations = {
         back: "Орқага",
         next: "Кейингиси",
         cancel: "Бекор қилиш",
-        create: "Режа яратиш"
+        create: "Режа яратиш",
       },
       errors: {
-        creationError: "Режа яратишда хатолик"
-      }
+        creationError: "Режа яратишда хатолик",
+      },
     },
-    
+
     // Live Streams
     liveStreams: {
       nav: "Маънавий марказ",
       title: "Жонли трансляциялар",
-      subtitle: "Исломнинг энг муқаддас жойларидан, жумладан Маккадаги Масжид ал-Ҳарам ва Мадинадаги Масжид ан-Набавийдан жонли трансляцияларни томоша қилинг.",
+      subtitle:
+        "Исломнинг энг муқаддас жойларидан, жумладан Маккадаги Масжид ал-Ҳарам ва Мадинадаги Масжид ан-Набавийдан жонли трансляцияларни томоша қилинг.",
       holyPlacesTitle: "🕌 Муқаддас жойлар",
-      holyPlacesDescription: "Исломнинг энг муқаддас жойларидан жонли трансляциялар",
+      holyPlacesDescription:
+        "Исломнинг энг муқаддас жойларидан жонли трансляциялар",
       status: {
         live: "ЖОНЛИ",
         offline: "ОФЛАЙН",
@@ -3312,25 +3474,27 @@ export const translations = {
         lastUpdated: "ОХИРГИ ЯНГИЛАНИШ",
         liveSignal: "Жонли сигнал",
         waiting: "Сигнолни кутиш",
-        currentViewers: "Ҳозирги томошабинлар"
+        currentViewers: "Ҳозирги томошабинлар",
       },
       actions: {
         refresh: "Янгилаш",
         refreshing: "Янгиланмоқда...",
-        openYoutube: "YouTube'да очиш"
+        openYoutube: "YouTube'да очиш",
       },
       locations: {
         mecca: {
           title: "Масжид ал-Ҳарам, Макка",
-          description: "Каъбани ўраб олган Исломнинг энг муқаддас масжидидан жонли трансляция. Намозлар, Тавоф ва бошқа маросимларни кузатинг."
+          description:
+            "Каъбани ўраб олган Исломнинг энг муқаддас масжидидан жонли трансляция. Намозлар, Тавоф ва бошқа маросимларни кузатинг.",
         },
         medina: {
           title: "Масжид ан-Набавий, Мадина",
-          description: "Пайғамбар Муҳаммад (с.а.в.) дафн этилган Мадинадаги Пайғамбар масжидидан жонли трансляция. Намозлар ва маросимларни томоша қилинг."
-        }
-      }
+          description:
+            "Пайғамбар Муҳаммад (с.а.в.) дафн этилган Мадинадаги Пайғамбар масжидидан жонли трансляция. Намозлар ва маросимларни томоша қилинг.",
+        },
+      },
     },
-    
+
     // Prayer Times Display
     prayerTimes: {
       title: "Намоз вақтлари",
@@ -3346,7 +3510,8 @@ export const translations = {
       find: "Топиш",
       searchingCities: "Шаҳарлар қидирилмоқда...",
       noResults: '"{query}" учун шаҳарлар топилмади',
-      tryEnglish: "Инглизча номларни синаб кўринг: Moscow, London, Istanbul, Dubai, Almaty",
+      tryEnglish:
+        "Инглизча номларни синаб кўринг: Moscow, London, Istanbul, Dubai, Almaty",
       quickTests: "Тезкор тестлар:",
       nextPrayer: "Кейинги намоз",
       tomorrowPrayer: "Эртанги намоз",
@@ -3362,7 +3527,7 @@ export const translations = {
         location: "Вақт сизнинг жойлашувингизга асосланиб ҳисобланади",
         method: "Ҳудудингиз учун ҳисоблаш усули қўлланилади",
         autoUpdate: "Вақт автоматик янгиланади",
-        search: "Шаҳар номи бўйича қидирув мавжуд"
+        search: "Шаҳар номи бўйича қидирув мавжуд",
       },
       prayers: {
         fajr: "Бомдод",
@@ -3370,7 +3535,7 @@ export const translations = {
         dhuhr: "Пешин",
         asr: "Аср",
         maghrib: "Шом",
-        isha: "Хуфтон"
+        isha: "Хуфтон",
       },
       prayersEn: {
         fajr: "Fajr",
@@ -3378,20 +3543,21 @@ export const translations = {
         dhuhr: "Dhuhr",
         asr: "Asr",
         maghrib: "Maghrib",
-        isha: "Isha"
+        isha: "Isha",
       },
       cities: {
         moscow: "Москва",
         london: "Лондон",
         dubai: "Дубай",
-        almaty: "Алмати"
-      }
+        almaty: "Алмати",
+      },
     },
-    
+
     // Journey section
     journey: {
       quranJourney: "Қуръон Сафари",
-      journeyDescription: "Муқаддас Қуръоннинг барча 114 сурасида интерактив саёҳатга чиқинг. Билимингизни синаб кўринг, ютуқларни очинг ва тараққиётингизни кузатиб боринг!",
+      journeyDescription:
+        "Муқаддас Қуръоннинг барча 114 сурасида интерактив саёҳатга чиқинг. Билимингизни синаб кўринг, ютуқларни очинг ва тараққиётингизни кузатиб боринг!",
       journeyMap: "Сафари Харитаси",
       statistics: "Статистика",
       achievements: "Ютуқлар",
@@ -3421,14 +3587,14 @@ export const translations = {
       timeSpent: "Сарфланган Вақт",
       totalProgress: "Умумий Тараққиёт",
       hourShort: "с",
-      minuteShort: "д", 
+      minuteShort: "д",
       minuteLong: "дақиқа",
       overallJourneyProgress: "Умумий Сафари Тараққиёти",
       completed: "тугатилган",
       remaining: "қолган",
       progress: "Тараққиёт",
       byJuz: "Жуз бўйича",
-      filters: "Филтрлар"
+      filters: "Филтрлар",
     },
 
     // Quiz
@@ -3475,7 +3641,8 @@ export const translations = {
       secondsPerQuestionPlaceholder: "Савол учун сониялар",
       // Викторина Натижалари
       needsImprovementTitle: "Яхшилаш керак",
-      needsImprovementMessage: "Ишонч билан давом этинг - Қуръонни ўрганишдаги ҳар бир қадам қимматли!",
+      needsImprovementMessage:
+        "Ишонч билан давом этинг - Қуръонни ўрганишдаги ҳар бир қадам қимматли!",
       score: "Балл",
       points: "балл",
       correct: "Тўғри",
@@ -3506,7 +3673,7 @@ export const translations = {
       recGood3: "Контекстни ўрганинг",
       recAverage1: "Мунтазам такрорланг",
       recAverage2: "Заиф жойларга эътибор беринг",
-      recAverage3: "Тушунишни текширинг"
+      recAverage3: "Тушунишни текширинг",
     },
 
     // Search
@@ -3533,49 +3700,51 @@ export const translations = {
       searchModeArabic: "Фақат арабча",
       searchModeTranslation: "Фақат таржима",
       copyVerse: "Оятни нусхалаш",
-      bookmarkVerse: "Оятни хатчўплаш"
-    }
-
-}
+      bookmarkVerse: "Оятни хатчўплаш",
+    },
+  },
 } as const;
 
 // Вспомогательные типы
 export type TranslationKey = keyof typeof translations.ru;
 export type NestedTranslationKey = {
-  [K in TranslationKey]: typeof translations.ru[K] extends object 
-    ? `${K}.${keyof typeof translations.ru[K] & string}`
+  [K in TranslationKey]: (typeof translations.ru)[K] extends object
+    ? `${K}.${keyof (typeof translations.ru)[K] & string}`
     : K;
 }[TranslationKey];
 
 // Функция для получения перевода с поддержкой вложенных ключей
 export function getTranslation(locale: Locale, key: string): string {
   const localeTranslations = translations[locale] || translations.ru;
-  
+
   // Поддержка вложенных ключей типа "DuaDhikr.categories.morning-dhikr"
-  if (key.includes('.')) {
-    const keyParts = key.split('.');
+  if (key.includes(".")) {
+    const keyParts = key.split(".");
     let current: any = localeTranslations;
-    
+
     // Проходимся по всем частям ключа
     for (const part of keyParts) {
-      if (current && typeof current === 'object' && part in current) {
+      if (current && typeof current === "object" && part in current) {
         current = current[part];
       } else {
         console.warn(`Translation key not found: ${key} at part: ${part}`);
         return key; // Если любая часть не найдена, возвращаем исходный ключ
       }
     }
-    
+
     // Убеждаемся, что финальное значение - это строка
-    if (typeof current === 'string') {
+    if (typeof current === "string") {
       return current;
     } else {
-      console.error(`Translation value is not a string for key: ${key}`, current);
+      console.error(
+        `Translation value is not a string for key: ${key}`,
+        current
+      );
       return key;
     }
   }
-  
+
   // Обычный ключ
   const value = (localeTranslations as any)[key];
-  return typeof value === 'string' ? value : key;
+  return typeof value === "string" ? value : key;
 }
