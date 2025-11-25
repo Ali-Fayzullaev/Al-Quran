@@ -131,17 +131,14 @@ export const translations = {
       translationTextColor: "Цвет текста перевода",
       preview: "Предварительный просмотр",
     },
-    
-    themeDrawerSection: {
-      themeSettings: "Настройки темы",
-      displayMode: "Режим отображения",
-      lightMode: "Светлый",
-      darkMode: "Темный",
-      autoMode: "Авто",
-      colorThemes: "Цветовые темы",
-      autoSave: "Настройки автоматически сохраняются"
-    },
 
+    themeSettings: "Настройки темы",
+    displayMode: "Режим отображения",
+    lightMode: "Светлый",
+    darkMode: "Темный",
+    autoMode: "Авто",
+    colorThemes: "Цветовые темы",
+    autoSave: "Настройки автоматически сохраняются",
     menu: "Меню",
     close: "Закрыть",
 
@@ -1056,17 +1053,13 @@ export const translations = {
       translationTextColor: "Translation Text Color",
       preview: "Preview",
     },
-    
-    themeDrawerSection: {
-      themeSettings: "Theme Settings",
-      displayMode: "Display Mode",
-      lightMode: "Light",
-      darkMode: "Dark",
-      autoMode: "Auto",
-      colorThemes: "Color Themes",
-      autoSave: "Settings are automatically saved"
-    },
-
+    themeSettings: "Theme Settings",
+    displayMode: "Display Mode",
+    lightMode: "Light",
+    darkMode: "Dark",
+    autoMode: "Auto",
+    colorThemes: "Color Themes",
+    autoSave: "Settings are automatically saved",
     menu: "Menu",
     close: "Close",
 
@@ -1973,17 +1966,14 @@ export const translations = {
       translationTextColor: "Tarjima matni rangi",
       preview: "Oldindan ko'rish",
     },
-    
-    themeDrawerSection: {
-      themeSettings: "Mavzu sozlamalari",
-      displayMode: "Ko'rsatish rejimi",
-      lightMode: "Yorug'",
-      darkMode: "Qorong'i",
-      autoMode: "Avtomatik",
-      colorThemes: "Rang mavzulari",
-      autoSave: "Sozlamalar avtomatik saqlanadi"
-    },
 
+    themeSettings: "Mavzu sozlamalari",
+    displayMode: "Ko'rsatish rejimi",
+    lightMode: "Yorqin",
+    darkMode: "Qorong'i",
+    autoMode: "Avto",
+    colorThemes: "Rang mavzulari",
+    autoSave: "Sozlamalar avtomatik saqlanadi",
     menu: "Menyu",
     close: "Yopish",
 
@@ -2911,6 +2901,13 @@ export const translations = {
       preview: "Олдиндан кўриш",
     },
 
+    themeSettings: "Мавзу созламалари",
+    displayMode: "Кўрсатиш режими",
+    lightMode: "Ёрқин",
+    darkMode: "Қоронғи",
+    autoMode: "Авто",
+    colorThemes: "Ранг мавзулари",
+    autoSave: "Созламалар автоматик сақланади",
     menu: "Меню",
     close: "Ёпиш",
 

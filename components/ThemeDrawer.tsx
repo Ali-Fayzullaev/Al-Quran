@@ -44,7 +44,7 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
         <SheetHeader className="pb-6">
           <SheetTitle className="flex items-center gap-2 text-left" style={{ color: 'var(--fixed-text)' }}>
             <Palette className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
-            {t('themeDrawerSection.themeSettings')}
+            {t('themeSettings')}
           </SheetTitle>
         </SheetHeader>
 
@@ -52,14 +52,14 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
           {/* Display Mode */}
           <div>
             <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--fixed-text)' }}>
-              {t('themeDrawerSection.displayMode')}
+              {t('displayMode')}
             </h3>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { id: 'light', icon: Sun, labelKey: 'lightMode' },
-                { id: 'dark', icon: Moon, labelKey: 'darkMode' },
-                { id: 'system', icon: Monitor, labelKey: 'autoMode' }
-              ].map(({ id, icon: Icon, labelKey }) => (
+                { id: 'light', icon: Sun, label: t('lightMode') },
+                { id: 'dark', icon: Moon, label: t('darkMode') },
+                { id: 'system', icon: Monitor, label: t('autoMode') }
+              ].map(({ id, icon: Icon, label }) => (
                 <button
                   key={id}
                   onClick={() => setTheme(id)}
@@ -81,7 +81,7 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
                   }}
                 >
                   <Icon size={18} style={{ color: 'var(--fixed-text-secondary)' }} />
-                  <span className="font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>{t(`themeDrawerSection.${labelKey}`)}</span>
+                  <span className="font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>{label}</span>
                   {theme === id && <Check size={12} style={{ color: 'var(--color-primary)' }} />}
                 </button>
               ))}
@@ -91,7 +91,7 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
           {/* Color Themes */}
           <div>
             <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--fixed-text)' }}>
-              {t('themeDrawerSection.colorThemes')}
+              {t('colorThemes')}
             </h3>
             <div className="space-y-2 overflow-y-scroll" style={{ maxHeight: '60vh' }}>
               {SITE_COLOR_THEMES.map((colorTheme) => (
@@ -146,7 +146,7 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
         {/* Footer */}
         <div className="mt-8 pt-4 border-t" style={{ borderColor: 'var(--color-border)' }}>
           <p className="text-xs text-center" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {t('themeDrawerSection.autoSave')}
+            {t('autoSave')}
           </p>
         </div>
       </SheetContent>
