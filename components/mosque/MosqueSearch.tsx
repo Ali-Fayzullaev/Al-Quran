@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback } from 'react';
 import { Mosque, MosqueSearchFilters } from '@/types/mosque';
+import { useLocale } from '@/context/LocaleContext';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -39,6 +40,7 @@ export default function MosqueSearch({
   loading = false,
   error = null 
 }: MosqueSearchProps) {
+  const { t } = useLocale();
   const [query, setQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState<MosqueSearchFilters>({
@@ -111,7 +113,7 @@ export default function MosqueSearch({
           color: 'var(--fixed-text)'
         }}>
           <Search className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
-          Поиск мечетей
+          {t('mosque.searchTitle')}
         </CardTitle>
       </CardHeader>
       
@@ -120,7 +122,7 @@ export default function MosqueSearch({
         <div className="flex gap-2">
           <div className="flex-1">
             <Input
-              placeholder="Название мечети, город..."
+              placeholder={t('mosque.searchPlaceholder')}
               value={query}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuery(e.target.value)}
               onKeyPress={handleKeyPress}
@@ -154,7 +156,7 @@ export default function MosqueSearch({
             ) : (
               <MapPin className="w-4 h-4 mr-2" />
             )}
-            Найти рядом
+            {t('mosque.findNearby')}
           </Button>
         </div>
 
@@ -165,7 +167,7 @@ export default function MosqueSearch({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Settings className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
-              <span className="font-medium" style={{ color: 'var(--fixed-text)' }}>Фильтры</span>
+              <span className="font-medium" style={{ color: 'var(--fixed-text)' }}>{t('mosque.filters')}</span>
               {activeFiltersCount > 0 && (
                 <Badge variant="secondary" className="text-xs">
                   {activeFiltersCount}
@@ -182,7 +184,7 @@ export default function MosqueSearch({
                   className="text-xs"
                 >
                   <X className="w-3 h-3 mr-1" />
-                  Очистить
+                  {t('mosque.resetFilters')}
                 </Button>
               )}
               
@@ -191,7 +193,7 @@ export default function MosqueSearch({
                 size="sm"
                 onClick={() => setShowFilters(!showFilters)}
               >
-                {showFilters ? 'Скрыть' : 'Показать'}
+                {showFilters ? t('mosque.hideFilters') : t('mosque.showFilters')}
               </Button>
             </div>
           </div>
@@ -204,7 +206,7 @@ export default function MosqueSearch({
               <div className="space-y-2">
                 <Label className="flex items-center gap-2" style={{ color: 'var(--fixed-text)' }}>
                   <Star className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
-                  Минимальный рейтинг
+                  {t('minRating')}
                 </Label>
                 <Select 
                   value={filters.minRating === 0 ? 'any' : filters.minRating.toString()}
@@ -216,10 +218,10 @@ export default function MosqueSearch({
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Любой" />
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="any">✨ Любой</SelectItem>
+                    <SelectItem value="any">✨ Any</SelectItem>
                     <SelectItem value="3.0">⭐ 3.0+</SelectItem>
                     <SelectItem value="3.5">⭐ 3.5+</SelectItem>
                     <SelectItem value="4.0">⭐ 4.0+</SelectItem>
@@ -232,7 +234,7 @@ export default function MosqueSearch({
               <div className="space-y-2">
                 <Label className="flex items-center gap-2" style={{ color: 'var(--fixed-text)' }}>
                   <Clock className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
-                  Дополнительно
+                  {t('features')}
                 </Label>
                 <div className="flex items-center space-x-2">
                   <Checkbox 
@@ -246,7 +248,7 @@ export default function MosqueSearch({
                     }
                   />
                   <Label htmlFor="jumuah" className="text-sm" style={{ color: 'var(--fixed-text)' }}>
-                    Пятничный намаз
+                    {t('hasJumuah')}
                   </Label>
                 </div>
               </div>

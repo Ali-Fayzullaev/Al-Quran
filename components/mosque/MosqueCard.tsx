@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Mosque } from '@/types/mosque';
+import { useLocale } from '@/context/LocaleContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -20,15 +21,17 @@ export default function MosqueCard({
   onViewDetails,
   showDistance = true 
 }: MosqueCardProps) {
+  const { t } = useLocale();
+  
   const formatDistance = (distance?: number): string => {
     if (!distance) return '';
     return distance < 1 
       ? `${Math.round(distance * 1000)} м` 
-      : `${distance.toFixed(1)} км`;
+      : `${distance.toFixed(1)} ${t('mosque.kmAway')}`;  
   };
 
   const formatRating = (rating?: number): string => {
-    if (!rating) return 'Нет оценок';
+    if (!rating) return 'No rating';
     return rating.toFixed(1);
   };
 
@@ -173,7 +176,7 @@ export default function MosqueCard({
               <span className={`text-sm font-medium ${
                 isOpen ? 'text-green-600' : 'text-red-600'
               }`}>
-                {isOpen ? 'Открыто' : 'Закрыто'}
+                {isOpen ? t('mosque.openNow') : t('mosque.closed')}
               </span>
             </div>
           )}
@@ -182,7 +185,7 @@ export default function MosqueCard({
         {/* Время пятничного намаза */}
         {mosque.jumuah_times && mosque.jumuah_times.length > 0 && (
           <div className="text-sm">
-            <span className="font-medium text-green-700">Пятничный намаз:</span>
+            <span className="font-medium text-green-700">{t('mosque.hasJumuah')}:</span>
             <div className="flex flex-wrap gap-1 mt-1">
               {mosque.jumuah_times.map((time, index) => (
                 <Badge key={index} variant="outline" className="text-xs">
@@ -222,7 +225,7 @@ export default function MosqueCard({
               className="flex-1 min-w-0"
             >
               <Navigation className="w-4 h-4 mr-1" />
-              Маршрут
+              {t('mosque.getDirections')}
             </Button>
           )}
           
@@ -233,7 +236,7 @@ export default function MosqueCard({
               onClick={handleCallPhone}
             >
               <Phone className="w-4 h-4 mr-1" />
-              Позвонить
+              {t('mosque.phone')}
             </Button>
           )}
           
@@ -244,7 +247,7 @@ export default function MosqueCard({
               onClick={handleOpenWebsite}
             >
               <ExternalLink className="w-4 h-4 mr-1" />
-              Сайт
+              {t('mosque.website')}
             </Button>
           )}
           
@@ -255,7 +258,7 @@ export default function MosqueCard({
               onClick={() => onViewDetails(mosque)}
               className="ml-auto"
             >
-              Подробнее
+              {t('mosque.viewDetails')}
             </Button>
           )}
         </div>

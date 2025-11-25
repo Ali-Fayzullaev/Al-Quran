@@ -152,14 +152,28 @@ export default function CustomColorSettings() {
   
   // Функция для получения локализованного названия схемы
   const getSchemeName = (schemeId: string) => {
-    const key = `scheme${schemeId.charAt(0).toUpperCase() + schemeId.slice(1).replace(/[-]/g, '').toLowerCase()}Name`;
-    return t(key);
+    let key;
+    if (schemeId === 'dark-emerald') {
+      key = 'schemeDarkemeraldName';
+    } else if (schemeId === 'dark-amber') {
+      key = 'schemeDarkamberName';
+    } else {
+      key = `scheme${schemeId.charAt(0).toUpperCase() + schemeId.slice(1)}Name`;
+    }
+    return t(`settingsSection.${key}`);
   };
   
   // Функция для получения локализованного описания схемы
   const getSchemeDesc = (schemeId: string) => {
-    const key = `scheme${schemeId.charAt(0).toUpperCase() + schemeId.slice(1).replace(/[-]/g, '').toLowerCase()}Desc`;
-    return t(key);
+    let key;
+    if (schemeId === 'dark-emerald') {
+      key = 'schemeDarkemeraldDesc';
+    } else if (schemeId === 'dark-amber') {
+      key = 'schemeDarkamberDesc';
+    } else {
+      key = `scheme${schemeId.charAt(0).toUpperCase() + schemeId.slice(1)}Desc`;
+    }
+    return t(`settingsSection.${key}`);
   };
   
   // Функция для получения локализованного названия цвета
@@ -170,7 +184,7 @@ export default function CustomColorSettings() {
     
     // Если у нас есть перевод для этого цвета, используем его, иначе fallback к старому методу
     try {
-      return t(colorKey);
+      return t(`settingsSection.${colorKey}`);
     } catch {
       return locale === 'en' ? preset.name.en : preset.name.ru;
     }
@@ -329,11 +343,11 @@ export default function CustomColorSettings() {
         <div className="inline-flex items-center gap-3 mb-3">
           <Palette className="w-6 h-6" style={{ color: customButtonColor || '#10b981' }} />
           <h2 className="text-2xl font-bold" style={{ color: 'var(--fixed-text)' }}>
-            {t('customColors')}
+            {t('settingsSection.customColors')}
           </h2>
         </div>
         <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-          {t('customColorsDesc')}
+          {t('settingsSection.customColorsDesc')}
         </p>
       </div>
 
@@ -344,11 +358,11 @@ export default function CustomColorSettings() {
             {theme === 'light' ? <Sun className="w-5 h-5" style={{ color: 'var(--color-primary)' }} /> : <Moon className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />}
           </div>
           <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
-            {t('themeMode')}
+            {t('settingsSection.themeMode')}
           </h3>
         </div>
         <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-          {t('themeModeDesc')}
+          {t('settingsSection.themeModeDesc')}
         </p>
         
         <div className="flex gap-4">
@@ -368,10 +382,10 @@ export default function CustomColorSettings() {
             <Sun className="w-6 h-6" style={{ color: theme === 'light' ? 'var(--color-primary)' : 'var(--fixed-text-secondary)' }} />
             <div className="text-left">
               <div className="font-semibold" style={{ color: 'var(--fixed-text)' }}>
-                {t('lightTheme')}
+                {t('settingsSection.lightTheme')}
               </div>
               <div className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-                {t('lightThemeDesc')}
+                {t('settingsSection.lightThemeDesc')}
               </div>
             </div>
             {theme === 'light' && (
@@ -395,10 +409,10 @@ export default function CustomColorSettings() {
             <Moon className="w-6 h-6" style={{ color: theme === 'dark' ? 'var(--color-primary)' : 'var(--fixed-text-secondary)' }} />
             <div className="text-left">
               <div className="font-semibold" style={{ color: 'var(--fixed-text)' }}>
-                {t('darkTheme')}
+                {t('settingsSection.darkTheme')}
               </div>
               <div className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-                {t('darkThemeDesc')}
+                {t('settingsSection.darkThemeDesc')}
               </div>
             </div>
             {theme === 'dark' && (
@@ -413,26 +427,26 @@ export default function CustomColorSettings() {
         <div className="flex items-center gap-2">
           <Sparkles className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
           <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
-            {t('siteColorTheme')}
+            {t('settingsSection.siteColorTheme')}
           </h3>
         </div>
         <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-          {t('siteColorThemeDesc')}
+          {t('settingsSection.siteColorThemeDesc')}
         </p>
         
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
           {[
-            { id: 'blue', name: t('colorBlue'), color: '#3b82f6' },
-            { id: 'green', name: t('colorGreen'), color: '#10b981' },
-            { id: 'purple', name: t('colorPurple'), color: '#8b5cf6' },
-            { id: 'amber', name: t('colorAmber'), color: '#f59e0b' },
-            { id: 'pink', name: t('colorPink'), color: '#ec4899' },
-            { id: 'orange', name: t('colorOrange'), color: '#f97316' },
-            { id: 'teal', name: t('colorTeal'), color: '#14b8a6' },
-            { id: 'indigo', name: t('colorIndigo'), color: '#6366f1' },
-            { id: 'red', name: t('colorRed'), color: '#ef4444' },
-            { id: 'yellow', name: t('colorYellow'), color: '#eab308' },
-            { id: 'gray', name: t('colorGray'), color: '#6b7280' },
+            { id: 'blue', name: t('settingsSection.colorBlue'), color: '#3b82f6' },
+            { id: 'green', name: t('settingsSection.colorGreen'), color: '#10b981' },
+            { id: 'purple', name: t('settingsSection.colorPurple'), color: '#8b5cf6' },
+            { id: 'amber', name: t('settingsSection.colorAmber'), color: '#f59e0b' },
+            { id: 'pink', name: t('settingsSection.colorPink'), color: '#ec4899' },
+            { id: 'orange', name: t('settingsSection.colorOrange'), color: '#f97316' },
+            { id: 'teal', name: t('settingsSection.colorTeal'), color: '#14b8a6' },
+            { id: 'indigo', name: t('settingsSection.colorIndigo'), color: '#6366f1' },
+            { id: 'red', name: t('settingsSection.colorRed'), color: '#ef4444' },
+            { id: 'yellow', name: t('settingsSection.colorYellow'), color: '#eab308' },
+            { id: 'gray', name: t('settingsSection.colorGray'), color: '#6b7280' },
             { id: 'sepia', name: 'Sepia', color: '#92400e' }
           ].map((theme) => (
             <button
@@ -473,14 +487,14 @@ export default function CustomColorSettings() {
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
             <h3 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
-              {t('readyMadeColorSchemes')}
+              {t('settingsSection.readyMadeColorSchemes')}
             </h3>
           </div>
           <p className="text-xs px-3 py-1 rounded-full" style={{ 
             backgroundColor: 'var(--color-primary)',
             color: 'white'
           }}>
-            {t('clickToApplyInstantly')}
+            {t('settingsSection.clickToApplyInstantly')}
           </p>
         </div>
         
@@ -516,12 +530,6 @@ export default function CustomColorSettings() {
                 >
                   بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ
                 </p>
-                <p 
-                  className="text-sm leading-relaxed"
-                  style={{ color: scheme.translationColor }}
-                >
-                  {t('inTheNameOfAllah')}
-                </p>
               </div>
               
               {/* Content */}
@@ -538,17 +546,17 @@ export default function CustomColorSettings() {
                   <div 
                     className="w-6 h-6 rounded-full border-2 border-white shadow-md"
                     style={{ backgroundColor: scheme.buttonColor }}
-                    title={t('buttonsTitle')}
+                    title={t('settingsSection.buttonsTitle')}
                   />
                   <div 
                     className="w-6 h-6 rounded-full border-2 border-white shadow-md"
                     style={{ backgroundColor: scheme.textColor }}
-                    title={t('arabicTextTitle')}
+                    title={t('settingsSection.arabicTextTitle')}
                   />
                   <div 
                     className="w-6 h-6 rounded-full border-2 border-white shadow-md"
                     style={{ backgroundColor: scheme.translationColor }}
-                    title={t('translationTitle')}
+                    title={t('settingsSection.translationTitle')}
                   />
                 </div>
               </div>
@@ -577,7 +585,7 @@ export default function CustomColorSettings() {
             backgroundColor: 'var(--fixed-background)',
             color: 'var(--fixed-text-secondary)' 
           }}>
-            {t('orCustomizeManually')}
+            {t('settingsSection.orCustomizeManually')}
           </span>
         </div>
       </div>
@@ -589,7 +597,7 @@ export default function CustomColorSettings() {
       }}>
         <h3 className="text-lg font-semibold flex items-center gap-2" style={{ color: 'var(--fixed-text)' }}>
           <div className="w-4 h-4 rounded-full" style={{ backgroundColor: buttonColor }}></div>
-          {t('buttonColorLabel')}
+          {t('settingsSection.buttonColorLabel')}
         </h3>
         
         {/* Цветовой пикер */}
@@ -620,7 +628,7 @@ export default function CustomColorSettings() {
         {/* Предустановленные цвета */}
         <div className="space-y-2">
           <p className="text-xs" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {t('quickColors')}
+            {t('settingsSection.quickColors')}
           </p>
           <div className="grid grid-cols-4 md:grid-cols-8 gap-3">
             {QUICK_BUTTON_COLORS.map((preset) => (
@@ -651,7 +659,7 @@ export default function CustomColorSettings() {
             style={{ backgroundColor: buttonColor, color: 'white' }}
           >
             <Check className="w-4 h-4" />
-            {t('applyColor')}
+            {t('settingsSection.applyColor')}
           </Button>
           <Button
             onClick={handleResetButtonColor}
@@ -659,7 +667,7 @@ export default function CustomColorSettings() {
             className="gap-2"
           >
             <RotateCcw className="w-4 h-4" />
-            {t('resetColorBtn')}
+            {t('settingsSection.resetColorBtn')}
           </Button>
         </div>
       </div>
@@ -671,7 +679,7 @@ export default function CustomColorSettings() {
       }}>
         <h3 className="text-lg font-semibold flex items-center gap-2" style={{ color: 'var(--fixed-text)' }}>
           <div className="w-4 h-4 rounded-full" style={{ backgroundColor: quranTextColor }}></div>
-          {t('quranTextColorFull')}
+          {t('settingsSection.quranTextColorFull')}
         </h3>
         
         {/* Цветовой пикер */}
@@ -726,7 +734,7 @@ export default function CustomColorSettings() {
             بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
           </p>
           <p className="text-xs text-center mt-2" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {t('preview')}
+            {t('settingsSection.preview')}
           </p>
         </div>
 
@@ -738,7 +746,7 @@ export default function CustomColorSettings() {
             style={{ backgroundColor: buttonColor, color: 'white' }}
           >
             <Check className="w-4 h-4" />
-            {t('applyColor')}
+            {t('settingsSection.applyColor')}
           </Button>
           <Button
             onClick={handleResetQuranTextColor}
@@ -746,7 +754,7 @@ export default function CustomColorSettings() {
             className="gap-2"
           >
             <RotateCcw className="w-4 h-4" />
-            {t('resetColorBtn')}
+            {t('settingsSection.resetColorBtn')}
           </Button>
         </div>
       </div>
@@ -758,7 +766,7 @@ export default function CustomColorSettings() {
       }}>
         <h3 className="text-lg font-semibold flex items-center gap-2" style={{ color: 'var(--fixed-text)' }}>
           <div className="w-4 h-4 rounded-full" style={{ backgroundColor: translationColor }}></div>
-          {t('translationTextColor')}
+          {t('settingsSection.translationTextColor')}
         </h3>
         
         {/* Цветовой пикер */}
@@ -810,10 +818,10 @@ export default function CustomColorSettings() {
         {/* Предпросмотр */}
         <div className="p-4 rounded-lg border" style={{ borderColor: 'var(--color-border)' }}>
           <p className="text-base text-center" style={{ color: translationColor }}>
-            {t('inTheNameOfAllah')}
+            {t('settingsSection.inTheNameOfAllah')}
           </p>
           <p className="text-xs text-center mt-2" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {t('preview')}
+            {t('settingsSection.preview')}
           </p>
         </div>
 
@@ -825,7 +833,7 @@ export default function CustomColorSettings() {
             style={{ backgroundColor: buttonColor, color: 'white' }}
           >
             <Check className="w-4 h-4" />
-            {t('applyColor')}
+            {t('settingsSection.applyColor')}
           </Button>
           <Button
             onClick={handleResetTranslationColor}
@@ -833,7 +841,7 @@ export default function CustomColorSettings() {
             className="gap-2"
           >
             <RotateCcw className="w-4 h-4" />
-            {t('resetColorBtn')}
+            {t('settingsSection.resetColorBtn')}
           </Button>
         </div>
       </div>

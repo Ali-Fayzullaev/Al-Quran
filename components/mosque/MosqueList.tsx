@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Mosque } from '@/types/mosque';
+import { useLocale } from '@/context/LocaleContext';
 import MosqueCard from './MosqueCard';
 import { Card, CardContent } from '@/components/ui/card';
 import { MapPin, Search, Clock } from 'lucide-react';
@@ -22,9 +23,10 @@ export default function MosqueList({
   error = null,
   onGetDirections,
   onViewDetails,
-  emptyStateTitle = 'Мечети не найдены',
-  emptyStateDescription = 'Попробуйте изменить поисковый запрос или фильтры'
+  emptyStateTitle,
+  emptyStateDescription
 }: MosqueListProps) {
+  const { t } = useLocale();
   // Loading состояние
   if (loading) {
     return (
@@ -82,7 +84,7 @@ export default function MosqueList({
             <Search className="w-6 h-6" style={{ color: '#dc2626' }} />
           </div>
           <h3 className="text-lg font-semibold mb-2" style={{ color: '#991b1b' }}>
-            Ошибка поиска
+            {t('mosque.searchError')}
           </h3>
           <p className="max-w-md" style={{ color: '#b91c1c' }}>
             {error}
@@ -106,24 +108,24 @@ export default function MosqueList({
             <MapPin className="w-8 h-8" style={{ color: 'var(--color-primary)' }} />
           </div>
           <h3 className="text-xl font-semibold mb-3" style={{ color: 'var(--fixed-text)' }}>
-            {emptyStateTitle}
+            {emptyStateTitle || t('mosque.noResults')}
           </h3>
           <p className="max-w-md mb-6" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {emptyStateDescription}
+            {emptyStateDescription || t('mosque.tryDifferentSearch')}
           </p>
           
           <div className="text-sm space-y-2" style={{ color: 'var(--fixed-text-secondary)' }}>
             <div className="flex items-center justify-center gap-2">
               <Search className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
-              <span>Попробуйте поиск по названию или городу</span>
+              <span>Try searching by name or city</span>
             </div>
             <div className="flex items-center justify-center gap-2">
               <MapPin className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
-              <span>Используйте поиск по местоположению</span>
+              <span>Use location-based search</span>
             </div>
             <div className="flex items-center justify-center gap-2">
               <Clock className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
-              <span>Настройте фильтры поиска</span>
+              <span>Adjust search filters</span>
             </div>
           </div>
         </CardContent>
@@ -137,13 +139,13 @@ export default function MosqueList({
       {/* Заголовок с количеством */}
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold" style={{ color: 'var(--fixed-text)' }}>
-          Найдено мечетей: {mosques.length}
+          {t('mosque.mosquesFound')} {mosques.length}
         </h2>
         
         {mosques.some(m => m.distance) && (
           <div className="text-sm flex items-center gap-1" style={{ color: 'var(--fixed-text-secondary)' }}>
             <MapPin className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
-            Отсортировано по расстоянию
+            Sorted by distance
           </div>
         )}
       </div>

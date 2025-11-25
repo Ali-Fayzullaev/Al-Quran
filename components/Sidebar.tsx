@@ -133,8 +133,8 @@ const Sidebar = memo(function Sidebar() {
     console.log("Debug translations:", {
       home: t("home"),
       quranReading: t("quranReading"),
-      journey: t("journey"),
-      quiz: t("quiz"),
+      journey: t("journeyNav"),
+      quiz: t("quizNav"),
       locale: locale,
     });
 
@@ -155,7 +155,7 @@ const Sidebar = memo(function Sidebar() {
         category: "main",
       },
       {
-        name: t("journey"),
+        name: t("journeyNav"),
         href: "/journey",
         icon: Map,
         customIcon: iconPaths.journey,
@@ -183,7 +183,7 @@ const Sidebar = memo(function Sidebar() {
         category: "learning",
       },
       {
-        name: t("quiz"),
+        name: t("quizNav"),
         href: "/quiz",
         icon: Brain,
         customIcon: iconPaths.quiz,
@@ -198,7 +198,7 @@ const Sidebar = memo(function Sidebar() {
         category: "tools",
       },
       {
-        name: t("search"),
+        name: t("searchNav"),
         href: "/search",
         icon: Search,
         customIcon: iconPaths.search,

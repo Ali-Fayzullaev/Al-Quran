@@ -3,6 +3,7 @@
 import React, { useState, useCallback } from 'react';
 import { Mosque, MosqueSearchFilters } from '@/types/mosque';
 import { mosqueFinderService } from '@/lib/mosqueService';
+import { useLocale } from '@/context/LocaleContext';
 import MosqueSearch from '@/components/mosque/MosqueSearch';
 import MosqueList from '@/components/mosque/MosqueList';
 import { Button } from '@/components/ui/button';
@@ -14,6 +15,7 @@ import Link from 'next/link';
  * Главная страница поиска мечетей
  */
 export default function MosqueFinderPage() {
+  const { t } = useLocale();
   const [mosques, setMosques] = useState<Mosque[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -117,20 +119,19 @@ export default function MosqueFinderPage() {
                 color: 'var(--fixed-text-secondary)'
               }}>
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Назад
+                {t('mosqueFinderSection.back')}
               </Button>
             </Link>
             <div className="flex items-center gap-2">
               <MapPin className="w-6 h-6" style={{ color: 'var(--color-primary)' }} />
               <h1 className="text-3xl font-bold" style={{ color: 'var(--fixed-text)' }}>
-                Поиск мечетей
+                {t('mosqueFinderSection.title')}
               </h1>
             </div>
           </div>
           
           <p className="max-w-2xl" style={{ color: 'var(--fixed-text-secondary)' }}>
-            Найдите мечети рядом с вами или в любом городе мира. 
-            Получите информацию о времени молитв, услугах и контактах.
+            {t('mosqueFinderSection.description')}
           </p>
         </div>
 
@@ -156,12 +157,12 @@ export default function MosqueFinderPage() {
                     color: 'var(--fixed-text)'
                   }}>
                     <Settings className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
-                    Информация
+                    {t('mosqueFinderSection.information')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm space-y-3">
                   <div className="flex justify-between">
-                    <span style={{ color: 'var(--fixed-text-secondary)' }}>Найдено мечетей:</span>
+                    <span style={{ color: 'var(--fixed-text-secondary)' }}>{t('mosqueFinderSection.mosquesFound')}</span>
                     <span className="font-medium" style={{ color: 'var(--fixed-text)' }}>{mosques.length}</span>
                   </div>
                   
@@ -173,15 +174,15 @@ export default function MosqueFinderPage() {
                         onClick={clearResults}
                         className="w-full"
                       >
-                        Очистить результаты
+                        {t('mosqueFinderSection.clearResults')}
                       </Button>
                     </div>
                   )}
                   
                   <div className="pt-2 border-t text-xs text-muted-foreground space-y-1">
-                    <p>• Данные предоставляются Google Places API</p>
-                    <p>• Время молитв может отличаться</p>
-                    <p>• Уточняйте информацию в мечети</p>
+                    <p>{t('mosqueFinderSection.dataDisclaimer')}</p>
+                    <p>{t('mosqueFinderSection.prayerTimesNote')}</p>
+                    <p>{t('mosqueFinderSection.verifyInfo')}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -203,27 +204,27 @@ export default function MosqueFinderPage() {
                     <MapPin className="w-8 h-8" style={{ color: 'var(--color-primary)' }} />
                   </div>
                   <h3 className="text-xl font-semibold mb-3" style={{ color: 'var(--fixed-text)' }}>
-                    Добро пожаловать в поиск мечетей
+                    {t('mosqueFinderSection.welcomeTitle')}
                   </h3>
                   <p className="max-w-md mb-6" style={{ color: 'var(--fixed-text-secondary)' }}>
-                    Начните поиск, введя название мечети, город или используя геолокацию
+                    {t('mosqueFinderSection.welcomeDescription')}
                   </p>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-md text-sm">
                     <div className="p-3 rounded-lg" style={{
                       backgroundColor: 'var(--color-background-secondary)'
                     }}>
-                      <div className="font-medium mb-1" style={{ color: 'var(--fixed-text)' }}>🔍 Поиск по названию</div>
+                      <div className="font-medium mb-1" style={{ color: 'var(--fixed-text)' }}>{t('mosqueFinderSection.searchByName')}</div>
                       <div className="text-xs" style={{ color: 'var(--fixed-text-secondary)' }}>
-                        Мечеть Кул Шариф, Москва, Казань
+                        {t('mosqueFinderSection.searchByNameExample')}
                       </div>
                     </div>
                     <div className="p-3 rounded-lg" style={{
                       backgroundColor: 'var(--color-background-secondary)'
                     }}>
-                      <div className="font-medium mb-1" style={{ color: 'var(--fixed-text)' }}>📍 Поиск рядом</div>
+                      <div className="font-medium mb-1" style={{ color: 'var(--fixed-text)' }}>{t('mosqueFinderSection.searchNearby')}</div>
                       <div className="text-xs" style={{ color: 'var(--fixed-text-secondary)' }}>
-                        Используйте кнопку "Найти рядом"
+                        {t('mosqueFinderSection.searchNearbyDescription')}
                       </div>
                     </div>
                   </div>

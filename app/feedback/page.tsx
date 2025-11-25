@@ -30,7 +30,7 @@ export default function FeedbackPage() {
 
   const submitFeedback = async () => {
     if (!form.title.trim() || !form.description.trim()) {
-      setError(locale === 'en' ? 'Please fill in all required fields' : 'Пожалуйста, заполните все обязательные поля');
+      setError(t('feedbackSection.fillAllFields'));
       return;
     }
 
@@ -40,9 +40,14 @@ export default function FeedbackPage() {
     try {
       const typeEmoji = form.type === 'bug' ? '🐛' : form.type === 'feature' ? '✨' : form.type === 'improvement' ? '🔧' : '💬';
       
+      const typeLabel = form.type === 'bug' ? t('feedbackSection.bugReport') : 
+                       form.type === 'feature' ? t('feedbackSection.featureRequest') :
+                       form.type === 'improvement' ? t('feedbackSection.improvement') :
+                       t('feedbackSection.other');
+
       const message = `${typeEmoji} Новое обращение от пользователя:
 
-🏷️ Тип: ${t(form.type)}
+🏷️ Тип: ${typeLabel}
 
 📋 Заголовок: ${form.title}
 
@@ -50,7 +55,7 @@ export default function FeedbackPage() {
 ${form.description}
 
 ⏰ Время: ${new Date().toLocaleString('ru-RU')}
-🌐 Язык интерфейса: ${locale === 'en' ? 'Английский' : 'Русский'}`;
+🌐 Язык интерфейса: ${locale === 'en' ? 'English' : locale === 'uz' ? 'O\'zbek' : 'Русский'}`;
 
       const response = await fetch('/api/send-feedback', {
         method: 'POST',
@@ -74,7 +79,7 @@ ${form.description}
       });
 
     } catch (error) {
-      setError(locale === 'en' ? 'Failed to send feedback. Please try again.' : 'Не удалось отправить отзыв. Попробуйте еще раз.');
+      setError(t('feedbackSection.submitError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -104,14 +109,14 @@ ${form.description}
             className="text-4xl font-bold mb-6"
             style={{ color: 'var(--color-primary)' }}
           >
-            {t('feedbackAndSupport')}
+            {t('feedbackSection.feedbackAndSupport')}
           </h1>
 
           <p 
             className="max-w-2xl mx-auto leading-relaxed mb-8 text-lg"
             style={{ color: 'var(--color-text-secondary)' }}
           >
-            {t('feedbackSubtitle')}
+            {t('feedbackSection.feedbackSubtitle')}
           </p>
         </div>
 
@@ -131,14 +136,14 @@ ${form.description}
             </div>
             
             <h2 className="text-2xl font-bold text-green-600 dark:text-green-400 mb-4">
-              {t('successTitle')}
+              {t('feedbackSection.successTitle')}
             </h2>
             
             <p 
               className="mb-8 text-lg"
               style={{ color: 'var(--color-text-secondary)' }}
             >
-              {t('successMessage')}
+              {t('feedbackSection.successMessage')}
             </p>
 
             <button
@@ -146,7 +151,7 @@ ${form.description}
               className="px-8 py-3 text-white rounded-lg transition-colors font-medium"
               style={{ backgroundColor: 'var(--color-primary)' }}
             >
-              {t('backToSite')}
+              {t('feedbackSection.backToSite')}
             </button>
           </div>
         ) : (
@@ -163,7 +168,7 @@ ${form.description}
                   className="block text-sm font-semibold mb-3"
                   style={{ color: 'var(--color-text)' }}
                 >
-                  {t('feedbackType')}
+                  {t('feedbackSection.feedbackType')}
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {(['bug', 'feature', 'improvement', 'other'] as FeedbackType[]).map((type) => (
@@ -179,10 +184,10 @@ ${form.description}
                         borderColor: form.type === type ? 'var(--color-primary)' : 'var(--color-border)'
                       }}
                     >
-                      {type === 'bug' ? t('bugReport') : 
-                        type === 'feature' ? t('featureRequest') :
-                        type === 'improvement' ? t('improvement') :
-                        t('other')}
+                      {type === 'bug' ? t('feedbackSection.bugReport') : 
+                        type === 'feature' ? t('feedbackSection.featureRequest') :
+                        type === 'improvement' ? t('feedbackSection.improvement') :
+                        t('feedbackSection.other')}
                     </button>
                   ))}
                 </div>
@@ -194,13 +199,13 @@ ${form.description}
                   className="block text-sm font-medium mb-2"
                   style={{ color: 'var(--color-text)' }}
                 >
-                  {t('issueTitle')} *
+                  {t('feedbackSection.issueTitle')}
                 </label>
                 <input
                   type="text"
                   value={form.title}
                   onChange={(e) => handleInputChange('title', e.target.value)}
-                  placeholder={t('titlePlaceholder')}
+                  placeholder={t('feedbackSection.titlePlaceholder')}
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 transition-colors"
                   style={{
                     backgroundColor: 'var(--color-surface)',
@@ -218,12 +223,12 @@ ${form.description}
                   className="block text-sm font-medium mb-2"
                   style={{ color: 'var(--color-text)' }}
                 >
-                  {t('description')} *
+                  {t('feedbackSection.description')}
                 </label>
                 <textarea
                   value={form.description}
                   onChange={(e) => handleInputChange('description', e.target.value)}
-                  placeholder={t('descriptionPlaceholder')}
+                  placeholder={t('feedbackSection.descriptionPlaceholder')}
                   rows={6}
                   className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 resize-none transition-colors"
                   style={{
@@ -258,14 +263,14 @@ ${form.description}
                 {isSubmitting ? (
                   <>
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    <span>{locale === 'en' ? 'Sending...' : 'Отправляем...'}</span>
+                    <span>{t('feedbackSection.submitting')}</span>
                   </>
                 ) : (
                   <>
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
-                    {t('submitFeedback')}
+                    {t('feedbackSection.submitFeedback')}
                   </>
                 )}
               </button>

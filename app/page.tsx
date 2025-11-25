@@ -167,7 +167,7 @@ export default function HomePage() {
                   type="submit"
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 px-6 py-2 theme-override-primary rounded-lg"
                 >
-                  {t("search")}
+                  {t("searchNav")}
                 </Button>
               </div>
             </motion.form>

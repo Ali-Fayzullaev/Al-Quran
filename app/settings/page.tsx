@@ -88,10 +88,10 @@ export default function SettingsPage() {
 
   const quickTabs = useMemo(
     () => [
-      { id: 'audio', icon: Volume2, label: t('audio') },
-      { id: 'translation', icon: Languages, label: t('translation') },
-      { id: 'reading', icon: Type, label: t('reading') },
-      { id: 'colors', icon: Eye, label: t('colors') }
+      { id: 'audio', icon: Volume2, label: t('settingsSection.audio') },
+      { id: 'translation', icon: Languages, label: t('settingsSection.translation') },
+      { id: 'reading', icon: Type, label: t('settingsSection.reading') },
+      { id: 'colors', icon: Eye, label: t('settingsSection.colors') }
     ],
     [t]
   );
@@ -235,11 +235,11 @@ export default function SettingsPage() {
         <div className="flex items-center justify-center gap-3">
           <SettingsIcon className="w-8 h-8" style={{ color: 'var(--color-primary)' }} />
           <h1 className="text-3xl font-bold gradient-text-primary">
-            {t('settings')}
+            {t('settingsSection.settingsTitle')}
           </h1>
         </div>
         <p style={{ color: 'var(--fixed-text-secondary)' }}>
-          {t('settingsDescription')}
+          {t('settingsSection.settingsDescription')}
         </p>
       </div>
 
@@ -292,7 +292,7 @@ export default function SettingsPage() {
             <div className="flex items-center gap-3 mb-6">
               <Headphones className="w-6 h-6" style={{ color: 'var(--color-primary)' }} />
               <h2 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
-                {t('audioSettings')}
+                {t('settingsSection.audioSettings')}
               </h2>
             </div>
 
@@ -301,7 +301,7 @@ export default function SettingsPage() {
               <div className="space-y-4">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <h3 className="text-lg font-medium" style={{ color: 'var(--fixed-text)' }}>
-                    {t('selectReciterQari')}
+                    {t('settingsSection.selectReciterQari')}
                   </h3>
                   <Button
                     variant="outline"
@@ -310,8 +310,8 @@ export default function SettingsPage() {
                     className="text-xs"
                   >
                     {showAllReciters 
-                      ? t('showPopular')
-                      : t('showAll')
+                      ? t('settingsSection.showPopular')
+                      : t('settingsSection.showAll')
                     }
                   </Button>
                 </div>
@@ -321,7 +321,7 @@ export default function SettingsPage() {
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" style={{ color: 'var(--fixed-text-secondary)' }} />
                   <input
                     type="text"
-                    placeholder={t('searchReciters')}
+                    placeholder={t('settingsSection.searchReciters')}
                     value={reciterSearch}
                     onChange={(e) => setReciterSearch(e.target.value)}
                     className="w-full pl-10 pr-4 py-2 border rounded-lg"
@@ -392,7 +392,7 @@ export default function SettingsPage() {
               <div className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium mb-2" style={{ color: 'var(--fixed-text-secondary)' }}>
-                    {t('volume')}: {Math.round(audioVolume * 100)}%
+                    {t('settingsSection.volume')}: {Math.round(audioVolume * 100)}%
                   </label>
                   <input
                     type="range"
@@ -410,7 +410,7 @@ export default function SettingsPage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2" style={{ color: 'var(--fixed-text-secondary)' }}>
-                    {t('speed')}: {audioSpeed}x
+                    {t('settingsSection.speed')}: {audioSpeed}x
                   </label>
                   <input
                     type="range"
@@ -429,10 +429,10 @@ export default function SettingsPage() {
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-lg" style={{ backgroundColor: 'var(--color-secondary)' }}>
                   <div>
                     <p className="font-medium" style={{ color: 'var(--fixed-text)' }}>
-                      {t('autoplayNext')}
+                      {t('settingsSection.autoplayNext')}
                     </p>
                     <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-                      {t('autoPlayNext')}
+                      {t('settingsSection.autoPlayNext')}
                     </p>
                   </div>
                   <button
@@ -466,14 +466,14 @@ export default function SettingsPage() {
             <div className="flex items-center gap-3 mb-6">
               <Languages className="w-6 h-6" style={{ color: 'var(--color-primary)' }} />
               <h2 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
-                {t('selectTranslations')}
+                {t('settingsSection.selectTranslations')}
               </h2>
             </div>
 
             {/* Quick Language Selection */}
             <div className="mb-6">
               <h3 className="text-lg font-medium mb-3" style={{ color: 'var(--fixed-text)' }}>
-                {t('quickSetup')}
+                {t('settingsSection.quickSetup')}
               </h3>
               <div className="flex gap-2 flex-wrap">
                 {[
@@ -500,7 +500,7 @@ export default function SettingsPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
-                placeholder={t('searchTranslations')}
+                placeholder={t('settingsSection.searchTranslations')}
                 value={translationSearch}
                 onChange={(e) => setTranslationSearch(e.target.value)}
                 
@@ -576,7 +576,7 @@ export default function SettingsPage() {
             <div className="flex items-center gap-3 mb-6">
               <Type className="w-6 h-6" style={{ color: 'var(--color-primary)' }} />
               <h2 className="text-xl font-semibold" style={{ color: 'var(--fixed-text)' }}>
-                {t('displaySettings')}
+                {t('settingsSection.displaySettings')}
               </h2>
             </div>
 
@@ -584,7 +584,7 @@ export default function SettingsPage() {
               {/* Font Size */}
               <div>
                 <label className="block text-sm font-medium mb-2" style={{ color: 'var(--fixed-text-secondary)' }}>
-                  {t('fontSizeLabel')} {fontSize}px
+                  {t('settingsSection.fontSizeLabel')} {fontSize}px
                 </label>
                 <input
                   type="range"
@@ -604,10 +604,10 @@ export default function SettingsPage() {
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-lg" style={{ backgroundColor: 'var(--color-secondary)' }}>
                   <div>
                     <p className="font-medium" style={{ color: 'var(--fixed-text)' }}>
-                      {t('showTranslation')}
+                      {t('settingsSection.showTranslation')}
                     </p>
                     <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-                      {t('showTranslations')}
+                      {t('settingsSection.showTranslations')}
                     </p>
                   </div>
                   <button
@@ -627,10 +627,10 @@ export default function SettingsPage() {
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-4 rounded-lg" style={{ backgroundColor: 'var(--color-secondary)' }}>
                   <div>
                     <p className="font-medium" style={{ color: 'var(--fixed-text)' }}>
-                      {t('showTransliteration')}
+                      {t('settingsSection.showTransliteration')}
                     </p>
                     <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
-                      {t('showTransliteration')}
+                      {t('settingsSection.showTransliteration')}
                     </p>
                   </div>
                   <button
@@ -676,12 +676,12 @@ export default function SettingsPage() {
           className="flex items-center justify-center gap-2 px-6 py-3 w-full sm:w-auto"
         >
           <RotateCcw size={18} />
-          {t('resetToDefault')}
+          {t('settingsSection.resetToDefault')}
         </Button>
         
         <Button className="flex items-center justify-center gap-2 theme-btn-primary px-6 py-3 w-full sm:w-auto">
           <Save size={18} />
-          {t('settingsSaved')}
+          {t('settingsSection.settingsSaved')}
         </Button>
       </motion.div>
 
@@ -690,11 +690,11 @@ export default function SettingsPage() {
         <div className="flex items-center justify-center gap-2 mb-2">
           <SettingsIcon className="w-4 h-4" />
           <span className="font-medium">
-            {t('autoSaveEnabled')}
+            {t('settingsSection.autoSaveEnabled')}
           </span>
         </div>
         <p>
-          {t('settingsAutoSave')}
+          {t('settingsSection.settingsAutoSave')}
         </p>
       </div>
     </div>

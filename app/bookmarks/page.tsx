@@ -91,25 +91,25 @@ export default function BookmarksPage() {
             </motion.div>
             
             <h1 className="text-3xl md:text-4xl font-bold mb-4 gradient-text-primary">
-              {t('yourBookmarks')}
+              {t('bookmarksSection.yourBookmarks')}
             </h1>
             
             <p className="mb-8 max-w-md mx-auto" style={{ color: 'var(--fixed-text-secondary)' }}>
-              {t('startSavingVerses')}
+              {t('bookmarksSection.startSavingVerses')}
             </p>
             
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href="/surahs">
                 <Button className="theme-btn-primary gap-2">
                   <Book className="w-4 h-4" />
-                  {t('browseSurahs')}
+                  {t('bookmarksSection.browseSurahs')}
                 </Button>
               </Link>
               
               <Link href="/search">
                 <Button variant="outline" className="gap-2">
                   <Search className="w-4 h-4" />
-                  {t('searchQuran')}
+                  {t('bookmarksSection.searchQuran')}
                 </Button>
               </Link>
             </div>
@@ -134,11 +134,11 @@ export default function BookmarksPage() {
           </motion.div>
           
           <h1 className="text-3xl md:text-4xl font-bold mb-2 gradient-text-primary">
-            {t('yourBookmarks')}
+            {t('bookmarksSection.yourBookmarks')}
           </h1>
           
           <p className="mb-6" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {bookmarks.length} {t('bookmarksFound')}
+            {bookmarks.length} {t('bookmarksSection.bookmarksFound')}
           </p>
 
           {/* Search and Filters */}
@@ -147,7 +147,7 @@ export default function BookmarksPage() {
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" style={{ color: 'var(--fixed-text-secondary)' }} />
               <input
                 type="text"
-                placeholder={t('searchBookmarks')}
+                placeholder={t('bookmarksSection.searchBookmarks')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:outline-none"
@@ -175,7 +175,7 @@ export default function BookmarksPage() {
                 className="gap-2"
               >
                 <Filter className="w-4 h-4" />
-                {sortBy === 'date' ? t('sortByDate') : t('sortBySurah')}
+                {sortBy === 'date' ? t('bookmarksSection.date') : t('bookmarksSection.surah')}
               </Button>
               
               <Button
@@ -211,7 +211,7 @@ export default function BookmarksPage() {
           <div className="text-center py-12">
             <Search className="w-12 h-12 mx-auto mb-4" style={{ color: 'var(--fixed-text-secondary)' }} />
             <p style={{ color: 'var(--fixed-text-secondary)' }}>
-              {t('noBookmarksYet')}
+              {t('bookmarksSection.noBookmarksYet')}
             </p>
           </div>
         )}
@@ -222,14 +222,14 @@ export default function BookmarksPage() {
             <Link href="/surahs">
               <Button variant="outline" className="gap-2">
                 <Book className="w-4 h-4" />
-                {t('browseSurahs')}
+                {t('bookmarksSection.browseSurahs')}
               </Button>
             </Link>
             
             <Link href="/search">
               <Button variant="outline" className="gap-2">
                 <Search className="w-4 h-4" />
-                {t('searchQuran')}
+                {t('bookmarksSection.searchQuran')}
               </Button>
             </Link>
           </div>
@@ -281,7 +281,7 @@ function BookmarkCard({
             </div>
             <div>
               <h3 className="font-semibold" style={{ color: 'var(--fixed-text)' }}>
-                {t('surahNumber')} {bookmark.surahNumber}
+                {t('bookmarksSection.surahName')} {bookmark.surahNumber}
               </h3>
               {surahData && (
                 <p className="text-xs" style={{ color: 'var(--fixed-text-secondary)' }}>
@@ -297,7 +297,7 @@ function BookmarkCard({
             variant="ghost"
             size="sm"
             onClick={onCopy}
-            title={t('copyText')}
+            title={t('bookmarksSection.copyVerse')}
             className="p-2"
             style={{
               '--hover-bg': 'var(--color-border)'
@@ -316,7 +316,7 @@ function BookmarkCard({
             variant="ghost"
             size="sm"
             onClick={onRemove}
-            title={t('removeBookmark')}
+            title={t('bookmarksSection.removeBookmark')}
             className="p-2 text-red-600 dark:text-red-400"
             onMouseEnter={(e) => {
               e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
@@ -349,7 +349,7 @@ function BookmarkCard({
         <Link href={`/surah/${bookmark.surahNumber}?verse=${bookmark.verseNumber}`}>
           <Button size="sm" className="bg-green-600 hover:bg-green-700 text-xs">
             <Play className="w-3 h-3 mr-1" />
-            {t('read')}
+            {t('bookmarksSection.goToVerse')}
           </Button>
         </Link>
       </div>
