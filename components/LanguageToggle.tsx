@@ -14,7 +14,8 @@ export function LanguageToggle() {
   const languages = [
     { code: "ru" as Locale, name: "Русский", flag: "🇷🇺" },
     { code: "en" as Locale, name: "English", flag: "🇺🇸" },
-    { code: "uz" as Locale, name: "O'zbek", flag: "🇺🇿" }
+    { code: "uz" as Locale, name: "O'zbek", flag: "🇺🇿" },
+    { code: "uzKril" as Locale, name: "Ўзбек (Кирилл)", flag: "🇺🇿" }
   ];
 
   const currentLanguage =
