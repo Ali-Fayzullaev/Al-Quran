@@ -451,7 +451,7 @@ const Sidebar = memo(function Sidebar() {
                   <Palette className="h-4 w-4 group-hover:rotate-12 transition-transform" />
                 </button>
               </ThemeDrawer>
-              <PrayerTimesModal />
+              <PrayerTimesModal/>
             </div>
             <div className="flex space-x-2 items-center flex-shrink-0">
               <SimpleThemeToggle />
