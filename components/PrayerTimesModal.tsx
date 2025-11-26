@@ -196,6 +196,7 @@ export function PrayerTimesModal() {
               </div>
               <button
                 onClick={() => setShowSearch(!showSearch)}
+                className="me-5"
                 style={{
                   background: 'var(--color-muted)',
                   border: 'none',
