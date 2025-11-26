@@ -21,7 +21,8 @@ export function LanguageToggle() {
     { code: "ru" as Locale, name: "Русский", flag: "🇷🇺" },
     { code: "en" as Locale, name: "English", flag: "🇺🇸" },
     { code: "uz" as Locale, name: "O'zbek", flag: "🇺🇿" },
-    { code: "уз" as Locale, name: "Ўзбек (Кирилл)", flag: "🇺🇿" }
+    { code: "уз" as Locale, name: "Ўзбек (Кирилл)", flag: "🇺🇿" },
+    { code: "kz" as Locale, name: "Қазақша", flag: "🇰🇿" }
   ];
 
   const currentLanguage =

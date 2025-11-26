@@ -2,6 +2,8 @@
  * Утилиты для работы со счетчиком дуа
  */
 
+import { translations, type Locale } from './translations';
+
 // Интерфейс для состояния счетчика дуа
 export interface DuaCounterState {
   duaId: string;
@@ -52,39 +54,75 @@ export function calculateProgress(current: number, target: number): number {
 /**
  * Генерирует мотивационные сообщения для завершения дуа
  */
-export function getCompletionMessage(duaTitle: string, count: number): string {
-  const messages = [
-    `🎉 Машаллах! Вы завершили "${duaTitle}" (${count} раз)`,
-    `✨ Баракаллаху фикум! "${duaTitle}" прочитано ${count} раз`,
-    `🌟 Альхамдулиллях! Вы успешно завершили "${duaTitle}"`,
-    `💫 Отлично! "${duaTitle}" выполнено полностью (${count} раз)`,
-    `🏆 Великолепно! Вы прочитали "${duaTitle}" ${count} раз`,
-  ];
-  
-  return messages[Math.floor(Math.random() * messages.length)];
+export function getCompletionMessage(duaTitle: string, count: number, locale: Locale = 'ru'): string {
+  try {
+    const localeData = translations[locale] || translations.ru;
+    const messages = (localeData as any)?.DuaDhikr?.completionMessages?.dua;
+    
+    if (!Array.isArray(messages)) {
+      // Фальбэк на русские сообщения
+      return `🎉 Машаллах! Вы завершили "${duaTitle}" (${count} раз)`;
+    }
+    
+    const randomIndex = Math.floor(Math.random() * messages.length);
+    const message = messages[randomIndex];
+    
+    return message
+      .replace('{title}', duaTitle)
+      .replace('{count}', count.toString());
+  } catch (error) {
+    console.error('Error in getCompletionMessage:', error);
+    return `🎉 Машаллах! Вы завершили "${duaTitle}" (${count} раз)`;
+  }
 }
 
 /**
  * Генерирует сообщения для завершения всей категории
  */
-export function getCategoryCompletionMessage(categoryName: string, totalDuas: number): string {
-  const messages = [
-    `🎊 Субханаллах! Вы завершили все дуа в категории "${categoryName}"! (${totalDuas} дуа)`,
-    `🌈 Альхамдулиллях! Все ${totalDuas} дуа из "${categoryName}" прочитаны!`,
-    `🎖️ Машаллах! Категория "${categoryName}" полностью завершена!`,
-    `✨ Баракаллаху фикум! Вы успешно завершили все дуа "${categoryName}"!`,
-    `🏅 Поздравляем! Все ${totalDuas} дуа из "${categoryName}" выполнены!`,
-  ];
-  
-  return messages[Math.floor(Math.random() * messages.length)];
+export function getCategoryCompletionMessage(categoryName: string, totalDuas: number, locale: Locale = 'ru'): string {
+  try {
+    const localeData = translations[locale] || translations.ru;
+    const messages = (localeData as any)?.DuaDhikr?.completionMessages?.category;
+    
+    if (!Array.isArray(messages)) {
+      // Фальбэк на русское сообщение
+      return `🎖️ Машаллах! Категория "${categoryName}" полностью завершена!`;
+    }
+    
+    const randomIndex = Math.floor(Math.random() * messages.length);
+    const message = messages[randomIndex];
+    
+    return message
+      .replace('{category}', categoryName)
+      .replace('{total}', totalDuas.toString());
+  } catch (error) {
+    console.error('Error in getCategoryCompletionMessage:', error);
+    return `🎖️ Машаллах! Категория "${categoryName}" полностью завершена!`;
+  }
 }
 
 /**
  * Промежуточные мотивационные сообщения
  */
-export function getProgressMessage(progress: number): string | null {
-  if (progress === 25) return "💪 Четверть пути пройдена!";
-  if (progress === 50) return "🌟 Половина выполнена!";
-  if (progress === 75) return "🔥 Почти готово!";
-  return null;
+export function getProgressMessage(progress: number, locale: Locale = 'ru'): string | null {
+  try {
+    const localeData = translations[locale] || translations.ru;
+    const progressMessages = (localeData as any)?.DuaDhikr?.completionMessages?.progress;
+    
+    if (!progressMessages || typeof progressMessages !== 'object') {
+      // Фальбэк на русские сообщения
+      if (progress === 25) return "💪 Четверть пути пройдена!";
+      if (progress === 50) return "🌟 Половина выполнена!";
+      if (progress === 75) return "🔥 Почти готово!";
+      return null;
+    }
+    
+    if (progress === 25) return progressMessages['25'] || null;
+    if (progress === 50) return progressMessages['50'] || null;
+    if (progress === 75) return progressMessages['75'] || null;
+    return null;
+  } catch (error) {
+    console.error('Error in getProgressMessage:', error);
+    return null;
+  }
 }

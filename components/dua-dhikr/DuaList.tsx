@@ -52,6 +52,7 @@ interface DuaListProps {
     ru: DuaData[];
     en: DuaData[];
     uz: DuaData[];
+    ['уз']?: DuaData[]; // Кириллический узбекский
   };
 }
 
@@ -60,8 +61,10 @@ export default function DuaList({ category, duaData }: DuaListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState<'default' | 'alphabetical'>('default');
+  const [localDuaLanguage, setLocalDuaLanguage] = useState<'ru' | 'en' | 'uz'>('ru');
   const [filteredDuas, setFilteredDuas] = useState<DuaData[]>([]);
   const [showGlobalSettings, setShowGlobalSettings] = useState(false);
+  const [forceUpdate, setForceUpdate] = useState(0);
   const [completedDuas, setCompletedDuas] = useState<Set<string>>(new Set());
   const [showCategoryNotification, setShowCategoryNotification] = useState(false);
   const [categoryNotificationMessage, setCategoryNotificationMessage] = useState('');
@@ -98,7 +101,40 @@ export default function DuaList({ category, duaData }: DuaListProps) {
   }, []);
 
   // Получаем данные для выбранного языка
-  const currentDuas = duaData[locale as keyof typeof duaData] || duaData.ru;
+  const currentDuas = duaData[localDuaLanguage] || duaData.ru;
+  
+
+
+
+  // Обновляем локальный язык при изменении глобального locale
+  useEffect(() => {
+    let validLanguage: 'ru' | 'en' | 'uz' = 'ru';
+    
+    if (locale === 'ru' || locale === 'en') {
+      validLanguage = locale;
+    } else if (locale === 'uz' || locale === 'уз') {
+      // Для обеих версий узбекского используем 'uz'
+      validLanguage = 'uz';
+    }
+    
+    setLocalDuaLanguage(validLanguage);
+    setForceUpdate(prev => prev + 1); // Принудительное обновление
+  }, [locale]);
+
+  // Доступные языки для переключения
+  const availableLanguages = [
+    { code: 'ru' as const, name: 'Русский', flag: '🇷🇺' },
+    { code: 'en' as const, name: 'English', flag: '🇺🇸' },
+    { code: 'uz' as const, name: "O'zbek", flag: '🇺🇿' }
+  ];
+
+  const currentLanguageInfo = availableLanguages.find(lang => lang.code === localDuaLanguage) || availableLanguages[0];
+
+  // Обработчик изменения локального языка дуа
+  const handleLocalLanguageChange = (newLanguage: 'ru' | 'en' | 'uz') => {
+    setLocalDuaLanguage(newLanguage);
+    setForceUpdate(prev => prev + 1); // Принудительное обновление
+  };
 
   useEffect(() => {
     let filtered = currentDuas;
@@ -118,7 +154,7 @@ export default function DuaList({ category, duaData }: DuaListProps) {
     }
 
     setFilteredDuas(filtered);
-  }, [currentDuas, searchTerm, sortBy]);
+  }, [currentDuas, searchTerm, sortBy, localDuaLanguage, forceUpdate]);
 
   // Подсчет общего прогресса (после инициализации currentDuas)
   const totalDuas = currentDuas.length;
@@ -133,7 +169,11 @@ export default function DuaList({ category, duaData }: DuaListProps) {
     
     // Check if all duas are completed
     if (newCompletedDuas.size === currentDuas.length) {
-      const message = getCategoryCompletionMessage(category, currentDuas.length);
+      // Получаем название категории на текущем языке
+      const categoryName = t(`DuaDhikr.categories.${category}`);
+      // Приводим locale к правильному типу
+      const safeLocale = (locale === 'ru' || locale === 'en' || locale === 'uz' || locale === 'уз') ? locale : 'ru';
+      const message = getCategoryCompletionMessage(categoryName, currentDuas.length, safeLocale);
       setCategoryNotificationMessage(message);
       setShowCategoryNotification(true);
     }
@@ -161,7 +201,7 @@ export default function DuaList({ category, duaData }: DuaListProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div key={`${localDuaLanguage}-${forceUpdate}`} className="space-y-6">
       
       {/* Category Progress Panel - Mobile Optimized */}
       <div className="p-4 md:p-6 rounded-xl md:rounded-2xl mb-4 md:mb-6" style={{
@@ -319,9 +359,32 @@ export default function DuaList({ category, duaData }: DuaListProps) {
           
           {/* Mobile Controls Row */}
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-              <Languages className="w-3 h-3" />
-              <span>{t('DuaDhikr.languageIndicatorText')}</span>
+            {/* Language Selector */}
+            <div className="flex items-center gap-2">
+              <Languages className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
+              <Select value={localDuaLanguage} onValueChange={(value) => handleLocalLanguageChange(value as 'ru' | 'en' | 'uz')}>
+                <SelectTrigger className="w-20 h-8 text-xs" style={{ 
+                  backgroundColor: 'var(--color-background)', 
+                  borderStyle: 'solid',
+                  borderWidth: '1px',
+                  borderColor: 'var(--color-border)' 
+                }}>
+                  <div className="flex items-center gap-1">
+                    <span>{currentLanguageInfo.flag}</span>
+                    <span className="hidden sm:inline">{currentLanguageInfo.code.toUpperCase()}</span>
+                  </div>
+                </SelectTrigger>
+                <SelectContent style={{ backgroundColor: 'var(--color-background-secondary)' }}>
+                  {availableLanguages.map((lang) => (
+                    <SelectItem key={lang.code} value={lang.code}>
+                      <div className="flex items-center gap-2">
+                        <span>{lang.flag}</span>
+                        <span>{lang.name}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             
             <div className="flex items-center gap-1">
@@ -382,6 +445,34 @@ export default function DuaList({ category, duaData }: DuaListProps) {
 
           {/* Desktop Controls */}
           <div className="flex items-center gap-2">
+            {/* Language Selector */}
+            <div className="flex items-center gap-2">
+              <Languages className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
+              <Select value={localDuaLanguage} onValueChange={(value) => handleLocalLanguageChange(value as 'ru' | 'en' | 'uz')}>
+                <SelectTrigger className="w-32 h-9 text-sm" style={{ 
+                  backgroundColor: 'var(--color-background)', 
+                  borderStyle: 'solid',
+                  borderWidth: '1px',
+                  borderColor: 'var(--color-border)' 
+                }}>
+                  <div className="flex items-center gap-2">
+                    <span>{currentLanguageInfo.flag}</span>
+                    <span>{currentLanguageInfo.name}</span>
+                  </div>
+                </SelectTrigger>
+                <SelectContent style={{ backgroundColor: 'var(--color-background-secondary)' }}>
+                  {availableLanguages.map((lang) => (
+                    <SelectItem key={lang.code} value={lang.code}>
+                      <div className="flex items-center gap-2">
+                        <span>{lang.flag}</span>
+                        <span>{lang.name}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* Sort Select */}
             <div className="flex items-center gap-2">
               <Filter className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
@@ -586,6 +677,42 @@ export default function DuaList({ category, duaData }: DuaListProps) {
              remainingCount <= 3 ? t('DuaDhikr.statusAlmostDone') : 
              completedCount > 0 ? t('DuaDhikr.statusInProgress') : t('DuaDhikr.statusStart')}
           </span>
+        </div>
+      </div>
+
+      {/* Language Info Panel */}
+      <div className="mb-6 p-4 rounded-xl border-2 border-dashed opacity-90" style={{
+        backgroundColor: 'var(--color-background-secondary)',
+        borderColor: 'var(--color-border)'
+      }}>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{
+              backgroundColor: 'var(--color-primary-alpha, var(--color-primary))',
+              opacity: 0.2
+            }}>
+              <Languages className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">{currentLanguageInfo.flag}</span>
+                <span className="font-semibold" style={{ color: 'var(--color-text)' }}>
+                  {currentLanguageInfo.name}
+                </span>
+              </div>
+              <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+                {t('DuaDhikr.languageDescription')} • {currentDuas.length} {t('DuaDhikr.duasAvailable')}
+              </p>
+            </div>
+          </div>
+          <div className="ml-auto text-right">
+            <div className="text-sm font-medium" style={{ color: 'var(--color-primary)' }}>
+              {localDuaLanguage.toUpperCase()}
+            </div>
+            <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+              {t('DuaDhikr.activeLanguage')}
+            </div>
+          </div>
         </div>
       </div>
 

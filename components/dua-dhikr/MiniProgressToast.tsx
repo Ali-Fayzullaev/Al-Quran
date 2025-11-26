@@ -32,12 +32,13 @@ const MiniProgressToast: React.FC<MiniProgressToastProps> = ({
   return (
     <div className="fixed top-20 left-1/2 transform -translate-x-1/2 md:left-auto md:right-4 md:transform-none z-40 animate-slide-in-bottom">
       <div 
-        className="p-3 md:p-4 rounded-xl shadow-lg border-l-4 max-w-xs md:max-w-sm mx-2"
+        className="p-3 md:p-4 rounded-xl shadow-lg max-w-xs md:max-w-sm mx-2"
         style={{
           backgroundColor: 'var(--color-background)',
-          borderLeftColor: remainingCount === 1 ? 'var(--color-success, #10b981)' : 'var(--color-warning, #f59e0b)',
-          borderStyle: 'solid',
-          borderWidth: '1px',
+          borderLeft: `4px solid ${remainingCount === 1 ? 'var(--color-success, #10b981)' : 'var(--color-warning, #f59e0b)'}`,
+          borderTop: '1px solid var(--color-border)',
+          borderRight: '1px solid var(--color-border)',
+          borderBottom: '1px solid var(--color-border)',
           borderColor: 'var(--color-border)'
         }}
       >

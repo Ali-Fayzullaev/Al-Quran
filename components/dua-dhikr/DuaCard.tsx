@@ -78,7 +78,7 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false, c
       const timer = setTimeout(() => {
         setIsHidden(true);
         onComplete?.(duaId);
-      }, 2000); // Hide after 2 seconds
+      }, 0);
       
       return () => clearTimeout(timer);
     }
@@ -103,11 +103,7 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false, c
       // Show progress messages
       const progressMsg = getProgressMessage(Math.round((newCount / targetCount) * 100));
       if (progressMsg) {
-        // Could show a small toast here
       }
-      
-      // Just mark as completed, no individual notification
-      // Only category completion will show notification
     }
   };
   
