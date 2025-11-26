@@ -9,6 +9,7 @@ import {
   type PrayerTimesSystem,
   type SearchResult
 } from "@/lib/prayerTimes";
+import Image from "next/image";
 
 export function PrayerTimesModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -117,14 +118,10 @@ export function PrayerTimesModal() {
       {/* Кнопка */}
       <button
         onClick={() => setIsOpen(true)}
-        className="p-2 rounded-xl transition-all duration-200 hover:opacity-90"
-        style={{ 
-          backgroundColor: "var(--color-primary)",
-          color: "white"
-        }}
+        className="p-0 rounded-full transition-all duration-200 hover:opacity-90"
         title="Время намаза"
       >
-        <Clock className="h-4 w-4" />
+        <Image src="/iconsPages/times.png" className="rounded-full" alt="Время намаза" width={34} height={34} />
       </button>
 
       {/* Модал - АБСОЛЮТНО ПО ЦЕНТРУ ЭКРАНА */}
