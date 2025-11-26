@@ -47,7 +47,7 @@ export default function QuranReader({
   customQuranTextColor,
   customQuranTranslationColor
 }: QuranReaderProps) {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const {
     fontSize,
     showTranslation,
@@ -432,7 +432,7 @@ export default function QuranReader({
     return (
       <div className="p-4 text-center">
         <p className="text-red-500 mb-4">
-          {locale === 'en' ? 'Error loading surah data' : 'Ошибка загрузки данных суры'}
+          {t('errorLoadingSurahData')}
         </p>
         <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
           {error.message}
@@ -454,10 +454,10 @@ export default function QuranReader({
           </div>
           <div className="space-y-2">
             <h3 className="text-lg font-semibold" style={{ color: 'var(--foreground)' }}>
-              {locale === 'en' ? 'Loading Quran...' : 'Загрузка Корана...'}
+              {t('loadingQuran')}
             </h3>
             <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
-              {locale === 'en' ? 'Preparing verses for reading' : 'Подготовка аятов для чтения'}
+              {t('preparingVerses')}
             </p>
             <div className="flex items-center justify-center space-x-1 mt-3">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
@@ -483,7 +483,7 @@ export default function QuranReader({
           {arabicSurah.englishName} - {arabicSurah.englishNameTranslation}
         </p>
         <p className="text-xs sm:text-sm mt-1" style={{ color: 'var(--fixed-text-secondary)', opacity: 0.8 }}>
-          {arabicSurah.numberOfAyahs} {locale === 'en' ? 'verses' : 'аятов'} • {arabicSurah.revelationType}
+          {arabicSurah.numberOfAyahs} {t('versesInSurah')} • {arabicSurah.revelationType}
         </p>
       </div>
 
@@ -501,7 +501,7 @@ export default function QuranReader({
             className="flex-1 sm:flex-initial"
           >
             <ChevronLeft className="h-4 w-4" />
-            <span className="sm:hidden">{locale === 'en' ? 'Prev' : 'Пред'}</span>
+            <span className="sm:hidden">{t('previous')}</span>
           </Button>
           
           <Button
@@ -512,7 +512,7 @@ export default function QuranReader({
             disabled={isLoadingAudio}
           >
             {getAudioIcon()}
-            <span className="hidden sm:inline">{locale === 'en' ? 'Audio' : 'Аудио'}</span>
+            <span className="hidden sm:inline">{t('audioLabel')}</span>
           </Button>
           
           <Button
@@ -523,7 +523,7 @@ export default function QuranReader({
             className="flex-1 sm:flex-initial"
           >
             <ChevronRight className="h-4 w-4" />
-            <span className="sm:hidden">{locale === 'en' ? 'Next' : 'След'}</span>
+            <span className="sm:hidden">{t('next')}</span>
           </Button>
         </div>
 
@@ -549,7 +549,7 @@ export default function QuranReader({
             } : undefined}
           >
             <Languages className="h-4 w-4" />
-            <span className="hidden sm:inline ml-1">{locale === 'en' ? 'Translation' : 'Перевод'}</span>
+            <span className="hidden sm:inline ml-1">{t('translationLabel')}</span>
           </Button>
           
           <Button
@@ -558,7 +558,7 @@ export default function QuranReader({
             onClick={() => setShowSettings(!showSettings)}
           >
             <Settings className="h-4 w-4" />
-            <span className="hidden sm:inline ml-1">{locale === 'en' ? 'Settings' : 'Настройки'}</span>
+            <span className="hidden sm:inline ml-1">{t('settingsLabel')}</span>
           </Button>
         </div>
       </div>

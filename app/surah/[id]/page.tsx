@@ -56,7 +56,7 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
           </div>
           <div className="space-y-2">
             <h3 className="text-xl font-semibold" style={{ color: 'var(--foreground)' }}>
-              {locale === 'en' ? 'Loading Surah...' : 'Загрузка суры...'}
+              {t('loadingQuran')}
             </h3>
             <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
               {locale === 'en' ? `Loading Surah ${surahId}...` : `Загрузка суры ${surahId}...`}
@@ -185,7 +185,7 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
               <Link href="/quran">
                 <Button variant="ghost" size="sm" className="gap-2">
                   <Home className="w-4 h-4" />
-                  {locale === 'en' ? 'Home' : 'Главная'}
+                  {t('homePage')}
                 </Button>
               </Link>
               
@@ -227,7 +227,7 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
                   className="gap-1 theme-hover-bg-soft hover:theme-border-primary"
                 >
                   <ChevronLeft className="w-4 h-4" />
-                  {locale === 'en' ? 'Prev' : 'Пред'}
+                  {t('previous')}
                 </Button>
               </Link>
               
@@ -266,7 +266,7 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
                     </div>
                     <div>
                       <p className="text-xs font-medium" style={{ color: 'var(--fixed-text-secondary)' }}>
-                        {locale === 'en' ? 'Previous' : 'Пред'}
+                        {t('previous')}
                       </p>
                       <p className="font-bold theme-text-primary text-sm">
                         {locale === 'en' ? `Surah ${surahId - 1}` : `Сура ${surahId - 1}`}
@@ -358,7 +358,7 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
                 {locale === 'en' ? 'All Surahs' : 'Все суры'}
               </p>
               <p className="text-sm mt-1" style={{ color: 'var(--fixed-text-secondary)' }}>
-                {locale === 'en' ? 'Browse all chapters' : 'Просмотреть все главы'}
+                {t('browseAllChapters')}
               </p>
             </div>
           </Link>
@@ -373,7 +373,7 @@ export default function SurahPage({ params, searchParams }: SurahPageProps) {
                 <div className="flex items-center gap-4 justify-end">
                   <div>
                     <p className="text-sm font-medium mb-1" style={{ color: 'var(--fixed-text-secondary)' }}>
-                      {locale === 'en' ? 'Next Surah' : 'Следующая сура'}
+                      {t('nextSurah')}
                     </p>
                     <p className="font-bold theme-text-primary text-lg">
                       {locale === 'en' ? `Surah ${surahId + 1}` : `Сура ${surahId + 1}`}

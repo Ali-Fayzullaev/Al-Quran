@@ -16,7 +16,7 @@ type FilterType = 'all' | 'meccan' | 'medinan';
 type SortType = 'number' | 'name' | 'verses' | 'revelation';
 
 export default function SurahsPage() {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const { data: surahs, isLoading, error } = useSurahs();
   
   const [searchQuery, setSearchQuery] = useState("");
@@ -63,7 +63,7 @@ export default function SurahsPage() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 mx-auto mb-4" style={{ borderColor: 'var(--color-primary)' }}></div>
           <p style={{ color: 'var(--fixed-text-secondary)' }}>
-            {locale === 'en' ? 'Loading Surahs...' : 'Загрузка сур...'}
+            {t('loadingSurahs')}
           </p>
         </div>
       </div>
@@ -76,7 +76,7 @@ export default function SurahsPage() {
         <div className="text-center text-red-600">
           <Book className="w-16 h-16 mx-auto mb-4 opacity-50" />
           <p className="text-xl mb-2">
-            {locale === 'en' ? 'Error loading Surahs' : 'Ошибка загрузки сур'}
+            {t('errorLoadingSurahs')}
           </p>
           <p className="text-gray-500">
             {locale === 'en' ? 'Please try refreshing the page' : 'Пожалуйста, обновите страницу'}
@@ -97,12 +97,10 @@ export default function SurahsPage() {
           className="text-center mb-12"
         >
           <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: 'var(--color-primary)' }}>
-            {locale === 'en' ? 'Surahs of the Holy Quran' : 'Суры Священного Корана'}
+            {t('surahsOfHolyQuran')}
           </h1>
           <p className="text-xl max-w-2xl mx-auto" style={{ color: 'var(--fixed-text-secondary)' }}>
-            {locale === 'en' 
-              ? 'Explore all 114 chapters of the Quran with translations, audio, and study tools'
-              : 'Изучайте все 114 глав Корана с переводами, аудио и инструментами для изучения'}
+            {t('studyAll114Chapters')}
           </p>
         </motion.div>
 
@@ -122,7 +120,7 @@ export default function SurahsPage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={locale === 'en' ? 'Search surahs...' : 'Поиск сур...'}
+                placeholder={t('searchSurahs')}
                 className="w-full pl-12 pr-4 py-3 border-2 rounded-xl focus:ring-0 focus:outline-none transition-colors"
                 style={{
                   backgroundColor: 'var(--fixed-background)',
@@ -142,9 +140,9 @@ export default function SurahsPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{locale === 'en' ? 'All' : 'Все'}</SelectItem>
-                  <SelectItem value="meccan">{locale === 'en' ? 'Meccan' : 'Мекканские'}</SelectItem>
-                  <SelectItem value="medinan">{locale === 'en' ? 'Medinan' : 'Мединские'}</SelectItem>
+                  <SelectItem value="all">{t('allSurahs')}</SelectItem>
+                  <SelectItem value="meccan">{t('meccanSurahs')}</SelectItem>
+                  <SelectItem value="medinan">{t('medinanSurahs')}</SelectItem>
                 </SelectContent>
               </Select>
 
@@ -153,7 +151,7 @@ export default function SurahsPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="number">{locale === 'en' ? 'Number' : 'Номер'}</SelectItem>
+                  <SelectItem value="number">{t('numberSort')}</SelectItem>
                   <SelectItem value="name">{locale === 'en' ? 'Name' : 'Название'}</SelectItem>
                   <SelectItem value="verses">{locale === 'en' ? 'Verses' : 'Аяты'}</SelectItem>
                   <SelectItem value="revelation">{locale === 'en' ? 'Revelation' : 'Откровение'}</SelectItem>
@@ -195,16 +193,16 @@ export default function SurahsPage() {
             <p className="text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
               {locale === 'en' 
                 ? `Showing ${filteredAndSortedSurahs.length} of ${surahs.length} surahs`
-                : `Показано ${filteredAndSortedSurahs.length} из ${surahs.length} сур`}
+                : `${t('showing')} ${filteredAndSortedSurahs.length} ${t('of')} ${surahs.length} ${t('suras')}`}
             </p>
             <div className="flex items-center gap-4 text-sm" style={{ color: 'var(--fixed-text-secondary)' }}>
               <span className="flex items-center gap-1">
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }}></div>
-                {locale === 'en' ? 'Meccan' : 'Мекканские'}
+                {t('meccanSurahs')}
               </span>
               <span className="flex items-center gap-1">
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#3b82f6' }}></div>
-                {locale === 'en' ? 'Medinan' : 'Мединские'}
+                {t('medinanSurahs')}
               </span>
             </div>
           </div>
@@ -356,12 +354,10 @@ export default function SurahsPage() {
           >
             <Book className="w-16 h-16 mx-auto mb-4" style={{ color: 'var(--fixed-text-secondary)' }} />
             <h3 className="text-xl font-semibold mb-2" style={{ color: 'var(--fixed-text-secondary)' }}>
-              {locale === 'en' ? 'No surahs found' : 'Суры не найдены'}
+              {t('noSurahsFound')}
             </h3>
             <p style={{ color: 'var(--fixed-text-secondary)', opacity: 0.7 }}>
-              {locale === 'en' 
-                ? 'Try adjusting your search or filter criteria'
-                : 'Попробуйте изменить поиск или критерии фильтрации'}
+              {t('tryChangingSearch')}
             </p>
           </motion.div>
         )}
