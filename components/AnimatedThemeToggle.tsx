@@ -106,13 +106,6 @@ export function AnimatedThemeToggle() {
       stableRequestAnimationFrame(() => {
         if (overlay.parentNode) {
           overlay.style.clipPath = `circle(${maxDistance * 1.1}px at ${centerX}px ${centerY}px)`
-          
-          // Меняем тему в середине анимации
-          setTimeout(() => {
-            if (overlay.parentNode) {
-              setTheme(newTheme)
-            }
-          }, 150)
         }
       })
 
@@ -131,9 +124,14 @@ export function AnimatedThemeToggle() {
     const newTheme = resolvedTheme === "dark" ? "light" : "dark"
     setPendingTheme(newTheme)
     
-    // Создаем анимацию круга с новой темой
+    console.log('Toggling theme from', resolvedTheme, 'to', newTheme)
+    
+    // Сначала устанавливаем тему
+    setTheme(newTheme)
+    
+    // Затем создаем анимацию круга с новой темой
     await createCircleAnimation(newTheme)
-  }, [isAnimating, resolvedTheme, createCircleAnimation])
+  }, [isAnimating, resolvedTheme, createCircleAnimation, setTheme])
 
   // Все useEffect после всех useCallback
   useEffect(() => {

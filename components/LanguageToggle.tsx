@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { Globe, Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,12 @@ import { Locale } from "@/lib/translations";
 export function LanguageToggle() {
   const { locale, setLocale, isLoading } = useLocale();
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Монтируем компонент только на клиенте
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const languages = [
     { code: "ru" as Locale, name: "Русский", flag: "🇷🇺" },
@@ -27,7 +33,17 @@ export function LanguageToggle() {
     setOpen(false);
   };
 
+  // Не рендерим до монтирования
+  if (!mounted) {
+    return (
+      <div className="flex-shrink-0" style={{ minWidth: '100px', height: '36px' }}>
+        <div className="animate-pulse bg-gray-200 rounded-md h-9 w-full"></div>
+      </div>
+    );
+  }
+
   return (
+    <div className="flex-shrink-0" style={{ minWidth: '100px' }}>
     <DropdownMenu.Root open={open} onOpenChange={setOpen}>
       <DropdownMenu.Trigger asChild>
         <button
@@ -39,7 +55,15 @@ export function LanguageToggle() {
             "disabled:opacity-50 disabled:pointer-events-none",
             "min-w-[100px] justify-between"
           )}
-          style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}
+          style={{ 
+            backgroundColor: 'var(--color-primary)', 
+            borderColor: 'var(--color-border)', 
+            borderWidth: '1px',
+            color: 'var(--color-text)',
+            minWidth: '100px',
+            height: '36px',
+            display: 'flex'
+          }}
         >
           <div className="flex items-center gap-2">
             <Globe className="w-4 h-4" />
@@ -63,7 +87,7 @@ export function LanguageToggle() {
             "data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
             "z-50"
           )}
-          style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}
+          style={{ backgroundColor: 'var(--color-primary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}
           align="end"
           sideOffset={5}
         >
@@ -91,5 +115,6 @@ export function LanguageToggle() {
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu.Root>
+    </div>
   );
 }

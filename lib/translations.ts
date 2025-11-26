@@ -141,6 +141,12 @@ export const translations = {
     autoSave: "Настройки автоматически сохраняются",
     menu: "Меню",
     close: "Закрыть",
+    toggleTheme: "Переключить тему",
+
+    // Prayer Times Modal
+    prayerTimesTitle: "Время намаза",
+    nextPrayer: "Следующий намаз",
+    todaysPrayerTimes: "Время намаза на сегодня",
 
     // Навигация
     quranReading: "Чтение Корана",
@@ -307,6 +313,11 @@ export const translations = {
         "Попробуйте английские названия: Moscow, London, Istanbul, Dubai, Almaty",
       quickTests: "Быстрые тесты:",
       nextPrayer: "Следующий намаз",
+      infoTitle: "Информация",
+      infoLocation: "Местоположение: Москва, Россия",
+      infoMethod: "Метод расчета: Исламское общество Северной Америки",
+      infoUpdates: "Обновляется ежедневно",
+      infoSearch: "Поиск города для точных времен",
       tomorrowPrayer: "Завтрашний намаз",
       timeLeft: "Осталось времени",
       hours: "часов",
@@ -1127,6 +1138,17 @@ export const translations = {
     autoSave: "Settings are automatically saved",
     menu: "Menu",
     close: "Close",
+    toggleTheme: "Toggle theme",
+
+    // Prayer Times Modal
+    prayerTimesTitle: "Prayer Times",
+    nextPrayer: "Next Prayer",
+    todaysPrayerTimes: "Today's Prayer Times",
+    infoTitle: "Information",
+    infoLocation: "Location: Moscow, Russia",
+    infoMethod: "Calculation Method: Islamic Society of North America",
+    infoUpdates: "Updated daily",
+    infoSearch: "Search city for accurate times",
 
     // Навигация
     quranReading: "Quran Reading",
@@ -1783,6 +1805,11 @@ export const translations = {
       tryEnglish: "Try English names: Moscow, London, Istanbul, Dubai, Almaty",
       quickTests: "Quick tests:",
       nextPrayer: "Next Prayer",
+      infoTitle: "Information",
+      infoLocation: "Location: Moscow, Russia",
+      infoMethod: "Calculation Method: Islamic Society of North America",
+      infoUpdates: "Updated daily",
+      infoSearch: "Search city for accurate times",
       tomorrowPrayer: "Tomorrow's Prayer",
       timeLeft: "Time Remaining",
       hours: "hours",
@@ -2106,6 +2133,17 @@ export const translations = {
     autoSave: "Sozlamalar avtomatik saqlanadi",
     menu: "Menyu",
     close: "Yopish",
+    toggleTheme: "Mavzuni almashtirish",
+
+    // Prayer Times Modal
+    prayerTimesTitle: "Namoz vaqtlari",
+    nextPrayer: "Keyingi namoz",
+    todaysPrayerTimes: "Bugungi namoz vaqtlari",
+    infoTitle: "Ma'lumot",
+    infoLocation: "Joylashuv: Moskva, Rossiya",
+    infoMethod: "Hisoblash usuli: Shimoliy Amerika Islom Jamiyati",
+    infoUpdates: "Har kuni yangilanadi",
+    infoSearch: "Aniq vaqtlar uchun shaharni qidiring",
 
     // Навигация
     quranReading: "Qur'on o'qish",
@@ -2774,6 +2812,11 @@ export const translations = {
         "Inglizcha nomlarni sinab ko'ring: Moscow, London, Istanbul, Dubai, Almaty",
       quickTests: "Tezkor testlar:",
       nextPrayer: "Keyingi namoz",
+      infoTitle: "Ma'lumot",
+      infoLocation: "Joylashuv: Moskva, Rossiya",
+      infoMethod: "Hisoblash usuli: Shimoliy Amerika Islom Jamiyati",
+      infoUpdates: "Har kuni yangilanadi",
+      infoSearch: "Aniq vaqtlar uchun shaharni qidiring",
       tomorrowPrayer: "Ertangi namoz",
       timeLeft: "Qolgan vaqt",
       hours: "soat",
@@ -3105,6 +3148,17 @@ export const translations = {
     autoSave: "Созламалар автоматик сақланади",
     menu: "Меню",
     close: "Ёпиш",
+    toggleTheme: "Мавзуни алмаштириш",
+
+    // Prayer Times Modal
+    prayerTimesTitle: "Намоз вақтлари",
+    nextPrayer: "Кейинги намоз",
+    todaysPrayerTimes: "Бугунги намоз вақтлари",
+    infoTitle: "Маълумот",
+    infoLocation: "Жойлашув: Москва, Россия",
+    infoMethod: "Ҳисоблаш усули: Шимолий Америка Ислом Жамияти",
+    infoUpdates: "Ҳар куни янгиланади",
+    infoSearch: "Аниқ вақтлар учун шаҳарни қидиринг",
 
     // Навигация
     quranReading: "Қуръон ўқиш",
@@ -3771,6 +3825,11 @@ export const translations = {
         "Инглизча номларни синаб кўринг: Moscow, London, Istanbul, Dubai, Almaty",
       quickTests: "Тезкор тестлар:",
       nextPrayer: "Кейинги намоз",
+      infoTitle: "Маълумот",
+      infoLocation: "Жойлашув: Москва, Россия",
+      infoMethod: "Ҳисоблаш усули: Шимолий Америка Ислом Жамияти",
+      infoUpdates: "Ҳар куни янгиланади",
+      infoSearch: "Аниқ вақтлар учун шаҳарни қидиринг",
       tomorrowPrayer: "Эртанги намоз",
       timeLeft: "Қолган вақт",
       hours: "соат",

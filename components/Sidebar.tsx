@@ -31,7 +31,10 @@ import {
 } from "lucide-react";
 import { iconPaths, tempIconSvgs } from "@/lib/iconPaths";
 import { AnimatedThemeToggle } from "./AnimatedThemeToggle";
+import { SimpleThemeToggle } from "./SimpleThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
+import { SimpleLanguageToggle } from "./SimpleLanguageToggle";
+import { PrayerTimesModal } from "./PrayerTimesModal";
 import dynamic from "next/dynamic";
 import { useLocale } from "@/context/LocaleContext";
 import { useQuranStore } from "@/lib/store";
@@ -438,23 +441,20 @@ const Sidebar = memo(function Sidebar() {
           className="flex-shrink-0 h-20 flex items-center p-4 border-b"
           style={{ borderColor: "var(--color-border)" }}
         >
-          <div className="flex items-center justify-between space-x-2 w-full">
-            <ThemeDrawer>
-              <button
-                className="flex-1 p-3 rounded-xl flex items-center justify-center space-x-2 transition-all duration-200 group hover:opacity-90"
-                style={{ backgroundColor: "var(--color-muted)" }}
-              >
-                <Palette className="h-4 w-4 group-hover:rotate-12 transition-transform" />
-                <span
-                  className="text-sm font-medium"
-                  style={{ color: "var(--color-text)" }}
+          <div className="flex items-center space-x-2 w-full">
+            <div className="flex space-x-2 flex-1">
+              <ThemeDrawer>
+                <button
+                  className="flex-1 rounded-xl flex items-center justify-center space-x-2 transition-all duration-200 group hover:opacity-90 min-w-0"
+                  style={{ backgroundColor: "var(--color-primary)" }}
                 >
-                  {t("themes")}
-                </span>
-              </button>
-            </ThemeDrawer>
-            <div className="flex space-x-1">
-              <AnimatedThemeToggle />
+                  <Palette className="h-4 w-4 group-hover:rotate-12 transition-transform" />
+                </button>
+              </ThemeDrawer>
+              <PrayerTimesModal />
+            </div>
+            <div className="flex space-x-2 items-center flex-shrink-0">
+              <SimpleThemeToggle />
               <LanguageToggle />
             </div>
           </div>
