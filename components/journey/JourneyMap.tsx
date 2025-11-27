@@ -1221,12 +1221,14 @@ export default function JourneyMap({ onStartQuiz }: JourneyMapProps) {
     useJourneyStore();
 
   // Функция для получения локализованного текста
-  const getLocalizedText = (ru: string, en: string, uz: string) => {
+  const getLocalizedText = (ru: string, en: string, uz: string, kz: string) => {
     switch (locale) {
       case 'uz':
         return uz;
       case 'en':
         return en;
+      case 'kz':
+        return kz;
       default:
         return ru;
     }

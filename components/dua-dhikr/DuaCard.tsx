@@ -138,6 +138,14 @@ export default function DuaCard({
   const [currentCount, setCurrentCount] = useState(0);
   const [isHidden, setIsHidden] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  
+  // DEBUG: Log target count
+  console.log(`[DUA DEBUG] ${dua.title}:`, {
+    notes: dua.notes,
+    targetCount: targetCount,
+    currentCount: currentCount,
+    isDuaCompleted: currentCount >= targetCount
+  });
 
   const progress = Math.min(
     Math.round((currentCount / targetCount) * 100),
@@ -346,13 +354,13 @@ export default function DuaCard({
               <div className="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-1">
                 {targetCount > 1 ? `из ${targetCount}` : "прочтений"}
               </div>
-              {targetCount > 1 && (
-                <div className="text-xs text-gray-500">
-                  {isDuaCompleted
-                    ? "🎉 Завершено!"
-                    : `${Math.round((currentCount / targetCount) * 100)}%`}
-                </div>
-              )}
+              <div className="text-xs text-gray-500">
+                {isDuaCompleted
+                  ? "🎉 Завершено!"
+                  : targetCount > 1 
+                    ? `${Math.round((currentCount / targetCount) * 100)}% (${currentCount}/${targetCount})`
+                    : "Счетчик прочтений"}
+              </div>
             </div>
 
             {/* Increment Button */}

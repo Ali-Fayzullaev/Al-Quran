@@ -64,5 +64,27 @@
       "name": "Намоздан кейинги зикр",
       "slug": "dhikr-after-salah"
     }
+  ],
+  "kk": [
+    {
+      "name": "Таңғы зікірлер",
+      "slug": "morning-dhikr"
+    },
+    {
+      "name": "Кешкі зікірлер",
+      "slug": "evening-dhikr"
+    },
+    {
+      "name": "Күнделікті дұғалар",
+      "slug": "daily-dua"
+    },
+    {
+      "name": "Таңдаулы дұғалар",
+      "slug": "selected-dua"
+    },
+    {
+      "name": "Намаздан кейінгі зікірлер",
+      "slug": "dhikr-after-salah"
+    }
   ]
 }

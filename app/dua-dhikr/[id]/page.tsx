@@ -78,6 +78,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
     ru: DuaData[];
     en: DuaData[];
     uz: DuaData[];
+    kz: DuaData[];
   } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -109,16 +110,18 @@ export default function CategoryPage({ params }: CategoryPageProps) {
         setError(null);
 
         // Загружаем все языки параллельно
-        const [ruData, enData, uzData] = await Promise.all([
+        const [ruData, enData, uzData, kzData] = await Promise.all([
           import(`@/data/dua-dhikr/${categoryId}/ru.json`).then(module => module.default),
           import(`@/data/dua-dhikr/${categoryId}/en.json`).then(module => module.default),
-          import(`@/data/dua-dhikr/${categoryId}/uz.json`).then(module => module.default)
+          import(`@/data/dua-dhikr/${categoryId}/uz.json`).then(module => module.default),
+          import(`@/data/dua-dhikr/${categoryId}/kz.json`).then(module => module.default)
         ]);
 
         setDuaData({
           ru: ruData,
           en: enData,
-          uz: uzData
+          uz: uzData,
+          kz: kzData
         });
       } catch (err) {
         console.error('Error loading dua data:', err);

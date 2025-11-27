@@ -21,15 +21,26 @@ export interface CategoryProgress {
 
 /**
  * Извлекает количество повторений из поля notes
- * Поддерживает форматы: "Читать 3 раза", "Читать 1 раз", "Читать 33 раза"
+ * Поддерживает форматы: "Читать 3 раза", "Read 3x", "33 раз", "Read 33 times"
  */
 export function extractCountFromNotes(notes: string | null | undefined): number {
   if (!notes) return 1;
   
-  // Ищем числа в тексте заметок
-  const numberMatch = notes.match(/(\d+)\s*раз/i);
-  if (numberMatch) {
-    return parseInt(numberMatch[1], 10);
+  // Ищем числа в различных форматах
+  const patterns = [
+    /(\d+)\s*раз/i,           // "3 раза", "33 раз"
+    /read\s*(\d+)x/i,         // "Read 3x", "Read 33x"
+    /read\s*(\d+)\s*times?/i, // "Read 3 times", "Read 1 time"
+    /(\d+)\s*times?/i,        // "3 times", "33 times"
+    /(\d+)x/i                 // "3x", "33x"
+  ];
+  
+  for (const pattern of patterns) {
+    const match = notes.match(pattern);
+    if (match) {
+      const count = parseInt(match[1], 10);
+      return count > 0 ? count : 1;
+    }
   }
   
   // По умолчанию возвращаем 1

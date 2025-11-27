@@ -49,6 +49,7 @@ interface DuaListProps {
     ru: DuaData[];
     en: DuaData[];
     uz: DuaData[];
+    kz: DuaData[];
     ['уз']?: DuaData[]; // Кириллический узбекский
   };
 }
@@ -58,7 +59,7 @@ export default function DuaList({ category, duaData }: DuaListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState<'default' | 'alphabetical'>('default');
-  const [localDuaLanguage, setLocalDuaLanguage] = useState<'ru' | 'en' | 'uz'>('ru');
+  const [localDuaLanguage, setLocalDuaLanguage] = useState<'ru' | 'en' | 'uz' | 'kz'>('ru');
   const [filteredDuas, setFilteredDuas] = useState<DuaData[]>([]);
   const [showGlobalSettings, setShowGlobalSettings] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(0);
@@ -106,13 +107,15 @@ export default function DuaList({ category, duaData }: DuaListProps) {
 
   // Обновляем локальный язык при изменении глобального locale
   useEffect(() => {
-    let validLanguage: 'ru' | 'en' | 'uz' = 'ru';
+    let validLanguage: 'ru' | 'en' | 'uz' | 'kz' = 'ru';
     
     if (locale === 'ru' || locale === 'en') {
       validLanguage = locale;
     } else if (locale === 'uz' || locale === 'уз') {
       // Для обеих версий узбекского используем 'uz'
       validLanguage = 'uz';
+    } else if (locale === 'kz') {
+      validLanguage = 'kz';
     }
     
     setLocalDuaLanguage(validLanguage);
@@ -123,13 +126,14 @@ export default function DuaList({ category, duaData }: DuaListProps) {
   const availableLanguages = [
     { code: 'ru' as const, name: 'Русский', flag: '🇷🇺' },
     { code: 'en' as const, name: 'English', flag: '🇺🇸' },
-    { code: 'uz' as const, name: "O'zbek", flag: '🇺🇿' }
+    { code: 'uz' as const, name: "O'zbek", flag: '🇺🇿' },
+    { code: 'kz' as const, name: 'Қазақша', flag: '🇰🇿' }
   ];
 
   const currentLanguageInfo = availableLanguages.find(lang => lang.code === localDuaLanguage) || availableLanguages[0];
 
   // Обработчик изменения локального языка дуа
-  const handleLocalLanguageChange = (newLanguage: 'ru' | 'en' | 'uz') => {
+  const handleLocalLanguageChange = (newLanguage: 'ru' | 'en' | 'uz' | 'kz') => {
     setLocalDuaLanguage(newLanguage);
     setForceUpdate(prev => prev + 1); // Принудительное обновление
   };
