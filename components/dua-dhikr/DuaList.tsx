@@ -167,13 +167,23 @@ export default function DuaList({ category, duaData }: DuaListProps) {
     
     // Check if all duas are completed
     if (newCompletedDuas.size === currentDuas.length) {
-      // Получаем название категории на текущем языке
-      const categoryName = t(`DuaDhikr.categories.${category}`);
-      // Приводим locale к правильному типу
-      const safeLocale = (locale === 'ru' || locale === 'en' || locale === 'uz' || locale === 'уз') ? locale : 'ru';
-      const message = getCategoryCompletionMessage(categoryName, currentDuas.length, safeLocale);
-      setCategoryNotificationMessage(message);
+      // Мотивационные сообщения при завершении всех дуа
+      const motivationalMessages = [
+        `🎉 Машаллах! Вы завершили все ${currentDuas.length} дуа в категории "${category}"!`,
+        `✨ Субханаллах! Все дуа прочитаны! Пусть Аллах примет ваши молитвы!`,
+        `🌟 Альхамдулиллях! Вы успешно завершили изучение этой категории!`,
+        `💫 Баракаллаху фикум! Отличная работа по изучению дуа!`,
+        `🏆 Великолепно! Вы прочитали все ${currentDuas.length} дуа! Пусть они принесут вам благословение!`
+      ];
+      
+      const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
+      setCategoryNotificationMessage(randomMessage);
       setShowCategoryNotification(true);
+      
+      // Показываем дополнительное празднование
+      setTimeout(() => {
+        setCategoryNotificationMessage(`🎊 Категория "${category}" полностью завершена! Переходите к следующей категории для продолжения изучения дуа.`);
+      }, 3000);
     }
   };
 
