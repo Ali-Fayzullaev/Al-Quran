@@ -219,61 +219,43 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false, c
 
   return (
     <div 
-      className={`group relative overflow-hidden rounded-xl md:rounded-2xl transition-all duration-300 md:duration-500 md:hover:shadow-2xl md:hover:-translate-y-1`}
-      style={{
-        backgroundColor: 'var(--color-background)',
-        borderStyle: 'solid',
-        borderColor: isDuaCompleted ? 'var(--color-success, #10b981)' : 'var(--color-border)',
-        borderWidth: isDuaCompleted ? '2px' : '1px'
-      }}
+      className={cn(
+        "relative w-full overflow-hidden transition-all duration-300",
+        "rounded-2xl shadow-sm border-2",
+        "bg-white dark:bg-gray-800",
+        isDuaCompleted && !isHidden 
+          ? "border-green-400 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20" 
+          : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600",
+        isHidden ? "opacity-0 scale-95 pointer-events-none" : "opacity-100 scale-100"
+      )}
     >
-      {/* Gradient overlay on hover - Only on desktop */}
-      <div className="hidden md:block absolute inset-0 bg-gradient-to-br from-transparent to-blue-50/20 dark:to-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-      
-      <div className="relative p-4 md:p-6">
-        
-        {/* Header - Mobile Optimized */}
-        <div className="flex items-center justify-between mb-3 md:mb-4">
-          <div className="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
-            {/* Index Badge */}
-            <div 
-              className="w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center text-xs md:text-sm font-bold text-white flex-shrink-0"
-              style={{ backgroundColor: isDuaCompleted ? 'var(--color-success, #10b981)' : 'var(--color-primary)' }}
-            >
-              {isDuaCompleted ? '✓' : index + 1}
-            </div>
-            
-            {/* Title */}
-            <h3 className={`${fontSizes.title} font-bold truncate`} style={{ color: 'var(--color-text)' }}>
-              {dua.title}
-            </h3>
+      {/* Completion Badge */}
+      {isDuaCompleted && (
+        <div className="absolute top-4 right-4 z-10">
+          <div className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+            <Check className="w-3 h-3" />
+            Завершено
           </div>
-
-          {/* Action Buttons */}
-          <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
-            {/* Settings Toggle */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowSettings(!showSettings)}
-              className="w-7 h-7 md:w-8 md:h-8 p-0 rounded-full hover:bg-blue-100 dark:hover:bg-blue-900/20"
-            >
-              <Settings className="w-3 h-3 md:w-4 md:h-4" style={{ color: 'var(--color-primary)' }} />
-            </Button>
-            
-            {/* Copy Button */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={copyArabicText}
-              className="w-7 h-7 md:w-8 md:h-8 p-0 rounded-full hover:bg-green-100 dark:hover:bg-green-900/20"
-            >
-              {isCopied ? (
-                <Check className="w-3 h-3 md:w-4 md:h-4 text-green-600" />
-              ) : (
-                <Copy className="w-3 h-3 md:w-4 md:h-4" style={{ color: 'var(--color-primary)' }} />
-              )}
-            </Button>
+        </div>
+      )}
+      
+      {/* Main Content */}
+      <div className="p-5 md:p-8 space-y-6">
+        
+        {/* Header with Number and Title */}
+        <div className="flex items-start gap-4">
+          <div 
+            className="w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-lg md:text-xl font-bold text-white flex-shrink-0 shadow-sm"
+            style={{ backgroundColor: isDuaCompleted ? '#10b981' : 'var(--color-primary)' }}
+          >
+            {isDuaCompleted ? '✓' : index + 1}
+          </div>
+          
+          <div className="flex-1 min-w-0 pt-1">
+            <h2 className={cn(fontSizes.title, "font-bold leading-tight mb-2")} 
+                style={{ color: 'var(--color-text)' }}>
+              {dua.title}
+            </h2>
           </div>
         </div>
 
@@ -288,197 +270,115 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false, c
           </div>
         )}
         
-        {/* Counter Controls - Mobile Optimized */}
-        <div className="flex items-center justify-center gap-2 md:gap-4 mb-4 p-2 md:p-3 rounded-lg" style={{
-          backgroundColor: 'var(--color-background-secondary)',
-          borderStyle: 'solid',
-          borderWidth: '1px',
-          borderColor: isDuaCompleted ? 'var(--color-success, #10b981)' : 'var(--color-border)'
-        }}>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleDecrement}
-            disabled={currentCount === 0}
-            className="w-8 h-8 md:w-10 md:h-10 rounded-full p-0"
-          >
-            <Minus className="w-3 h-3 md:w-4 md:h-4" />
-          </Button>
-          
-          <div className="text-center min-w-[80px] md:min-w-[120px]">
-            <div className="text-lg md:text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>
-              {currentCount}/{targetCount}
-            </div>
-            <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-              {isDuaCompleted ? '✅ Готово!' : 'Нажмите +'}
-            </div>
-          </div>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleIncrement}
-            disabled={isDuaCompleted}
-            className="w-8 h-8 md:w-10 md:h-10 rounded-full p-0"
-            style={{
-              backgroundColor: !isDuaCompleted ? 'var(--color-primary)' : undefined,
-              borderColor: !isDuaCompleted ? 'var(--color-primary)' : undefined,
-              color: !isDuaCompleted ? 'white' : undefined
-            }}
-          >
-            <Plus className="w-3 h-3 md:w-4 md:h-4" />
-          </Button>
-          
-          {currentCount > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleReset}
-              className="w-6 h-6 md:w-8 md:h-8 rounded-full p-0"
-              title="Сбросить"
-            >
-              <RotateCcw className="w-2 h-2 md:w-3 md:h-3" />
-            </Button>
-          )}
-        </div>
-
-        {/* Settings Panel */}
-        {showSettings && (
-          <div className="mb-6 p-4 rounded-xl animate-in slide-in-from-top-2 duration-300" style={{
-            backgroundColor: 'var(--color-background)',
-            borderStyle: 'solid',
-            borderWidth: '1px',
-            borderColor: 'var(--color-border)'
-          }}>
-            <div className="flex items-center gap-2 mb-4">
-              <Settings className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
-              <h4 className="font-medium" style={{ color: 'var(--color-primary)' }}>
-                Настройки отображения
-              </h4>
+        {/* Counter Controls - Improved Design */}
+        {targetCount > 1 && (
+          <div className="bg-gradient-to-r from-gray-50 to-blue-50 dark:from-gray-800 dark:to-blue-900/20 rounded-2xl p-4 md:p-6 border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center justify-center gap-4 md:gap-6">
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={handleDecrement}
+                disabled={currentCount === 0}
+                className="w-12 h-12 md:w-16 md:h-16 rounded-full p-0 border-2 hover:scale-105 transition-transform disabled:opacity-30"
+              >
+                <Minus className="w-5 h-5 md:w-6 md:h-6" />
+              </Button>
+              
+              <div className="text-center px-4">
+                <div className="text-3xl md:text-4xl font-bold mb-1" style={{ color: 'var(--color-primary)' }}>
+                  {currentCount}
+                </div>
+                <div className="text-sm text-gray-500">из {targetCount}</div>
+                <div className="text-xs text-gray-400 mt-1">
+                  {isDuaCompleted ? '🎉 Завершено!' : `${Math.round((currentCount / targetCount) * 100)}%`}
+                </div>
+              </div>
+              
+              <Button
+                size="lg"
+                onClick={handleIncrement}
+                disabled={isDuaCompleted}
+                className="w-12 h-12 md:w-16 md:h-16 rounded-full p-0 bg-green-600 hover:bg-green-700 hover:scale-105 transition-all text-white disabled:opacity-30 disabled:bg-gray-400 shadow-lg"
+              >
+                <Plus className="w-5 h-5 md:w-6 md:h-6" />
+              </Button>
             </div>
             
-            <div className="grid grid-cols-2 gap-3">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowTransliteration(!showTransliteration)}
-                className="justify-start gap-2"
-              >
-                {showTransliteration ? (
-                  <Eye className="w-4 h-4 text-green-600" />
-                ) : (
-                  <EyeOff className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
-                )}
-                Транслитерация
-              </Button>
-              
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowNotes(!showNotes)}
-                className="justify-start gap-2"
-              >
-                {showNotes ? (
-                  <Eye className="w-4 h-4 text-green-600" />
-                ) : (
-                  <EyeOff className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
-                )}
-                Заметки
-              </Button>
-              
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowBenefits(!showBenefits)}
-                className="justify-start gap-2"
-              >
-                {showBenefits ? (
-                  <Eye className="w-4 h-4 text-green-600" />
-                ) : (
-                  <EyeOff className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
-                )}
-                Польза
-              </Button>
-              
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowSource(!showSource)}
-                className="justify-start gap-2"
-              >
-                {showSource ? (
-                  <Eye className="w-4 h-4 text-green-600" />
-                ) : (
-                  <EyeOff className="w-4 h-4" style={{ color: 'var(--color-text-secondary)' }} />
-                )}
-                Источник
-              </Button>
-            </div>
+            {currentCount > 0 && (
+              <div className="mt-4 flex justify-center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleReset}
+                  className="text-orange-600 hover:bg-orange-100 dark:hover:bg-orange-900/20 rounded-full px-4 py-2"
+                >
+                  <RotateCcw className="w-4 h-4 mr-2" />
+                  Сбросить
+                </Button>
+              </div>
+            )}
           </div>
         )}
 
-        {/* Arabic Text - Mobile Optimized */}
-        <div className="text-center mb-4 md:mb-6">
-          <p className={`${fontSizes.arabic} leading-relaxed mb-3 md:mb-4`}
+
+
+        {/* Arabic Text - Enhanced for Mobile Reading */}
+        <div className="bg-gradient-to-b from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl p-6 md:p-8 border border-blue-100 dark:border-blue-800 text-center">
+          <p className={cn(
+               fontSizes.arabic,
+               "leading-loose md:leading-relaxed font-medium"
+             )}
              style={{ 
                color: 'var(--color-primary)',
                direction: 'rtl',
-               fontFamily: 'Arabic, serif'
+               fontFamily: 'Arabic, Amiri, serif',
+               lineHeight: '2.2',
+               textShadow: '0 1px 2px rgba(0,0,0,0.05)'
              }}>
             {dua.arabic}
           </p>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={copyArabicText}
-            className="gap-1 md:gap-2 h-8 md:h-9 text-xs md:text-sm"
-          >
-            <Copy className="w-3 h-3 md:w-4 md:h-4" />
-            Копировать
-          </Button>
         </div>
 
         {/* Transliteration (conditional) */}
         {showTransliteration && dua.latin && (
-          <div className="mb-4 p-3 rounded-lg animate-in slide-in-from-bottom-2 duration-300" style={{ backgroundColor: 'var(--color-background)' }}>
-            <div className="flex items-center gap-2 mb-2">
-              <BookOpen className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+          <div className="bg-amber-50 dark:bg-amber-900/20 rounded-2xl p-5 md:p-6 border border-amber-200 dark:border-amber-800 animate-in slide-in-from-bottom-2 duration-300">
+            <div className="flex items-center gap-3 mb-4">
+              <BookOpen className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+              <h3 className="text-lg font-semibold text-amber-700 dark:text-amber-300">
                 Транслитерация
-              </span>
+              </h3>
             </div>
-            <p className={`${fontSizes.latin} italic`} style={{ color: 'var(--color-text-secondary)' }}>
+            <p className={cn(fontSizes.latin, "italic leading-relaxed")} style={{ color: 'var(--color-text-secondary)' }}>
               {dua.latin}
             </p>
           </div>
         )}
 
-        {/* Translation */}
-        <div className="mb-4 p-4 rounded-lg" style={{ backgroundColor: 'var(--color-background)' }}>
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ backgroundColor: 'var(--color-primary)' }}>
+        {/* Translation - Enhanced */}
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 md:p-6 border border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600">
               РУ
             </div>
-            <span className="text-sm font-medium" style={{ color: 'var(--color-primary)' }}>
+            <h3 className="text-lg font-semibold" style={{ color: 'var(--color-primary)' }}>
               Перевод
-            </span>
+            </h3>
           </div>
-          <p className={`${fontSizes.translation} leading-relaxed`} style={{ color: 'var(--color-text)' }}>
+          <p className={cn(fontSizes.translation, "leading-relaxed")} style={{ color: 'var(--color-text)' }}>
             {dua.translation}
           </p>
         </div>
 
         {/* Notes (conditional) */}
         {showNotes && dua.notes && (
-          <div className="mb-4 p-4 rounded-lg animate-in slide-in-from-bottom-2 duration-300" style={{ backgroundColor: 'var(--color-background)' }}>
-            <div className="flex items-center gap-2 mb-2">
-              <Quote className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-              <span className="text-sm font-medium text-orange-700 dark:text-orange-300">
+          <div className="bg-orange-50 dark:bg-orange-900/20 rounded-2xl p-5 md:p-6 border border-orange-200 dark:border-orange-800 animate-in slide-in-from-bottom-2 duration-300">
+            <div className="flex items-center gap-3 mb-4">
+              <Quote className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+              <h3 className="text-lg font-semibold text-orange-700 dark:text-orange-300">
                 Заметки
-              </span>
+              </h3>
             </div>
-            <div className={fontSizes.meta} style={{ color: 'var(--color-text-secondary)' }}>
+            <div className={cn(fontSizes.meta, "leading-relaxed")} style={{ color: 'var(--color-text-secondary)' }}>
               {dua.notes}
             </div>
           </div>
@@ -486,14 +386,14 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false, c
 
         {/* Benefits (conditional) */}
         {showBenefits && (dua.benefits || dua.fawaid) && (
-          <div className="mb-4 p-4 rounded-lg animate-in slide-in-from-bottom-2 duration-300" style={{ backgroundColor: 'var(--color-background)' }}>
-            <div className="flex items-center gap-2 mb-2">
-              <Lightbulb className="w-4 h-4 text-green-600 dark:text-green-400" />
-              <span className="text-sm font-medium text-green-700 dark:text-green-300">
+          <div className="bg-green-50 dark:bg-green-900/20 rounded-2xl p-5 md:p-6 border border-green-200 dark:border-green-800 animate-in slide-in-from-bottom-2 duration-300">
+            <div className="flex items-center gap-3 mb-4">
+              <Lightbulb className="w-5 h-5 text-green-600 dark:text-green-400" />
+              <h3 className="text-lg font-semibold text-green-700 dark:text-green-300">
                 Польза
-              </span>
+              </h3>
             </div>
-            <div className={fontSizes.meta} style={{ color: 'var(--color-text-secondary)' }}>
+            <div className={cn(fontSizes.meta, "leading-relaxed")} style={{ color: 'var(--color-text-secondary)' }}>
               {dua.benefits || dua.fawaid}
             </div>
           </div>
@@ -501,52 +401,150 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false, c
 
         {/* Source (conditional) */}
         {showSource && dua.source && (
-          <div className="mb-4 p-4 rounded-lg animate-in slide-in-from-bottom-2 duration-300" style={{ backgroundColor: 'var(--color-background)' }}>
-            <div className="flex items-center gap-2 mb-2">
-              <FileText className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-              <span className="text-sm font-medium text-purple-700 dark:text-purple-300">
+          <div className="bg-purple-50 dark:bg-purple-900/20 rounded-2xl p-5 md:p-6 border border-purple-200 dark:border-purple-800 animate-in slide-in-from-bottom-2 duration-300">
+            <div className="flex items-center gap-3 mb-4">
+              <FileText className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              <h3 className="text-lg font-semibold text-purple-700 dark:text-purple-300">
                 Источник
-              </span>
+              </h3>
             </div>
-            <div className={fontSizes.meta} style={{ color: 'var(--color-text-secondary)' }}>
+            <div className={cn(fontSizes.meta, "leading-relaxed")} style={{ color: 'var(--color-text-secondary)' }}>
               {dua.source}
             </div>
           </div>
         )}
 
-        {/* Bottom Actions */}
-        <div className="flex items-center justify-between mt-6 pt-4 border-t" style={{ borderColor: 'var(--color-border)' }}>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }}></div>
-            <span className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
-              РУС
-            </span>
+      </div>
+      
+      {/* Bottom Action Bar */}
+      <div className="bg-gray-50 dark:bg-gray-800/50 px-5 py-4 md:px-8 md:py-6 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between gap-4">
+          {/* Language Indicator */}
+          <div className="flex items-center gap-2 text-gray-500">
+            <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+            <span className="text-xs font-medium">Русский</span>
           </div>
           
-          <div className="flex items-center gap-1">
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2">
+            {/* Copy Button */}
             <Button
-              variant="ghost"
+              variant="outline"
+              size="sm"
+              onClick={copyArabicText}
+              className="rounded-full px-4 py-2 h-9 border-gray-300 hover:border-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all"
+            >
+              {isCopied ? (
+                <>
+                  <Check className="w-4 h-4 mr-2 text-green-600" />
+                  <span className="text-green-600">Скопировано</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-4 h-4 mr-2" />
+                  Копировать
+                </>
+              )}
+            </Button>
+            
+            {/* Settings Button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowSettings(!showSettings)}
+              className="rounded-full w-9 h-9 p-0 border-gray-300 hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all"
+            >
+              <Settings className="w-4 h-4" />
+            </Button>
+            
+            {/* Save Button */}
+            <Button
+              variant={isSaved ? "default" : "outline"}
               size="sm"
               onClick={handleSaveDua}
               disabled={isSaving}
               className={cn(
-                "gap-1 transition-all duration-200",
+                "rounded-full px-4 py-2 h-9 transition-all",
                 isSaved 
-                  ? "text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20" 
-                  : "hover:bg-gray-50 dark:hover:bg-gray-800/20"
+                  ? "bg-red-500 hover:bg-red-600 text-white border-red-500" 
+                  : "border-gray-300 hover:border-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
               )}
             >
               <Heart className={cn(
-                "w-3 h-3 transition-all duration-200",
+                "w-4 h-4",
                 isSaved ? "fill-current" : "",
                 isSaving && "animate-pulse"
               )} />
-              <span className="text-xs">
-                {isSaving ? "..." : isSaved ? "Сохранено" : "Сохранить"}
-              </span>
             </Button>
           </div>
         </div>
+        
+        {/* Settings Panel */}
+        {showSettings && (
+          <div className="mt-4 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 animate-in slide-in-from-top-2 duration-300">
+            <h4 className="font-medium text-gray-900 dark:text-gray-100 mb-3 text-center">
+              Настройки отображения
+            </h4>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <Button
+                variant={showTransliteration ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowTransliteration(!showTransliteration)}
+                className="justify-center gap-2 h-10"
+              >
+                {showTransliteration ? (
+                  <Eye className="w-4 h-4 text-white" />
+                ) : (
+                  <EyeOff className="w-4 h-4" />
+                )}
+                <span className="text-xs">Транслит</span>
+              </Button>
+              
+              <Button
+                variant={showNotes ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowNotes(!showNotes)}
+                className="justify-center gap-2 h-10"
+              >
+                {showNotes ? (
+                  <Eye className="w-4 h-4 text-white" />
+                ) : (
+                  <EyeOff className="w-4 h-4" />
+                )}
+                <span className="text-xs">Заметки</span>
+              </Button>
+              
+              <Button
+                variant={showBenefits ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowBenefits(!showBenefits)}
+                className="justify-center gap-2 h-10"
+              >
+                {showBenefits ? (
+                  <Eye className="w-4 h-4 text-white" />
+                ) : (
+                  <EyeOff className="w-4 h-4" />
+                )}
+                <span className="text-xs">Польза</span>
+              </Button>
+              
+              <Button
+                variant={showSource ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowSource(!showSource)}
+                className="justify-center gap-2 h-10"
+              >
+                {showSource ? (
+                  <Eye className="w-4 h-4 text-white" />
+                ) : (
+                  <EyeOff className="w-4 h-4" />
+                )}
+                <span className="text-xs">Источник</span>
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
