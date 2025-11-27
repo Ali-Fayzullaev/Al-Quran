@@ -661,7 +661,7 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
                   <span className="text-xl mr-2">📖</span>
                   {t('planner.readButtonText')}
                 </button>
-                <p className="text-center text-blue-100 text-sm mt-3 opacity-75">
+                <p className="text-center text-blue text-sm mt-3 opacity-75">
                   💡 {t('planner.readingTip')}
                 </p>
               </div>
@@ -768,8 +768,8 @@ export default function PlanDetailPage({ params }: PlanDetailPageProps) {
 
         {/* Модальное окно подтверждения удаления */}
         {showDeleteConfirm && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="rounded-lg p-6 max-w-md w-full mx-4 planner-card-animated" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}>
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 h-[100vh]">
+            <div className="rounded-lg p-6 max-w-md w-full planner-card-animated" style={{ backgroundColor: 'var(--color-background)', borderColor: 'var(--color-border)', borderWidth: '1px', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}>
               <h3 className="text-lg font-semibold mb-4" style={{ color: 'var(--color-text)' }}>
                 {t('planner.confirmDelete')}
               </h3>

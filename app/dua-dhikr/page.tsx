@@ -4,15 +4,16 @@
 import { useState, useEffect } from "react";
 import { useLocale } from "@/context/LocaleContext";
 import Link from "next/link";
-import { 
-  Sun, 
-  Moon, 
-  Building2, 
-  Heart, 
-  Star, 
+import {
+  Sun,
+  Moon,
+  Building2,
+  Heart,
+  Star,
   ChevronRight,
   Book,
   Home,
+  SaveAll,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -24,80 +25,100 @@ const duaCategories = [
     gradient: "from-yellow-400 to-orange-500",
     bgColor: "bg-yellow-50 dark:bg-yellow-900/20",
     borderColor: "border-yellow-200 dark:border-yellow-800",
-    textColor: "text-yellow-800 dark:text-yellow-200"
+    textColor: "text-yellow-800 dark:text-yellow-200",
   },
   {
-    id: "evening-dhikr", 
+    id: "evening-dhikr",
     icon: Moon,
     gradient: "from-purple-400 to-indigo-600",
     bgColor: "bg-purple-50 dark:bg-purple-900/20",
     borderColor: "border-purple-200 dark:border-purple-800",
-    textColor: "text-purple-800 dark:text-purple-200"
+    textColor: "text-purple-800 dark:text-purple-200",
   },
   {
     id: "dhikr-after-salah",
     icon: Building2,
     gradient: "from-green-400 to-emerald-600",
-    bgColor: "bg-green-50 dark:bg-green-900/20", 
+    bgColor: "bg-green-50 dark:bg-green-900/20",
     borderColor: "border-green-200 dark:border-green-800",
-    textColor: "text-green-800 dark:text-green-200"
+    textColor: "text-green-800 dark:text-green-200",
   },
   {
     id: "daily-dua",
     icon: Heart,
-    gradient: "from-pink-400 to-rose-600", 
+    gradient: "from-pink-400 to-rose-600",
     bgColor: "bg-pink-50 dark:bg-pink-900/20",
     borderColor: "border-pink-200 dark:border-pink-800",
-    textColor: "text-pink-800 dark:text-pink-200"
+    textColor: "text-pink-800 dark:text-pink-200",
   },
   {
     id: "selected-dua",
     icon: Star,
     gradient: "from-blue-400 to-cyan-600",
     bgColor: "bg-blue-50 dark:bg-blue-900/20",
-    borderColor: "border-blue-200 dark:border-blue-800", 
-    textColor: "text-blue-800 dark:text-blue-200"
-  }
+    borderColor: "border-blue-200 dark:border-blue-800",
+    textColor: "text-blue-800 dark:text-blue-200",
+  },
 ];
 
 export default function DuaDhikrPage() {
   const { locale, t } = useLocale();
   const [isMounted, setIsMounted] = useState(false);
-  
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
-  
+
   if (!isMounted) {
     return (
-      <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: 'var(--color-background)' }}>
+      <div
+        className="min-h-screen relative overflow-hidden"
+        style={{ backgroundColor: "var(--color-background)" }}
+      >
         <div className="flex items-center justify-center h-screen">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2" style={{ borderColor: 'var(--color-primary)' }}></div>
+          <div
+            className="animate-spin rounded-full h-8 w-8 border-b-2"
+            style={{ borderColor: "var(--color-primary)" }}
+          ></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden" style={{ backgroundColor: 'var(--color-background)' }}>
-      
+    <div
+      className="min-h-screen relative overflow-hidden"
+      style={{ backgroundColor: "var(--color-background)" }}
+    >
       {/* Декоративные элементы */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-1/2 -right-1/2 w-96 h-96 rounded-full blur-3xl opacity-20" 
-             style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-secondary))' }}></div>
-        <div className="absolute -bottom-1/2 -left-1/2 w-96 h-96 rounded-full blur-3xl opacity-15"
-             style={{ background: 'linear-gradient(45deg, var(--color-accent), var(--color-primary))' }}></div>
+        <div
+          className="absolute -top-1/2 -right-1/2 w-96 h-96 rounded-full blur-3xl opacity-20"
+          style={{
+            background:
+              "linear-gradient(135deg, var(--color-primary), var(--color-secondary))",
+          }}
+        ></div>
+        <div
+          className="absolute -bottom-1/2 -left-1/2 w-96 h-96 rounded-full blur-3xl opacity-15"
+          style={{
+            background:
+              "linear-gradient(45deg, var(--color-accent), var(--color-primary))",
+          }}
+        ></div>
       </div>
 
       {/* Header */}
-      <div className="sticky top-0 z-10 backdrop-blur-xl border-b shadow-lg" style={{ 
-        backgroundColor: 'var(--color-background-secondary)',
-        borderColor: 'var(--color-border)',
-        opacity: 0.95
-      }}>
+      <div
+        className="sticky top-0 z-10 backdrop-blur-xl border-b shadow-lg"
+        style={{
+          backgroundColor: "var(--color-background-secondary)",
+          borderColor: "var(--color-border)",
+          opacity: 0.95,
+        }}
+      >
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            
             {/* Left - Navigation */}
             <div className="flex items-center gap-4">
               <Link href="/quran">
@@ -110,10 +131,16 @@ export default function DuaDhikrPage() {
 
             {/* Center - Title */}
             <div className="text-center">
-              <h1 className="font-bold text-2xl" style={{ color: 'var(--color-primary)' }}>
+              <h1
+                className="font-bold text-2xl"
+                style={{ color: "var(--color-primary)" }}
+              >
                 {t("DuaDhikr.title")}
               </h1>
-              <p className="text-sm mt-1" style={{ color: 'var(--color-text-secondary)' }}>
+              <p
+                className="text-sm mt-1"
+                style={{ color: "var(--color-text-secondary)" }}
+              >
                 {t("DuaDhikr.subtitle")}
               </p>
             </div>
@@ -133,23 +160,33 @@ export default function DuaDhikrPage() {
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-8">
-        
         {/* Introduction Section */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-3 p-6 rounded-2xl border shadow-lg mb-6" style={{
-            backgroundColor: 'var(--color-background-secondary)',
-            borderColor: 'var(--color-border)'
-          }}>
-            <div className="w-12 h-12 rounded-full flex items-center justify-center" 
-                 style={{ backgroundColor: 'var(--color-primary)' }}>
+          <div
+            className="inline-flex items-center gap-3 p-6 rounded-2xl border shadow-lg mb-6"
+            style={{
+              backgroundColor: "var(--color-background-secondary)",
+              borderColor: "var(--color-border)",
+            }}
+          >
+            <div
+              className="w-12 h-12 rounded-full flex items-center justify-center"
+              style={{ backgroundColor: "var(--color-primary)" }}
+            >
               <Book className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h2 className="text-xl font-bold" style={{ color: 'var(--color-text)' }}>
-                {t('DuaDhikr.title')}
+              <h2
+                className="text-xl font-bold"
+                style={{ color: "var(--color-text)" }}
+              >
+                {t("DuaDhikr.title")}
               </h2>
-              <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-                {t('DuaDhikr.subtitle')}
+              <p
+                className="text-sm"
+                style={{ color: "var(--color-text-secondary)" }}
+              >
+                {t("DuaDhikr.subtitle")}
               </p>
             </div>
           </div>
@@ -159,14 +196,14 @@ export default function DuaDhikrPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {duaCategories.map((category, index) => {
             const IconComponent = category.icon;
-            
+
             return (
-              <Link 
-                key={category.id} 
+              <Link
+                key={category.id}
                 href={`/dua-dhikr/${category.id}`}
                 className="group"
               >
-                <div 
+                <div
                   className={`
                     p-6 rounded-2xl border-2 transition-all duration-500 
                     hover:shadow-2xl hover:-translate-y-2 hover:scale-105
@@ -174,23 +211,23 @@ export default function DuaDhikrPage() {
                     group-hover:border-opacity-100
                   `}
                   style={{
-                    backgroundColor: 'var(--color-background-secondary)',
-                    borderColor: 'var(--color-border)',
-                    borderWidth: '1px'
+                    backgroundColor: "var(--color-background-secondary)",
+                    borderColor: "var(--color-border)",
+                    borderWidth: "1px",
                   }}
                 >
                   {/* Icon with Gradient Background */}
                   <div className="relative mb-4">
-                    <div 
+                    <div
                       className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${category.gradient} 
                                   flex items-center justify-center shadow-lg 
                                   group-hover:rotate-12 group-hover:scale-110 transition-transform duration-300`}
                     >
                       <IconComponent className="w-8 h-8 text-white" />
                     </div>
-                    
+
                     {/* Animated Ring */}
-                    <div 
+                    <div
                       className={`absolute inset-0 w-16 h-16 rounded-2xl border-2 
                                   opacity-0 group-hover:opacity-100 group-hover:scale-125 
                                   transition-all duration-500 ${category.borderColor}`}
@@ -199,31 +236,43 @@ export default function DuaDhikrPage() {
 
                   {/* Content */}
                   <div className="space-y-3">
-                    <h3 className="text-xl font-bold" style={{ color: 'var(--color-text)' }}>
+                    <h3
+                      className="text-xl font-bold"
+                      style={{ color: "var(--color-text)" }}
+                    >
                       {t(`DuaDhikr.categories.${category.id}`)}
                     </h3>
-                    
-                    <p className="text-sm leading-relaxed" style={{ color: 'var(--color-text-secondary)' }}>
+
+                    <p
+                      className="text-sm leading-relaxed"
+                      style={{ color: "var(--color-text-secondary)" }}
+                    >
                       {t(`DuaDhikr.descriptions.${category.id}`)}
                     </p>
-                    
+
                     {/* View All Button */}
                     <div className="flex items-center justify-between pt-2">
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         size="sm"
                         className="gap-2 group-hover:gap-3 transition-all duration-300"
-                        style={{ color: 'var(--color-primary)' }}
+                        style={{ color: "var(--color-primary)" }}
                       >
-                        {t('DuaDhikr.viewAll')}
+                        {t("DuaDhikr.viewAll")}
                         <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
                       </Button>
-                      
+
                       {/* Language indicator */}
                       <div className="flex items-center gap-1">
-                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }}></div>
-                        <span className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
-                          {t('DuaDhikr.languageIndicator')}
+                        <div
+                          className="w-2 h-2 rounded-full"
+                          style={{ backgroundColor: "var(--color-primary)" }}
+                        ></div>
+                        <span
+                          className="text-xs font-medium"
+                          style={{ color: "var(--color-text-secondary)" }}
+                        >
+                          {t("DuaDhikr.languageIndicator")}
                         </span>
                       </div>
                     </div>
@@ -231,7 +280,7 @@ export default function DuaDhikrPage() {
 
                   {/* Progress Bar Animation */}
                   <div className="mt-4 h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className={`h-full bg-gradient-to-r ${category.gradient} 
                                   w-0 group-hover:w-full transition-all duration-1000 ease-out`}
                     ></div>
@@ -241,36 +290,155 @@ export default function DuaDhikrPage() {
             );
           })}
         </div>
+        <hr className="text-[--color-primary] my-3 h-3 " />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          <Link href="/dua-dhikr/saved" className="group flex justify-center">
+            <div
+              className={`
+              relative p-8 rounded-full  w-80 h-80 border-4 border-yellow-300 transition-all duration-500 
+              hover:shadow-2xl hover:-translate-y-2 hover:scale-105
+              flex flex-col items-center justify-center
+              overflow-hidden
+            `}
+              style={{
+                backgroundColor: "var(--color-background-secondary)",
+              }}
+            >
+              {/* Animated Background Ring */}
+              <div
+                className={`absolute inset-0 rounded-full border-4 
+          opacity-0 group-hover:opacity-100 group-hover:scale-110
+          transition-all duration-700 border-yellow-200/50 dark:border-yellow-800/50`}
+              ></div>
+
+              {/* Floating Particles Animation */}
+              <div className="absolute inset-0 rounded-full overflow-hidden">
+                <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-yellow-300 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping delay-75"></div>
+                <div className="absolute top-1/3 right-1/4 w-1 h-1 bg-yellow-400 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping delay-300"></div>
+                <div className="absolute bottom-1/4 left-1/3 w-1.5 h-1.5 bg-yellow-500 rounded-full opacity-0 group-hover:opacity-100 group-hover:animate-ping delay-500"></div>
+              </div>
+
+              {/* Main Content Container */}
+              <div className="relative z-10 flex flex-col items-center justify-center text-center space-y-6">
+                {/* Icon with Enhanced Animation */}
+                <div className="relative">
+                  <div
+                    className={`w-20 h-20 rounded-2xl bg-gradient-to-br from-yellow-300 to-yellow-600
+              flex items-center justify-center shadow-2xl shadow-yellow-500/25
+              group-hover:rotate-12 group-hover:scale-110 transition-all duration-500
+              group-hover:shadow-yellow-500/40`}
+                  >
+                    <Star className="w-10 h-10 text-white" />
+                  </div>
+
+                  {/* Pulsing Ring Effect */}
+                  <div
+                    className={`absolute -inset-2 rounded-2xl border-2 border-yellow-300/30
+              opacity-0 group-hover:opacity-100 group-hover:scale-110 
+              transition-all duration-700 animate-pulse`}
+                  ></div>
+                </div>
+
+                {/* Text Content */}
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-bold bg-gradient-to-r from-yellow-300 to-yellow-500 bg-clip-text text-transparent">
+                    {t(`saved`)}
+                  </h3>
+                </div>
+
+                {/* View All Button with Enhanced Animation */}
+                <div className="flex flex-col items-center space-y-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="gap-3 group-hover:gap-4 transition-all duration-300 
+                            bg-yellow-500/10 hover:bg-yellow-500/20 border border-yellow-500/20
+                            text-yellow-300 px-6 py-2 rounded-full"
+                  >
+                    <span className="font-semibold">
+                      {t("DuaDhikr.viewAll")}
+                    </span>
+                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                  </Button>
+
+                  {/* Language Indicator */}
+                  <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-black/5 dark:bg-white/5">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></div>
+                      <span
+                        className="text-xs font-medium"
+                        style={{ color: "var(--color-text-secondary)" }}
+                      >
+                        {t("DuaDhikr.languageIndicator")}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Animated Progress Ring */}
+              <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 w-3/4">
+                <div className="h-1 bg-gray-200/50 dark:bg-gray-700/50 rounded-full overflow-hidden backdrop-blur-sm">
+                  <div
+                    className={`h-full bg-gradient-to-r from-yellow-400 to-yellow-600
+              w-0 group-hover:w-full transition-all duration-1000 ease-out
+              shadow-lg shadow-yellow-500/25`}
+                  ></div>
+                </div>
+              </div>
+
+              {/* Shine Effect on Hover */}
+              <div
+                className={`absolute inset-0 rounded-full bg-gradient-to-r from-transparent via-white/5 to-transparent
+          -translate-x-full group-hover:translate-x-full transition-transform duration-1000`}
+              ></div>
+            </div>
+          </Link>
+        </div>
 
         {/* Quick Stats Section */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
           {[
-            { label: 'Утром', count: '15+', icon: Sun },
-            { label: 'Вечером', count: '12+', icon: Moon },
-            { label: 'После намаза', count: '20+', icon: Building2 },
-            { label: 'Ежедневно', count: '30+', icon: Heart }
+            { label: "Утром", count: "15+", icon: Sun },
+            { label: "Вечером", count: "12+", icon: Moon },
+            { label: "После намаза", count: "20+", icon: Building2 },
+            { label: "Ежедневно", count: "30+", icon: Heart },
           ].map((stat, index) => {
             const IconComponent = stat.icon;
-            const labels = [t("morning"), t("evening"), t("afterPrayer"), t("daily")];
-            
+            const labels = [
+              t("morning"),
+              t("evening"),
+              t("afterPrayer"),
+              t("daily"),
+            ];
+
             return (
-              <div 
+              <div
                 key={index}
                 className="p-4 rounded-xl border text-center hover:shadow-lg transition-all duration-300"
                 style={{
-                  backgroundColor: 'var(--color-background-secondary)',
-                  borderColor: 'var(--color-border)',
-                  borderWidth: '1px'
+                  backgroundColor: "var(--color-background-secondary)",
+                  borderColor: "var(--color-border)",
+                  borderWidth: "1px",
                 }}
               >
-                <div className="w-8 h-8 mx-auto mb-2 rounded-full flex items-center justify-center"
-                     style={{ backgroundColor: 'var(--color-primary)' }}>
+                <div
+                  className="w-8 h-8 mx-auto mb-2 rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: "var(--color-primary)" }}
+                >
                   <IconComponent className="w-4 h-4 text-white" />
                 </div>
-                <div className="text-2xl font-bold mb-1" style={{ color: 'var(--color-primary)' }}>
+                <div
+                  className="text-2xl font-bold mb-1"
+                  style={{ color: "var(--color-primary)" }}
+                >
                   {stat.count}
                 </div>
-                <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+                <div
+                  className="text-xs"
+                  style={{ color: "var(--color-text-secondary)" }}
+                >
                   {labels[index]}
                 </div>
               </div>
@@ -280,36 +448,49 @@ export default function DuaDhikrPage() {
 
         {/* Features Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { icon: '📖' },
-            { icon: '🌐' },
-            { icon: '✨' }
-          ].map((feature, index) => {
-            const titles = [t("arabicText"), t("translations"), t("benefits")];
-            const descriptions = [t("arabicTextDesc"), t("translationsDesc"), t("benefitsDesc")];
-            
-            return (
-              <div 
-                key={index}
-                className="p-6 rounded-xl border hover:shadow-lg transition-all duration-300"
-                style={{
-                  backgroundColor: 'var(--color-background-secondary)',
-                  borderColor: 'var(--color-border)',
-                  borderWidth: '1px'
-                }}
-              >
-                <div className="text-3xl mb-4 text-center">{feature.icon}</div>
-                <h3 className="text-lg font-semibold mb-2 text-center" style={{ color: 'var(--color-text)' }}>
-                  {titles[index]}
-                </h3>
-                <p className="text-sm text-center" style={{ color: 'var(--color-text-secondary)' }}>
-                  {descriptions[index]}
-                </p>
-              </div>
-            );
-          })}
-        </div>
+          {[{ icon: "📖" }, { icon: "🌐" }, { icon: "✨" }].map(
+            (feature, index) => {
+              const titles = [
+                t("arabicText"),
+                t("translations"),
+                t("benefits"),
+              ];
+              const descriptions = [
+                t("arabicTextDesc"),
+                t("translationsDesc"),
+                t("benefitsDesc"),
+              ];
 
+              return (
+                <div
+                  key={index}
+                  className="p-6 rounded-xl border hover:shadow-lg transition-all duration-300"
+                  style={{
+                    backgroundColor: "var(--color-background-secondary)",
+                    borderColor: "var(--color-border)",
+                    borderWidth: "1px",
+                  }}
+                >
+                  <div className="text-3xl mb-4 text-center">
+                    {feature.icon}
+                  </div>
+                  <h3
+                    className="text-lg font-semibold mb-2 text-center"
+                    style={{ color: "var(--color-text)" }}
+                  >
+                    {titles[index]}
+                  </h3>
+                  <p
+                    className="text-sm text-center"
+                    style={{ color: "var(--color-text-secondary)" }}
+                  >
+                    {descriptions[index]}
+                  </p>
+                </div>
+              );
+            }
+          )}
+        </div>
       </div>
     </div>
   );

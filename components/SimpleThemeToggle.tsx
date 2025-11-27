@@ -35,13 +35,13 @@ export function SimpleThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={toggleTheme}
-      className="w-10 h-10 hover:bg-[var(--color-primary)] text-white dark:hover:bg-[var(--color-primary)]"
+      className="w-8 h-8 rounded-full bg-[var(--color-primary)] text-white"
       title={t("toggleTheme") || "Toggle theme"}
     >
       {resolvedTheme === "dark" ? (
-        <Sun className="w-5 h-5" />
+        <Sun className="w-4 h-4" />
       ) : (
-        <Moon className="w-5 h-5" />
+        <Moon className="w-4 h-4" />
       )}
       <span className="sr-only">{t("toggleTheme") || "Toggle theme"}</span>
     </Button>

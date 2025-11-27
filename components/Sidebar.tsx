@@ -448,7 +448,7 @@ const Sidebar = memo(function Sidebar() {
                   className="flex-1 rounded-xl flex items-center justify-center space-x-2 transition-all duration-200 group hover:opacity-90 min-w-0"
                   style={{ backgroundColor: "var(--color-primary)" }}
                 >
-                  <Palette className="h-4 w-4 group-hover:rotate-12 transition-transform" />
+                  <Palette className="h-4 w-4 text-white group-hover:rotate-12 transition-transform" />
                 </button>
               </ThemeDrawer>
               <PrayerTimesModal/>

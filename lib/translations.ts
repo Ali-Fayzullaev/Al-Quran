@@ -494,7 +494,7 @@ export const translations = {
     findNow: "Найти сейчас",
 
     // Additional keys for dua-dhikr pages
-    saved: "Сохраненные",
+    saved: "Сохраненные дуа",
     arabicText: "Арабский текст",
     arabicTextDesc: "Оригинальный арабский текст с правильным произношением",
     translations: "Переводы",
@@ -839,6 +839,15 @@ export const translations = {
       totalDays: "Всего дней",
     },
 
+    // Добавляем недостающие ключи
+    firstPlanDescription: "Создайте свой первый план изучения Корана и начните духовное путешествие с персонализированным графиком.",
+    planning: "📅 Планирование",
+    planningDescription: "Создавайте персональные планы изучения с гибкими настройками и адаптируйте их под свой ритм жизни.",
+    progressDescription: "Отслеживайте свой прогресс, статистику чтения и достижения на пути изучения Священного Корана.",
+    motivation: "🏆 Мотивация",
+    plannerMotivationDescription: "Получайте мотивационные сообщения, достижения и поддержку для поддержания постоянства в изучении.",
+    createFirstPlan: "Создать первый план",
+
     // Calendar View
     calendarView: {
       tasks: "задач",
@@ -848,6 +857,29 @@ export const translations = {
         pending: "Ожидает",
         future: "Будущие",
       },
+      months: {
+        january: "Январь",
+        february: "Февраль",
+        march: "Март",
+        april: "Апрель",
+        may: "Май",
+        june: "Июнь",
+        july: "Июль",
+        august: "Август",
+        september: "Сентябрь",
+        october: "Октябрь",
+        november: "Ноябрь",
+        december: "Декабрь"
+      },
+      weekdays: {
+        sunday: "Воскресенье",
+        monday: "Понедельник",
+        tuesday: "Вторник",
+        wednesday: "Среда",
+        thursday: "Четверг",
+        friday: "Пятница",
+        saturday: "Суббота"
+      }
     },
 
     // Create Plan Form
@@ -874,6 +906,7 @@ export const translations = {
       planNamePlaceholder: "Мой план изучения Корана",
       planDescLabel: "Описание (необязательно)",
       planDescPlaceholder: "Опишите ваши цели и мотивацию...",
+      descField: "Описание",
       studyGoalLabel: "Что вы хотите изучать?",
       oneSurah: "Одну суру",
       multipleSurahs: "Несколько сур",
@@ -1381,7 +1414,7 @@ export const translations = {
     findNow: "Find Now",
 
     // Additional keys for dua-dhikr pages
-    saved: "Saved",
+    saved: "Saved Duas",
     arabicText: "Arabic Text",
     arabicTextDesc: "Original Arabic text with proper pronunciation",
     translations: "Translations",
@@ -1726,6 +1759,15 @@ export const translations = {
       totalDays: "Total Days",
     },
 
+    // Add missing keys
+    firstPlanDescription: "Create your first Quran study plan and begin your spiritual journey with a personalized schedule.",
+    planning: "📅 Planning",
+    planningDescription: "Create personalized study plans with flexible settings and adapt them to your life rhythm.",
+    progressDescription: "Track your progress, reading statistics, and achievements on your journey of studying the Holy Quran.",
+    motivation: "🏆 Motivation",
+    plannerMotivationDescription: "Get motivational messages, achievements, and support to maintain consistency in your studies.",
+    createFirstPlan: "Create First Plan",
+
     // Calendar View
     calendarView: {
       tasks: "tasks",
@@ -1735,6 +1777,29 @@ export const translations = {
         pending: "Pending",
         future: "Future",
       },
+      months: {
+        january: "January",
+        february: "February",
+        march: "March",
+        april: "April",
+        may: "May",
+        june: "June",
+        july: "July",
+        august: "August",
+        september: "September",
+        october: "October",
+        november: "November",
+        december: "December"
+      },
+      weekdays: {
+        sunday: "Sunday",
+        monday: "Monday",
+        tuesday: "Tuesday",
+        wednesday: "Wednesday",
+        thursday: "Thursday",
+        friday: "Friday",
+        saturday: "Saturday"
+      }
     },
 
     // Create Plan Form
@@ -1761,6 +1826,7 @@ export const translations = {
       planNamePlaceholder: "My Quran study plan",
       planDescLabel: "Description (optional)",
       planDescPlaceholder: "Describe your goals and motivation...",
+      descField: "Description",
       studyGoalLabel: "What do you want to study?",
       oneSurah: "One surah",
       multipleSurahs: "Multiple surahs",
@@ -2412,7 +2478,7 @@ export const translations = {
     findNow: "Hozir topish",
 
     // Additional keys for dua-dhikr pages
-    saved: "Saqlangan",
+    saved: "Saqlangan duolar",
     arabicText: "Arab matni",
     arabicTextDesc: "To'g'ri talaffuz bilan asl arab matni",
     translations: "Tarjimalar",
@@ -2765,6 +2831,15 @@ export const translations = {
       totalDays: "Jami kunlar",
     },
 
+    // Yetishmayotgan kalitlar qo'shish
+    firstPlanDescription: "Birinchi Qur'on o'rganish rejangizni yarating va shaxsiy jadval bilan ma'naviy sayohatingizni boshlang.",
+    planning: "📅 Rejalashtirish",
+    planningDescription: "Moslashuvchan sozlamalar bilan shaxsiy o'rganish rejalarini yarating va ularni hayotingiz ritmiga moslashtiring.",
+    progressDescription: "Muqaddas Qur'onni o'rganish yo'lingizda progressingiz, o'qish statistikasi va yutuqlaringizni kuzatib boring.",
+    motivation: "🏆 Motivatsiya",
+    plannerMotivationDescription: "O'rganishda barqarorlikni saqlab qolish uchun motivatsion xabarlar, yutuqlar va yordam oling.",
+    createFirstPlan: "Birinchi rejani yaratish",
+
     // Calendar View
     calendarView: {
       tasks: "vazifalar",
@@ -2774,6 +2849,29 @@ export const translations = {
         pending: "Kutilmoqda",
         future: "Kelajakdagi",
       },
+      months: {
+        january: "Yanvar",
+        february: "Fevral",
+        march: "Mart",
+        april: "Aprel",
+        may: "May",
+        june: "Iyun",
+        july: "Iyul",
+        august: "Avgust",
+        september: "Sentyabr",
+        october: "Oktyabr",
+        november: "Noyabr",
+        december: "Dekabr"
+      },
+      weekdays: {
+        sunday: "Yakshanba",
+        monday: "Dushanba",
+        tuesday: "Seshanba",
+        wednesday: "Chorshanba",
+        thursday: "Payshanba",
+        friday: "Juma",
+        saturday: "Shanba"
+      }
     },
 
     // Create Plan Form
@@ -2800,6 +2898,7 @@ export const translations = {
       planNamePlaceholder: "Mening Qur'on o'rganish rejam",
       planDescLabel: "Tavsif (ixtiyoriy)",
       planDescPlaceholder: "Maqsad va motivatsiyangizni tasvirlang...",
+      descField: "Tavsif",
       studyGoalLabel: "Nimani o'rganmoqchisiz?",
       oneSurah: "Bitta sura",
       multipleSurahs: "Bir nechta sura",
@@ -3458,7 +3557,7 @@ export const translations = {
     findNow: "Ҳозир топиш",
 
     // Additional keys for dua-dhikr pages
-    saved: "Сақланган",
+    saved: "Сақланган дуолар",
     arabicText: "Араб матни",
     arabicTextDesc: "Тўғри талаффуз билан асл араб матни",
     translations: "Таржималар",
@@ -3810,6 +3909,15 @@ export const translations = {
       totalDays: "Жами кунлар",
     },
 
+    // Етишмаётган калитларни қўшиш
+    firstPlanDescription: "Биринчи Қуръон ўрганиш режангизни яратинг ва шахсий жадвал билан маънавий саёҳатингизни бошланг.",
+    planning: "📅 Режалаштириш",
+    planningDescription: "Мосланувчан созламалар билан шахсий ўрганиш режаларини яратинг ва уларни ҳаётингиз ритмига мослаштиринг.",
+    progressDescription: "Муқаддас Қуръонни ўрганиш йўлингизда прогрессингиз, ўқиш статистикаси ва ютуқларингизни кузатиб боринг.",
+    motivation: "🏆 Мотивация",
+    plannerMotivationDescription: "Ўрганишда барқарорликни сақлаб қолиш учун мотивацион хабарлар, ютуқлар ва ёрдам олинг.",
+    createFirstPlan: "Биринчи режани яратиш",
+
     // Calendar View
     calendarView: {
       tasks: "вазифалар",
@@ -3819,6 +3927,29 @@ export const translations = {
         pending: "Кутилмоқда",
         future: "Келажакдаги",
       },
+      months: {
+        january: "Январ",
+        february: "Феврал",
+        march: "Март",
+        april: "Апрел",
+        may: "Май",
+        june: "Июн",
+        july: "Июл",
+        august: "Август",
+        september: "Сентябр",
+        october: "Октябр",
+        november: "Ноябр",
+        december: "Декабр"
+      },
+      weekdays: {
+        sunday: "Якшанба",
+        monday: "Душанба",
+        tuesday: "Сешанба",
+        wednesday: "Чоршанба",
+        thursday: "Пайшанба",
+        friday: "Жума",
+        saturday: "Шанба"
+      }
     },
 
     // Create Plan Form
@@ -3845,6 +3976,7 @@ export const translations = {
       planNamePlaceholder: "Менинг Қуръон ўрганиш режам",
       planDescLabel: "Тавсиф (ихтиёрий)",
       planDescPlaceholder: "Мақсад ва мотивациянгизни тасвирланг...",
+      descField: "Тавсиф",
       studyGoalLabel: "Нимани ўрганмоқчисиз?",
       oneSurah: "Битта сура",
       multipleSurahs: "Бир нечта сура",
@@ -4637,7 +4769,7 @@ export const translations = {
     findNow: "Қазір табу",
 
     // Additional keys for dua-dhikr pages
-    saved: "Сақталғандар",
+    saved: "Сақталғандар дуолар",
     arabicText: "Арабша мәтін",
     arabicTextDesc: "Дұрыс айтылуымен түпнұсқа араб мәтіні",
     translations: "Аудармалар",
@@ -4957,6 +5089,15 @@ export const translations = {
       totalDays: "Барлық күндер",
     },
 
+    // Жетіспейтін кілттерді қосу
+    firstPlanDescription: "Алғашқы Құран оқу жоспарыңызды жасаңыз және дербес кестемен рухани саяхатыңызды бастаңыз.",
+    planning: "📅 Жоспарлау",
+    planningDescription: "Икемді параметрлермен дербес оқу жоспарларын жасаңыз және оларды өмір ырғағыңызға бейімдеңіз.",
+    progressDescription: "Қасиетті Құранды зерттеу жолыңызда прогрессіңізді, оқу статистикасы мен жетістіктеріңізді қадағалаңыз.",
+    motivation: "🏆 Мотивация",
+    plannerMotivationDescription: "Зерттеуде тұрақтылықты сақтау үшін мотивациялық хабарлар, жетістіктер және қолдау алыңыз.",
+    createFirstPlan: "Алғашқы жоспар жасау",
+
     // Calendar View
     calendarView: {
       tasks: "тапсырма",
@@ -4966,6 +5107,29 @@ export const translations = {
         pending: "Күтуде",
         future: "Болашақ",
       },
+      months: {
+        january: "Қаңтар",
+        february: "Ақпан",
+        march: "Наурыз",
+        april: "Сәуір",
+        may: "Мамыр",
+        june: "Маусым",
+        july: "Шілде",
+        august: "Тамыз",
+        september: "Қыркүйек",
+        october: "Қазан",
+        november: "Қараша",
+        december: "Желтоқсан"
+      },
+      weekdays: {
+        sunday: "Жексенбі",
+        monday: "Дүйсенбі",
+        tuesday: "Сейсенбі",
+        wednesday: "Сәрсенбі",
+        thursday: "Бейсенбі",
+        friday: "Жұма",
+        saturday: "Сенбі"
+      }
     },
 
     // Create Plan Form
@@ -4992,6 +5156,7 @@ export const translations = {
       planNamePlaceholder: "Менің Құран оқу жоспарым",
       planDescLabel: "Сипаттама (міндетті емес)",
       planDescPlaceholder: "Мақсаттарыңыз бен мотивацияңызды сипаттаңыз...",
+      descField: "Сипаттама",
       studyGoalLabel: "Не оқығыңыз келеді?",
       oneSurah: "Бір сүре",
       multipleSurahs: "Бірнеше сүре",

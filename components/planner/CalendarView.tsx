@@ -64,15 +64,17 @@ export default function CalendarView({ year, month, onDateSelect }: CalendarView
         return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       case 'uz':
         return ["Ya", "Du", "Se", "Ch", "Pa", "Ju", "Sh"];
+      case "kz":
+        return ["Жс", "Дс", "Сс", "Ср", "Бс", "Жм", "Сб"];
       default:
         return [
-          t('calendarView.weekdays.sunday'),
-          t('calendarView.weekdays.monday'),
-          t('calendarView.weekdays.tuesday'),
-          t('calendarView.weekdays.wednesday'),
-          t('calendarView.weekdays.thursday'),
-          t('calendarView.weekdays.friday'),
-          t('calendarView.weekdays.saturday')
+          t('createPlanForm.weekDays.sun'),
+          t('createPlanForm.weekDays.mon'),
+          t('createPlanForm.weekDays.tue'),
+          t('createPlanForm.weekDays.wed'),
+          t('createPlanForm.weekDays.thu'),
+          t('createPlanForm.weekDays.fri'),
+          t('createPlanForm.weekDays.sat')
         ];
     }
   };
@@ -99,18 +101,47 @@ export default function CalendarView({ year, month, onDateSelect }: CalendarView
   };
 
   const getDayStyles = (day: CalendarDay, isToday: boolean) => {
-    const baseClasses = 'w-full h-full rounded-2xl border border-white/10 transition-transform duration-200 ease-out flex flex-col items-center justify-center text-sm font-semibold backdrop-blur-sm hover:-translate-y-1';
-    const todayHighlight = isToday ? ' shadow-lg shadow-white/30 scale-[1.02] border-white/30' : '';
+    return 'w-full h-full rounded-2xl transition-all duration-300 ease-out flex flex-col items-center justify-center text-sm font-semibold hover:scale-105 hover:shadow-lg cursor-pointer';
+  };
+
+  const getDayStylesInline = (day: CalendarDay, isToday: boolean) => {
+    const baseStyle = {
+      borderWidth: '1px',
+      borderColor: 'var(--color-border)',
+      transition: 'all 0.3s ease',
+      transform: isToday ? 'scale(1.05)' : 'scale(1)',
+      boxShadow: isToday ? '0 4px 15px rgba(var(--color-primary-rgb), 0.4)' : '0 2px 4px rgba(0, 0, 0, 0.1)'
+    };
 
     switch (day.status) {
       case 'completed':
-        return `${baseClasses} bg-emerald-500/90 text-white ${todayHighlight}`;
+        return {
+          ...baseStyle,
+          backgroundColor: 'color-mix(in srgb, var(--color-primary) 15%, var(--color-background))',
+          color: 'var(--color-primary)',
+          borderColor: 'var(--color-primary)'
+        };
       case 'skipped':
-        return `${baseClasses} bg-amber-500/90 text-white ${todayHighlight}`;
+        return {
+          ...baseStyle,
+          backgroundColor: 'color-mix(in srgb, orange 15%, var(--color-background))',
+          color: 'orange',
+          borderColor: 'orange'
+        };
       case 'pending':
-        return `${baseClasses} bg-rose-200/90 text-rose-900 ${todayHighlight}`;
+        return {
+          ...baseStyle,
+          backgroundColor: 'color-mix(in srgb, #ef4444 15%, var(--color-background))',
+          color: '#ef4444',
+          borderColor: '#ef4444'
+        };
       default:
-        return `${baseClasses} bg-white/15 text-white/80 hover:bg-white/20 ${todayHighlight}`;
+        return {
+          ...baseStyle,
+          backgroundColor: 'var(--color-background)',
+          color: 'var(--color-text-secondary)',
+          borderColor: 'var(--color-border)'
+        };
     }
   };
 
@@ -179,27 +210,34 @@ export default function CalendarView({ year, month, onDateSelect }: CalendarView
 
   return (
     <div
-      className="relative overflow-hidden rounded-3xl border border-white/10 shadow-[0_25px_60px_rgba(15,23,42,0.25)]"
+      className="relative overflow-hidden rounded-3xl shadow-2xl transition-all duration-300"
       style={{
         backgroundColor: 'var(--color-background-secondary)',
-        background: 'linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 12%, rgba(15,23,42,0.95)) 0%, color-mix(in srgb, var(--color-primary) 6%, rgba(15,23,42,0.88)) 55%, color-mix(in srgb, var(--color-primary) 18%, rgba(15,23,42,0.92)) 100%)'
+        borderColor: 'var(--color-border)',
+        borderWidth: '1px',
+        background: 'linear-gradient(135deg, var(--color-background-secondary) 0%, color-mix(in srgb, var(--color-primary) 8%, var(--color-background-secondary)) 100%)',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
       }}
     >
-      <div className="pointer-events-none absolute inset-0 opacity-35" style={{ background: 'radial-gradient(circle at top right, rgba(255,255,255,0.45), transparent 60%)' }}></div>
-      <div className="pointer-events-none absolute -left-10 top-10 h-32 w-32 rounded-full bg-white/10 blur-3xl"></div>
+      <div className="pointer-events-none absolute inset-0 opacity-20" style={{ 
+        background: 'radial-gradient(circle at top right, color-mix(in srgb, var(--color-primary) 30%, transparent), transparent 60%)' 
+      }}></div>
+      <div className="pointer-events-none absolute -left-10 top-10 h-32 w-32 rounded-full opacity-30 blur-3xl" style={{
+        backgroundColor: 'var(--color-primary)'
+      }}></div>
 
-      <div className="relative z-10 p-6 text-white sm:p-8">
+      <div className="relative z-10 p-6 sm:p-8" style={{ color: 'var(--color-text)' }}>
         <div className="flex flex-col gap-6">
           {/* Заголовок и навигация */}
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-col gap-1">
-              <span className="text-xs uppercase tracking-[0.25em] text-white/60">
+              <span className="text-xs uppercase tracking-[0.25em]" style={{ color: 'var(--color-text-secondary)' }}>
                 {t('planner.studyCalendar')}
               </span>
-              <h3 className="text-3xl font-semibold leading-tight">
+              <h3 className="text-3xl font-semibold leading-tight" style={{ color: 'var(--color-text)' }}>
                 {monthNames[currentMonth]} {currentYear}
               </h3>
-              <span className="text-sm text-white/70">
+              <span className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
                 {t('calendarView.tasks')}: {stats.totalTasks}
               </span>
             </div>
@@ -207,7 +245,21 @@ export default function CalendarView({ year, month, onDateSelect }: CalendarView
             <div className="flex items-center gap-3 self-start sm:self-auto">
               <button
                 onClick={() => navigateMonth('prev')}
-                className="rounded-full border border-white/25 p-2 text-white/80 transition-all duration-200 hover:border-white hover:text-white"
+                className="rounded-full p-2 transition-all duration-200 hover:scale-110" 
+                style={{
+                  borderColor: 'var(--color-border)',
+                  borderWidth: '1px',
+                  color: 'var(--color-text-secondary)',
+                  backgroundColor: 'var(--color-background)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--color-primary)'
+                  e.currentTarget.style.color = 'white'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--color-background)'
+                  e.currentTarget.style.color = 'var(--color-text-secondary)'
+                }}
                 aria-label={t('calendarView.previousMonth')}
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -215,17 +267,36 @@ export default function CalendarView({ year, month, onDateSelect }: CalendarView
                 </svg>
               </button>
 
-              <div className="hidden items-center gap-3 rounded-full border border-white/10 px-4 py-2 text-xs uppercase tracking-[0.3em] text-white/60 backdrop-blur-sm sm:flex">
+              <div className="hidden items-center gap-3 rounded-full px-4 py-2 text-xs uppercase tracking-[0.3em] backdrop-blur-sm sm:flex" style={{
+                borderColor: 'var(--color-border)',
+                borderWidth: '1px',
+                backgroundColor: 'var(--color-background)',
+                color: 'var(--color-text-secondary)'
+              }}>
                 <span>{t('planner.completed')}: {stats.completed}</span>
-                <span className="h-1 w-1 rounded-full bg-white/30"></span>
+                <span className="h-1 w-1 rounded-full" style={{ backgroundColor: 'var(--color-border)' }}></span>
                 <span>{t('planner.pending')}: {stats.pending}</span>
-                <span className="h-1 w-1 rounded-full bg-white/30"></span>
+                <span className="h-1 w-1 rounded-full" style={{ backgroundColor: 'var(--color-border)' }}></span>
                 <span>{t('planner.skipped')}: {stats.skipped}</span>
               </div>
 
               <button
                 onClick={() => navigateMonth('next')}
-                className="rounded-full border border-white/25 p-2 text-white/80 transition-all duration-200 hover:border-white hover:text-white"
+                className="rounded-full p-2 transition-all duration-200 hover:scale-110"
+                style={{
+                  borderColor: 'var(--color-border)',
+                  borderWidth: '1px',
+                  color: 'var(--color-text-secondary)',
+                  backgroundColor: 'var(--color-background)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--color-primary)'
+                  e.currentTarget.style.color = 'white'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--color-background)'
+                  e.currentTarget.style.color = 'var(--color-text-secondary)'
+                }}
                 aria-label={t('calendarView.nextMonth')}
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -236,31 +307,66 @@ export default function CalendarView({ year, month, onDateSelect }: CalendarView
           </div>
 
           {/* Карточки статистики */}
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm">
-              <div className="text-xs uppercase tracking-[0.3em] text-white/60">
-                {t('planner.completed')}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="group rounded-2xl p-4 backdrop-blur-sm transition-all duration-200 hover:scale-105" style={{
+              borderColor: 'var(--color-border)',
+              borderWidth: '1px',
+              backgroundColor: 'color-mix(in srgb, var(--color-background) 90%, var(--color-primary) 10%)',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+            }}>
+              <div className="flex items-center gap-2">
+                <div className="text-2xl">✅</div>
+                <div>
+                  <div className="text-xs uppercase tracking-[0.3em]" style={{ color: 'var(--color-text-secondary)' }}>
+                    {t('planner.completed')}
+                  </div>
+                  <div className="mt-1 text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>{stats.completed}</div>
+                </div>
               </div>
-              <div className="mt-2 text-2xl font-semibold">{stats.completed}</div>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm">
-              <div className="text-xs uppercase tracking-[0.3em] text-white/60">
-                {t('planner.pending')}
+            <div className="group rounded-2xl p-4 backdrop-blur-sm transition-all duration-200 hover:scale-105" style={{
+              borderColor: 'var(--color-border)',
+              borderWidth: '1px',
+              backgroundColor: 'color-mix(in srgb, var(--color-background) 90%, orange 10%)',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+            }}>
+              <div className="flex items-center gap-2">
+                <div className="text-2xl">⏳</div>
+                <div>
+                  <div className="text-xs uppercase tracking-[0.3em]" style={{ color: 'var(--color-text-secondary)' }}>
+                    {t('planner.pending')}
+                  </div>
+                  <div className="mt-1 text-2xl font-bold" style={{ color: 'orange' }}>{stats.pending}</div>
+                </div>
               </div>
-              <div className="mt-2 text-2xl font-semibold">{stats.pending}</div>
             </div>
-            <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-sm">
-              <div className="text-xs uppercase tracking-[0.3em] text-white/60">
-                {t('planner.skipped')}
+            <div className="group rounded-2xl p-4 backdrop-blur-sm transition-all duration-200 hover:scale-105" style={{
+              borderColor: 'var(--color-border)',
+              borderWidth: '1px',
+              backgroundColor: 'color-mix(in srgb, var(--color-background) 90%, #ef4444 10%)',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+            }}>
+              <div className="flex items-center gap-2">
+                <div className="text-2xl">⏭️</div>
+                <div>
+                  <div className="text-xs uppercase tracking-[0.3em]" style={{ color: 'var(--color-text-secondary)' }}>
+                    {t('planner.skipped')}
+                  </div>
+                  <div className="mt-1 text-2xl font-bold" style={{ color: '#ef4444' }}>{stats.skipped}</div>
+                </div>
               </div>
-              <div className="mt-2 text-2xl font-semibold">{stats.skipped}</div>
             </div>
           </div>
 
           {/* Названия дней недели */}
-          <div className="grid grid-cols-7 gap-2 text-center text-xs font-semibold uppercase tracking-wider text-white/60">
-            {weekDays.map((day) => (
-              <div key={day} className="rounded-xl border border-white/10 bg-white/10 py-2 backdrop-blur-sm">
+          <div className="grid grid-cols-7 gap-2 text-center text-xs font-semibold uppercase tracking-wider">
+            {weekDays.map((day, index) => (
+              <div key={day} className="rounded-xl py-3 backdrop-blur-sm transition-all duration-200" style={{
+                borderColor: 'var(--color-border)',
+                borderWidth: '1px',
+                backgroundColor: index === 6 || index === 0 ? 'color-mix(in srgb, var(--color-primary) 20%, var(--color-background))' : 'var(--color-background)',
+                color: index === 6 || index === 0 ? 'var(--color-primary)' : 'var(--color-text-secondary)'
+              }}>
                 {day}
               </div>
             ))}
@@ -274,23 +380,37 @@ export default function CalendarView({ year, month, onDateSelect }: CalendarView
                   <button
                     onClick={() => onDateSelect?.(day.date)}
                     className={getDayStyles(day, day.date === todayStr)}
+                    style={getDayStylesInline(day, day.date === todayStr)}
                     title={day.tasks.length > 0 ? `${day.tasks.length} ${t('calendarView.tasks')}` : undefined}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.08)';
+                      e.currentTarget.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = day.date === todayStr ? 'scale(1.05)' : 'scale(1)';
+                      e.currentTarget.style.boxShadow = day.date === todayStr ? '0 4px 15px rgba(var(--color-primary-rgb), 0.4)' : '0 2px 4px rgba(0, 0, 0, 0.1)';
+                    }}
                   >
-                    <div className="text-lg">
+                    <div className="text-lg font-bold">
                       {new Date(day.date).getDate()}
                     </div>
                     {day.status !== 'future' && (
-                      <div className="text-xs opacity-90">
+                      <div className="text-xs opacity-90 mt-1">
                         {getDateIcon(day)}
                       </div>
                     )}
                     {day.tasks.length > 0 && (
-                      <div className="mt-1 rounded-full bg-white/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white/90">
-                        {day.tasks.length} {t('calendarView.tasks')}
+                      <div className="mt-1 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide" style={{
+                        backgroundColor: 'color-mix(in srgb, var(--color-primary) 20%, transparent)',
+                        color: 'var(--color-primary)'
+                      }}>
+                        {day.tasks.length}
                       </div>
                     )}
                     {day.ayahsRead && day.ayahsRead > 0 && (
-                      <div className="text-[10px] text-white/80">{day.ayahsRead} 📖</div>
+                      <div className="text-[10px] mt-1" style={{ color: 'var(--color-text-secondary)' }}>
+                        {day.ayahsRead} 📖
+                      </div>
                     )}
                   </button>
                 ) : (
@@ -301,22 +421,42 @@ export default function CalendarView({ year, month, onDateSelect }: CalendarView
           </div>
 
           {/* Легенда */}
-          <div className="flex flex-wrap gap-4 text-sm text-white/70">
-            <div className="flex items-center gap-2">
-              <div className="h-4 w-4 rounded-full bg-emerald-400"></div>
-              <span>{t('calendarView.legend.completed')}</span>
+          <div className="flex flex-wrap gap-6 text-sm">
+            <div className="flex items-center gap-3 rounded-lg p-2 backdrop-blur-sm" style={{
+              backgroundColor: 'var(--color-background)',
+              borderColor: 'var(--color-border)',
+              borderWidth: '1px'
+            }}>
+              <div className="h-4 w-4 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }}></div>
+              <span style={{ color: 'var(--color-text)' }}>{t('calendarView.legend.completed')}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="h-4 w-4 rounded-full bg-amber-400"></div>
-              <span>{t('calendarView.legend.skipped')}</span>
+            <div className="flex items-center gap-3 rounded-lg p-2 backdrop-blur-sm" style={{
+              backgroundColor: 'var(--color-background)',
+              borderColor: 'var(--color-border)',
+              borderWidth: '1px'
+            }}>
+              <div className="h-4 w-4 rounded-full bg-yellow-500"></div>
+              <span style={{ color: 'var(--color-text)' }}>{t('calendarView.legend.skipped')}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="h-4 w-4 rounded-full bg-rose-300"></div>
-              <span>{t('calendarView.legend.pending')}</span>
+            <div className="flex items-center gap-3 rounded-lg p-2 backdrop-blur-sm" style={{
+              backgroundColor: 'var(--color-background)',
+              borderColor: 'var(--color-border)',
+              borderWidth: '1px'
+            }}>
+              <div className="h-4 w-4 rounded-full bg-red-500"></div>
+              <span style={{ color: 'var(--color-text)' }}>{t('calendarView.legend.pending')}</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="h-4 w-4 rounded-full border border-white/20 bg-white/10"></div>
-              <span>{t('calendarView.legend.future')}</span>
+            <div className="flex items-center gap-3 rounded-lg p-2 backdrop-blur-sm" style={{
+              backgroundColor: 'var(--color-background)',
+              borderColor: 'var(--color-border)',
+              borderWidth: '1px'
+            }}>
+              <div className="h-4 w-4 rounded-full" style={{ 
+                backgroundColor: 'var(--color-background-secondary)',
+                borderColor: 'var(--color-border)',
+                borderWidth: '2px'
+              }}></div>
+              <span style={{ color: 'var(--color-text)' }}>{t('calendarView.legend.future')}</span>
             </div>
           </div>
         </div>

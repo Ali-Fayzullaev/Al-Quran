@@ -50,7 +50,7 @@ export function LanguageToggle() {
         <button
           disabled={isLoading}
           className={cn(
-            "flex items-center gap-2 h-9 px-3 rounded-md text-sm font-medium",
+            "flex items-center gap-2 h-8 px-3 rounded-md text-sm font-medium",
             "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
             "transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
             "disabled:opacity-50 disabled:pointer-events-none",
@@ -67,13 +67,13 @@ export function LanguageToggle() {
           }}
         >
           <div className="flex items-center gap-2">
-            <Globe className="w-4 h-4" />
-            <span className="font-medium">{currentLanguage.flag}</span>
-            <span className="hidden sm:inline">
+            <Globe className="w-4 h-4 text-white" />
+            <span className="font-medium text-white">{currentLanguage.flag}</span>
+            <span className="hidden sm:inline text-white">
               {currentLanguage.code.toUpperCase()}
             </span>
           </div>
-          <ChevronDown className="w-4 h-4 opacity-50" />
+          <ChevronDown className="w-4 h-4  text-white" />
         </button>
       </DropdownMenu.Trigger>
 
@@ -105,11 +105,11 @@ export function LanguageToggle() {
               )}
             >
               <div className="flex items-center gap-3">
-                <span className="text-lg">{language.flag}</span>
-                <span className="font-medium">{language.name}</span>
+                <span className="text-lg text-white">{language.flag}</span>
+                <span className="font-medium text-white">{language.name}</span>
               </div>
               {locale === language.code && (
-                <Check className="w-4 h-4 text-primary" />
+                <Check className="w-4 h-4 text-primary text-white" />
               )}
             </DropdownMenu.Item>
           ))}
