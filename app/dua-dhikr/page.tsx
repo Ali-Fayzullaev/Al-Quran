@@ -12,18 +12,9 @@ import {
   Star, 
   ChevronRight,
   Book,
-  Languages,
   Home,
-  ArrowLeft
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 // Категории дуа с иконками и цветами
 const duaCategories = [

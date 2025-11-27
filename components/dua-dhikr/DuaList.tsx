@@ -18,7 +18,10 @@ import {
   Settings,
   ToggleLeft,
   ToggleRight,
-  CheckCheck
+  CheckCheck,
+  Type,
+  Minus,
+  Plus
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,12 +32,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu";
 
 interface DuaData {
   title: string;
@@ -75,7 +72,8 @@ export default function DuaList({ category, duaData }: DuaListProps) {
     transliteration: false,
     notes: true,
     benefits: false,
-    source: false
+    source: false,
+    fontSize: 'medium' as 'small' | 'medium' | 'large' | 'xlarge'
   });
   
   // Helper function to format translations with parameters
@@ -549,6 +547,61 @@ export default function DuaList({ category, duaData }: DuaListProps) {
           <div className="text-sm mb-3" style={{ color: 'var(--color-text-secondary)' }}>
             {t('DuaDhikr.globalSettingsDescription')}
           </div>
+          {/* Размер шрифта */}
+          <div className="p-4 rounded-lg border mb-4" style={{
+            backgroundColor: 'var(--color-background)',
+            borderColor: 'var(--color-border)'
+          }}>
+            <div className="flex items-center gap-2 mb-3">
+              <Type className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+              <span className="text-sm font-medium">{t('DuaDhikr.fontSize')}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setGlobalSettings(prev => ({
+                    ...prev,
+                    fontSize: prev.fontSize === 'small' ? 'small' : 
+                              prev.fontSize === 'medium' ? 'small' :
+                              prev.fontSize === 'large' ? 'medium' : 'large'
+                  }))}
+                  className="h-8 px-2"
+                  disabled={globalSettings.fontSize === 'small'}
+                >
+                  <Minus className="w-4 h-4" />
+                </Button>
+                <div className="px-3 py-1 text-sm font-medium min-w-[60px] text-center">
+                  {globalSettings.fontSize === 'small' && 'А'}
+                  {globalSettings.fontSize === 'medium' && 'А'}
+                  {globalSettings.fontSize === 'large' && 'А'}
+                  {globalSettings.fontSize === 'xlarge' && 'А'}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setGlobalSettings(prev => ({
+                    ...prev,
+                    fontSize: prev.fontSize === 'small' ? 'medium' : 
+                              prev.fontSize === 'medium' ? 'large' :
+                              prev.fontSize === 'large' ? 'xlarge' : 'xlarge'
+                  }))}
+                  className="h-8 px-2"
+                  disabled={globalSettings.fontSize === 'xlarge'}
+                >
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
+                {globalSettings.fontSize === 'small' && 'Маленький'}
+                {globalSettings.fontSize === 'medium' && 'Средний'}
+                {globalSettings.fontSize === 'large' && 'Большой'}
+                {globalSettings.fontSize === 'xlarge' && 'Очень большой'}
+              </div>
+            </div>
+          </div>
+          
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {/* Транслитерация */}
             <div 
@@ -732,6 +785,7 @@ export default function DuaList({ category, duaData }: DuaListProps) {
               onComplete={handleDuaComplete}
               isCompleted={completedDuas.has(`${dua.title.replace(/\s+/g, '-').toLowerCase()}-${dua.arabic.slice(0, 10)}`)}
               category={category}
+              globalSettings={globalSettings}
             />
           ))}
         </div>

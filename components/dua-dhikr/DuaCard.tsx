@@ -1,3 +1,4 @@
+// src/components/dua-dhikr/DuaCard.tsx
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -42,21 +43,83 @@ interface DuaData {
   source?: string;
 }
 
+interface GlobalSettings {
+  transliteration: boolean;
+  notes: boolean;
+  benefits: boolean;
+  source: boolean;
+  fontSize: 'small' | 'medium' | 'large' | 'xlarge';
+}
+
 interface DuaCardProps {
   dua: DuaData;
   index: number;
   onComplete?: (duaId: string) => void;
   isCompleted?: boolean;
   category?: string;
+  globalSettings?: GlobalSettings;
 }
 
-export default function DuaCard({ dua, index, onComplete, isCompleted = false, category = 'unknown' }: DuaCardProps) {
+export default function DuaCard({ dua, index, onComplete, isCompleted = false, category = 'unknown', globalSettings }: DuaCardProps) {
   const { locale, t } = useLocale();
-  const [showTransliteration, setShowTransliteration] = useState(false);
-  const [showNotes, setShowNotes] = useState(true);
-  const [showBenefits, setShowBenefits] = useState(false);
-  const [showSource, setShowSource] = useState(false);
+  
+  // Инициализируем состояния на основе глобальных настроек
+  const [showTransliteration, setShowTransliteration] = useState(globalSettings?.transliteration ?? false);
+  const [showNotes, setShowNotes] = useState(globalSettings?.notes ?? true);
+  const [showBenefits, setShowBenefits] = useState(globalSettings?.benefits ?? false);
+  const [showSource, setShowSource] = useState(globalSettings?.source ?? false);
   const [showSettings, setShowSettings] = useState(false);
+  
+  // Определяем размеры шрифта на основе глобальных настроек
+  const getFontSizes = () => {
+    const fontSize = globalSettings?.fontSize ?? 'medium';
+    switch (fontSize) {
+      case 'small':
+        return {
+          title: 'text-lg md:text-xl',
+          arabic: 'text-xl md:text-2xl',
+          latin: 'text-sm md:text-base',
+          translation: 'text-sm md:text-base',
+          meta: 'text-xs md:text-sm'
+        };
+      case 'large':
+        return {
+          title: 'text-2xl md:text-3xl',
+          arabic: 'text-3xl md:text-4xl',
+          latin: 'text-lg md:text-xl',
+          translation: 'text-lg md:text-xl',
+          meta: 'text-base md:text-lg'
+        };
+      case 'xlarge':
+        return {
+          title: 'text-3xl md:text-4xl',
+          arabic: 'text-4xl md:text-5xl',
+          latin: 'text-xl md:text-2xl',
+          translation: 'text-xl md:text-2xl',
+          meta: 'text-lg md:text-xl'
+        };
+      default: // medium
+        return {
+          title: 'text-xl md:text-2xl',
+          arabic: 'text-2xl md:text-3xl',
+          latin: 'text-base md:text-lg',
+          translation: 'text-base md:text-lg',
+          meta: 'text-sm md:text-base'
+        };
+    }
+  };
+  
+  const fontSizes = getFontSizes();
+  
+  // Обновляем локальные настройки при изменении глобальных
+  useEffect(() => {
+    if (globalSettings) {
+      setShowTransliteration(globalSettings.transliteration);
+      setShowNotes(globalSettings.notes);
+      setShowBenefits(globalSettings.benefits);
+      setShowSource(globalSettings.source);
+    }
+  }, [globalSettings]);
   
   // Состояние для сохранения дуа
   const [isSaved, setIsSaved] = useState(false);
@@ -181,7 +244,7 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false, c
             </div>
             
             {/* Title */}
-            <h3 className="text-base md:text-lg font-bold truncate" style={{ color: 'var(--color-text)' }}>
+            <h3 className={`${fontSizes.title} font-bold truncate`} style={{ color: 'var(--color-text)' }}>
               {dua.title}
             </h3>
           </div>
@@ -356,7 +419,7 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false, c
 
         {/* Arabic Text - Mobile Optimized */}
         <div className="text-center mb-4 md:mb-6">
-          <p className="text-xl md:text-3xl leading-relaxed mb-3 md:mb-4" 
+          <p className={`${fontSizes.arabic} leading-relaxed mb-3 md:mb-4`}
              style={{ 
                color: 'var(--color-primary)',
                direction: 'rtl',
@@ -385,7 +448,7 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false, c
                 Транслитерация
               </span>
             </div>
-            <p className="text-sm italic" style={{ color: 'var(--color-text-secondary)' }}>
+            <p className={`${fontSizes.latin} italic`} style={{ color: 'var(--color-text-secondary)' }}>
               {dua.latin}
             </p>
           </div>
@@ -401,7 +464,7 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false, c
               Перевод
             </span>
           </div>
-          <p className="text-base leading-relaxed" style={{ color: 'var(--color-text)' }}>
+          <p className={`${fontSizes.translation} leading-relaxed`} style={{ color: 'var(--color-text)' }}>
             {dua.translation}
           </p>
         </div>
@@ -415,7 +478,7 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false, c
                 Заметки
               </span>
             </div>
-            <div className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+            <div className={fontSizes.meta} style={{ color: 'var(--color-text-secondary)' }}>
               {dua.notes}
             </div>
           </div>
@@ -430,7 +493,7 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false, c
                 Польза
               </span>
             </div>
-            <div className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+            <div className={fontSizes.meta} style={{ color: 'var(--color-text-secondary)' }}>
               {dua.benefits || dua.fawaid}
             </div>
           </div>
@@ -445,7 +508,7 @@ export default function DuaCard({ dua, index, onComplete, isCompleted = false, c
                 Источник
               </span>
             </div>
-            <div className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+            <div className={fontSizes.meta} style={{ color: 'var(--color-text-secondary)' }}>
               {dua.source}
             </div>
           </div>
