@@ -29,11 +29,9 @@ import {
   Calendar,
   Heart,
 } from "lucide-react";
-import { iconPaths, tempIconSvgs } from "@/lib/iconPaths";
-import { AnimatedThemeToggle } from "./AnimatedThemeToggle";
+import { iconPaths } from "@/lib/iconPaths";
 import { SimpleThemeToggle } from "./SimpleThemeToggle";
 import { LanguageToggle } from "./LanguageToggle";
-import { SimpleLanguageToggle } from "./SimpleLanguageToggle";
 import { PrayerTimesModal } from "./PrayerTimesModal";
 import dynamic from "next/dynamic";
 import { useLocale } from "@/context/LocaleContext";

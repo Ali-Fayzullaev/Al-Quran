@@ -15,14 +15,12 @@ import {
   Quote,
   Plus,
   Minus,
-  RotateCcw,
   Heart,
   Check,
 } from "lucide-react";
 import {
   extractCountFromNotes,
   createDuaId,
-  getProgressMessage,
   saveDuaProgress,
   loadDuaProgress,
   resetDuaProgress,
@@ -30,9 +28,7 @@ import {
 import { isDuaSaved, toggleDuaSaved, type SavedDua } from "@/lib/duaBookmarks";
 import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
-import useVibration, { VibrationPatterns } from '@luxonauta/use-vibration';
-// @ts-ignore
-import useVibrationAlt from "use-vibration";
+import useVibration from '@luxonauta/use-vibration';
 
 interface DuaData {
   title: string;
