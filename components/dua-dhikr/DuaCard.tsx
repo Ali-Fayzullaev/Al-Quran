@@ -82,23 +82,18 @@ export default function DuaCard({
     try {
       // Подход 1: Прямой нативный API (как в работающем примере)
       if (navigator.vibrate) {
-        console.log('🎯 Пробуем нативный Vibration API напрямую');
-        console.log('Паттерн вибрации:', pattern);
         const result = navigator.vibrate(pattern);
-        console.log('Результат вибрации:', result);
         success = !!result;
       }
       
       // Подход 2: Библиотека как резерв
       if (!success && isSupported && vibrate) {
-        console.log('🎯 Пробуем @luxonauta/use-vibration как резерв');
         vibrate(pattern);
         success = true;
       }
       
       // Подход 3: iOS fallback (как в работающем примере)
       if (!success && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        console.log('🎯 Пробуем iOS fallback через checkbox');
         // iOS fallback: создаем невидимый checkbox и кликаем по label
         const el = document.createElement('div');
         const id = Math.random().toString(36).slice(2);
@@ -206,13 +201,18 @@ export default function DuaCard({
   const [currentCount, setCurrentCount] = useState(0);
   const [isInitialized, setIsInitialized] = useState(false);
 
-  // Загружаем сохраненный прогресс после монтирования компонента
+  // Загружаем сохраненный прогресс после монтирования компонента (только один раз)
   useEffect(() => {
-    const savedProgress = loadDuaProgress(duaId);
-    console.log(`📱 Загружен прогресс для "${dua.title}": ${savedProgress}/${targetCount}`);
-    setCurrentCount(savedProgress);
-    setIsInitialized(true);
-  }, [duaId, targetCount, dua.title]);
+    console.log(`🔍 useEffect triggered: isInitialized=${isInitialized}, duaId="${duaId}", title="${dua.title}"`);
+    
+    if (!isInitialized) {
+      const savedProgress = loadDuaProgress(duaId);
+      setCurrentCount(savedProgress);
+      setIsInitialized(true);
+    } else {
+      console.log(`⚠️ useEffect сработал повторно, но инициализация уже выполнена`);
+    }
+  }, [duaId, isInitialized, dua.title, targetCount]);
   const [isHidden, setIsHidden] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
@@ -243,7 +243,7 @@ export default function DuaCard({
           setIsHidden(true);
           onComplete?.(duaId);
         }, 600); // Время для анимации встряхивания
-      }, 2000); // Показываем завершение 2 секунды перед скрытием
+      }, 1000); // Показываем завершение 1 секунду перед скрытием
 
       return () => clearTimeout(timer);
     }
@@ -260,40 +260,45 @@ export default function DuaCard({
     setTimeout(() => setIsCopied(false), 2000);
   };
 
-  const handleIncrement = () => {
-    console.log(`➕ Increment: current=${currentCount}, target=${targetCount}, title="${dua.title}"`);
-    
-    if (currentCount < targetCount) {
-      const newCount = currentCount + 1;
-      setCurrentCount(newCount);
-      
-      // Сохраняем прогресс
-      saveDuaProgress(duaId, newCount);
-      
-      console.log(`📊 Новый прогресс: ${newCount}/${targetCount} (${Math.round((newCount / targetCount) * 100)}%)`);
+  // Защита от множественных нажатий
+  const [isProcessing, setIsProcessing] = useState(false);
 
-      // Легкая вибрация при каждом нажатии
-      if (newCount >= targetCount) {
-        console.log(`🎉 DUA завершена! "${dua.title}"`);
-        // Праздничная вибрация при завершении
-        triggerVibration(300, () => {
+  const handleIncrement = async () => {
+    // Защита от множественных нажатий
+    if (isProcessing) {
+      console.log(`⚠️ Уже обрабатывается, игнорируем нажатие`);
+      return;
+    }
+    
+    setIsProcessing(true);
+    
+    try {
+      if (currentCount < targetCount) {
+        const newCount = currentCount + 1;
+        setCurrentCount(newCount);
+        
+        // Сохраняем прогресс
+        saveDuaProgress(duaId, newCount);
+        
+
+        // Легкая вибрация при каждом нажатии
+        if (newCount >= targetCount) {
+          triggerVibration(300);
           // Дополнительная визуальная анимация при завершении
           setIsShaking(true);
           setTimeout(() => setIsShaking(false), 500);
-        });
+        } else {
+          // Легкая вибрация при обычном нажатии
+          triggerVibration(100);
+        }
       } else {
-        // Легкая вибрация при обычном нажатии
-        triggerVibration(100);
+        console.log(`⚠️ DUA уже завершена: ${currentCount}/${targetCount}`);
       }
-
-      // Show progress messages
-      const progressMsg = getProgressMessage(
-        Math.round((newCount / targetCount) * 100)
-      );
-      if (progressMsg) {
-      }
-    } else {
-      console.log(`⚠️ DUA уже завершена: ${currentCount}/${targetCount}`);
+    } finally {
+      // Снимаем блокировку через небольшую задержку
+      setTimeout(() => {
+        setIsProcessing(false);
+      }, 300);
     }
   };
 
@@ -302,77 +307,26 @@ export default function DuaCard({
       const newCount = currentCount - 1;
       setCurrentCount(newCount);
       
+       if (newCount >= targetCount) {
+          triggerVibration(300);
+          // Дополнительная визуальная анимация при завершении
+          setIsShaking(true);
+          setTimeout(() => setIsShaking(false), 500);
+        } else {
+          // Легкая вибрация при обычном нажатии
+          triggerVibration(100);
+        }
+
       // Сохраняем прогресс
       saveDuaProgress(duaId, newCount);
     }
+
   };
 
-  const handleReset = () => {
-    setCurrentCount(0);
-    setIsHidden(false);
-    
-    // Сбрасываем сохраненный прогресс
-    resetDuaProgress(duaId);
-    
-    // Вибрация при сбросе
-    triggerVibration(200);
-  };
 
-  // Функция тестирования вибрации
-  const testVibration = () => {
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const isSecure = location.protocol === 'https:' || location.hostname === 'localhost';
-    const hasVibrationAPI = !!navigator.vibrate;
-    
-    // Показываем диалог с информацией
-    const info = [
-      '🧪 ТЕСТ ВИБРАЦИИ',
-      '',
-      '📱 Проверки:',
-      `  ✓ API поддерживается: ${hasVibrationAPI ? '✅ Да' : '❌ Нет'}`,
-      `  ✓ Безопасный контекст: ${isSecure ? '✅ Да' : '❌ Нет (нужен HTTPS)'}`,
-      `  ✓ Мобильное устройство: ${isMobile ? '✅ Да' : '❌ Нет'}`,
-      `  ✓ Протокол: ${location.protocol}`,
-      `  ✓ Хост: ${location.hostname}`,
-      '',
-      hasVibrationAPI && isSecure ? '🎯 Запускаю тесты...' : '❌ Вибрация недоступна'
-    ].join('\\n');
-    
-    alert(info);
-    console.log(info);
-    
-    if (!hasVibrationAPI || !isSecure) {
-      return;
-    }
-    
-    // Тестируем простые паттерны (как в работающем примере)
-    const patterns = [
-      { name: 'Короткая вибрация (100ms)', pattern: 100 },
-      { name: 'Средняя вибрация (300ms)', pattern: 300 },
-      { name: 'Длинная вибрация (500ms)', pattern: 500 },
-      { name: 'Двойная вибрация', pattern: [200, 100, 200] }
-    ];
-    
-    patterns.forEach((test, index) => {
-      setTimeout(() => {
-        console.log(`🎯 ${test.name}:`, test.pattern);
-        const success = triggerVibration(test.pattern, () => {
-          console.log(`❌ ${test.name} - fallback`);
-        });
-        if (success) {
-          console.log(`✅ ${test.name} - успех`);
-        }
-        
-        // Уведомление о последнем тесте
-        if (index === patterns.length - 1) {
-          setTimeout(() => {
-            alert('🏁 Тестирование завершено! Проверьте консоль для деталей.');
-          }, 500);
-        }
-      }, index * 1500);
-    });
-  };
 
+
+  
   const handleSaveDua = async () => {
     if (isSaving) return;
 
@@ -477,22 +431,6 @@ export default function DuaCard({
               >
                 {dua.title}
               </h2>
-              {/* Индикатор поддержки вибрации и быстрый тест */}
-              <div className="flex items-center gap-2 text-xs opacity-60">
-                {('vibrate' in navigator) ? (
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => triggerVibration(200)}
-                      className="text-sm opacity-70 hover:opacity-100 transition-opacity"
-                    >
-                      📳
-                    </button>
-                    {isVibrating && <span className="animate-pulse">vibrating...</span>}
-                  </div>
-                ) : (
-                  <span>📴</span>
-                )}
-              </div>
             </div>
           </div>
         </div>
@@ -556,63 +494,7 @@ export default function DuaCard({
             </p>
           </div>
         )}
-
-        {/* Translation - Enhanced */}
-        <div
-          className="rounded-2xl p-5 md:p-6 border shadow-sm"
-          style={{
-            backgroundColor: "var(--color-background)",
-            borderColor: "var(--color-border)",
-          }}
-        >
-          <div className="flex items-center gap-3 mb-4">
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white"
-              style={{
-                backgroundColor: "var(--color-primary)",
-              }}
-            >
-              РУ
-            </div>
-            <h3
-              className="text-lg font-semibold"
-              style={{ color: "var(--color-primary)" }}
-            >
-              Перевод
-            </h3>
-          </div>
-          <p
-            className={cn(fontSizes.translation, "leading-relaxed")}
-            style={{ color: "var(--color-text)" }}
-          >
-            {dua.translation}
-          </p>
-        </div>
-
-        {/* Notes (conditional) */}
-        {showNotes && dua.notes && (
-          <div
-            className="rounded-2xl p-5 md:p-6 border animate-in slide-in-from-bottom-2 duration-300"
-            style={{
-              backgroundColor: "var(--color-background)",
-              borderColor: "var(--color-border)",
-            }}
-          >
-            <div className="flex items-center gap-3 mb-4">
-              <Quote className="w-5 h-5 text-orange-600 dark:text-orange-400" />
-              <h3 className="text-lg font-semibold text-orange-700 dark:text-orange-300">
-                Заметки
-              </h3>
-            </div>
-            <div
-              className={cn(fontSizes.meta, "leading-relaxed")}
-              style={{ color: "var(--color-text-secondary)" }}
-            >
-              {dua.notes}
-            </div>
-          </div>
-        )}
-        {/* Counter Controls - Always Visible for Reading Count */}
+          {/* Counter Controls - Always Visible for Reading Count */}
         <div
           className="rounded-2xl p-4 md:p-5 border mb-6"
           style={{
@@ -679,33 +561,63 @@ export default function DuaCard({
               <Plus className="w-6 h-6 md:w-7 md:h-7" />
             </Button>
           </div>
-
-          {/* Reset Button and Progress Info */}
-          <div className="mt-4 flex items-center justify-between">
-            <div className="text-xs text-gray-500 flex items-center gap-2">
-              {isDuaCompleted ? (
-                <>
-                  🎉 <span>Дуа завершена! Машаллах!</span>
-                </>
-              ) : (
-                <>
-                  📖 <span>Нажимайте + после каждого прочтения</span>
-                </>
-              )}
-            </div>{" "}
-            {currentCount > 0 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleReset}
-                className="text-orange-600 hover:bg-orange-100 dark:hover:bg-orange-900/20 rounded-full px-3 py-1 text-xs"
-              >
-                <RotateCcw className="w-3 h-3 mr-1" />
-                Сбросить
-              </Button>
-            )}
-          </div>
         </div>
+
+        {/* Translation - Enhanced */}
+        <div
+          className="rounded-2xl p-5 md:p-6 border shadow-sm"
+          style={{
+            backgroundColor: "var(--color-background)",
+            borderColor: "var(--color-border)",
+          }}
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white"
+              style={{
+                backgroundColor: "var(--color-primary)",
+              }}
+            >
+              РУ
+            </div>
+            <h3
+              className="text-lg font-semibold"
+              style={{ color: "var(--color-primary)" }}
+            >
+              Перевод
+            </h3>
+          </div>
+          <p
+            className={cn(fontSizes.translation, "leading-relaxed")}
+            style={{ color: "var(--color-text)" }}
+          >
+            {dua.translation}
+          </p>
+        </div>
+
+        {/* Notes (conditional) */}
+        {showNotes && dua.notes && (
+          <div
+            className="rounded-2xl p-5 md:p-6 border animate-in slide-in-from-bottom-2 duration-300"
+            style={{
+              backgroundColor: "var(--color-background)",
+              borderColor: "var(--color-border)",
+            }}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <Quote className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+              <h3 className="text-lg font-semibold text-orange-700 dark:text-orange-300">
+                Заметки
+              </h3>
+            </div>
+            <div
+              className={cn(fontSizes.meta, "leading-relaxed")}
+              style={{ color: "var(--color-text-secondary)" }}
+            >
+              {dua.notes}
+            </div>
+          </div>
+        )}
 
         {/* Benefits (conditional) */}
         {showBenefits && (dua.benefits || dua.fawaid) && (
@@ -802,19 +714,6 @@ export default function DuaCard({
             >
               <Settings className="w-4 h-4" />
             </Button>
-
-            {/* Vibration Test Button (только в dev режиме) */}
-            {process.env.NODE_ENV === 'development' && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={testVibration}
-                className="rounded-full w-9 h-9 p-0 border-orange-300 hover:border-orange-400 hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-all"
-                title="Тест вибрации"
-              >
-                📳
-              </Button>
-            )}
 
             {/* Save Button */}
             <Button
