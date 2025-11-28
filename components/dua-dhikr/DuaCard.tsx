@@ -23,38 +23,16 @@ import {
   extractCountFromNotes,
   createDuaId,
   getProgressMessage,
+  saveDuaProgress,
+  loadDuaProgress,
+  resetDuaProgress,
 } from "@/lib/duaCounter";
 import { isDuaSaved, toggleDuaSaved, type SavedDua } from "@/lib/duaBookmarks";
 import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
-
-// Улучшенная функция вибрации с проверками
-const triggerVibration = (pattern: number | number[], fallback?: () => void) => {
-  // Проверяем поддержку API
-  if (!navigator.vibrate) {
-    console.log('Vibration API не поддерживается');
-    fallback?.();
-    return false;
-  }
-
-  // Проверяем, что мы в безопасном контексте (HTTPS)
-  if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-    console.log('Vibration API требует HTTPS');
-    fallback?.();
-    return false;
-  }
-
-  try {
-    // Пробуем вызвать вибрацию
-    const result = navigator.vibrate(pattern);
-    console.log('Vibration triggered:', pattern, 'Result:', result);
-    return result;
-  } catch (error) {
-    console.error('Ошибка при вызове вибрации:', error);
-    fallback?.();
-    return false;
-  }
-};
+import useVibration, { VibrationPatterns } from '@luxonauta/use-vibration';
+// @ts-ignore
+import useVibrationAlt from "use-vibration";
 
 interface DuaData {
   title: string;
@@ -93,6 +71,68 @@ export default function DuaCard({
   globalSettings,
 }: DuaCardProps) {
   const { locale, t } = useLocale();
+
+  // Хуки для вибрации
+  const [{ isSupported, isVibrating }, { vibrate, stop }] = useVibration();
+  
+  // Простая функция вибрации с прямым нативным API
+  const triggerVibration = (pattern: number | number[] | any, fallback?: () => void) => {
+    let success = false;
+    
+    try {
+      // Подход 1: Прямой нативный API (как в работающем примере)
+      if (navigator.vibrate) {
+        console.log('🎯 Пробуем нативный Vibration API напрямую');
+        console.log('Паттерн вибрации:', pattern);
+        const result = navigator.vibrate(pattern);
+        console.log('Результат вибрации:', result);
+        success = !!result;
+      }
+      
+      // Подход 2: Библиотека как резерв
+      if (!success && isSupported && vibrate) {
+        console.log('🎯 Пробуем @luxonauta/use-vibration как резерв');
+        vibrate(pattern);
+        success = true;
+      }
+      
+      // Подход 3: iOS fallback (как в работающем примере)
+      if (!success && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        console.log('🎯 Пробуем iOS fallback через checkbox');
+        // iOS fallback: создаем невидимый checkbox и кликаем по label
+        const el = document.createElement('div');
+        const id = Math.random().toString(36).slice(2);
+        el.innerHTML = `<input type="checkbox" id="${id}" switch /><label for="${id}"></label>`;
+        el.setAttribute("style", "display:none !important;opacity:0 !important;visibility:hidden !important;");
+        document.querySelector('body')?.appendChild(el);
+        el.querySelector('label')?.click();
+        setTimeout(() => { el.remove(); }, 1500);
+        success = true;
+      }
+      
+      // Подход 4: Визуальная анимация как последний резерв
+      if (!success) {
+        console.log('🎯 Пробуем визуальную анимацию как fallback');
+        document.body.style.animation = 'shake 0.2s ease-in-out 2';
+        setTimeout(() => {
+          document.body.style.animation = '';
+        }, 400);
+        success = true;
+      }
+      
+      console.log(success ? '✅ Вибрация сработала' : '❌ Вибрация недоступна', pattern);
+      
+      if (!success && fallback) {
+        fallback();
+      }
+      
+      return success;
+    } catch (error) {
+      console.error('Ошибка вибрации:', error);
+      fallback?.();
+      return false;
+    }
+  };
 
   // Инициализируем состояния на основе глобальных настроек
   const [showTransliteration, setShowTransliteration] = useState(
@@ -164,6 +204,15 @@ export default function DuaCard({
   const duaId = createDuaId(dua.title, dua.arabic);
   const targetCount = extractCountFromNotes(dua.notes);
   const [currentCount, setCurrentCount] = useState(0);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Загружаем сохраненный прогресс после монтирования компонента
+  useEffect(() => {
+    const savedProgress = loadDuaProgress(duaId);
+    console.log(`📱 Загружен прогресс для "${dua.title}": ${savedProgress}/${targetCount}`);
+    setCurrentCount(savedProgress);
+    setIsInitialized(true);
+  }, [duaId, targetCount, dua.title]);
   const [isHidden, setIsHidden] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
@@ -174,7 +223,7 @@ export default function DuaCard({
     Math.round((currentCount / targetCount) * 100),
     100
   );
-  const isDuaCompleted = currentCount >= targetCount;
+  const isDuaCompleted = isInitialized && currentCount >= targetCount;
 
   // Effect for auto-hiding completed duas
   useEffect(() => {
@@ -184,7 +233,7 @@ export default function DuaCard({
         setIsShaking(true);
         
         // Добавляем легкую вибрацию перед исчезновением
-        triggerVibration([100, 50, 100], () => {
+        triggerVibration(200, () => {
           console.log('Визуальная анимация вместо вибрации');
         });
         
@@ -212,21 +261,29 @@ export default function DuaCard({
   };
 
   const handleIncrement = () => {
+    console.log(`➕ Increment: current=${currentCount}, target=${targetCount}, title="${dua.title}"`);
+    
     if (currentCount < targetCount) {
       const newCount = currentCount + 1;
       setCurrentCount(newCount);
+      
+      // Сохраняем прогресс
+      saveDuaProgress(duaId, newCount);
+      
+      console.log(`📊 Новый прогресс: ${newCount}/${targetCount} (${Math.round((newCount / targetCount) * 100)}%)`);
 
       // Легкая вибрация при каждом нажатии
       if (newCount >= targetCount) {
+        console.log(`🎉 DUA завершена! "${dua.title}"`);
         // Праздничная вибрация при завершении
-        triggerVibration([200, 100, 200], () => {
+        triggerVibration(300, () => {
           // Дополнительная визуальная анимация при завершении
           setIsShaking(true);
           setTimeout(() => setIsShaking(false), 500);
         });
       } else {
         // Легкая вибрация при обычном нажатии
-        triggerVibration(50);
+        triggerVibration(100);
       }
 
       // Show progress messages
@@ -235,18 +292,30 @@ export default function DuaCard({
       );
       if (progressMsg) {
       }
+    } else {
+      console.log(`⚠️ DUA уже завершена: ${currentCount}/${targetCount}`);
     }
   };
 
   const handleDecrement = () => {
     if (currentCount > 0) {
-      setCurrentCount(currentCount - 1);
+      const newCount = currentCount - 1;
+      setCurrentCount(newCount);
+      
+      // Сохраняем прогресс
+      saveDuaProgress(duaId, newCount);
     }
   };
 
   const handleReset = () => {
     setCurrentCount(0);
     setIsHidden(false);
+    
+    // Сбрасываем сохраненный прогресс
+    resetDuaProgress(duaId);
+    
+    // Вибрация при сбросе
+    triggerVibration(200);
   };
 
   // Функция тестирования вибрации
@@ -276,12 +345,12 @@ export default function DuaCard({
       return;
     }
     
-    // Тестируем разные паттерны только если API доступно
+    // Тестируем простые паттерны (как в работающем примере)
     const patterns = [
-      { name: 'Короткая вибрация (50ms)', pattern: 50 },
-      { name: 'Средняя вибрация (200ms)', pattern: 200 },
-      { name: 'Паттерн завершения', pattern: [200, 100, 200] },
-      { name: 'Паттерн исчезновения', pattern: [100, 50, 100] }
+      { name: 'Короткая вибрация (100ms)', pattern: 100 },
+      { name: 'Средняя вибрация (300ms)', pattern: 300 },
+      { name: 'Длинная вибрация (500ms)', pattern: 500 },
+      { name: 'Двойная вибрация', pattern: [200, 100, 200] }
     ];
     
     patterns.forEach((test, index) => {
@@ -401,12 +470,30 @@ export default function DuaCard({
           </div>
 
           <div className="flex-1 min-w-0 pt-1">
-            <h2
-              className={cn(fontSizes.title, "font-bold leading-tight mb-2")}
-              style={{ color: "var(--color-text)" }}
-            >
-              {dua.title}
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2
+                className={cn(fontSizes.title, "font-bold leading-tight mb-2")}
+                style={{ color: "var(--color-text)" }}
+              >
+                {dua.title}
+              </h2>
+              {/* Индикатор поддержки вибрации и быстрый тест */}
+              <div className="flex items-center gap-2 text-xs opacity-60">
+                {('vibrate' in navigator) ? (
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => triggerVibration(200)}
+                      className="text-sm opacity-70 hover:opacity-100 transition-opacity"
+                    >
+                      📳
+                    </button>
+                    {isVibrating && <span className="animate-pulse">vibrating...</span>}
+                  </div>
+                ) : (
+                  <span>📴</span>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
