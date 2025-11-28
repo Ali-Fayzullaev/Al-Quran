@@ -118,12 +118,9 @@ export function extractCountFromNotes(notes: string | null | undefined): number 
   if (counts.length > 0) {
     // Возвращаем максимальное найденное число (например, из "1 раз или 10 раз утром, 100 раз в день" возьмем 100)
     const maxCount = Math.max(...counts);
-    console.log(`🎯 Извлечено количество из "${notes}": ${maxCount} (найдены: ${counts.join(', ')})`);
     return maxCount;
   }
   
-  // По умолчанию возвращаем 1
-  console.log(`🎯 Не найдено количество в "${notes}", используем значение по умолчанию: 1`);
   return 1;
 }
 

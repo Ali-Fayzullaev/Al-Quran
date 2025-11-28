@@ -40,16 +40,20 @@ import { useLocale } from "@/context/LocaleContext";
 import { useQuranStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import useVibration from "@luxonauta/use-vibration";
 
 // Ленивая загрузка ThemeDrawer
-const ThemeDrawer = dynamic(() => import("./ThemeDrawer"), {
-  ssr: false,
-  loading: () => (
-    <button className="flex-1 p-2 rounded-lg bg-gray-100 animate-pulse">
-      <div className="h-5 w-5 bg-gray-300 rounded mx-auto"></div>
-    </button>
-  ),
-});
+  const ThemeDrawer = dynamic(() => import("./ThemeDrawer"), {
+    ssr: false,
+    loading: () => (
+      <button className="flex-1 p-2 rounded-lg bg-gray-100 animate-pulse">
+        <div className="h-5 w-5 bg-gray-300 rounded mx-auto"></div>
+      </button>
+    ),
+  });
+ // Хуки для вибрации
+  
+
 
 // Компонент навигационного элемента
 const NavigationItem = memo(
@@ -63,12 +67,87 @@ const NavigationItem = memo(
     onClose: () => void;
   }) => {
     const Icon = item.icon;
+   
     const customIconSrc = item.customIcon;
+    const [{ isSupported, isVibrating }, { vibrate, stop }] = useVibration();
+  const [isShaking, setIsShaking] = useState(false);
+  const triggerVibration = (
+    pattern: number | number[] | any,
+    fallback?: () => void
+  ) => {
+    let success = false;
+
+    try {
+      // Подход 1: Прямой нативный API (как в работающем примере)
+      if (navigator.vibrate) {
+        const result = navigator.vibrate(pattern);
+        success = !!result;
+      }
+
+      // Подход 2: Библиотека как резерв
+      if (!success && isSupported && vibrate) {
+        vibrate(pattern);
+        success = true;
+      }
+
+      // Подход 3: iOS fallback (как в работающем примере)
+      if (!success && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        // iOS fallback: создаем невидимый checkbox и кликаем по label
+        const el = document.createElement("div");
+        const id = Math.random().toString(36).slice(2);
+        el.innerHTML = `<input type="checkbox" id="${id}" switch /><label for="${id}"></label>`;
+        el.setAttribute(
+          "style",
+          "display:none !important;opacity:0 !important;visibility:hidden !important;"
+        );
+        document.querySelector("body")?.appendChild(el);
+        el.querySelector("label")?.click();
+        setTimeout(() => {
+          el.remove();
+        }, 1500);
+        success = true;
+      }
+
+      // Подход 4: Визуальная анимация как последний резерв
+      if (!success) {
+        console.log("🎯 Пробуем визуальную анимацию как fallback");
+        document.body.style.animation = "shake 0.2s ease-in-out 2";
+        setTimeout(() => {
+          document.body.style.animation = "";
+        }, 400);
+        success = true;
+      }
+
+      console.log(
+        success ? "✅ Вибрация сработала" : "❌ Вибрация недоступна",
+        pattern
+      );
+
+      if (!success && fallback) {
+        fallback();
+      }
+
+      return success;
+    } catch (error) {
+      console.error("Ошибка вибрации:", error);
+      fallback?.();
+      return false;
+    }
+  };
+
+  const handleClick = () => {
+    triggerVibration(300);
+    setIsShaking(true);
+    setTimeout(() => setIsShaking(false), 500);
+  };
 
     return (
       <Link
         href={item.href}
-        onClick={onClose}
+         onClick={() => {
+          onClose();
+          handleClick();
+        }}
         className={cn(
           "relative flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium group transition-all duration-200",
           isActive ? "text-white shadow-md" : "hover:translate-x-1"
@@ -82,16 +161,17 @@ const NavigationItem = memo(
         <div className="relative">
           {customIconSrc ? (
             <div className="h-10 w-10 rounded-full overflow-hidden">
-              <img 
-                src={customIconSrc} 
+              <img
+                src={customIconSrc}
                 alt={item.name}
                 className="w-full h-full object-cover transition-all duration-200 group-hover:scale-110 group-hover:brightness-110"
                 onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                  const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                  e.currentTarget.style.display = "none";
+                  const fallback = e.currentTarget
+                    .nextElementSibling as HTMLElement;
                   if (fallback) {
-                    fallback.style.display = 'block';
-                    fallback.classList.remove('hidden');
+                    fallback.style.display = "block";
+                    fallback.classList.remove("hidden");
                   }
                 }}
               />
@@ -124,6 +204,78 @@ const Sidebar = memo(function Sidebar() {
   const { bookmarks } = useQuranStore();
   const [isOpen, setIsOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  // Хуки для вибрации
+  const [{ isSupported, isVibrating }, { vibrate, stop }] = useVibration();
+  const [isShaking, setIsShaking] = useState(false);
+  const triggerVibration = (
+    pattern: number | number[] | any,
+    fallback?: () => void
+  ) => {
+    let success = false;
+
+    try {
+      // Подход 1: Прямой нативный API (как в работающем примере)
+      if (navigator.vibrate) {
+        const result = navigator.vibrate(pattern);
+        success = !!result;
+      }
+
+      // Подход 2: Библиотека как резерв
+      if (!success && isSupported && vibrate) {
+        vibrate(pattern);
+        success = true;
+      }
+
+      // Подход 3: iOS fallback (как в работающем примере)
+      if (!success && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        // iOS fallback: создаем невидимый checkbox и кликаем по label
+        const el = document.createElement("div");
+        const id = Math.random().toString(36).slice(2);
+        el.innerHTML = `<input type="checkbox" id="${id}" switch /><label for="${id}"></label>`;
+        el.setAttribute(
+          "style",
+          "display:none !important;opacity:0 !important;visibility:hidden !important;"
+        );
+        document.querySelector("body")?.appendChild(el);
+        el.querySelector("label")?.click();
+        setTimeout(() => {
+          el.remove();
+        }, 1500);
+        success = true;
+      }
+
+      // Подход 4: Визуальная анимация как последний резерв
+      if (!success) {
+        console.log("🎯 Пробуем визуальную анимацию как fallback");
+        document.body.style.animation = "shake 0.2s ease-in-out 2";
+        setTimeout(() => {
+          document.body.style.animation = "";
+        }, 400);
+        success = true;
+      }
+
+      console.log(
+        success ? "✅ Вибрация сработала" : "❌ Вибрация недоступна",
+        pattern
+      );
+
+      if (!success && fallback) {
+        fallback();
+      }
+
+      return success;
+    } catch (error) {
+      console.error("Ошибка вибрации:", error);
+      fallback?.();
+      return false;
+    }
+  };
+
+  const handleClick = () => {
+    triggerVibration(300);
+    setIsShaking(true);
+    setTimeout(() => setIsShaking(false), 500);
+  };
 
   // Монтируем компонент только на клиенте
   useEffect(() => {
@@ -196,7 +348,7 @@ const Sidebar = memo(function Sidebar() {
         name: t("aiHelperNav"),
         href: "/ai-helper",
         icon: Bot,
-        customIcon: '/iconsPages/ai-page.png', // Используем правильное имя файла
+        customIcon: "/iconsPages/ai-page.png", // Используем правильное имя файла
         isPremium: true,
         category: "tools",
       },
@@ -211,7 +363,7 @@ const Sidebar = memo(function Sidebar() {
         name: t("mosqueFinder"),
         href: "/mosque-finder",
         icon: Map,
-        customIcon: '/iconsPages/mosque-finder.png',
+        customIcon: "/iconsPages/mosque-finder.png",
         category: "tools",
       },
       {
@@ -226,7 +378,7 @@ const Sidebar = memo(function Sidebar() {
         name: t("feedback"),
         href: "/feedback",
         icon: MessageSquare,
-        customIcon: '/iconsPages/feedback.png', // Используем правильное расширение
+        customIcon: "/iconsPages/feedback.png", // Используем правильное расширение
         category: "settings",
       },
       {
@@ -362,7 +514,10 @@ const Sidebar = memo(function Sidebar() {
       {/* Кнопка меню */}
       <button
         id="sidebar-toggle"
-        onClick={toggleSidebar}
+        onClick={() => {
+          toggleSidebar();
+          handleClick();
+        }}
         className={toggleButtonClassName}
         style={toggleButtonStyle}
         title={t("openMenu")}
@@ -451,7 +606,7 @@ const Sidebar = memo(function Sidebar() {
                   <Palette className="h-4 w-4 text-white group-hover:rotate-12 transition-transform" />
                 </button>
               </ThemeDrawer>
-              <PrayerTimesModal/>
+              <PrayerTimesModal />
             </div>
             <div className="flex space-x-2 items-center flex-shrink-0">
               <SimpleThemeToggle />
@@ -461,45 +616,41 @@ const Sidebar = memo(function Sidebar() {
         </div>
 
         {/* Navigation - растягивается на всю доступную высоту */}
-        <div
-          className="flex-1 min-h-0 overflow-y-auto"
-          style={navScrollStyle}
-        >
+        <div className="flex-1 min-h-0 overflow-y-auto" style={navScrollStyle}>
           <nav
             className="p-4 space-y-6"
             style={{
-              paddingBottom:
-                "calc(env(safe-area-inset-bottom, 0px) + 1.5rem)",
+              paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 1.5rem)",
             }}
           >
-              {Object.entries(categories).map(([categoryKey, categoryName]) => {
-                const categoryItems = navigation.filter(
-                  (item) => item.category === categoryKey
-                );
-                if (categoryItems.length === 0) return null;
+            {Object.entries(categories).map(([categoryKey, categoryName]) => {
+              const categoryItems = navigation.filter(
+                (item) => item.category === categoryKey
+              );
+              if (categoryItems.length === 0) return null;
 
-                return (
-                  <div key={categoryKey}>
-                    <h3
-                      className="text-xs font-bold uppercase tracking-wider mb-3 px-2"
-                      style={{ color: "var(--color-text-secondary)" }}
-                    >
-                      {categoryName}
-                    </h3>
+              return (
+                <div key={categoryKey}>
+                  <h3
+                    className="text-xs font-bold uppercase tracking-wider mb-3 px-2"
+                    style={{ color: "var(--color-text-secondary)" }}
+                  >
+                    {categoryName}
+                  </h3>
 
-                    <div className="space-y-1">
-                      {categoryItems.map((item) => (
-                        <NavigationItem
-                          key={item.href}
-                          item={item}
-                          isActive={pathname === item.href}
-                          onClose={closeSidebar}
-                        />
-                      ))}
-                    </div>
+                  <div className="space-y-1">
+                    {categoryItems.map((item) => (
+                      <NavigationItem
+                        key={item.href}
+                        item={item}
+                        isActive={pathname === item.href}
+                        onClose={closeSidebar}
+                      />
+                    ))}
                   </div>
-                );
-              })}
+                </div>
+              );
+            })}
           </nav>
         </div>
 
