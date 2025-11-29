@@ -6,6 +6,7 @@ import { Globe, Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/context/LocaleContext";
 import { Locale } from "@/lib/translations";
+import useVibration from "@luxonauta/use-vibration";
 
 export function LanguageToggle() {
   const { locale, setLocale, isLoading } = useLocale();
@@ -25,6 +26,63 @@ export function LanguageToggle() {
     { code: "kz" as Locale, name: "Қазақша", flag: "🇰🇿" }
   ];
 
+  const [{ isSupported, isVibrating }, { vibrate, stop }] = useVibration();
+const [isShaking, setIsShaking] = useState(false);
+const triggerVibration = (
+  pattern: number | number[] | any,
+  fallback?: () => void
+) => {
+  let success = false;
+
+  try {
+    // Подход 1: Прямой нативный API (как в работающем примере)
+    if (navigator.vibrate) {
+      const result = navigator.vibrate(pattern);
+      success = !!result;
+    }
+
+    // Подход 2: Библиотека как резерв
+    if (!success && isSupported && vibrate) {
+      vibrate(pattern);
+      success = true;
+    }
+
+    // Подход 3: iOS fallback (как в работающем примере)
+    if (!success && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      // iOS fallback: создаем невидимый checkbox и кликаем по label
+      const el = document.createElement("div");
+      const id = Math.random().toString(36).slice(2);
+      el.innerHTML = `<input type="checkbox" id="${id}" switch /><label for="${id}"></label>`;
+      el.setAttribute(
+        "style",
+        "display:none !important;opacity:0 !important;visibility:hidden !important;"
+      );
+      document.querySelector("body")?.appendChild(el);
+      el.querySelector("label")?.click();
+      setTimeout(() => {
+        el.remove();
+      }, 1500);
+      success = true;
+    }
+
+    if (!success && fallback) {
+      fallback();
+    }
+
+    return success;
+  } catch (error) {
+    console.error("Ошибка вибрации:", error);
+    fallback?.();
+    return false;
+  }
+};
+
+const handleClick = () => {
+  triggerVibration(50);
+  setIsShaking(true);
+  setTimeout(() => setIsShaking(false), 50);
+};
+
   const currentLanguage =
     languages.find((lang) => lang.code === locale) || languages[0];
 
@@ -33,6 +91,7 @@ export function LanguageToggle() {
     setLocale(newLocale);
     setOpen(false);
   };
+
 
   // Не рендерим до монтирования
   if (!mounted) {
@@ -95,6 +154,7 @@ export function LanguageToggle() {
           {languages.map((language) => (
             <DropdownMenu.Item
               key={language.code}
+              onClick={handleClick}
               onSelect={() => handleLanguageChange(language.code)}
               className={cn(
                 "relative flex items-center justify-between rounded-sm px-3 py-2 text-sm",

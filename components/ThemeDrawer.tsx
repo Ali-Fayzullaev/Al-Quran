@@ -1,7 +1,7 @@
 // src/components/ThemeDrawer.tsx
 'use client';
 
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useState } from 'react';
 import { Palette, Monitor, Sun, Moon, Check } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { cn } from '@/lib/utils';
@@ -16,6 +16,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import useVibration from '@luxonauta/use-vibration';
 
 interface ThemeDrawerProps {
   children: React.ReactNode;
@@ -26,6 +27,63 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
   const { siteColorTheme, setSiteColorTheme } = useQuranStore();
   const { applySiteTheme } = useColorTheme();
   const { t } = useLocale();
+
+  const [{ isSupported, isVibrating }, { vibrate, stop }] = useVibration();
+const [isShaking, setIsShaking] = useState(false);
+const triggerVibration = (
+  pattern: number | number[] | any,
+  fallback?: () => void
+) => {
+  let success = false;
+
+  try {
+    // Подход 1: Прямой нативный API (как в работающем примере)
+    if (navigator.vibrate) {
+      const result = navigator.vibrate(pattern);
+      success = !!result;
+    }
+
+    // Подход 2: Библиотека как резерв
+    if (!success && isSupported && vibrate) {
+      vibrate(pattern);
+      success = true;
+    }
+
+    // Подход 3: iOS fallback (как в работающем примере)
+    if (!success && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      // iOS fallback: создаем невидимый checkbox и кликаем по label
+      const el = document.createElement("div");
+      const id = Math.random().toString(36).slice(2);
+      el.innerHTML = `<input type="checkbox" id="${id}" switch /><label for="${id}"></label>`;
+      el.setAttribute(
+        "style",
+        "display:none !important;opacity:0 !important;visibility:hidden !important;"
+      );
+      document.querySelector("body")?.appendChild(el);
+      el.querySelector("label")?.click();
+      setTimeout(() => {
+        el.remove();
+      }, 1500);
+      success = true;
+    }
+
+    if (!success && fallback) {
+      fallback();
+    }
+
+    return success;
+  } catch (error) {
+    console.error("Ошибка вибрации:", error);
+    fallback?.();
+    return false;
+  }
+};
+
+const handleClick = () => {
+  triggerVibration(50);
+  setIsShaking(true);
+  setTimeout(() => setIsShaking(false), 50);
+};
 
   const handleThemeChange = useCallback((themeId: string) => {
     setSiteColorTheme(themeId);
@@ -62,7 +120,7 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
               ].map(({ id, icon: Icon, label }) => (
                 <button
                   key={id}
-                  onClick={() => setTheme(id)}
+                  onClick={() => { setTheme(id); handleClick(); }}
                   className="flex flex-col items-center gap-2 px-3 py-3 rounded-lg text-xs transition-all border"
                   style={{
                     backgroundColor: theme === id ? 'var(--verse-background)' : 'transparent',
@@ -97,7 +155,7 @@ const ThemeDrawer = memo(function ThemeDrawer({ children }: ThemeDrawerProps) {
               {SITE_COLOR_THEMES.map((colorTheme) => (
                 <button
                   key={colorTheme.id}
-                  onClick={() => handleThemeChange(colorTheme.id)}
+                  onClick={() => { handleThemeChange(colorTheme.id); handleClick(); }}
                   className="w-full flex items-center gap-3 px-3 py-3 rounded-lg text-sm transition-all border"
                   style={{
                     backgroundColor: siteColorTheme === colorTheme.id ? 'var(--verse-background)' : 'transparent',

@@ -229,7 +229,7 @@ export default function DuaCard({
         setIsShaking(true);
         
         // Добавляем легкую вибрацию перед исчезновением
-        triggerVibration(200, () => {
+        triggerVibration(50, () => {
           console.log('Визуальная анимация вместо вибрации');
         });
         
@@ -279,13 +279,13 @@ export default function DuaCard({
 
         // Легкая вибрация при каждом нажатии
         if (newCount >= targetCount) {
-          triggerVibration(300);
+          triggerVibration(50);
           // Дополнительная визуальная анимация при завершении
           setIsShaking(true);
-          setTimeout(() => setIsShaking(false), 500);
+          setTimeout(() => setIsShaking(false), 50);
         } else {
           // Легкая вибрация при обычном нажатии
-          triggerVibration(100);
+          triggerVibration(50);
         }
       } else {
         console.log(`⚠️ DUA уже завершена: ${currentCount}/${targetCount}`);
@@ -304,13 +304,13 @@ export default function DuaCard({
       setCurrentCount(newCount);
       
        if (newCount >= targetCount) {
-          triggerVibration(300);
+          triggerVibration(50);
           // Дополнительная визуальная анимация при завершении
           setIsShaking(true);
-          setTimeout(() => setIsShaking(false), 500);
+          setTimeout(() => setIsShaking(false), 50);
         } else {
           // Легкая вибрация при обычном нажатии
-          triggerVibration(100);
+          triggerVibration(50);
         }
 
       // Сохраняем прогресс

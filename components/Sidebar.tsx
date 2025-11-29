@@ -106,21 +106,6 @@ const NavigationItem = memo(
         success = true;
       }
 
-      // Подход 4: Визуальная анимация как последний резерв
-      if (!success) {
-        console.log("🎯 Пробуем визуальную анимацию как fallback");
-        document.body.style.animation = "shake 0.2s ease-in-out 2";
-        setTimeout(() => {
-          document.body.style.animation = "";
-        }, 400);
-        success = true;
-      }
-
-      console.log(
-        success ? "✅ Вибрация сработала" : "❌ Вибрация недоступна",
-        pattern
-      );
-
       if (!success && fallback) {
         fallback();
       }
@@ -134,9 +119,9 @@ const NavigationItem = memo(
   };
 
   const handleClick = () => {
-    triggerVibration(300);
+    triggerVibration(50);
     setIsShaking(true);
-    setTimeout(() => setIsShaking(false), 500);
+    setTimeout(() => setIsShaking(false), 50);
   };
 
     return (
@@ -270,9 +255,9 @@ const Sidebar = memo(function Sidebar() {
   };
 
   const handleClick = () => {
-    triggerVibration(300);
+    triggerVibration(50);
     setIsShaking(true);
-    setTimeout(() => setIsShaking(false), 500);
+    setTimeout(() => setIsShaking(false), 50);
   };
 
   // Монтируем компонент только на клиенте
@@ -580,7 +565,7 @@ const Sidebar = memo(function Sidebar() {
           </Link>
 
           <button
-            onClick={closeSidebar}
+            onClick={() => {closeSidebar(); handleClick();}}  
             className="p-2 rounded-lg transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
             style={{ color: "var(--color-text-secondary)" }}
             title={t("closeMenu")}
@@ -598,6 +583,7 @@ const Sidebar = memo(function Sidebar() {
             <div className="flex space-x-2 flex-1">
               <ThemeDrawer>
                 <button
+                  onClick={handleClick}
                   className="flex-1 rounded-xl flex items-center justify-center space-x-2 transition-all duration-200 group hover:opacity-90 min-w-0"
                   style={{ backgroundColor: "var(--color-primary)" }}
                 >
