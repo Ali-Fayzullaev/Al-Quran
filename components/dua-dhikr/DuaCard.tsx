@@ -21,7 +21,6 @@ import {
 import {
   extractCountFromNotes,
   createDuaId,
-  saveDuaProgress,
   loadDuaProgress,
   resetDuaProgress,
 } from "@/lib/duaCounter";
@@ -273,8 +272,6 @@ export default function DuaCard({
         const newCount = currentCount + 1;
         setCurrentCount(newCount);
         
-        // Сохраняем прогресс
-        saveDuaProgress(duaId, newCount);
         
 
         // Легкая вибрация при каждом нажатии
@@ -313,8 +310,6 @@ export default function DuaCard({
           triggerVibration(50);
         }
 
-      // Сохраняем прогресс
-      saveDuaProgress(duaId, newCount);
     }
 
   };

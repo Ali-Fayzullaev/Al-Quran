@@ -22,21 +22,7 @@ export interface CategoryProgress {
   isAllCompleted: boolean;
 }
 
-/**
- * Сохранить прогресс DUA
- */
-export function saveDuaProgress(duaId: string, currentCount: number): void {
-  if (typeof window === 'undefined') return;
-  
-  try {
-    const allProgress = getDuaProgress();
-    allProgress[duaId] = currentCount;
-    localStorage.setItem(DUA_PROGRESS_STORAGE_KEY, JSON.stringify(allProgress));
-    console.log(`💾 Сохранен прогресс: ${duaId} = ${currentCount}`);
-  } catch (error) {
-    console.error('Ошибка при сохранении прогресса DUA:', error);
-  }
-}
+
 
 /**
  * Загрузить прогресс DUA
