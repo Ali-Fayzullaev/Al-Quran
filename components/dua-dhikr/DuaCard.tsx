@@ -315,9 +315,6 @@ export default function DuaCard({
   };
 
 
-
-
-  
   const handleSaveDua = async () => {
     if (isSaving) return;
 

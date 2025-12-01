@@ -82,6 +82,10 @@ export function extractCountFromNotes(notes: string | null | undefined): number 
   const patterns = [
     /читать\s*(\d+)\s*раз/i,  // "Читать 3 раза", "читать 100 раз"
     /(\d+)\s*раз(?:\s*в\s*день)?/i, // "3 раза", "100 раз в день"
+    /ўқилади\s*(\d+)\s*марта/i,  // "Читать 3 раза", "читать 100 раз"
+    /(\d+)\s*марта(?:\s*в\s*Кунига)?/i, // "3 раза", "100 раз в день"
+    /оқылады\s*(\d+)\s*рет/i,  // "Читать 3 раза", "читать 100 раз"
+    /(\d+)\s*рет(?:\s*в\s*Күніне)?/i, // "3 раза", "100 раз в день"
     /read\s*(\d+)x/i,         // "Read 3x", "Read 33x"
     /read\s*(\d+)\s*times?/i, // "Read 3 times", "Read 1 time"
     /(\d+)\s*times?/i,        // "3 times", "33 times"
