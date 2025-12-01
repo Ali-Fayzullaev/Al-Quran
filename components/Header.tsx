@@ -57,6 +57,12 @@ const Header = memo(function Header() {
       icon: Brain,
     },
     {
+      name: locale === 'en' ? 'Muallim Sani' : 'Муаллим Сани',
+      href: '/muallim-sani',
+      icon: Brain,
+      isPremium: true
+    },
+    {
       name: t('search'),
       href: '/search',
       icon: Search,
