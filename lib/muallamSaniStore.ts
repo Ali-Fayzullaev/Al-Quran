@@ -241,7 +241,7 @@ class MuallamSaniStore {
       if (!profile.progress.achievements.includes(achievement.id)) {
         if (this.checkAchievementCondition(achievement, profile, completedLessonId, testScore)) {
           profile.progress.achievements.push(achievement.id);
-          profile.progress.totalPoints += achievement.points;
+          profile.progress.totalPoints = (profile.progress.totalPoints || 0) + achievement.points;
           achievement.isUnlocked = true;
           achievement.unlockedDate = new Date();
           
@@ -280,7 +280,7 @@ class MuallamSaniStore {
     switch (achievement.id) {
       case 'first-lesson':
         // Только если сейчас завершили первый урок
-        return completedLessonId && profile.progress.completedLessons.length === 1;
+        return !!completedLessonId && profile.progress.completedLessons.length === 1;
       case 'perfect-score':
         // Только если сейчас получили 100% за тест
         return testScore === 100;
@@ -289,10 +289,10 @@ class MuallamSaniStore {
         return profile.progress.streak === 7;
       case 'alifba-master':
         // Только если сейчас завершили последний урок уровня Алифба
-        return this.isLevelCompleted('alifba', profile) && completedLessonId;
+        return this.isLevelCompleted('alifba', profile) && !!completedLessonId;
       case 'tajwid-expert':
         // Только если завершили весь курс
-        return this.isAllLevelsCompleted(profile) && completedLessonId;
+        return this.isAllLevelsCompleted(profile) && !!completedLessonId;
       default:
         return false;
     }

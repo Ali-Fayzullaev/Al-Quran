@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { MuallamSaniProfile, Quiz, Question, QuestionAnswer, AchievementNotification } from '@/types/muallim-sani';
 import { muallamSaniStore } from '@/lib/muallamSaniStore';
-import { Trophy, Target, Clock, CheckCircle, XCircle, Star, Zap, Award } from 'lucide-react';
+import { Trophy, Target, Clock, CheckCircle, XCircle, Star, Zap, Award, FileText, Timer, Medal, BookOpen, ArrowLeft, Rocket } from 'lucide-react';
 import AchievementNotificationPopup from './AchievementNotificationPopup';
 
 interface QuizScreenProps {
@@ -1031,81 +1031,231 @@ export default function QuizScreen({ profile, quizId, onScreenChange, onProfileU
 
   if (!quizStarted) {
     return (
-      <div className="max-w-4xl mx-auto text-center">
-        <div className="mb-8">
-          <div className="text-6xl mb-4">🎯</div>
-          <h1 className="text-3xl font-bold mb-4" style={{ color: 'var(--color-primary)' }}>
-            Тест: {getLevelName(quiz.levelId)}
-          </h1>
-          <p className="text-xl" style={{ color: 'var(--color-text-secondary)' }}>
-            Проверьте свои знания по пройденному материалу
-          </p>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Главный заголовок с анимацией */}
+        <div className="text-center mb-8 sm:mb-12">
+          <div className="relative inline-block mb-6">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 mx-auto mb-4 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-2xl">
+              <Target className="w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 text-white" />
+            </div>
+            <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full opacity-75"></div>
+          </div>
+          
+          <div className="flex items-center justify-center mb-6">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 mr-3 rounded-full bg-gradient-to-br from-green-500 to-blue-600 flex items-center justify-center">
+              <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            </div>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent leading-tight">
+              Тест: {getLevelName(quiz.levelId)}
+            </h1>
+          </div>
+          
+          <div className="max-w-2xl mx-auto">
+            <p className="text-lg sm:text-xl lg:text-2xl mb-4" style={{ color: 'var(--color-text-secondary)' }}>
+              Проверьте свои знания по пройденному материалу
+            </p>
+            <div className="flex items-center justify-center space-x-2 text-sm sm:text-base font-medium">
+              <Star className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+              <span style={{ color: 'var(--color-primary)' }}>Готовы к испытанию?</span>
+              <Star className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+            </div>
+          </div>
         </div>
 
+        {/* Информационные карточки */}
         <div 
-          className="rounded-xl p-8 mb-8"
+          className="rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 mb-8 sm:mb-12 shadow-2xl hover:shadow-3xl transition-all duration-500 hover:scale-[1.02] border-2"
           style={{ 
-            backgroundColor: 'var(--color-background-secondary)',
-            borderColor: 'var(--color-border)',
-            borderWidth: '1px'
+            borderColor: 'var(--color-primary)',
+            background: 'linear-gradient(135deg, var(--color-background-secondary) 0%, var(--color-background) 100%)'
           }}
         >
-          <div className="grid md:grid-cols-2 gap-6 mb-6">
-            <div className="text-center">
-              <div className="text-3xl mb-2">📝</div>
-              <div className="font-semibold mb-1" style={{ color: 'var(--color-text)' }}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8">
+            {/* Карточка вопросов */}
+            <div className="text-center p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 hover:-translate-y-1" 
+                 style={{ 
+                   backgroundColor: 'var(--color-background)', 
+                   border: '2px solid var(--color-border)' 
+                 }}>
+              <div className="flex items-center justify-center mb-4">
+                <div className="relative">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center">
+                    <FileText className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-green-400 to-blue-500 rounded-full"></div>
+                </div>
+              </div>
+              <div className="font-bold text-lg sm:text-xl mb-2" style={{ color: 'var(--color-text)' }}>
                 Вопросов
               </div>
-              <div style={{ color: 'var(--color-text-secondary)' }}>
+              <div className="text-3xl sm:text-4xl font-black mb-2" 
+                   style={{ 
+                     color: 'var(--color-primary)',
+                     textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                   }}>
                 {quiz.questions.length}
+              </div>
+              <div className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+                Различной сложности
               </div>
             </div>
             
-            <div className="text-center">
-              <div className="text-3xl mb-2">⏱️</div>
-              <div className="font-semibold mb-1" style={{ color: 'var(--color-text)' }}>
+            {/* Карточка времени */}
+            <div className="text-center p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 hover:-translate-y-1" 
+                 style={{ 
+                   backgroundColor: 'var(--color-background)', 
+                   border: '2px solid var(--color-border)' 
+                 }}>
+              <div className="flex items-center justify-center mb-4">
+                <div className="relative">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-red-400 to-pink-500 flex items-center justify-center">
+                    <Timer className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-red-400 to-pink-500 rounded-full"></div>
+                </div>
+              </div>
+              <div className="font-bold text-lg sm:text-xl mb-2" style={{ color: 'var(--color-text)' }}>
                 Время
               </div>
-              <div style={{ color: 'var(--color-text-secondary)' }}>
-                {quiz.timeLimit} минут
+              <div className="text-3xl sm:text-4xl font-black mb-2" 
+                   style={{ 
+                     color: 'var(--color-primary)',
+                     textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                   }}>
+                {quiz.timeLimit}
+              </div>
+              <div className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+                Минут на тест
+              </div>
+            </div>
+
+            {/* Карточка проходного балла */}
+            <div className="text-center p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 hover:-translate-y-1 sm:col-span-2 lg:col-span-1" 
+                 style={{ 
+                   backgroundColor: 'var(--color-background)', 
+                   border: '2px solid var(--color-border)' 
+                 }}>
+              <div className="flex items-center justify-center mb-4">
+                <div className="relative">
+                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
+                    <Medal className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full"></div>
+                </div>
+              </div>
+              <div className="font-bold text-lg sm:text-xl mb-2" style={{ color: 'var(--color-text)' }}>
+                Проходной балл
+              </div>
+              <div className="text-3xl sm:text-4xl font-black mb-2" 
+                   style={{ 
+                     color: '#10B981',
+                     textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                   }}>
+                {quiz.passingScore}%
+              </div>
+              <div className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+                Минимум для прохождения
               </div>
             </div>
           </div>
           
-          <div className="text-center">
-            <p className="text-lg mb-2" style={{ color: 'var(--color-text)' }}>
-              Минимальный балл: <strong>{quiz.passingScore}%</strong>
-            </p>
-            <p style={{ color: 'var(--color-text-secondary)' }}>
-              Типы вопросов: множественный выбор, верно/неверно, заполнить пропуск
-            </p>
+          {/* Дополнительная информация */}
+          <div className="text-center p-6 rounded-2xl" 
+               style={{ 
+                 backgroundColor: 'var(--color-background)', 
+                 border: '2px dashed var(--color-border)' 
+               }}>
+            <div className="flex items-center justify-center mb-4 space-x-2">
+              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+            </div>
+            <div className="flex items-center justify-center mb-3">
+              <div className="w-6 h-6 mr-2 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                <FileText className="w-3 h-3 text-white" />
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold" style={{ color: 'var(--color-text)' }}>
+                Типы вопросов
+              </h3>
+            </div>
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-4">
+              <div className="flex items-center px-4 py-2 rounded-full text-sm sm:text-base font-medium shadow-md hover:shadow-lg transition-shadow duration-300"
+                   style={{ 
+                     backgroundColor: 'var(--color-primary)', 
+                     color: 'white' 
+                   }}>
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Множественный выбор
+              </div>
+              <div className="flex items-center px-4 py-2 rounded-full text-sm sm:text-base font-medium shadow-md hover:shadow-lg transition-shadow duration-300"
+                   style={{ 
+                     backgroundColor: '#10B981', 
+                     color: 'white' 
+                   }}>
+                <Target className="w-4 h-4 mr-2" />
+                Верно/неверно
+              </div>
+              <div className="flex items-center px-4 py-2 rounded-full text-sm sm:text-base font-medium shadow-md hover:shadow-lg transition-shadow duration-300"
+                   style={{ 
+                     backgroundColor: '#F59E0B', 
+                     color: 'white' 
+                   }}>
+                <FileText className="w-4 h-4 mr-2" />
+                Заполнить пропуск
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="flex gap-4 justify-center">
+        {/* Кнопки управления */}
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
           <button
             onClick={() => onScreenChange('dashboard')}
-            className="px-6 py-3 rounded-lg hover:opacity-90 transition-opacity"
+            className="w-full sm:w-auto px-6 sm:px-8 py-4 rounded-2xl font-bold text-base sm:text-lg hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl border-2 order-2 sm:order-1"
             style={{ 
               backgroundColor: 'var(--color-background-secondary)',
               color: 'var(--color-text)',
-              borderColor: 'var(--color-border)',
-              borderWidth: '1px'
+              borderColor: 'var(--color-border)'
             }}
           >
-            ← Назад к урокам
+            <div className="flex items-center justify-center space-x-2">
+              <ArrowLeft className="w-5 h-5" />
+              <span>Назад к урокам</span>
+            </div>
           </button>
           
           <button
             onClick={handleStartQuiz}
-            className="px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
+            className="w-full sm:w-auto px-8 sm:px-12 py-4 rounded-2xl font-bold text-lg sm:text-xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-2xl hover:shadow-3xl relative overflow-hidden group order-1 sm:order-2"
             style={{ 
-              backgroundColor: 'var(--color-primary)',
-              color: 'white'
+              color: 'white',
+              background: 'linear-gradient(135deg, var(--color-primary) 0%, #6366f1 100%)'
             }}
           >
-            🚀 Начать тест
+            {/* Мерцающий эффект */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
+            
+            <div className="flex items-center justify-center space-x-3 relative z-10">
+              <Rocket className="w-6 h-6 text-white" />
+              <span>Начать тест</span>
+              <div className="w-2 h-2 bg-white rounded-full"></div>
+            </div>
           </button>
+        </div>
+
+        {/* Мотивационное сообщение */}
+        <div className="text-center mt-8 sm:mt-12">
+          <div className="inline-flex items-center space-x-2 px-6 py-3 rounded-full shadow-lg"
+               style={{ 
+                 backgroundColor: 'var(--color-background-secondary)',
+                 border: '2px solid var(--color-primary)'
+               }}>
+            <Zap className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+            <span className="font-medium text-sm sm:text-base" style={{ color: 'var(--color-text)' }}>
+              Удачи в прохождении теста! Вы справитесь! 💪
+            </span>
+            <Zap className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+          </div>
         </div>
       </div>
     );
@@ -1369,7 +1519,7 @@ export default function QuizScreen({ profile, quizId, onScreenChange, onProfileU
       <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4 mt-8">
         <button
           onClick={() => onScreenChange('dashboard')}
-          className="w-full sm:w-auto px-6 py-4 rounded-xl font-semibold hover:opacity-90 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg order-2 sm:order-1"
+          className="w-full sm:w-auto px-6 py-4 my-1 rounded-xl font-semibold hover:opacity-90 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg order-2 sm:order-1"
           style={{ 
             backgroundColor: 'var(--color-background-secondary)',
             color: 'var(--color-text)',
@@ -1383,7 +1533,7 @@ export default function QuizScreen({ profile, quizId, onScreenChange, onProfileU
         <button
           onClick={handleNextQuestion}
           disabled={!selectedAnswer.trim()}
-          className="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 shadow-lg hover:shadow-xl order-1 sm:order-2"
+          className="w-full sm:w-auto px-8 py-4 my-1 rounded-xl font-bold text-lg hover:opacity-90 transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 shadow-lg hover:shadow-xl order-1 sm:order-2"
           style={{ 
             backgroundColor: !selectedAnswer.trim() ? '#94A3B8' : 'var(--color-primary)',
             color: 'white',

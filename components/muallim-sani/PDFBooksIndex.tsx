@@ -86,7 +86,7 @@ const PDFBooksIndex: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
       
       {/* Кнопка "Назад" */}
       <button
@@ -102,11 +102,11 @@ const PDFBooksIndex: React.FC = () => {
         <div className="max-w-4xl mx-auto px-4 text-center">
           <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-full px-6 py-3 mb-6">
             <BookOpen className="w-8 h-8 text-blue-400" />
-            <h1 className="text-2xl sm:text-3xl font-bold text-white">
+            <h1 className="text-2xl sm:text-3xl font-bold">
               Muallim Sani
             </h1>
           </div>
-          <p className="text-white/80 text-lg max-w-2xl mx-auto">
+          <p className="text-lg max-w-2xl mx-auto">
             Изучение основ чтения Корана. Выберите урок для начала обучения.
           </p>
         </div>
@@ -118,7 +118,7 @@ const PDFBooksIndex: React.FC = () => {
 
       {/* Сетка книг */}
       <div className="max-w-6xl mx-auto px-4 pb-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
           {pdfBooks.map((book) => (
             <div
               key={book.id}
@@ -127,7 +127,7 @@ const PDFBooksIndex: React.FC = () => {
             >
               
               {/* Фоновый градиент */}
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)] to-purple-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               
               {/* Контент карточки */}
               <div className="relative z-10">
@@ -137,18 +137,18 @@ const PDFBooksIndex: React.FC = () => {
                   <div className="p-3 bg-blue-500/20 rounded-xl text-blue-400 group-hover:bg-blue-500/30 transition-colors duration-300">
                     {book.icon}
                   </div>
-                  <span className="text-xs text-white/60 bg-white/10 px-3 py-1 rounded-full">
+                  <span className="text-xs px-3 py-1 rounded-full">
                     {book.category}
                   </span>
                 </div>
 
                 {/* Заголовок */}
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-300 transition-colors duration-300">
+                <h3 className="text-[14px] lg:text-xl font-bold mb-2 group-hover:text-blue-300 transition-colors duration-300">
                   {book.title}
                 </h3>
 
                 {/* Описание */}
-                <p className="text-white/70 text-sm mb-4 line-clamp-2">
+                <p className="text-[10px] lg:text-sm mb-4 line-clamp-2">
                   {book.description}
                 </p>
 
@@ -161,9 +161,8 @@ const PDFBooksIndex: React.FC = () => {
                     {book.difficulty}
                   </span>
                   
-                  <div className="flex items-center gap-2 text-white/60 group-hover:text-white/80 transition-colors duration-300">
+                  <div className="flex items-center gap-2 transition-colors duration-300">
                     <Play className="w-4 h-4" />
-                    <span className="text-sm font-medium">Открыть</span>
                   </div>
                 </div>
 
@@ -178,11 +177,11 @@ const PDFBooksIndex: React.FC = () => {
       {/* Дополнительная информация */}
       <div className="max-w-4xl mx-auto px-4 pb-12">
         <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
-          <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+          <h3 className="text-xl font-bold  mb-4 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-blue-400" />
             О программе Muallim Sani
           </h3>
-          <p className="text-white/70 text-sm leading-relaxed mb-4">
+          <p className=" text-sm leading-relaxed mb-4">
             Muallim Sani - это классическая методика изучения арабского языка и основ чтения Корана. 
             Программа разработана для поэтапного освоения арабского алфавита, правил чтения и произношения.
           </p>
@@ -190,15 +189,15 @@ const PDFBooksIndex: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
             <div className="text-center">
               <div className="text-2xl font-bold text-green-400 mb-1">{pdfBooks.filter(b => b.difficulty === 'начинающий').length}</div>
-              <div className="text-white/60 text-sm">Уроков для начинающих</div>
+              <div className="text-sm">Уроков для начинающих</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-yellow-400 mb-1">{pdfBooks.filter(b => b.difficulty === 'средний').length}</div>
-              <div className="text-white/60 text-sm">Средний уровень</div>
+              <div className="text-sm">Средний уровень</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-red-400 mb-1">{pdfBooks.filter(b => b.difficulty === 'продвинутый').length}</div>
-              <div className="text-white/60 text-sm">Продвинутый уровень</div>
+              <div className="text-sm">Продвинутый уровень</div>
             </div>
           </div>
         </div>

@@ -23,7 +23,7 @@ export interface MuallamSaniProfile {
     achievements: string[];
     streak: number; // дней подряд
     lastStudyDate: Date;
-    totalPoints?: number;
+    totalPoints: number;
     levelProgress?: { [levelId: string]: number };
   };
   

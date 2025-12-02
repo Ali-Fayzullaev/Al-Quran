@@ -356,7 +356,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfPath, title, bookId, nextLevel
           <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-50">
             <button
               onClick={handleCompletion}
-              className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-2xl font-bold text-lg shadow-2xl transition-all duration-300 hover:scale-105 animate-bounce"
+              className="flex items-center gap-3 px-3 py-1 bg-gradient-to-r text-sm from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-2xl shadow-2xl "
             >
               <CheckCircle className="w-6 h-6" />
               <span>Завершить и пройти тест</span>
