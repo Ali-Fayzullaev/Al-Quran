@@ -246,45 +246,6 @@ export default function DashboardScreen({ profile, onScreenChange, onProfileUpda
         </div>
       </div>
 
-      {/* Следующий урок */}
-      {nextLesson && (
-        <div 
-          className="rounded-2xl p-6 mb-8"
-          style={{ 
-            backgroundColor: 'var(--color-background-secondary)',
-            borderColor: 'var(--color-primary)',
-            borderWidth: '2px'
-          }}
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--color-primary)' }}>
-                🎯 Следующий урок
-              </h2>
-              <p className="text-lg mb-1" style={{ color: 'var(--color-text)' }}>
-                {nextLesson.level.nameRu}
-              </p>
-              <p className="text-sm mb-4" style={{ color: 'var(--color-text-secondary)' }}>
-                {nextLesson.level.description}
-              </p>
-              <button
-                onClick={() => onScreenChange('lesson', { lessonId: nextLesson.level.id })}
-                className="px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity"
-                style={{ 
-                  backgroundColor: 'var(--color-primary)',
-                  color: 'white'
-                }}
-              >
-                Продолжить обучение
-              </button>
-            </div>
-            <div className="text-6xl opacity-20">
-              {nextLesson.level.icon}
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Статистика */}
       <div 
         className="rounded-2xl p-6 mb-8"
