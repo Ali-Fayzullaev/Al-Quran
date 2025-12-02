@@ -2907,7 +2907,7 @@ mark {
   .book-container:hover {
     transform: none;
   }
-  
+
   .gallery-item:hover {
     transform: scale(1.02);
   }
@@ -2926,7 +2926,7 @@ mark {
   .book-container {
     margin: 1rem;
   }
-  
+
   .book-controls {
     padding: 1rem;
   }
