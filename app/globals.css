@@ -2825,3 +2825,109 @@ mark {
     transform: translateX(-1px) translateY(1px);
   }
 }
+
+/* ===== PDF BOOK VIEWER СТИЛИ ===== */
+.book-container {
+  perspective: 1000px;
+  transition: all 0.3s ease;
+}
+
+.book-container:hover {
+  transform: rotateY(5deg) rotateX(5deg);
+}
+
+/* Эффект перелистывания страниц */
+.page-flip-animation {
+  animation: pageFlip 0.6s ease-in-out;
+}
+
+@keyframes pageFlip {
+  0% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(-90deg);
+  }
+  100% {
+    transform: rotateY(0deg);
+  }
+}
+
+/* Улучшенное отображение текста в PDF */
+.pdf-page {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+/* Плавные переходы для контролов */
+.book-controls {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.book-controls:hover {
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+}
+
+/* Улучшенные стили для галереи */
+.gallery-grid {
+  scroll-behavior: smooth;
+}
+
+.gallery-item {
+  transition: all 0.2s ease;
+}
+
+.gallery-item:hover {
+  transform: scale(1.05) rotateY(10deg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Анимации для загрузки */
+.loading-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Стили для touch устройств */
+@media (hover: none) {
+  .book-container:hover {
+    transform: none;
+  }
+  
+  .gallery-item:hover {
+    transform: scale(1.02);
+  }
+}
+
+/* Улучшения для больших экранов */
+@media (min-width: 1440px) {
+  .book-container {
+    max-width: 800px;
+    max-height: 1000px;
+  }
+}
+
+/* Улучшения для маленьких экранов */
+@media (max-width: 768px) {
+  .book-container {
+    margin: 1rem;
+  }
+  
+  .book-controls {
+    padding: 1rem;
+  }
+}

@@ -1,9 +1,11 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { useLocale } from '@/context/LocaleContext';
 import { MuallamSaniProfile, LearningLevel } from '@/types/muallim-sani';
 import { muallamSaniStore } from '@/lib/muallamSaniStore';
+import { BookOpen, FileText, Waves, Music, RefreshCw, GraduationCap, User, Trophy, Flame, BarChart3, Lock } from 'lucide-react';
 
 interface DashboardScreenProps {
   profile: MuallamSaniProfile;
@@ -11,7 +13,42 @@ interface DashboardScreenProps {
   onProfileUpdate: (profile: MuallamSaniProfile) => void;
 }
 
+// Маппинг уровней к PDF файлам
+const LEVEL_PDF_MAPPING: Record<string, { fileName: string; title: string; icon: React.ReactNode }> = {
+  'alifba': { 
+    fileName: 'alifba_end.pdf', 
+    title: 'Алифба - Основы',
+    icon: <BookOpen className="w-6 h-6" />
+  },
+  'all-letters': { 
+    fileName: 'all_letters_end.pdf', 
+    title: 'Все буквы',
+    icon: <FileText className="w-6 h-6" />
+  },
+  'mad-tabii': { 
+    fileName: 'mad_tabiy_end.pdf', 
+    title: 'Мад Табии',
+    icon: <Waves className="w-6 h-6" />
+  },
+  'tanvin': { 
+    fileName: 'letters_with_tanvin_end.pdf', 
+    title: 'Буквы с танвином',
+    icon: <Music className="w-6 h-6" />
+  },
+  'tashdid': { 
+    fileName: 'letters_with_tashdid_end.pdf', 
+    title: 'Буквы с ташдидом',
+    icon: <RefreshCw className="w-6 h-6" />
+  },
+  'complete': { 
+    fileName: 'all_muallim_sani_end.pdf', 
+    title: 'Полный курс Muallim Sani',
+    icon: <GraduationCap className="w-6 h-6" />
+  }
+};
+
 export default function DashboardScreen({ profile, onScreenChange, onProfileUpdate }: DashboardScreenProps) {
+  const router = useRouter();
   const levels = muallamSaniStore.getLearningLevels();
   const stats = muallamSaniStore.getStats();
 
@@ -35,13 +72,66 @@ export default function DashboardScreen({ profile, onScreenChange, onProfileUpda
 
   const nextLesson = getNextLesson();
 
+  // Функция для получения следующего уровня
+  const getNextLevel = (currentLevelId: string): LearningLevel | null => {
+    const allLevels = muallamSaniStore.getLearningLevels();
+    const levelOrder = ['alifba', 'all-letters', 'mad-tabii', 'tanvin', 'tashdid', 'complete'];
+    const currentIndex = levelOrder.indexOf(currentLevelId);
+    
+    if (currentIndex >= 0 && currentIndex < levelOrder.length - 1) {
+      const nextLevelId = levelOrder[currentIndex + 1];
+      return allLevels.find((level: LearningLevel) => level.id === nextLevelId) || null;
+    }
+    return null;
+  };
+
+  // Функция для прямого перехода к PDF
+  const handleOpenPDF = (level: LearningLevel, fromCompletion = false) => {
+    const pdfData = LEVEL_PDF_MAPPING[level.id];
+    if (pdfData) {
+      const nextLevelForProps = getNextLevel(level.id);
+      onScreenChange('pdf-viewer', {
+        pdfPath: `/muallim_sani/${pdfData.fileName}`,
+        pdfTitle: pdfData.title,
+        bookId: level.id,
+        nextLevel: nextLevelForProps,
+        onCompletion: (completedLevelId: string) => {
+          // Обновляем прогресс текущего уровня
+          const updatedProfile = { ...profile };
+          if (!updatedProfile.progress.completedLessons.includes(completedLevelId)) {
+            updatedProfile.progress.completedLessons.push(completedLevelId);
+          }
+          
+          // Разблокируем следующий уровень
+          const nextLevelToUnlock = getNextLevel(completedLevelId);
+          if (nextLevelToUnlock && updatedProfile.progress.unlockedLevels) {
+            if (!updatedProfile.progress.unlockedLevels.includes(nextLevelToUnlock.id)) {
+              updatedProfile.progress.unlockedLevels.push(nextLevelToUnlock.id);
+            }
+          }
+          
+          // Автоматически переходим к следующему уроку
+          if (nextLevelToUnlock && !fromCompletion) {
+            setTimeout(() => {
+              handleOpenPDF(nextLevelToUnlock, true);
+            }, 1500);
+          } else {
+            // Возвращаемся на главную страницу если это последний урок
+            onScreenChange('dashboard');
+          }
+          
+          onProfileUpdate(updatedProfile);
+        }
+      });
+    }
+  };
+
   const getGreeting = () => {
     const hour = new Date().getHours();
     const name = profile.profile.name;
     
     if (hour < 12) {
       return `Доброе утро, ${name}!`;
-             `Xayrli tong, ${name}!`;
     } else if (hour < 18) {
       return `Добрый день, ${name}!`;
     } else {
@@ -62,7 +152,24 @@ export default function DashboardScreen({ profile, onScreenChange, onProfileUpda
       </div>
 
       {/* Быстрые действия */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
+        <button
+          onClick={() => router.push('/muallim-sani/books')}
+          className="p-4 rounded-xl text-center hover:opacity-90 transition-opacity"
+          style={{ 
+            backgroundColor: 'var(--color-background-secondary)',
+            borderColor: 'var(--color-border)',
+            borderWidth: '1px'
+          }}
+        >
+          <div className="flex justify-center mb-2" style={{ color: 'var(--color-primary)' }}>
+            <BookOpen className="w-8 h-8" />
+          </div>
+          <div className="font-semibold" style={{ color: 'var(--color-text)' }}>
+            PDF Книги
+          </div>
+        </button>
+
         <button
           onClick={() => onScreenChange('profile')}
           className="p-4 rounded-xl text-center hover:opacity-90 transition-opacity"
@@ -72,7 +179,9 @@ export default function DashboardScreen({ profile, onScreenChange, onProfileUpda
             borderWidth: '1px'
           }}
         >
-          <div className="text-3xl mb-2">👤</div>
+          <div className="flex justify-center mb-2" style={{ color: 'var(--color-primary)' }}>
+            <User className="w-8 h-8" />
+          </div>
           <div className="font-semibold" style={{ color: 'var(--color-text)' }}>
             Профиль
           </div>
@@ -87,7 +196,9 @@ export default function DashboardScreen({ profile, onScreenChange, onProfileUpda
             borderWidth: '1px'
           }}
         >
-          <div className="text-3xl mb-2">🏆</div>
+          <div className="flex justify-center mb-2" style={{ color: 'var(--color-primary)' }}>
+            <Trophy className="w-8 h-8" />
+          </div>
           <div className="font-semibold" style={{ color: 'var(--color-text)' }}>
             Достижения
           </div>
@@ -104,7 +215,9 @@ export default function DashboardScreen({ profile, onScreenChange, onProfileUpda
             borderWidth: '1px'
           }}
         >
-          <div className="text-3xl mb-2">🔥</div>
+          <div className="flex justify-center mb-2" style={{ color: 'var(--color-primary)' }}>
+            <Flame className="w-8 h-8" />
+          </div>
           <div className="font-semibold" style={{ color: 'var(--color-text)' }}>
             Серия
           </div>
@@ -121,7 +234,9 @@ export default function DashboardScreen({ profile, onScreenChange, onProfileUpda
             borderWidth: '1px'
           }}
         >
-          <div className="text-3xl mb-2">📊</div>
+          <div className="flex justify-center mb-2" style={{ color: 'var(--color-primary)' }}>
+            <BarChart3 className="w-8 h-8" />
+          </div>
           <div className="font-semibold" style={{ color: 'var(--color-text)' }}>
             Прогресс
           </div>
@@ -236,10 +351,10 @@ export default function DashboardScreen({ profile, onScreenChange, onProfileUpda
             const canAccess = isUnlocked;
             
             return (
-              <div 
+              <div
                 key={level.id}
                 className={`rounded-xl p-6 border-2 transition-all ${
-                  canAccess ? 'cursor-pointer hover:opacity-90' : 'opacity-50 cursor-not-allowed'
+                  canAccess ? 'cursor-pointer hover:opacity-90 hover:scale-105' : 'opacity-50 cursor-not-allowed'
                 }`}
                 style={{ 
                   backgroundColor: 'var(--color-background-secondary)',
@@ -247,24 +362,26 @@ export default function DashboardScreen({ profile, onScreenChange, onProfileUpda
                 }}
                 onClick={() => {
                   if (canAccess) {
-                    onScreenChange('lesson', { lessonId: level.id });
+                    handleOpenPDF(level);
                   }
                 }}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <div className="text-4xl">{level.icon}</div>
+                    <div className="p-3 rounded-xl" style={{ backgroundColor: level.color + '20', color: level.color }}>
+                      {LEVEL_PDF_MAPPING[level.id]?.icon || <BookOpen className="w-6 h-6" />}
+                    </div>
                     <div>
-                      <h3 className="text-xl font-bold mb-1" style={{ color: level.color }}>
+                      <h3 className="text-xl font-bold mb-1 flex items-center gap-2" style={{ color: level.color }}>
                         {level.nameRu}
                         {isCurrentLevel && (
-                          <span className="ml-2 text-sm px-2 py-1 rounded-full" 
+                          <span className="text-sm px-2 py-1 rounded-full" 
                                 style={{ backgroundColor: level.color, color: 'white' }}>
                             Текущий
                           </span>
                         )}
                         {!isUnlocked && (
-                          <span className="ml-2 text-lg">🔒</span>
+                          <Lock className="w-4 h-4 text-gray-400" />
                         )}
                       </h3>
                       <p className="text-sm mb-2" style={{ color: 'var(--color-text-secondary)' }}>
@@ -292,6 +409,16 @@ export default function DashboardScreen({ profile, onScreenChange, onProfileUpda
                     </div>
                   </div>
                 </div>
+                
+                {/* Показываем что это PDF книга */}
+                {LEVEL_PDF_MAPPING[level.id] && (
+                  <div className="mt-3 pt-3 border-t" style={{ borderColor: 'var(--color-border)' }}>
+                    <div className="flex items-center gap-2 text-sm" style={{ color: 'var(--color-primary)' }}>
+                      <BookOpen className="w-4 h-4" />
+                      <span>PDF Книга доступна</span>
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}

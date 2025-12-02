@@ -10,13 +10,19 @@ import LessonScreen from './LessonScreen';
 import QuizScreen from './QuizScreen';
 import ProfileScreen from './ProfileScreen';
 import AchievementsScreen from './AchievementsScreen';
+import PDFViewer from './PDFViewer';
 
-type Screen = 'welcome' | 'dashboard' | 'lesson' | 'quiz' | 'profile' | 'achievements';
+type Screen = 'welcome' | 'dashboard' | 'lesson' | 'quiz' | 'profile' | 'achievements' | 'pdf-viewer';
 
 interface ScreenState {
   screen: Screen;
   lessonId?: string;
   quizId?: string;
+  pdfPath?: string;
+  pdfTitle?: string;
+  bookId?: string;
+  nextLevel?: any;
+  onCompletion?: (completedLevelId: string) => void;
 }
 
 export default function MuallamSaniMain() {
@@ -116,6 +122,23 @@ export default function MuallamSaniMain() {
         <AchievementsScreen 
           profile={profile}
           onScreenChange={handleScreenChange}
+        />
+      )}
+      
+      {currentScreen.screen === 'pdf-viewer' && currentScreen.pdfPath && (
+        <PDFViewer 
+          pdfPath={currentScreen.pdfPath}
+          title={currentScreen.pdfTitle || 'Книга'}
+          bookId={currentScreen.bookId}
+          nextLevel={currentScreen.nextLevel}
+          onCompletion={currentScreen.onCompletion}
+          onBack={() => handleScreenChange('dashboard')}
+          onComplete={() => {
+            // Переходим к квизу по завершении чтения
+            if (currentScreen.bookId) {
+              handleScreenChange('quiz', { quizId: currentScreen.bookId });
+            }
+          }}
         />
       )}
     </div>

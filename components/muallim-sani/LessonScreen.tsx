@@ -12,6 +12,16 @@ interface LessonScreenProps {
   onProfileUpdate: (profile: MuallamSaniProfile) => void;
 }
 
+// Маппинг уроков к PDF файлам
+const LESSON_PDF_MAPPING: Record<string, { fileName: string; title: string }> = {
+  'alifba': { fileName: 'alifba_end.pdf', title: 'Алифба - Основы' },
+  'letters': { fileName: 'all_letters_end.pdf', title: 'Все буквы' },
+  'tanvin': { fileName: 'letters_with_tanvin_end.pdf', title: 'Буквы с танвином' },
+  'tashdid': { fileName: 'letters_with_tashdid_end.pdf', title: 'Буквы с тяжёлым произношением' },
+  'mad': { fileName: 'mad_tabiy_end.pdf', title: 'Мад Табии' },
+  'complete': { fileName: 'all_muallim_sani_end.pdf', title: 'Полный курс' }
+};
+
 export default function LessonScreen({ profile, lessonId, onScreenChange, onProfileUpdate }: LessonScreenProps) {
   const [zoom, setZoom] = useState(1);
 
@@ -47,6 +57,19 @@ export default function LessonScreen({ profile, lessonId, onScreenChange, onProf
   const handleStartQuiz = () => {
     onScreenChange('quiz', { quizId: level.id });
   };
+  
+  const handleOpenPDF = () => {
+    const pdfData = LESSON_PDF_MAPPING[level.id];
+    if (pdfData) {
+      onScreenChange('pdf-viewer', {
+        pdfPath: `/muallim_sani/${pdfData.fileName}`,
+        pdfTitle: pdfData.title,
+        bookId: level.id
+      });
+    }
+  };
+  
+  const hasPDF = LESSON_PDF_MAPPING[level.id];
 
   const handleCompleteLesson = () => {
     // Отметить урок как завершенный
@@ -96,13 +119,26 @@ export default function LessonScreen({ profile, lessonId, onScreenChange, onProf
               </span>
             </div>
             
-            <button
-              onClick={handleCompleteLesson}
-              className="px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity"
-              style={{ backgroundColor: 'var(--color-primary)', color: 'white' }}
-            >
-              🎯 Завершить и пройти тест
-            </button>
+            <div className="flex items-center space-x-3">
+              {hasPDF ? (
+                <button
+                  onClick={handleOpenPDF}
+                  className="px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition-all flex items-center space-x-2"
+                  style={{ backgroundColor: 'var(--color-primary)', color: 'white' }}
+                >
+                  <span>📚</span>
+                  <span>Открыть книгу</span>
+                </button>
+              ) : (
+                <button
+                  onClick={handleCompleteLesson}
+                  className="px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity"
+                  style={{ backgroundColor: level.color, color: 'white' }}
+                >
+                  🎯 Завершить и пройти тест
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
