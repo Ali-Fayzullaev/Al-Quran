@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { MuallamSaniProfile, Quiz, Question, QuestionAnswer } from '@/types/muallim-sani';
 import { muallamSaniStore } from '@/lib/muallamSaniStore';
+import { Trophy, Target, Clock, CheckCircle, XCircle, Star, Zap, Award } from 'lucide-react';
 
 interface QuizScreenProps {
   profile: MuallamSaniProfile;
@@ -168,7 +169,7 @@ const LEVEL_QUESTIONS: Record<string, Question[]> = {
     {
       id: '6',
       type: 'multiple-choice',
-      text: 'Как читается слово "اِسْتَمَعَ" (7 букв)?',
+      text: 'Как читается слово "اِسْتَمَعَ" ?',
       options: ['истамаа', 'исътама', 'астама', 'астамаа'],
       correctAnswer: 'истамаа',
       explanation: 'Слово "اِسْتَمَعَ" читается как "истамаа" - он послушал',
@@ -188,7 +189,7 @@ const LEVEL_QUESTIONS: Record<string, Question[]> = {
     {
       id: '8',
       type: 'multiple-choice',
-      text: 'Как читается слово "اِسْتَقْبَلَ" (7 букв)?',
+      text: 'Как читается слово "اِسْتَقْبَلَ" ?',
       options: ['истакбала', 'истакбила', 'истекбала', 'астакбала'],
       correctAnswer: 'истакбала',
       explanation: 'Слово "اِسْتَقْبَلَ" читается как "истакбала" - он встретил',
@@ -199,9 +200,9 @@ const LEVEL_QUESTIONS: Record<string, Question[]> = {
       id: '9',
       type: 'multiple-choice',
       text: 'Как читается слово "ضَرَبَ"?',
-      options: ['дарба', 'дириба', 'дуруба', 'дариб'],
-      correctAnswer: 'дарба',
-      explanation: 'Слово "ضَرَبَ" читается как "дарба" - он ударил',
+      options: ['дароба', 'дириба', 'дуруба', 'дариб'],
+      correctAnswer: 'дароба',
+      explanation: 'Слово "ضَرَبَ" читается как "дароба" - он ударил',
       difficulty: 2,
       points: 10
     },
@@ -693,20 +694,22 @@ export default function QuizScreen({ profile, quizId, onScreenChange, onProfileU
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    // Создаем квиз на основе ID уровня
+  // Мемоизируем создание квиза для оптимизации производительности
+  const memoizedQuiz = useMemo(() => {
     const questions = LEVEL_QUESTIONS[quizId] || LEVEL_QUESTIONS['alifba'];
     
-    const mockQuiz: Quiz = {
+    return {
       id: quizId,
       levelId: quizId,
       questions: questions,
       passingScore: 70,
       timeLimit: 10 // 10 минут
     };
-    
-    setQuiz(mockQuiz);
   }, [quizId]);
+
+  useEffect(() => {
+    setQuiz(memoizedQuiz);
+  }, [memoizedQuiz]);
 
   useEffect(() => {
     if (quizStarted && timeLeft > 0) {
@@ -772,11 +775,27 @@ export default function QuizScreen({ profile, quizId, onScreenChange, onProfileU
     const totalTime = quiz.timeLimit ? (quiz.timeLimit * 60 - timeLeft) : 0;
     const passed = score >= (quiz.passingScore || 70); // Минимальный проходной балл
 
-    // Сохранить результат и разблокировать следующий уровень если тест пройден
-    if (passed) {
-      muallamSaniStore.updateProgress(quiz.levelId, score, totalTime / 60);
-      onProfileUpdate(muallamSaniStore.getProfile()!);
+    // Сохранить результат теста всегда (независимо от прохождения)
+    muallamSaniStore.updateProgress(quiz.levelId, score, totalTime / 60);
+    
+    // Обновляем профиль с новой статистикой
+    const updatedProfile = muallamSaniStore.getProfile()!;
+    
+    // Если тест пройден - разблокируем следующий уровень
+    if (passed && updatedProfile.progress.unlockedLevels) {
+      const allLevels = muallamSaniStore.getLearningLevels();
+      const currentLevelIndex = allLevels.findIndex(l => l.id === quiz.levelId);
+      
+      if (currentLevelIndex >= 0 && currentLevelIndex < allLevels.length - 1) {
+        const nextLevel = allLevels[currentLevelIndex + 1];
+        if (!updatedProfile.progress.unlockedLevels.includes(nextLevel.id)) {
+          updatedProfile.progress.unlockedLevels.push(nextLevel.id);
+          muallamSaniStore.saveProfile(updatedProfile);
+        }
+      }
     }
+    
+    onProfileUpdate(updatedProfile);
 
     setQuizCompleted(true);
     setShowResults(true);
@@ -837,16 +856,24 @@ export default function QuizScreen({ profile, quizId, onScreenChange, onProfileU
 
     return (
       <div className="max-w-4xl mx-auto text-center">
-        <div className="mb-8">
-          <div className="text-8xl mb-4">
-            {passed ? '🎉' : '😔'}
+        <div className="mb-8 text-center">
+          <div className="inline-flex items-center justify-center w-24 h-24 rounded-full mb-6 animate-pulse" 
+               style={{ backgroundColor: passed ? '#10B981' : '#EF4444' }}>
+            {passed ? 
+              <Trophy className="w-12 h-12 text-white animate-bounce" /> : 
+              <Target className="w-12 h-12 text-white" />
+            }
           </div>
-          <h1 className="text-3xl font-bold mb-4" style={{ color: 'var(--color-primary)' }}>
-            {passed ? 'Тест пройден!' : 'Нужно больше практики'}
+          <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            {passed ? 'Великолепно!' : 'Почти получилось!'}
           </h1>
-          <p className="text-lg mb-2" style={{ color: 'var(--color-text)' }}>
-            {getLevelName(quiz.levelId)}
-          </p>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <Star className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+            <p className="text-xl font-medium" style={{ color: 'var(--color-text)' }}>
+              {getLevelName(quiz.levelId)}
+            </p>
+            <Star className="w-5 h-5" style={{ color: 'var(--color-primary)' }} />
+          </div>
         </div>
 
         <div 
@@ -857,26 +884,51 @@ export default function QuizScreen({ profile, quizId, onScreenChange, onProfileU
             borderWidth: '1px'
           }}
         >
-          <div className="grid md:grid-cols-3 gap-6 mb-6">
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2" style={{ color: passed ? '#10B981' : '#EF4444' }}>
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <div className="text-center p-6 rounded-xl" style={{ backgroundColor: 'var(--color-background)', border: '2px solid var(--color-border)' }}>
+              <div className="flex items-center justify-center mb-3">
+                {passed ? 
+                  <Award className="w-8 h-8 text-green-500" /> : 
+                  <Target className="w-8 h-8 text-red-500" />
+                }
+              </div>
+              <div className="text-5xl font-bold mb-2" 
+                   style={{ 
+                     color: passed ? '#10B981' : '#EF4444',
+                     textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                   }}>
                 {score}%
               </div>
-              <div style={{ color: 'var(--color-text-secondary)' }}>Результат</div>
+              <div className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+                Результат теста
+              </div>
             </div>
             
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2" style={{ color: 'var(--color-primary)' }}>
+            <div className="text-center p-6 rounded-xl" style={{ backgroundColor: 'var(--color-background)', border: '2px solid var(--color-border)' }}>
+              <div className="flex items-center justify-center mb-3">
+                {correctAnswers === totalQuestions ? 
+                  <CheckCircle className="w-8 h-8 text-green-500" /> :
+                  <Zap className="w-8 h-8" style={{ color: 'var(--color-primary)' }} />
+                }
+              </div>
+              <div className="text-5xl font-bold mb-2" style={{ color: 'var(--color-primary)', textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
                 {correctAnswers}/{totalQuestions}
               </div>
-              <div style={{ color: 'var(--color-text-secondary)' }}>Правильных ответов</div>
+              <div className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+                Правильных ответов
+              </div>
             </div>
             
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2" style={{ color: 'var(--color-primary)' }}>
+            <div className="text-center p-6 rounded-xl" style={{ backgroundColor: 'var(--color-background)', border: '2px solid var(--color-border)' }}>
+              <div className="flex items-center justify-center mb-3">
+                <Clock className="w-8 h-8" style={{ color: 'var(--color-primary)' }} />
+              </div>
+              <div className="text-5xl font-bold mb-2" style={{ color: 'var(--color-primary)', textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
                 {formatTime(quiz.timeLimit ? (quiz.timeLimit * 60 - timeLeft) : 0)}
               </div>
-              <div style={{ color: 'var(--color-text-secondary)' }}>Время</div>
+              <div className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+                Время выполнения
+              </div>
             </div>
           </div>
 

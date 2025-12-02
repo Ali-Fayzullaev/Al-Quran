@@ -1,11 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale } from '@/context/LocaleContext';
 import { MuallamSaniProfile, LearningLevel } from '@/types/muallim-sani';
 import { muallamSaniStore } from '@/lib/muallamSaniStore';
-import { BookOpen, FileText, Waves, Music, RefreshCw, GraduationCap, User, Trophy, Flame, BarChart3, Lock } from 'lucide-react';
+import { BookOpen, FileText, Waves, Music, RefreshCw, GraduationCap, User, Trophy, Flame, BarChart3, Lock, PlayCircle, CheckCircle, Clock, Target, Star, TrendingUp, Award, Zap } from 'lucide-react';
 
 interface DashboardScreenProps {
   profile: MuallamSaniProfile;
@@ -47,16 +47,43 @@ const LEVEL_PDF_MAPPING: Record<string, { fileName: string; title: string; icon:
   }
 };
 
-export default function DashboardScreen({ profile, onScreenChange, onProfileUpdate }: DashboardScreenProps) {
+const DashboardScreen: React.FC<DashboardScreenProps> = React.memo(({ profile, onScreenChange, onProfileUpdate }) => {
   const router = useRouter();
-  const levels = muallamSaniStore.getLearningLevels();
-  const stats = muallamSaniStore.getStats();
+  
+  // Мемоизируем статические данные
+  const levels = useMemo(() => muallamSaniStore.getLearningLevels(), []);
+  const stats = useMemo(() => muallamSaniStore.getStats(), [profile]);
 
-  const getProgressPercentage = (level: LearningLevel): number => {
-    // Простая проверка - если уровень пройден
-    const isCompleted = profile.progress.completedLessons.includes(level.id);
-    return isCompleted ? 100 : 0;
-  };
+  // Мемоизированные функции для оптимизации
+  const getProgressPercentage = useCallback((level: LearningLevel): number => {
+    return muallamSaniStore.getLessonProgress(level.id);
+  }, []);
+
+  const getLevelStats = useCallback((level: LearningLevel) => {
+    return muallamSaniStore.getLessonStats(level.id);
+  }, []);
+
+  // Мемоизация сложных вычислений
+  const levelProgresses = useMemo(() => {
+    const progresses: { [key: string]: number } = {};
+    levels.forEach(level => {
+      progresses[level.id] = getProgressPercentage(level);
+    });
+    return progresses;
+  }, [levels, profile.progress.scores]);
+
+  const levelStats = useMemo(() => {
+    const stats: { [key: string]: any } = {};
+    levels.forEach(level => {
+      stats[level.id] = getLevelStats(level);
+    });
+    return stats;
+  }, [levels, profile.progress.scores]);
+
+  const overallProgress = useMemo(() => {
+    const totalProgress = Object.values(levelProgresses).reduce((sum, progress) => sum + progress, 0);
+    return Math.round(totalProgress / levels.length);
+  }, [levelProgresses, levels.length]);
 
   const getNextLesson = () => {
     for (const level of levels) {
@@ -131,8 +158,8 @@ export default function DashboardScreen({ profile, onScreenChange, onProfileUpda
     return null;
   };
 
-  // Функция для прямого перехода к PDF
-  const handleOpenPDF = (level: LearningLevel, fromCompletion = false) => {
+  // Мемоизированная функция для прямого перехода к PDF
+  const handleOpenPDF = useCallback((level: LearningLevel, fromCompletion = false) => {
     const pdfData = LEVEL_PDF_MAPPING[level.id];
     if (pdfData) {
       const nextLevelForProps = getNextLevel(level.id);
@@ -147,11 +174,9 @@ export default function DashboardScreen({ profile, onScreenChange, onProfileUpda
             quizId: completedLevelId
           });
         }
-      });
+        });
     }
-  };
-
-  const getGreeting = () => {
+  }, [onScreenChange]);  const getGreeting = () => {
     const hour = new Date().getHours();
     const name = profile.profile.name;
     
@@ -284,12 +309,23 @@ export default function DashboardScreen({ profile, onScreenChange, onProfileUpda
           📊 Ваша статистика
         </h2>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center">
-            <div className="text-3xl font-bold mb-1" style={{ color: 'var(--color-primary)' }}>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="text-center p-4 rounded-xl gpu-accelerated hover:scale-105 transition-transform duration-200" 
+               style={{ backgroundColor: 'var(--color-background)' }}>
+            <div className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              {overallProgress}%
+            </div>
+            <div className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+              Общий прогресс
+            </div>
+          </div>
+          
+          <div className="text-center p-4 rounded-xl gpu-accelerated hover:scale-105 transition-transform duration-200" 
+               style={{ backgroundColor: 'var(--color-background)' }}>
+            <div className="text-4xl font-bold mb-2" style={{ color: 'var(--color-primary)' }}>
               {Math.floor(stats.totalTimeSpent / 60)}
             </div>
-            <div className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+            <div className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
               Часов изучено
             </div>
           </div>
@@ -331,20 +367,23 @@ export default function DashboardScreen({ profile, onScreenChange, onProfileUpda
         
         <div className="space-y-4">
           {levels.map((level, index) => {
-            const progress = getProgressPercentage(level);
+            const progress = levelProgresses[level.id];
+            const stats = levelStats[level.id];
             const isCurrentLevel = profile.progress.currentLevel === level.id;
             const isUnlocked = index === 0 || (profile.progress.unlockedLevels && profile.progress.unlockedLevels.includes(level.id));
+            const isCompleted = stats.completed;
             const canAccess = isUnlocked;
             
             return (
               <div
                 key={level.id}
-                className={`rounded-xl p-6 border-2 transition-all ${
-                  canAccess ? 'cursor-pointer hover:opacity-90 hover:scale-105' : 'opacity-50 cursor-not-allowed'
+                className={`rounded-xl p-6 border-2 gpu-accelerated smooth-transition animate-fade-scale ${
+                  canAccess ? 'cursor-pointer hover:shadow-xl hover:scale-105' : 'opacity-50 cursor-not-allowed'
                 }`}
                 style={{ 
                   backgroundColor: 'var(--color-background-secondary)',
-                  borderColor: isCurrentLevel ? level.color : 'var(--color-border)'
+                  borderColor: isCompleted ? '#10B981' : (isCurrentLevel ? level.color : 'var(--color-border)'),
+                  boxShadow: isCompleted ? '0 4px 20px rgba(16, 185, 129, 0.3)' : '0 2px 8px rgba(0, 0, 0, 0.1)'
                 }}
                 onClick={() => {
                   if (canAccess) {
@@ -465,4 +504,7 @@ export default function DashboardScreen({ profile, onScreenChange, onProfileUpda
       )}
     </div>
   );
-}
+});
+
+DashboardScreen.displayName = 'DashboardScreen';
+export default DashboardScreen;

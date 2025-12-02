@@ -3,7 +3,6 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import MuallamSaniMain from '@/components/muallim-sani/MuallamSaniMain';
-import { BookOpen } from 'lucide-react';
 
 export default function MuallamSaniPage() {
   const router = useRouter();

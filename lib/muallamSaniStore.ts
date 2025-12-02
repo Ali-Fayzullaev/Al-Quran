@@ -86,22 +86,71 @@ class MuallamSaniStore {
     lessonProgress.bestScore = Math.max(lessonProgress.bestScore, score);
     lessonProgress.timeSpent += timeSpent;
 
-    // Отмечаем урок как завершенный если набрано достаточно баллов
-    if (score >= 70 && !profile.progress.completedLessons.includes(lessonId)) {
+    // НОВАЯ ЛОГИКА: Всегда обновляем список завершенных уроков с актуальным прогрессом
+    // Удаляем урок из завершенных если он там был
+    const completedIndex = profile.progress.completedLessons.indexOf(lessonId);
+    if (completedIndex > -1) {
+      profile.progress.completedLessons.splice(completedIndex, 1);
+    }
+    
+    // Добавляем урок в завершенные ТОЛЬКО если набрано 70% или больше
+    if (score >= 70) {
       profile.progress.completedLessons.push(lessonId);
-      
-      // Разблокировать следующий уровень
+      // Разблокировать следующий уровень только при успешном прохождении
       this.unlockNextLevel(lessonId, profile);
     }
 
     // Обновляем текущий уровень
     profile.progress.currentLevel = this.getCurrentLevel(profile);
 
-    // Обновляем streak
-    this.updateStreak(profile);
+    // Обновляем streak только при успешном прохождении
+    if (score >= 70) {
+      this.updateStreak(profile);
+    }
 
     this.saveProfile(profile);
     this.checkAchievements(profile);
+  }
+
+  // Получить прогресс урока (процент от лучшего результата)
+  getLessonProgress(lessonId: string): number {
+    const profile = this.getProfile();
+    if (!profile || !profile.progress.scores[lessonId]) {
+      return 0;
+    }
+    
+    return profile.progress.scores[lessonId].bestScore;
+  }
+
+  // Проверить завершен ли урок (70% или больше)
+  isLessonCompleted(lessonId: string): boolean {
+    const progress = this.getLessonProgress(lessonId);
+    return progress >= 70;
+  }
+
+  // Получить детальную статистику урока
+  getLessonStats(lessonId: string) {
+    const profile = this.getProfile();
+    if (!profile || !profile.progress.scores[lessonId]) {
+      return {
+        attempts: 0,
+        bestScore: 0,
+        lastScore: 0,
+        timeSpent: 0,
+        completed: false,
+        progress: 0
+      };
+    }
+
+    const lessonData = profile.progress.scores[lessonId];
+    return {
+      attempts: lessonData.attempts,
+      bestScore: lessonData.bestScore,
+      lastScore: lessonData.lastScore,
+      timeSpent: lessonData.timeSpent,
+      completed: lessonData.bestScore >= 70,
+      progress: lessonData.bestScore
+    };
   }
 
   // Разблокировка следующего уровня
