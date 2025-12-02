@@ -9,6 +9,7 @@ interface QuizScreenProps {
   quizId: string;
   onScreenChange: (screen: string, data?: any) => void;
   onProfileUpdate: (profile: MuallamSaniProfile) => void;
+  onQuizComplete?: (quizLevelId: string, passed: boolean) => void;
 }
 
 // Вопросы по уровням обучения
@@ -677,7 +678,7 @@ const LEVEL_QUESTIONS: Record<string, Question[]> = {
 
 
 
-export default function QuizScreen({ profile, quizId, onScreenChange, onProfileUpdate }: QuizScreenProps) {
+export default function QuizScreen({ profile, quizId, onScreenChange, onProfileUpdate, onQuizComplete }: QuizScreenProps) {
   const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<QuestionAnswer[]>([]);
@@ -769,13 +770,32 @@ export default function QuizScreen({ profile, quizId, onScreenChange, onProfileU
     const correctAnswers = answersToUse.filter(a => a.isCorrect).length;
     const score = Math.round((correctAnswers / totalQuestions) * 100);
     const totalTime = quiz.timeLimit ? (quiz.timeLimit * 60 - timeLeft) : 0;
+    const passed = score >= (quiz.passingScore || 70); // Минимальный проходной балл
 
-    // Сохранить результат и разблокировать следующий уровень
-    muallamSaniStore.updateProgress(quiz.levelId, score, totalTime / 60);
-    onProfileUpdate(muallamSaniStore.getProfile()!);
+    // Сохранить результат и разблокировать следующий уровень если тест пройден
+    if (passed) {
+      muallamSaniStore.updateProgress(quiz.levelId, score, totalTime / 60);
+      onProfileUpdate(muallamSaniStore.getProfile()!);
+    }
 
     setQuizCompleted(true);
     setShowResults(true);
+
+    // Показываем результаты 3 секунды, потом переходим на дашборд
+    setTimeout(() => {
+      try {
+        if (onQuizComplete) {
+          onQuizComplete(quiz.levelId, passed);
+        } else {
+          // По умолчанию просто переходим на дашборд
+          onScreenChange('dashboard');
+        }
+      } catch (error) {
+        console.error('Error in quiz completion:', error);
+        // В случае ошибки всегда переходим на дашборд
+        onScreenChange('dashboard');
+      }
+    }, 3000);
   };
 
   const formatTime = (seconds: number): string => {
@@ -864,61 +884,63 @@ export default function QuizScreen({ profile, quizId, onScreenChange, onProfileU
             {passed ? (
               <div>
                 <p className="text-lg mb-4" style={{ color: '#10B981' }}>
-                  Отлично! Следующий уровень разблокирован.
+                  Отлично! Тест пройден успешно.
                 </p>
                 <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-                  Минимальный балл: {quiz.passingScore}%
+                  ⏳ Переходим на главную страницу...
                 </p>
               </div>
             ) : (
               <div>
                 <p className="text-lg mb-4" style={{ color: '#EF4444' }}>
-                  Повторите материал и попробуйте еще раз.
+                  Нужно больше практики. Попробуйте еще раз.
                 </p>
                 <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-                  Нужно набрать минимум {quiz.passingScore}%
+                  ⏳ Переходим на главную страницу...
                 </p>
               </div>
             )}
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-4 justify-center">
-          <button
-            onClick={() => onScreenChange('lesson', { lessonId: quiz.levelId })}
-            className="px-6 py-3 rounded-lg hover:opacity-90 transition-opacity"
-            style={{ 
-              backgroundColor: 'var(--color-background-secondary)',
-              color: 'var(--color-text)',
-              borderColor: 'var(--color-border)',
-              borderWidth: '1px'
-            }}
-          >
-            📖 Повторить урок
-          </button>
-          
-          <button
-            onClick={() => window.location.reload()}
-            className="px-6 py-3 rounded-lg hover:opacity-90 transition-opacity"
-            style={{ 
-              backgroundColor: 'var(--color-primary)',
-              color: 'white'
-            }}
-          >
-            🔄 Пройти заново
-          </button>
-          
-          <button
-            onClick={() => onScreenChange('dashboard')}
-            className="px-6 py-3 rounded-lg hover:opacity-90 transition-opacity"
-            style={{ 
-              backgroundColor: 'var(--color-primary)',
-              color: 'white'
-            }}
-          >
-            🏠 К урокам
-          </button>
-        </div>
+        {!onQuizComplete && (
+          <div className="flex flex-wrap gap-4 justify-center">
+            <button
+              onClick={() => onScreenChange('lesson', { lessonId: quiz.levelId })}
+              className="px-6 py-3 rounded-lg hover:opacity-90 transition-opacity"
+              style={{ 
+                backgroundColor: 'var(--color-background-secondary)',
+                color: 'var(--color-text)',
+                borderColor: 'var(--color-border)',
+                borderWidth: '1px'
+              }}
+            >
+              📖 Повторить урок
+            </button>
+            
+            <button
+              onClick={() => window.location.reload()}
+              className="px-6 py-3 rounded-lg hover:opacity-90 transition-opacity"
+              style={{ 
+                backgroundColor: 'var(--color-primary)',
+                color: 'white'
+              }}
+            >
+              🔄 Пройти заново
+            </button>
+            
+            <button
+              onClick={() => onScreenChange('dashboard')}
+              className="px-6 py-3 rounded-lg hover:opacity-90 transition-opacity"
+              style={{ 
+                backgroundColor: 'var(--color-primary)',
+                color: 'white'
+              }}
+            >
+              🏠 К урокам
+            </button>
+          </div>
+        )}
       </div>
     );
   }

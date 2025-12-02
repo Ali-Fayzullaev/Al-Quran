@@ -72,6 +72,52 @@ export default function DashboardScreen({ profile, onScreenChange, onProfileUpda
 
   const nextLesson = getNextLesson();
 
+  // Функция для обработки результатов теста
+  const handleQuizResult = (quizLevelId: string, passed: boolean) => {
+    if (passed) {
+      // Обновляем прогресс после успешного теста
+      const updatedProfile = { ...profile };
+      if (!updatedProfile.progress.completedLessons.includes(quizLevelId)) {
+        updatedProfile.progress.completedLessons.push(quizLevelId);
+      }
+      
+      // Разблокируем следующий уровень
+      const nextLevelToUnlock = getNextLevel(quizLevelId);
+      if (nextLevelToUnlock && updatedProfile.progress.unlockedLevels) {
+        if (!updatedProfile.progress.unlockedLevels.includes(nextLevelToUnlock.id)) {
+          updatedProfile.progress.unlockedLevels.push(nextLevelToUnlock.id);
+        }
+      }
+      
+      onProfileUpdate(updatedProfile);
+      
+      // Автоматически открываем следующий урок или переходим к дашборду
+      if (nextLevelToUnlock) {
+        setTimeout(() => {
+          const currentLevel = muallamSaniStore.getLearningLevels().find(l => l.id === quizLevelId);
+          if (currentLevel) {
+            handleOpenPDF(nextLevelToUnlock, true);
+          }
+        }, 1000);
+      } else {
+        // Возвращаемся на главную страницу если это последний урок
+        setTimeout(() => {
+          onScreenChange('dashboard');
+        }, 1000);
+      }
+    } else {
+      // Если тест не пройден - возвращаемся к чтению
+      const currentLevel = muallamSaniStore.getLearningLevels().find(l => l.id === quizLevelId);
+      if (currentLevel) {
+        setTimeout(() => {
+          handleOpenPDF(currentLevel);
+        }, 1000);
+      } else {
+        onScreenChange('dashboard');
+      }
+    }
+  };
+
   // Функция для получения следующего уровня
   const getNextLevel = (currentLevelId: string): LearningLevel | null => {
     const allLevels = muallamSaniStore.getLearningLevels();
@@ -96,31 +142,10 @@ export default function DashboardScreen({ profile, onScreenChange, onProfileUpda
         bookId: level.id,
         nextLevel: nextLevelForProps,
         onCompletion: (completedLevelId: string) => {
-          // Обновляем прогресс текущего уровня
-          const updatedProfile = { ...profile };
-          if (!updatedProfile.progress.completedLessons.includes(completedLevelId)) {
-            updatedProfile.progress.completedLessons.push(completedLevelId);
-          }
-          
-          // Разблокируем следующий уровень
-          const nextLevelToUnlock = getNextLevel(completedLevelId);
-          if (nextLevelToUnlock && updatedProfile.progress.unlockedLevels) {
-            if (!updatedProfile.progress.unlockedLevels.includes(nextLevelToUnlock.id)) {
-              updatedProfile.progress.unlockedLevels.push(nextLevelToUnlock.id);
-            }
-          }
-          
-          // Автоматически переходим к следующему уроку
-          if (nextLevelToUnlock && !fromCompletion) {
-            setTimeout(() => {
-              handleOpenPDF(nextLevelToUnlock, true);
-            }, 1500);
-          } else {
-            // Возвращаемся на главную страницу если это последний урок
-            onScreenChange('dashboard');
-          }
-          
-          onProfileUpdate(updatedProfile);
+          // После завершения чтения PDF переходим к тесту
+          onScreenChange('quiz', { 
+            quizId: completedLevelId
+          });
         }
       });
     }

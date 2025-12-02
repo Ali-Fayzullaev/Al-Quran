@@ -359,12 +359,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfPath, title, bookId, nextLevel
               className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-2xl font-bold text-lg shadow-2xl transition-all duration-300 hover:scale-105 animate-bounce"
             >
               <CheckCircle className="w-6 h-6" />
-              <span>
-                {nextLevel ? 
-                  `Завершить и перейти к: ${nextLevel.title}` : 
-                  'Завершить урок'
-                }
-              </span>
+              <span>Завершить и пройти тест</span>
               <Target className="w-6 h-6" />
             </button>
           </div>

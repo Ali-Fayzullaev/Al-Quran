@@ -23,6 +23,7 @@ interface ScreenState {
   bookId?: string;
   nextLevel?: any;
   onCompletion?: (completedLevelId: string) => void;
+  onQuizComplete?: (quizLevelId: string, passed: boolean) => void;
 }
 
 export default function MuallamSaniMain() {
@@ -107,6 +108,7 @@ export default function MuallamSaniMain() {
           quizId={currentScreen.quizId}
           onScreenChange={handleScreenChange}
           onProfileUpdate={setProfile}
+          onQuizComplete={currentScreen.onQuizComplete}
         />
       )}
       
