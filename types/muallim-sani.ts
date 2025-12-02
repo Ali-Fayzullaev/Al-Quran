@@ -23,6 +23,8 @@ export interface MuallamSaniProfile {
     achievements: string[];
     streak: number; // дней подряд
     lastStudyDate: Date;
+    totalPoints?: number;
+    levelProgress?: { [levelId: string]: number };
   };
   
   settings: {
@@ -111,6 +113,15 @@ export interface Achievement {
   points: number;
   isUnlocked: boolean;
   unlockedDate?: Date;
+}
+
+export interface AchievementNotification {
+  id: string;
+  achievement: Achievement;
+  message: string;
+  praise: string;
+  points: number;
+  timestamp: Date;
 }
 
 export interface StudyStats {

@@ -309,50 +309,56 @@ const DashboardScreen: React.FC<DashboardScreenProps> = React.memo(({ profile, o
           📊 Ваша статистика
         </h2>
         
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           <div className="text-center p-4 rounded-xl gpu-accelerated hover:scale-105 transition-transform duration-200" 
                style={{ backgroundColor: 'var(--color-background)' }}>
-            <div className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <div className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               {overallProgress}%
             </div>
-            <div className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+            <div className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
               Общий прогресс
             </div>
           </div>
           
           <div className="text-center p-4 rounded-xl gpu-accelerated hover:scale-105 transition-transform duration-200" 
                style={{ backgroundColor: 'var(--color-background)' }}>
-            <div className="text-4xl font-bold mb-2" style={{ color: 'var(--color-primary)' }}>
+            <div className="flex items-center justify-center mb-2">
+              <Star className="w-5 h-5 text-yellow-500 mr-1" />
+              <div className="text-3xl font-bold text-yellow-600">
+                {profile.progress.totalPoints || 0}
+              </div>
+            </div>
+            <div className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+              Баллов заработано
+            </div>
+          </div>
+          
+          <div className="text-center p-4 rounded-xl gpu-accelerated hover:scale-105 transition-transform duration-200" 
+               style={{ backgroundColor: 'var(--color-background)' }}>
+            <div className="text-3xl font-bold mb-2" style={{ color: 'var(--color-primary)' }}>
               {Math.floor(stats.totalTimeSpent / 60)}
             </div>
-            <div className="text-sm font-medium" style={{ color: 'var(--color-text-secondary)' }}>
+            <div className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
               Часов изучено
             </div>
           </div>
           
-          <div className="text-center">
-            <div className="text-3xl font-bold mb-1" style={{ color: 'var(--color-primary)' }}>
+          <div className="text-center p-4 rounded-xl gpu-accelerated hover:scale-105 transition-transform duration-200" 
+               style={{ backgroundColor: 'var(--color-background)' }}>
+            <div className="text-3xl font-bold mb-2" style={{ color: 'var(--color-primary)' }}>
               {stats.averageScore}%
             </div>
-            <div className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+            <div className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
               Средний балл
             </div>
           </div>
           
-          <div className="text-center">
-            <div className="text-3xl font-bold mb-1" style={{ color: 'var(--color-primary)' }}>
-              {stats.perfectScores}
-            </div>
-            <div className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-              Идеальных оценок
-            </div>
-          </div>
-          
-          <div className="text-center">
-            <div className="text-3xl font-bold mb-1" style={{ color: 'var(--color-primary)' }}>
+          <div className="text-center p-4 rounded-xl gpu-accelerated hover:scale-105 transition-transform duration-200" 
+               style={{ backgroundColor: 'var(--color-background)' }}>
+            <div className="text-3xl font-bold mb-2" style={{ color: 'var(--color-primary)' }}>
               {stats.totalQuizzes}
             </div>
-            <div className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+            <div className="text-xs font-medium" style={{ color: 'var(--color-text-secondary)' }}>
               Тестов пройдено
             </div>
           </div>

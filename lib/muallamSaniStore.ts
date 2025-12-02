@@ -1,4 +1,4 @@
-import { MuallamSaniProfile, LearningLevel, Achievement, StudyStats, Quiz } from '@/types/muallim-sani';
+import { MuallamSaniProfile, LearningLevel, Achievement, StudyStats, Quiz, AchievementNotification } from '@/types/muallim-sani';
 
 const STORAGE_KEY = 'muallam-sani-profile';
 const ACHIEVEMENTS_KEY = 'muallam-sani-achievements';
@@ -18,7 +18,20 @@ class MuallamSaniStore {
     if (typeof window === 'undefined') return null;
     try {
       const profile = localStorage.getItem(STORAGE_KEY);
-      return profile ? JSON.parse(profile) : null;
+      const parsedProfile = profile ? JSON.parse(profile) : null;
+      
+      // Инициализируем totalPoints и levelProgress для существующих профилей
+      if (parsedProfile) {
+        if (typeof parsedProfile.progress.totalPoints === 'undefined') {
+          parsedProfile.progress.totalPoints = 0;
+        }
+        if (!parsedProfile.progress.levelProgress) {
+          parsedProfile.progress.levelProgress = {};
+        }
+        this.saveProfile(parsedProfile);
+      }
+      
+      return parsedProfile;
     } catch (error) {
       console.error('Error loading profile:', error);
       return null;
@@ -51,7 +64,9 @@ class MuallamSaniStore {
         scores: {},
         achievements: [],
         streak: 0,
-        lastStudyDate: new Date()
+        lastStudyDate: new Date(),
+        totalPoints: 0,
+        levelProgress: {}
       },
       settings: {
         language: 'ru',
@@ -100,6 +115,14 @@ class MuallamSaniStore {
       this.unlockNextLevel(lessonId, profile);
     }
 
+    // Обновляем levelProgress
+    if (!profile.progress.levelProgress) {
+      profile.progress.levelProgress = {};
+    }
+    
+    // Для уровня используем лучший результат как прогресс
+    profile.progress.levelProgress[lessonId] = lessonProgress.bestScore;
+
     // Обновляем текущий уровень
     profile.progress.currentLevel = this.getCurrentLevel(profile);
 
@@ -109,7 +132,6 @@ class MuallamSaniStore {
     }
 
     this.saveProfile(profile);
-    this.checkAchievements(profile);
   }
 
   // Получить прогресс урока (процент от лучшего результата)
@@ -210,36 +232,67 @@ class MuallamSaniStore {
     profile.progress.lastStudyDate = today;
   }
 
-  // Достижения
-  checkAchievements(profile: MuallamSaniProfile): void {
+  // Достижения - проверка только после завершения теста
+  checkAchievementsAfterCompletion(profile: MuallamSaniProfile, completedLessonId?: string, testScore?: number): AchievementNotification[] {
     const achievements = this.getAvailableAchievements();
+    const newAchievements: AchievementNotification[] = [];
     
     achievements.forEach(achievement => {
       if (!profile.progress.achievements.includes(achievement.id)) {
-        if (this.checkAchievementCondition(achievement, profile)) {
+        if (this.checkAchievementCondition(achievement, profile, completedLessonId, testScore)) {
           profile.progress.achievements.push(achievement.id);
+          profile.progress.totalPoints += achievement.points;
           achievement.isUnlocked = true;
           achievement.unlockedDate = new Date();
+          
+          const notification = this.createAchievementNotification(achievement);
+          newAchievements.push(notification);
+          
           this.saveAchievement(achievement);
         }
       }
     });
     
     this.saveProfile(profile);
+    return newAchievements;
   }
 
-  checkAchievementCondition(achievement: Achievement, profile: MuallamSaniProfile): boolean {
+  createAchievementNotification(achievement: Achievement): AchievementNotification {
+    const praises = {
+      'first-lesson': 'Отлично! Вы сделали первый шаг в изучении Корана! 🎉',
+      'perfect-score': 'Потрясающе! Ваше произношение безупречно! ⭐',
+      'week-streak': 'Невероятно! Ваша постоянность впечатляет! 🔥',
+      'alifba-master': 'Браво! Вы освоили арабский алфавит! 📚',
+      'tajwid-expert': 'Машааллах! Вы стали настоящим знатоком таджвида! 👑'
+    };
+
+    return {
+      id: achievement.id,
+      achievement,
+      message: `Получено достижение: ${achievement.name}`,
+      praise: praises[achievement.id as keyof typeof praises] || 'Великолепная работа!',
+      points: achievement.points,
+      timestamp: new Date()
+    };
+  }
+
+  checkAchievementCondition(achievement: Achievement, profile: MuallamSaniProfile, completedLessonId?: string, testScore?: number): boolean {
     switch (achievement.id) {
       case 'first-lesson':
-        return profile.progress.completedLessons.length >= 1;
+        // Только если сейчас завершили первый урок
+        return completedLessonId && profile.progress.completedLessons.length === 1;
       case 'perfect-score':
-        return Object.values(profile.progress.scores).some(score => score.bestScore === 100);
+        // Только если сейчас получили 100% за тест
+        return testScore === 100;
       case 'week-streak':
-        return profile.progress.streak >= 7;
+        // Только если достигли streak в 7 дней сегодня
+        return profile.progress.streak === 7;
       case 'alifba-master':
-        return this.isLevelCompleted('alifba', profile);
+        // Только если сейчас завершили последний урок уровня Алифба
+        return this.isLevelCompleted('alifba', profile) && completedLessonId;
       case 'tajwid-expert':
-        return this.isLevelCompleted('complete', profile);
+        // Только если завершили весь курс
+        return this.isAllLevelsCompleted(profile) && completedLessonId;
       default:
         return false;
     }
@@ -249,9 +302,23 @@ class MuallamSaniStore {
     const level = this.getLearningLevels().find(l => l.id === levelId);
     if (!level) return false;
     
-    return level.lessons.every(lesson => 
-      profile.progress.completedLessons.includes(lesson.id)
-    );
+    // Инициализируем levelProgress если не существует
+    if (!profile.progress.levelProgress) {
+      profile.progress.levelProgress = {};
+    }
+    
+    // Для Алифба проверяем завершение уровня по прогрессу
+    if (levelId === 'alifba') {
+      return (profile.progress.levelProgress[levelId] || 0) === 100;
+    }
+    
+    // Для других уровней можно добавить другую логику
+    return (profile.progress.levelProgress[levelId] || 0) === 100;
+  }
+
+  isAllLevelsCompleted(profile: MuallamSaniProfile): boolean {
+    const levels = this.getLearningLevels();
+    return levels.every(level => this.isLevelCompleted(level.id, profile));
   }
 
   // Статистика

@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { MuallamSaniProfile, Quiz, Question, QuestionAnswer } from '@/types/muallim-sani';
+import { MuallamSaniProfile, Quiz, Question, QuestionAnswer, AchievementNotification } from '@/types/muallim-sani';
 import { muallamSaniStore } from '@/lib/muallamSaniStore';
 import { Trophy, Target, Clock, CheckCircle, XCircle, Star, Zap, Award } from 'lucide-react';
+import AchievementNotificationPopup from './AchievementNotificationPopup';
 
 interface QuizScreenProps {
   profile: MuallamSaniProfile;
@@ -689,6 +690,8 @@ export default function QuizScreen({ profile, quizId, onScreenChange, onProfileU
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [showResults, setShowResults] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [achievementNotifications, setAchievementNotifications] = useState<AchievementNotification[]>([]);
+  const [currentNotification, setCurrentNotification] = useState<AchievementNotification | null>(null);
   
 
   
@@ -739,6 +742,15 @@ export default function QuizScreen({ profile, quizId, onScreenChange, onProfileU
   };
 
 
+
+  // Функция для показа уведомлений о достижениях
+  const showAchievementNotification = (notification: AchievementNotification) => {
+    setCurrentNotification(notification);
+    // Скрываем уведомление через 3 секунды
+    setTimeout(() => {
+      setCurrentNotification(null);
+    }, 3000);
+  };
 
   const handleNextQuestion = () => {
     if (!quiz || !selectedAnswer.trim()) return;
@@ -794,13 +806,33 @@ export default function QuizScreen({ profile, quizId, onScreenChange, onProfileU
         }
       }
     }
-    
+
+    // Проверяем достижения после завершения теста
+    const newAchievements = muallamSaniStore.checkAchievementsAfterCompletion(
+      updatedProfile, 
+      passed ? quiz.levelId : undefined, // Передаем levelId только если тест пройден
+      score
+    );
+
+    // Показываем уведомления о достижениях
+    if (newAchievements.length > 0) {
+      // Добавим задержку для показа уведомлений
+      setTimeout(() => {
+        newAchievements.forEach((notification, index) => {
+          setTimeout(() => {
+            showAchievementNotification(notification);
+          }, index * 1500); // Показываем каждое достижение с интервалом в 1.5 секунды
+        });
+      }, 2000); // Через 2 секунды после показа результатов
+    }
+
     onProfileUpdate(updatedProfile);
 
     setQuizCompleted(true);
     setShowResults(true);
 
     // Показываем результаты 3 секунды, потом переходим на дашборд
+    const delayTime = 3000 + (newAchievements.length * 1500); // Добавляем время для показа достижений
     setTimeout(() => {
       try {
         if (onQuizComplete) {
@@ -814,7 +846,7 @@ export default function QuizScreen({ profile, quizId, onScreenChange, onProfileU
         // В случае ошибки всегда переходим на дашборд
         onScreenChange('dashboard');
       }
-    }, 3000);
+    }, delayTime);
   };
 
   const formatTime = (seconds: number): string => {
@@ -1083,43 +1115,55 @@ export default function QuizScreen({ profile, quizId, onScreenChange, onProfileU
   const progressPercentage = ((currentQuestionIndex + 1) / quiz.questions.length) * 100;
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Заголовок и прогресс */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--color-primary)' }}>
+      <div className="mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row items-center justify-between mb-6 space-y-4 sm:space-y-0">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-center sm:text-left" style={{ color: 'var(--color-primary)' }}>
             🎯 {getLevelName(quiz.levelId)}
           </h1>
-          <div className="text-lg font-semibold" style={{ 
-            color: timeLeft < 60 ? '#EF4444' : 'var(--color-primary)' 
-          }}>
-            ⏱️ {formatTime(timeLeft)}
+          <div 
+            className="flex items-center space-x-2 px-4 py-2 rounded-full font-bold text-base sm:text-lg shadow-lg"
+            style={{ 
+              backgroundColor: timeLeft < 60 ? '#FEF2F2' : 'var(--color-background-secondary)',
+              color: timeLeft < 60 ? '#EF4444' : 'var(--color-primary)',
+              border: `2px solid ${timeLeft < 60 ? '#EF4444' : 'var(--color-primary)'}`
+            }}
+          >
+            <Clock className="w-5 h-5" />
+            <span>{formatTime(timeLeft)}</span>
           </div>
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <span style={{ color: 'var(--color-text-secondary)' }}>
+          <span className="text-sm sm:text-base font-medium" style={{ color: 'var(--color-text-secondary)' }}>
             Вопрос {currentQuestionIndex + 1} из {quiz.questions.length}
           </span>
-          <span style={{ color: 'var(--color-primary)' }}>
+          <span className="text-sm sm:text-base font-bold px-3 py-1 rounded-full" style={{ 
+            color: 'var(--color-primary)',
+            backgroundColor: 'var(--color-background-secondary)'
+          }}>
             {Math.round(progressPercentage)}%
           </span>
         </div>
 
-        <div className="w-full h-2 rounded-full" style={{ backgroundColor: 'var(--color-border)' }}>
+        <div className="w-full h-4 rounded-full overflow-hidden shadow-inner" style={{ backgroundColor: 'var(--color-border)' }}>
           <div 
-            className="h-full rounded-full transition-all duration-300"
+            className="h-full rounded-full transition-all duration-700 ease-out relative overflow-hidden"
             style={{ 
               width: `${progressPercentage}%`,
               backgroundColor: 'var(--color-primary)'
             }}
-          />
+          >
+            {/* Мерцающая полоса */}
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
+          </div>
         </div>
       </div>
 
       {/* Вопрос */}
       <div 
-        className="rounded-xl p-8 mb-8"
+        className="rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 mb-6 sm:mb-8 shadow-lg hover:shadow-xl transition-shadow duration-300"
         style={{ 
           backgroundColor: 'var(--color-background-secondary)',
           borderColor: 'var(--color-border)',
@@ -1142,62 +1186,160 @@ export default function QuizScreen({ profile, quizId, onScreenChange, onProfileU
             </div>
           </div>
           
-          <h2 className="text-xl font-semibold mb-4" style={{ color: 'var(--color-text)' }}>
+          <h2 className="text-lg sm:text-xl lg:text-2xl font-semibold mb-6 leading-relaxed text-center" style={{ color: 'var(--color-text)' }}>
             {currentQuestion.text}
           </h2>
         </div>
 
         {/* Варианты ответов */}
-        <div className="space-y-4">
+        <div className="space-y-4 px-2 sm:px-0">
           {/* Множественный выбор */}
           {currentQuestion.type === 'multiple-choice' && currentQuestion.options && (
             <div className="space-y-3">
-              {currentQuestion.options.map((option, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleAnswerSelect(option)}
-                  className={`w-full text-left p-4 rounded-lg border-2 transition-all hover:opacity-80`}
-                  style={{ 
-                    backgroundColor: selectedAnswer === option 
-                      ? 'var(--color-primary)' 
-                      : 'var(--color-background)',
-                    color: selectedAnswer === option 
-                      ? 'white' 
-                      : 'var(--color-text)',
-                    borderColor: selectedAnswer === option 
-                      ? 'var(--color-primary)' 
-                      : 'var(--color-border)'
-                  }}
-                >
-                  {selectedAnswer === option ? '●' : '○'} {option}
-                </button>
-              ))}
+              {currentQuestion.options.map((option, index) => {
+                const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+                const isSelected = selectedAnswer === option;
+                return (
+                  <button
+                    key={index}
+                    onClick={() => handleAnswerSelect(option)}
+                    className={`w-full text-left p-4 sm:p-6 rounded-2xl border-2 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl relative overflow-hidden group`}
+                    style={{ 
+                      backgroundColor: isSelected 
+                        ? 'var(--color-primary)' 
+                        : 'var(--color-background)',
+                      color: isSelected 
+                        ? 'white' 
+                        : 'var(--color-text)',
+                      borderColor: isSelected 
+                        ? 'var(--color-primary)' 
+                        : 'var(--color-border)',
+                      transform: isSelected ? 'scale(1.02)' : 'scale(1)'
+                    }}
+                  >
+                    {/* Фоновый градиент при выборе */}
+                    {isSelected && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-20"></div>
+                    )}
+                    
+                    <div className="flex items-center space-x-4">
+                      {/* Красивая буква */}
+                      <div 
+                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-bold text-lg sm:text-xl transition-all duration-300"
+                        style={{
+                          backgroundColor: isSelected 
+                            ? 'rgba(255,255,255,0.2)' 
+                            : 'var(--color-primary)',
+                          color: isSelected 
+                            ? 'white' 
+                            : 'white',
+                          boxShadow: isSelected 
+                            ? '0 0 20px rgba(255,255,255,0.3)' 
+                            : '0 4px 12px rgba(0,0,0,0.1)'
+                        }}
+                      >
+                        {letters[index]}
+                      </div>
+                      
+                      {/* Текст ответа */}
+                      <div className="flex-1 text-base sm:text-lg font-medium leading-relaxed">
+                        {option}
+                      </div>
+                      
+                      {/* Иконка выбора */}
+                      <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300"
+                           style={{
+                             borderColor: isSelected ? 'white' : 'var(--color-primary)',
+                             backgroundColor: isSelected ? 'white' : 'transparent'
+                           }}>
+                        {isSelected && (
+                          <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }}></div>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Мерцающие частицы при наведении */}
+                    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  </button>
+                );
+              })}
             </div>
           )}
 
           {/* Верно/Неверно */}
           {currentQuestion.type === 'true-false' && (
-            <div className="flex gap-4">
-              {['Верно', 'Неверно'].map((option) => (
-                <button
-                  key={option}
-                  onClick={() => handleAnswerSelect(option)}
-                  className={`flex-1 p-4 rounded-lg border-2 transition-all hover:opacity-80`}
-                  style={{ 
-                    backgroundColor: selectedAnswer === option 
-                      ? (option === 'Верно' ? '#10B981' : '#EF4444')
-                      : 'var(--color-background)',
-                    color: selectedAnswer === option 
-                      ? 'white' 
-                      : 'var(--color-text)',
-                    borderColor: selectedAnswer === option 
-                      ? (option === 'Верно' ? '#10B981' : '#EF4444')
-                      : 'var(--color-border)'
-                  }}
-                >
-                  {option === 'Верно' ? '✅' : '❌'} {option}
-                </button>
-              ))}
+            <div className="flex flex-col sm:flex-row gap-4">
+              {['Верно', 'Неверно'].map((option, index) => {
+                const isSelected = selectedAnswer === option;
+                const isCorrect = option === 'Верно';
+                return (
+                  <button
+                    key={option}
+                    onClick={() => handleAnswerSelect(option)}
+                    className="flex-1 p-6 rounded-2xl border-2 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl relative overflow-hidden group"
+                    style={{ 
+                      backgroundColor: isSelected 
+                        ? (isCorrect ? '#10B981' : '#EF4444')
+                        : 'var(--color-background)',
+                      color: isSelected 
+                        ? 'white' 
+                        : 'var(--color-text)',
+                      borderColor: isSelected 
+                        ? (isCorrect ? '#10B981' : '#EF4444')
+                        : 'var(--color-border)',
+                      transform: isSelected ? 'scale(1.02)' : 'scale(1)'
+                    }}
+                  >
+                    {/* Фоновый градиент */}
+                    {isSelected && (
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-20"></div>
+                    )}
+                    
+                    <div className="flex items-center justify-center space-x-3">
+                      {/* Красивая иконка */}
+                      <div 
+                        className="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-all duration-300"
+                        style={{
+                          backgroundColor: isSelected 
+                            ? 'rgba(255,255,255,0.2)' 
+                            : (isCorrect ? '#10B981' : '#EF4444'),
+                          boxShadow: isSelected 
+                            ? '0 0 20px rgba(255,255,255,0.3)' 
+                            : '0 4px 12px rgba(0,0,0,0.1)'
+                        }}
+                      >
+                        {isCorrect ? (
+                          <CheckCircle className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+                        ) : (
+                          <XCircle className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+                        )}
+                      </div>
+                      
+                      {/* Текст */}
+                      <span className="text-lg sm:text-xl font-bold">{option}</span>
+                      
+                      {/* Индикатор выбора */}
+                      <div 
+                        className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 flex items-center justify-center transition-all duration-300"
+                        style={{
+                          borderColor: isSelected ? 'white' : (isCorrect ? '#10B981' : '#EF4444'),
+                          backgroundColor: isSelected ? 'white' : 'transparent'
+                        }}
+                      >
+                        {isSelected && (
+                          <div 
+                            className="w-3 h-3 sm:w-4 sm:h-4 rounded-full" 
+                            style={{ backgroundColor: isCorrect ? '#10B981' : '#EF4444' }}
+                          ></div>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Мерцающие частицы */}
+                    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  </button>
+                );
+              })}
             </div>
           )}
 
@@ -1224,15 +1366,15 @@ export default function QuizScreen({ profile, quizId, onScreenChange, onProfileU
       </div>
 
       {/* Навигация */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4 mt-8">
         <button
           onClick={() => onScreenChange('dashboard')}
-          className="px-6 py-3 rounded-lg hover:opacity-90 transition-opacity"
+          className="w-full sm:w-auto px-6 py-4 rounded-xl font-semibold hover:opacity-90 transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg order-2 sm:order-1"
           style={{ 
             backgroundColor: 'var(--color-background-secondary)',
             color: 'var(--color-text)',
             borderColor: 'var(--color-border)',
-            borderWidth: '1px'
+            borderWidth: '2px'
           }}
         >
           ← Прервать тест
@@ -1241,15 +1383,24 @@ export default function QuizScreen({ profile, quizId, onScreenChange, onProfileU
         <button
           onClick={handleNextQuestion}
           disabled={!selectedAnswer.trim()}
-          className="px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 shadow-lg hover:shadow-xl order-1 sm:order-2"
           style={{ 
-            backgroundColor: 'var(--color-primary)',
-            color: 'white'
+            backgroundColor: !selectedAnswer.trim() ? '#94A3B8' : 'var(--color-primary)',
+            color: 'white',
+            boxShadow: !selectedAnswer.trim() ? 'none' : '0 4px 15px rgba(0,0,0,0.2)'
           }}
         >
-          {currentQuestionIndex === quiz.questions.length - 1 ? 'Завершить тест' : 'Следующий вопрос'} →
+          {currentQuestionIndex === quiz.questions.length - 1 ? '🏆 Завершить тест' : 'Следующий вопрос →'}
         </button>
       </div>
+
+      {/* Уведомления о достижениях */}
+      {currentNotification && (
+        <AchievementNotificationPopup
+          notification={currentNotification}
+          onClose={() => setCurrentNotification(null)}
+        />
+      )}
     </div>
   );
 }
