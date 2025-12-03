@@ -20,7 +20,9 @@ export default function LoadingSpinner() {
           />
         </div>
         
-        <h2 className="text-xl font-semibold mb-2">{t('loading')}</h2>
+        <h2 className="text-xl font-semibold mb-2" style={{ color: 'var(--color-text)' }}>
+          {t('loading')}
+        </h2>
         <p className="text-gray-600">
           {t('faqSection.title')}...
         </p>

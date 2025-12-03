@@ -37,15 +37,22 @@ export default function FAQFilters({
   const hasActiveFilters = selectedTags.length > 0;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Tags Filter */}
       <div>
-        <div className="flex items-center gap-2 mb-3">
-          <Tag size={18} style={{ color: 'var(--color-primary)' }} />
-          <h3 className="font-semibold text-sm">{t('faqSection.tags')}</h3>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Tag size={18} style={{ color: 'var(--color-primary)' }} />
+            <h4 className="font-semibold text-base">{t('faqSection.tags')}</h4>
+          </div>
+          {selectedTags.length > 0 && (
+            <span className="text-sm text-gray-500">
+              {selectedTags.length} выбрано
+            </span>
+          )}
         </div>
         
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1 sm:gap-2">
           <button
             onClick={() => onTagsChange([])}
             className={`px-3 py-1 rounded-full text-sm border transition-all hover:shadow-sm ${
@@ -66,7 +73,7 @@ export default function FAQFilters({
             <button
               key={tag}
               onClick={() => toggleTag(tag)}
-              className={`px-3 py-1 rounded-full text-sm border transition-all hover:shadow-sm ${
+              className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm border transition-all hover:shadow-sm ${
                 selectedTags.includes(tag) 
                   ? 'text-white'
                   : 'hover:border-gray-400'
@@ -87,9 +94,15 @@ export default function FAQFilters({
       </div>
 
       {/* Sort Options */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div className="flex items-center gap-4">
-          <span className="text-sm font-medium">{t('faqSection.sortBy')}:</span>
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <ArrowUp size={18} style={{ color: 'var(--color-primary)' }} />
+          <h4 className="font-semibold text-base">Сортировка</h4>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <div className="flex items-center gap-4">
+            <span className="text-sm font-medium">{t('faqSection.sortBy')}:</span>
           
           <div className="flex gap-2">
             {[
@@ -132,20 +145,20 @@ export default function FAQFilters({
           </button>
         </div>
 
-        {/* Clear Filters */}
-        {hasActiveFilters && (
-          <button
-            onClick={onClearFilters}
-            className="flex items-center gap-2 px-3 py-1 text-sm rounded border transition-all hover:shadow-sm text-gray-600 hover:text-gray-800"
-            style={{ 
-              backgroundColor: 'var(--color-background)',
-              borderColor: 'var(--color-border)'
-            }}
-          >
-            <RotateCcw size={14} />
-            {t('faqSection.clearFilters')}
-          </button>
-        )}
+          {/* Clear Filters */}
+          {hasActiveFilters && (
+            <button
+              onClick={onClearFilters}
+              className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg border transition-all hover:shadow-md text-red-600 hover:text-red-800 border-red-300 hover:border-red-400"
+              style={{ 
+                backgroundColor: 'var(--color-background)'
+              }}
+            >
+              <RotateCcw size={16} />
+              <span className="font-medium">{t('faqSection.clearFilters')}</span>
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

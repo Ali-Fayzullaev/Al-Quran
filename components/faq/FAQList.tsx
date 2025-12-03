@@ -17,7 +17,7 @@ export default function FAQList({ faqItems, onTagClick, onToggleBookmark, isBook
   const { locale } = useLocale();
   
   return (
-    <div className="grid gap-6 lg:gap-8">
+    <div className="grid gap-4 sm:gap-6 lg:gap-8">
       {faqItems.map((item, index) => (
         <FAQCard 
           key={`${locale}-${item.id}-${index}`} 

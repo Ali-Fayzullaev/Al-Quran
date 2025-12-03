@@ -3018,3 +3018,26 @@ mark {
     padding: 1rem;
   }
 }
+
+/* Профессиональные переходы для FAQ */
+.faq-transition {
+  transition: all 0.15s ease-in-out;
+}
+
+.faq-shadow {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+.faq-shadow:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.focus-outline {
+  transition: box-shadow 0.15s ease-in-out;
+}
+
+.focus-outline:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}

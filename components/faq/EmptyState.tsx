@@ -16,17 +16,16 @@ export default function EmptyState({ hasFilters, onClearFilters }: EmptyStatePro
   return (
     <div className="text-center py-16">
       <div 
-        className="max-w-md mx-auto p-8 rounded-lg border"
+        className="max-w-md mx-auto p-8 rounded border shadow-sm"
         style={{ 
           backgroundColor: 'var(--color-background-secondary)', 
-          borderColor: 'var(--color-border)', 
-          borderWidth: '1px' 
+          borderColor: 'var(--color-border)'
         }}
       >
         {hasFilters ? (
           <>
             <Filter size={48} className="mx-auto mb-4 text-gray-400" />
-            <h3 className="text-xl font-semibold mb-2">
+            <h3 className="text-xl font-semibold mb-2" style={{ color: 'var(--color-text)' }}>
               {t('faqSection.noQuestionsFound')}
             </h3>
             <p className="text-gray-600 mb-6">
@@ -34,7 +33,7 @@ export default function EmptyState({ hasFilters, onClearFilters }: EmptyStatePro
             </p>
             <button
               onClick={onClearFilters}
-              className="flex items-center gap-2 mx-auto px-4 py-2 rounded-lg border transition-all hover:shadow-md"
+              className="flex items-center gap-2 mx-auto px-4 py-2 rounded border transition-colors hover:bg-gray-50 dark:hover:bg-gray-700"
               style={{ 
                 backgroundColor: 'var(--color-primary)',
                 borderColor: 'var(--color-primary)',
@@ -48,7 +47,7 @@ export default function EmptyState({ hasFilters, onClearFilters }: EmptyStatePro
         ) : (
           <>
             <Search size={48} className="mx-auto mb-4 text-gray-400" />
-            <h3 className="text-xl font-semibold mb-2">
+            <h3 className="text-xl font-semibold mb-2" style={{ color: 'var(--color-text)' }}>
               {t('faqSection.noQuestionsFound')}
             </h3>
             <p className="text-gray-600">

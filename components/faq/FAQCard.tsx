@@ -60,16 +60,15 @@ export default function FAQCard({ faqItem, onTagClick, onToggleBookmark, isBookm
   return (
     <div 
       id={`faq-${locale}-${faqItem.id}`}
-      className="rounded-lg border shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.01]"
+      className="rounded border shadow-sm hover:shadow-md transition-shadow"
       style={{ 
         backgroundColor: 'var(--color-background-secondary)', 
-        borderColor: 'var(--color-border)', 
-        borderWidth: '1px' 
+        borderColor: 'var(--color-border)'
       }}
     >
       {/* Question Header */}
       <div className="p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-4">
           <div className="flex-1">
             <div className="flex items-start gap-3 mb-3">
               <div 
@@ -78,7 +77,7 @@ export default function FAQCard({ faqItem, onTagClick, onToggleBookmark, isBookm
               >
                 {faqItem.id}
               </div>
-              <h3 className="text-base sm:text-lg font-semibold leading-relaxed">
+              <h3 className="text-base sm:text-lg font-semibold leading-relaxed" style={{ color: 'var(--color-text)' }}>
                 {faqItem.question}
               </h3>
             </div>
@@ -88,7 +87,7 @@ export default function FAQCard({ faqItem, onTagClick, onToggleBookmark, isBookm
           <div className="flex gap-2 flex-shrink-0 justify-end sm:justify-start">
             <button
               onClick={() => handleCopy(faqItem.question, 'question')}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               title={t('faqSection.copyQuestion')}
             >
               <Copy size={16} style={{ color: copySuccess === 'question' ? 'green' : 'var(--color-primary)' }} />
@@ -96,7 +95,7 @@ export default function FAQCard({ faqItem, onTagClick, onToggleBookmark, isBookm
             
             <button
               onClick={handleShare}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               title={t('faqSection.shareQuestion')}
             >
               <Share2 size={16} style={{ color: 'var(--color-primary)' }} />
@@ -104,7 +103,7 @@ export default function FAQCard({ faqItem, onTagClick, onToggleBookmark, isBookm
             
             <button
               onClick={() => onToggleBookmark?.(faqItem.id)}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               title={isBookmarked ? t('bookmarksSection.removeBookmark') : t('faqSection.bookmarkQuestion')}
             >
               <Bookmark 
@@ -127,7 +126,7 @@ export default function FAQCard({ faqItem, onTagClick, onToggleBookmark, isBookm
                 <button
                   key={index}
                   onClick={() => onTagClick?.(tag)}
-                  className="px-2 py-1 text-xs rounded-full border transition-all hover:shadow-sm hover:scale-105"
+                  className="px-3 py-1 text-xs rounded border transition-colors hover:bg-gray-100 dark:hover:bg-gray-700"
                   style={{ 
                     backgroundColor: 'var(--color-background)',
                     borderColor: 'var(--color-border)',
@@ -150,7 +149,7 @@ export default function FAQCard({ faqItem, onTagClick, onToggleBookmark, isBookm
               {t('faqSection.shortAnswer')}:
             </span>
           </div>
-          <p className="text-gray-700 leading-relaxed">
+          <p className="leading-relaxed text-sm sm:text-base">
             {faqItem.short_answer}
           </p>
         </div>
@@ -158,7 +157,7 @@ export default function FAQCard({ faqItem, onTagClick, onToggleBookmark, isBookm
         {/* Toggle Full Answer Button */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg border transition-all hover:shadow-sm"
+          className="w-full sm:w-auto flex items-center justify-center sm:justify-start gap-2 px-4 py-2 rounded border transition-colors hover:bg-gray-50 dark:hover:bg-gray-800 text-sm font-medium"
           style={{ 
             backgroundColor: 'var(--color-background)',
             borderColor: 'var(--color-border)',
@@ -168,12 +167,14 @@ export default function FAQCard({ faqItem, onTagClick, onToggleBookmark, isBookm
           {isExpanded ? (
             <>
               <ChevronUp size={16} />
-              {t('faqSection.hideFullAnswer')}
+              <span className="hidden sm:inline">{t('faqSection.hideFullAnswer')}</span>
+              <span className="sm:hidden">Скрыть</span>
             </>
           ) : (
             <>
               <ChevronDown size={16} />
-              {t('faqSection.showFullAnswer')}
+              <span className="hidden sm:inline">{t('faqSection.showFullAnswer')}</span>
+              <span className="sm:hidden">Подробнее</span>
             </>
           )}
         </button>
@@ -182,11 +183,11 @@ export default function FAQCard({ faqItem, onTagClick, onToggleBookmark, isBookm
       {/* Expanded Full Answer */}
       {isExpanded && (
         <div 
-          className="px-4 sm:px-6 pb-4 sm:pb-6 border-t animate-in slide-in-from-top-2 duration-300"
+          className="px-4 sm:px-6 pb-4 sm:pb-6 border-t"
           style={{ borderTopColor: 'var(--color-border)' }}
         >
           <div className="pt-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-3">
+            <div className="flex flex-col gap-3 mb-4">
               <div className="flex items-center gap-2">
                 <BookOpen size={16} style={{ color: 'var(--color-primary)' }} />
                 <span className="text-sm font-medium text-gray-600">
@@ -196,7 +197,7 @@ export default function FAQCard({ faqItem, onTagClick, onToggleBookmark, isBookm
               
               <button
                 onClick={() => handleCopy(faqItem.answer, 'answer')}
-                className="flex items-center gap-2 px-3 py-1 text-sm rounded border transition-all hover:shadow-sm self-start sm:self-auto"
+                className="flex items-center justify-center gap-2 px-3 py-2 text-sm rounded border transition-all hover:shadow-sm w-full sm:w-auto sm:self-start"
                 style={{ 
                   backgroundColor: 'var(--color-background)',
                   borderColor: 'var(--color-border)',
@@ -204,13 +205,12 @@ export default function FAQCard({ faqItem, onTagClick, onToggleBookmark, isBookm
                 }}
               >
                 <Copy size={14} />
-                <span className="hidden sm:inline">{t('faqSection.copyAnswer')}</span>
-                <span className="sm:hidden">Копировать</span>
+                <span>{copySuccess === 'answer' ? 'Скопировано!' : 'Копировать ответ'}</span>
               </button>
             </div>
             
             <div className="prose max-w-none">
-              <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm sm:text-base">
+              <p className="leading-relaxed whitespace-pre-wrap text-sm sm:text-base">
                 {faqItem.answer}
               </p>
             </div>
@@ -218,9 +218,9 @@ export default function FAQCard({ faqItem, onTagClick, onToggleBookmark, isBookm
             {/* Source */}
             {faqItem.source && (
               <div className="mt-4 pt-3 border-t" style={{ borderTopColor: 'var(--color-border)' }}>
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-sm text-gray-600">
+                <div className="flex flex-col gap-1 text-sm text-gray-600">
                   <span className="font-medium">{t('faqSection.source')}:</span>
-                  <span className="italic">{faqItem.source}</span>
+                  <span className="italic text-xs sm:text-sm">{faqItem.source}</span>
                 </div>
               </div>
             )}

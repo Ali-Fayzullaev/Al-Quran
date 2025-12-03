@@ -23,7 +23,7 @@ export default function FAQSearch({ searchTerm, onSearchChange, placeholder }: F
         onChange={(e) => onSearchChange(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.blur()}
         placeholder={placeholder}
-        className="w-full pl-10 pr-10 py-3 rounded-lg border focus:outline-none focus:ring-2 transition-all"
+        className="w-full pl-10 pr-10 py-3 rounded border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm sm:text-base"
         style={{ 
           backgroundColor: 'var(--color-background)',
           borderColor: 'var(--color-border)',
@@ -34,7 +34,8 @@ export default function FAQSearch({ searchTerm, onSearchChange, placeholder }: F
       {searchTerm && (
         <button
           onClick={() => onSearchChange('')}
-          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-red-500"
+          title="Очистить поиск"
         >
           <X size={20} />
         </button>

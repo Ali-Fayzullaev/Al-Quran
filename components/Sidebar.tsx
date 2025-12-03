@@ -293,6 +293,14 @@ const Sidebar = memo(function Sidebar() {
         category: "main",
       },
       {
+        name: t("faq"),
+        href: "/faq",
+        icon: Book,
+        customIcon: "/iconsPages/faq.png",
+        isPremium: true,
+        category: "main",
+      },
+      {
         name: "Muallim Sani",
         href: "/muallim-sani",
         icon: Book,
