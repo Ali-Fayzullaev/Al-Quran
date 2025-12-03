@@ -38,7 +38,7 @@ export default function FAQStats({ total, filtered, hasFilters }: FAQStatsProps)
         </div>
         
         {/* Статистика с анимированными числами */}
-        <span className="text-sm sm:text-base font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        <span className="text-sm sm:text-base font-semibold  ">
           {hasFilters ? (
             <>
               <span className="inline-block animate-pulse">{filtered}</span>

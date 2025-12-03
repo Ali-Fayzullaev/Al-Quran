@@ -134,7 +134,7 @@ export default function FAQPage() {
       
       {/* Header */}
       <div 
-        className="sticky top-0 z-10 shadow-sm border-b"
+        className="z-10 shadow-sm border-b"
         style={{ 
           backgroundColor: 'var(--color-background)', 
           borderBottomColor: 'var(--color-border)'
