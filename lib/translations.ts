@@ -16,6 +16,14 @@ export const translations = {
     juz: "Джуз",
     searchNav: "Поиск",
     bookmarks: "Закладки",
+    faq: "Вопросы и ответы",
+
+    // Общие
+    loading: "Загрузка",
+    error: "Ошибка",
+    tryAgain: "Попробуйте еще раз",
+    showFilters: "Показать фильтры",
+    hideFilters: "Скрыть фильтры",
 
     bookmarksSection: {
       yourBookmarks: "Ваши закладки",
@@ -248,6 +256,36 @@ export const translations = {
       backToSite: "Вернуться на сайт",
       fillAllFields: "Пожалуйста, заполните все обязательные поля",
       submitError: "Ошибка при отправке. Попробуйте еще раз.",
+    },
+
+    faqSection: {
+      title: "Вопросы и ответы об Исламе",
+      description: "200 важных вопросов и ответов об основах исламской религии",
+      searchPlaceholder: "Поиск вопросов...",
+      allTags: "Все теги",
+      showFullAnswer: "Показать полный ответ",
+      hideFullAnswer: "Скрыть полный ответ",
+      shortAnswer: "Краткий ответ",
+      fullAnswer: "Полный ответ",
+      source: "Источник",
+      tags: "Теги",
+      question: "Вопрос",
+      answer: "Ответ",
+      sortBy: "Сортировать по",
+      sortById: "По номеру",
+      sortByQuestion: "По вопросу",
+      sortByRelevance: "По релевантности",
+      ascending: "По возрастанию",
+      descending: "По убыванию",
+      questionsFound: "вопросов найдено",
+      noQuestionsFound: "Вопросы не найдены",
+      tryDifferentSearch: "Попробуйте изменить поисковый запрос или фильтры",
+      clearFilters: "Очистить фильтры",
+      copyQuestion: "Копировать вопрос",
+      copyAnswer: "Копировать ответ",
+      shareQuestion: "Поделиться вопросом",
+      bookmarkQuestion: "Добавить в закладки",
+      relatedQuestions: "Связанные вопросы"
     },
 
     // Категории
@@ -1079,6 +1117,14 @@ export const translations = {
     juz: "Juz",
     searchNav: "Search",
     bookmarks: "Bookmarks",
+    faq: "Questions & Answers",
+
+    // Common
+    loading: "Loading",
+    error: "Error",
+    tryAgain: "Try again",
+    showFilters: "Show filters",
+    hideFilters: "Hide filters",
 
     bookmarksSection: {
       yourBookmarks: "Your bookmarks",
@@ -1312,6 +1358,36 @@ export const translations = {
       backToSite: "Back to Site",
       fillAllFields: "Please fill in all required fields",
       submitError: "Error submitting. Please try again.",
+    },
+
+    faqSection: {
+      title: "Questions & Answers about Islam",
+      description: "200 important questions and answers about the foundations of Islam",
+      searchPlaceholder: "Search questions...",
+      allTags: "All tags",
+      showFullAnswer: "Show full answer",
+      hideFullAnswer: "Hide full answer",
+      shortAnswer: "Short answer",
+      fullAnswer: "Full answer",
+      source: "Source",
+      tags: "Tags",
+      question: "Question",
+      answer: "Answer",
+      sortBy: "Sort by",
+      sortById: "By number",
+      sortByQuestion: "By question",
+      sortByRelevance: "By relevance",
+      ascending: "Ascending",
+      descending: "Descending",
+      questionsFound: "questions found",
+      noQuestionsFound: "No questions found",
+      tryDifferentSearch: "Try changing your search query or filters",
+      clearFilters: "Clear filters",
+      copyQuestion: "Copy question",
+      copyAnswer: "Copy answer",
+      shareQuestion: "Share question",
+      bookmarkQuestion: "Bookmark question",
+      relatedQuestions: "Related questions"
     },
 
     // Категории
@@ -2173,6 +2249,14 @@ export const translations = {
     juz: "Juz",
     searchNav: "Qidiruv",
     bookmarks: "Xatcho'plar",
+    faq: "Savollar va javoblar",
+
+    // Umumiy
+    loading: "Yuklanmoqda",
+    error: "Xato",
+    tryAgain: "Qaytadan urinib ko'ring",
+    showFilters: "Filtrlarni ko'rsatish",
+    hideFilters: "Filtrlarni yashirish",
 
     bookmarksSection: {
       yourBookmarks: "Sizning xatcho'plaringiz",
@@ -2412,6 +2496,36 @@ export const translations = {
       backToSite: "Saytga qaytish",
       fillAllFields: "Iltimos, barcha majburiy maydonlarni to'ldiring",
       submitError: "Yuborishda xato. Qaytadan urinib ko'ring.",
+    },
+
+    faqSection: {
+      title: "Islom haqida savollar va javoblar",
+      description: "Islom dinining asoslari haqida 200 ta muhim savol va javob",
+      searchPlaceholder: "Savollarni qidirish...",
+      allTags: "Barcha teglar",
+      showFullAnswer: "To'liq javobni ko'rsatish",
+      hideFullAnswer: "To'liq javobni yashirish",
+      shortAnswer: "Qisqa javob",
+      fullAnswer: "To'liq javob",
+      source: "Manba",
+      tags: "Teglar",
+      question: "Savol",
+      answer: "Javob",
+      sortBy: "Tartibga solish",
+      sortById: "Raqam bo'yicha",
+      sortByQuestion: "Savol bo'yicha",
+      sortByRelevance: "Mos kelish bo'yicha",
+      ascending: "O'sish tartibida",
+      descending: "Kamayish tartibida",
+      questionsFound: "ta savol topildi",
+      noQuestionsFound: "Savollar topilmadi",
+      tryDifferentSearch: "Qidiruv so'rovi yoki filtrlarni o'zgartirib ko'ring",
+      clearFilters: "Filtrlarni tozalash",
+      copyQuestion: "Savolni nusxalash",
+      copyAnswer: "Javobni nusxalash",
+      shareQuestion: "Savolni ulashish",
+      bookmarkQuestion: "Xatcho'pga qo'shish",
+      relatedQuestions: "Bog'liq savollar"
     },
 
     // Категории
@@ -4366,6 +4480,14 @@ export const translations = {
     juz: "Джуз",
     searchNav: "Іздеу",
     bookmarks: "Бетбелгілер",
+    faq: "Сұрақтар мен жауаптар",
+
+    // Жалпы
+    loading: "Жүктелуде",
+    error: "Қате",
+    tryAgain: "Қайталап көріңіз",
+    showFilters: "Сүзгілерді көрсету",
+    hideFilters: "Сүзгілерді жасыру",
 
     bookmarksSection: {
       yourBookmarks: "Сіздің бетбелгілеріңіз",
@@ -4597,6 +4719,36 @@ export const translations = {
       backToSite: "Сайтқа оралу",
       fillAllFields: "Барлық міндетті өрістерді толтырыңыз",
       submitError: "Жіберу қатесі. Қайталап көріңіз.",
+    },
+
+    faqSection: {
+      title: "Ислам туралы сұрақтар мен жауаптар",
+      description: "Ислам дінінің негіздері туралы 200 маңызды сұрақ пен жауап",
+      searchPlaceholder: "Сұрақтарды іздеу...",
+      allTags: "Барлық тегтер",
+      showFullAnswer: "Толық жауапты көрсету",
+      hideFullAnswer: "Толық жауапты жасыру",
+      shortAnswer: "Қысқа жауап",
+      fullAnswer: "Толық жауап",
+      source: "Дереккөз",
+      tags: "Тегтер",
+      question: "Сұрақ",
+      answer: "Жауап",
+      sortBy: "Сұрыптау",
+      sortById: "Нөмір бойынша",
+      sortByQuestion: "Сұрақ бойынша",
+      sortByRelevance: "Сәйкестік бойынша",
+      ascending: "Арту ретінде",
+      descending: "Кему ретінде",
+      questionsFound: "сұрақ табылды",
+      noQuestionsFound: "Сұрақтар табылмады",
+      tryDifferentSearch: "Іздеу сұрауыңызды немесе сүзгілерді өзгертіп көріңіз",
+      clearFilters: "Сүзгілерді тазалау",
+      copyQuestion: "Сұрақты көшіру",
+      copyAnswer: "Жауапты көшіру",
+      shareQuestion: "Сұрақты бөлісу",
+      bookmarkQuestion: "Бетбелгіге қосу",
+      relatedQuestions: "Байланысты сұрақтар"
     },
 
     // Санаттар

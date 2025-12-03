@@ -366,6 +366,13 @@ const Sidebar = memo(function Sidebar() {
         category: "tools",
       },
       {
+        name: t("faq"),
+        href: "/faq",
+        icon: MessageSquare,
+        customIcon: "/iconsPages/feedback.png", // Используем существующую иконку
+        category: "learning",
+      },
+      {
         name: t("feedback"),
         href: "/feedback",
         icon: MessageSquare,
