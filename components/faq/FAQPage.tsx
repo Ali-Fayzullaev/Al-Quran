@@ -163,7 +163,7 @@ export default function FAQPage() {
               <div className="mt-4 p-3 rounded border" style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)' }}>
                 <div className="flex flex-wrap gap-2 text-sm">
                   <span className="text-gray-600 font-medium">
-                    Активные фильтры:
+                    {t('faqSection.activeFilters')}:
                   </span>
                   {filters.searchTerm.trim() !== '' && (
                     <span className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-200 rounded text-sm">
@@ -182,7 +182,7 @@ export default function FAQPage() {
                   {filters.showOnlyBookmarked && (
                     <span className="inline-flex items-center gap-2 px-3 py-1 bg-purple-50 border border-purple-200 rounded text-sm">
                       <Bookmark size={14} className="text-purple-600" />
-                      <span className="text-purple-800">Закладки</span>
+                      <span className="text-purple-800">{t('faqSection.bookmarks')}</span>
                       <button 
                         onClick={() => updateFilter('showOnlyBookmarked', false)}
                         className="text-purple-600 hover:text-red-500"
@@ -221,11 +221,11 @@ export default function FAQPage() {
                 borderColor: filters.showOnlyBookmarked ? 'var(--color-primary)' : 'var(--color-border)',
                 color: filters.showOnlyBookmarked ? 'white' : 'var(--color-text)'
               }}
-              title={filters.showOnlyBookmarked ? "Показать все вопросы" : "Показать только закладки"}
+              title={filters.showOnlyBookmarked ? t('faqSection.showAllQuestions') : t('faqSection.showOnlyBookmarks')}
             >
               <Bookmark size={16} />
               <span className="hidden sm:inline">
-                {bookmarkedIds.size > 0 ? `${bookmarkedIds.size} закладок` : 'Закладки'}
+                {bookmarkedIds.size > 0 ? `${bookmarkedIds.size} ${t('faqSection.bookmarksCount')}` : t('faqSection.bookmarks')}
               </span>
             </button>            
             {/* Advanced Filters Toggle */}
@@ -240,10 +240,10 @@ export default function FAQPage() {
             >
               <Filter size={16} />
               <span className="hidden sm:inline">
-                {showFilters ? 'Скрыть фильтры' : 'Фильтры'}
+                {showFilters ? t('faqSection.hideFilters') : t('faqSection.showFilters')}
               </span>
               <span className="sm:hidden">
-                {showFilters ? 'Скрыть' : 'Фильтры'}
+                {showFilters ? t('faqSection.hideFilters') : t('faqSection.showFilters')}
               </span>
               {(filters.selectedTags.length > 0 || filters.sortBy !== 'id') && (
                 <span className="ml-1 px-2 py-0.5 text-xs rounded bg-white bg-opacity-30 min-w-[18px] text-center">
@@ -258,10 +258,10 @@ export default function FAQPage() {
                 style={{ 
                   backgroundColor: 'var(--color-background)'
                 }}
-                title="Очистить все фильтры"
+                title={t('faqSection.clearFilters')}
               >
                 <span className="text-base">✕</span>
-                <span className="hidden sm:inline">Очистить</span>
+                <span className="hidden sm:inline">{t('faqSection.clearAllFilters')}</span>
               </button>
             )}              <FAQStats 
                 total={faqData.length}
@@ -284,12 +284,12 @@ export default function FAQPage() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 <Filter size={18} style={{ color: 'var(--color-primary)' }} />
-                <h3 className="font-semibold text-base sm:text-lg">Расширенные фильтры</h3>
+                <h3 className="font-semibold text-base sm:text-lg">{t('faqSection.advancedFilters')}</h3>
               </div>
               <button
                 onClick={() => setShowFilters(false)}
                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                title="Закрыть фильтры"
+                title={t('faqSection.closeFilters')}
               >
                 <span className="text-lg sm:text-xl text-gray-500">✕</span>
               </button>

@@ -285,7 +285,21 @@ export const translations = {
       copyAnswer: "Копировать ответ",
       shareQuestion: "Поделиться вопросом",
       bookmarkQuestion: "Добавить в закладки",
-      relatedQuestions: "Связанные вопросы"
+      relatedQuestions: "Связанные вопросы",
+      // Новые переводы для интерфейса
+      activeFilters: "Активные фильтры",
+      showAllQuestions: "Показать все вопросы",
+      showOnlyBookmarks: "Показать только закладки",
+      hideFilters: "Скрыть фильтры",
+      showFilters: "Фильтры",
+      advancedFilters: "Расширенные фильтры",
+      closeFilters: "Закрыть фильтры",
+      bookmarksCount: "закладок",
+      bookmarks: "Закладки",
+      clearAllFilters: "Очистить",
+      searchShortcut: "Ctrl+K",
+      filtersShortcut: "Ctrl+/",
+      escapeHint: "Escape для очистки"
     },
 
     // Категории
@@ -1385,8 +1399,22 @@ export const translations = {
       copyQuestion: "Copy question",
       copyAnswer: "Copy answer",
       shareQuestion: "Share question",
-      bookmarkQuestion: "Bookmark question",
-      relatedQuestions: "Related questions"
+      bookmarkQuestion: "Add to bookmarks",
+      relatedQuestions: "Related questions",
+      // New interface translations
+      activeFilters: "Active filters",
+      showAllQuestions: "Show all questions",
+      showOnlyBookmarks: "Show only bookmarks",
+      hideFilters: "Hide filters",
+      showFilters: "Filters",
+      advancedFilters: "Advanced filters",
+      closeFilters: "Close filters",
+      bookmarksCount: "bookmarks",
+      bookmarks: "Bookmarks",
+      clearAllFilters: "Clear",
+      searchShortcut: "Ctrl+K",
+      filtersShortcut: "Ctrl+/",
+      escapeHint: "Escape to clear",
     },
 
     // Категории
@@ -2523,7 +2551,21 @@ export const translations = {
       copyAnswer: "Javobni nusxalash",
       shareQuestion: "Savolni ulashish",
       bookmarkQuestion: "Xatcho'pga qo'shish",
-      relatedQuestions: "Bog'liq savollar"
+      relatedQuestions: "Bog'liq savollar",
+      // New interface translations
+      activeFilters: "Faol filtrlar",
+      showAllQuestions: "Barcha savollarni ko'rsatish",
+      showOnlyBookmarks: "Faqat xatcho'plarni ko'rsatish",
+      hideFilters: "Filtrlarni yashirish",
+      showFilters: "Filtrlar",
+      advancedFilters: "Kengaytirilgan filtrlar",
+      closeFilters: "Filtrlarni yopish",
+      bookmarksCount: "ta xatcho'p",
+      bookmarks: "Xatcho'plar",
+      clearAllFilters: "Tozalash",
+      searchShortcut: "Ctrl+K",
+      filtersShortcut: "Ctrl+/",
+      escapeHint: "Escape - tozalash uchun"
     },
 
     // Категории
@@ -4745,7 +4787,21 @@ export const translations = {
       copyAnswer: "Жауапты көшіру",
       shareQuestion: "Сұрақты бөлісу",
       bookmarkQuestion: "Бетбелгіге қосу",
-      relatedQuestions: "Байланысты сұрақтар"
+      relatedQuestions: "Байланысты сұрақтар",
+      // New interface translations
+      activeFilters: "Белсенді сүзгілер",
+      showAllQuestions: "Барлық сұрақтарды көрсету",
+      showOnlyBookmarks: "Тек бетбелгілерді көрсету",
+      hideFilters: "Сүзгілерді жасыру",
+      showFilters: "Сүзгілер",
+      advancedFilters: "Кеңейтілген сүзгілер",
+      closeFilters: "Сүзгілерді жабу",
+      bookmarksCount: "бетбелгі",
+      bookmarks: "Бетбелгілер",
+      clearAllFilters: "Тазалау",
+      searchShortcut: "Ctrl+K",
+      filtersShortcut: "Ctrl+/",
+      escapeHint: "Escape - тазалау үшін"
     },
 
     // Санаттар
