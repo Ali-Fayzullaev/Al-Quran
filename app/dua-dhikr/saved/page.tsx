@@ -120,32 +120,6 @@ export default function SavedDuasPage() {
     }
   };
 
-  // Экспорт дуа
-  const handleExportDuas = () => {
-    const dataStr = exportSavedDuas();
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `saved-duas-${new Date().toISOString().split('T')[0]}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
-  };
-
-  // Импорт дуа
-  const handleImportDuas = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const content = e.target?.result as string;
-        if (importSavedDuas(content)) {
-          refreshSavedDuas();
-        }
-      };
-      reader.readAsText(file);
-    }
-  };
 
   // Получение уникальных категорий
   const categories = ['all', ...Array.from(new Set(savedDuas.map(dua => dua.category)))];
@@ -265,33 +239,14 @@ export default function SavedDuasPage() {
         opacity: 0.95
       }}>
         <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link href="/dua-dhikr">
-              <Button variant="ghost" size="sm" className="gap-2">
-                <BookOpen className="w-4 h-4" />
-                Назад к дуа
-              </Button>
-            </Link>
-
+          <div className="flex items-center justify-center">
             <div className="text-center">
               <h1 className="font-bold text-2xl" style={{ color: 'var(--color-primary)' }}>
-                Сохраненные дуа
+                {t("saved")}
               </h1>
               <p className="text-sm mt-1" style={{ color: 'var(--color-text-secondary)' }}>
-                {savedDuas.length} любимых дуа
+                {savedDuas.length}
               </p>
-            </div>
-
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleExportDuas}
-                className="gap-2"
-              >
-                <Download className="w-4 h-4" />
-                Экспорт
-              </Button>
             </div>
           </div>
         </div>
@@ -358,19 +313,6 @@ export default function SavedDuasPage() {
               >
                 {sortOrder === 'asc' ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
               </Button>
-
-              <label className="cursor-pointer">
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Upload className="w-4 h-4" />
-                  Импорт
-                </Button>
-                <input
-                  type="file"
-                  accept=".json"
-                  onChange={handleImportDuas}
-                  className="hidden"
-                />
-              </label>
             </div>
           </div>
         </div>
@@ -495,7 +437,7 @@ function SavedDuaCard({
         <div 
           className={`absolute inset-0 bg-gradient-to-r ${categoryStyle.gradient} opacity-5`}
         ></div>
-        <p className="font-arabic text-xl leading-loose relative z-10" style={{ color: 'var(--color-text)' }}>
+        <p className="font-arabic text-xl leading-loose relative z-10 text-[var(--color-primary)] ">
           {dua.arabic}
         </p>
       </div>
@@ -507,57 +449,6 @@ function SavedDuaCard({
         </p>
       </div>
 
-      {/* Latin Transliteration */}
-      {dua.latin && (
-        <div className="mb-4 p-3 rounded-lg border-l-4" 
-             style={{ 
-               backgroundColor: 'var(--color-background)', 
-               borderLeftColor: `var(--color-primary)` 
-             }}>
-          <p className="text-sm italic" style={{ color: 'var(--color-text-secondary)' }}>
-            {dua.latin}
-          </p>
-        </div>
-      )}
-
-      {/* Notes */}
-      {dua.notes && (
-        <div className="mb-4 p-3 rounded-lg" style={{ backgroundColor: 'var(--color-background)' }}>
-          <div className="flex items-center gap-2 mb-2">
-            <Book className="w-4 h-4 text-blue-600" />
-            <span className="text-sm font-medium text-blue-700">Заметки</span>
-          </div>
-          <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-            {dua.notes}
-          </p>
-        </div>
-      )}
-
-      {/* Benefits */}
-      {dua.benefits && (
-        <div className="mb-4 p-3 rounded-lg" style={{ backgroundColor: 'var(--color-background)' }}>
-          <div className="flex items-center gap-2 mb-2">
-            <Star className="w-4 h-4 text-green-600" />
-            <span className="text-sm font-medium text-green-700">Польза</span>
-          </div>
-          <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-            {dua.benefits}
-          </p>
-        </div>
-      )}
-
-      {/* Source */}
-      {dua.source && (
-        <div className="mb-4 p-3 rounded-lg" style={{ backgroundColor: 'var(--color-background)' }}>
-          <div className="flex items-center gap-2 mb-2">
-            <BookOpen className="w-4 h-4 text-purple-600" />
-            <span className="text-sm font-medium text-purple-700">Источник</span>
-          </div>
-          <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-            {dua.source}
-          </p>
-        </div>
-      )}
 
       {/* Footer */}
       <div className="flex items-center justify-between pt-4 border-t" style={{ borderColor: 'var(--color-border)' }}>
@@ -575,7 +466,6 @@ function SavedDuaCard({
                        hover:shadow-lg transition-all duration-300 transform hover:scale-105`}
           >
             <IconComponent className="w-3 h-3" />
-            Категория
           </Button>
         </Link>
       </div>

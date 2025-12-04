@@ -8,7 +8,7 @@ import {
   ChevronDown,
   ChevronUp,
   Copy,
-  Share2,
+  Share,
   Bookmark,
   Tag,
   BookOpen,
@@ -154,7 +154,7 @@ export default function FAQCard({
               className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               title={t("faqSection.shareQuestion")}
             >
-              <Share2 size={16} style={{ color: "var(--color-primary)" }} />
+              <Share size={16} style={{ color: "var(--color-primary)" }} />
             </button>
 
             <button

@@ -17,6 +17,7 @@ import {
   Minus,
   Heart,
   Check,
+  Share
 } from "lucide-react";
 import {
   extractCountFromNotes,
@@ -27,7 +28,7 @@ import {
 import { isDuaSaved, toggleDuaSaved, type SavedDua } from "@/lib/duaBookmarks";
 import { useLocale } from "@/context/LocaleContext";
 import { cn } from "@/lib/utils";
-import useVibration from '@luxonauta/use-vibration';
+import useVibration from "@luxonauta/use-vibration";
 
 interface DuaData {
   title: string;
@@ -69,56 +70,67 @@ export default function DuaCard({
 
   // Хуки для вибрации
   const [{ isSupported, isVibrating }, { vibrate, stop }] = useVibration();
-  
+
   // Простая функция вибрации с прямым нативным API
-  const triggerVibration = (pattern: number | number[] | any, fallback?: () => void) => {
+  const triggerVibration = (
+    pattern: number | number[] | any,
+    fallback?: () => void
+  ) => {
     let success = false;
-    
+
     try {
       // Подход 1: Прямой нативный API (как в работающем примере)
       if (navigator.vibrate) {
         const result = navigator.vibrate(pattern);
         success = !!result;
       }
-      
+
       // Подход 2: Библиотека как резерв
       if (!success && isSupported && vibrate) {
         vibrate(pattern);
         success = true;
       }
-      
+
       // Подход 3: iOS fallback (как в работающем примере)
       if (!success && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         // iOS fallback: создаем невидимый checkbox и кликаем по label
-        const el = document.createElement('div');
+        const el = document.createElement("div");
         const id = Math.random().toString(36).slice(2);
         el.innerHTML = `<input type="checkbox" id="${id}" switch /><label for="${id}"></label>`;
-        el.setAttribute("style", "display:none !important;opacity:0 !important;visibility:hidden !important;");
-        document.querySelector('body')?.appendChild(el);
-        el.querySelector('label')?.click();
-        setTimeout(() => { el.remove(); }, 1500);
+        el.setAttribute(
+          "style",
+          "display:none !important;opacity:0 !important;visibility:hidden !important;"
+        );
+        document.querySelector("body")?.appendChild(el);
+        el.querySelector("label")?.click();
+        setTimeout(() => {
+          el.remove();
+        }, 1500);
         success = true;
       }
-      
+
       // Подход 4: Визуальная анимация как последний резерв
       if (!success) {
-        console.log('🎯 Пробуем визуальную анимацию как fallback');
-        document.body.style.animation = 'shake 0.2s ease-in-out 2';
+        console.log("🎯 Пробуем визуальную анимацию как fallback");
+        document.body.style.animation = "shake 0.2s ease-in-out 2";
         setTimeout(() => {
-          document.body.style.animation = '';
+          document.body.style.animation = "";
         }, 400);
         success = true;
       }
-      
-      console.log(success ? '✅ Вибрация сработала' : '❌ Вибрация недоступна', pattern);
-      
+
+      console.log(
+        success ? "✅ Вибрация сработала" : "❌ Вибрация недоступна",
+        pattern
+      );
+
       if (!success && fallback) {
         fallback();
       }
-      
+
       return success;
     } catch (error) {
-      console.error('Ошибка вибрации:', error);
+      console.error("Ошибка вибрации:", error);
       fallback?.();
       return false;
     }
@@ -198,21 +210,23 @@ export default function DuaCard({
 
   // Загружаем сохраненный прогресс после монтирования компонента (только один раз)
   useEffect(() => {
-    console.log(`🔍 useEffect triggered: isInitialized=${isInitialized}, duaId="${duaId}", title="${dua.title}"`);
-    
+    console.log(
+      `🔍 useEffect triggered: isInitialized=${isInitialized}, duaId="${duaId}", title="${dua.title}"`
+    );
+
     if (!isInitialized) {
       const savedProgress = loadDuaProgress(duaId);
       setCurrentCount(savedProgress);
       setIsInitialized(true);
     } else {
-      console.log(`⚠️ useEffect сработал повторно, но инициализация уже выполнена`);
+      console.log(
+        `⚠️ useEffect сработал повторно, но инициализация уже выполнена`
+      );
     }
   }, [duaId, isInitialized, dua.title, targetCount]);
   const [isHidden, setIsHidden] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
   const [isShaking, setIsShaking] = useState(false);
-  
-  
 
   const progress = Math.min(
     Math.round((currentCount / targetCount) * 100),
@@ -226,12 +240,12 @@ export default function DuaCard({
       const timer = setTimeout(() => {
         // Запускаем анимацию встряхивания
         setIsShaking(true);
-        
+
         // Добавляем легкую вибрацию перед исчезновением
         triggerVibration(50, () => {
-          console.log('Визуальная анимация вместо вибрации');
+          console.log("Визуальная анимация вместо вибрации");
         });
-        
+
         // Останавливаем встряхивание и скрываем карточку
         setTimeout(() => {
           setIsShaking(false);
@@ -250,9 +264,27 @@ export default function DuaCard({
   }, [duaId]);
 
   const copyArabicText = () => {
-    navigator.clipboard.writeText(dua.arabic);
+    const copyText = `${dua.arabic}\n\n${dua.translation}`;
+    navigator.clipboard.writeText(copyText);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
+  };
+
+  const handleShare = async () => {
+    try {
+      const shareText = `${dua.arabic}\n\n${dua.translation}\n\n${window.location.href}#dua-${locale}-${duaId}`;
+
+      if (navigator.share) {
+        await navigator.share({
+          title: dua.title,
+          text: shareText,
+        });
+      } else { 
+        console.log("Web Share API не поддерживается в этом браузере.");
+      }
+    } catch (err) {
+      console.error("Failed to share:", err);
+    }
   };
 
   // Защита от множественных нажатий
@@ -264,15 +296,13 @@ export default function DuaCard({
       console.log(`⚠️ Уже обрабатывается, игнорируем нажатие`);
       return;
     }
-    
+
     setIsProcessing(true);
-    
+
     try {
       if (currentCount < targetCount) {
         const newCount = currentCount + 1;
         setCurrentCount(newCount);
-        
-        
 
         // Легкая вибрация при каждом нажатии
         if (newCount >= targetCount) {
@@ -299,21 +329,18 @@ export default function DuaCard({
     if (currentCount > 0) {
       const newCount = currentCount - 1;
       setCurrentCount(newCount);
-      
-       if (newCount >= targetCount) {
-          triggerVibration(50);
-          // Дополнительная визуальная анимация при завершении
-          setIsShaking(true);
-          setTimeout(() => setIsShaking(false), 50);
-        } else {
-          // Легкая вибрация при обычном нажатии
-          triggerVibration(50);
-        }
 
+      if (newCount >= targetCount) {
+        triggerVibration(50);
+        // Дополнительная визуальная анимация при завершении
+        setIsShaking(true);
+        setTimeout(() => setIsShaking(false), 50);
+      } else {
+        // Легкая вибрация при обычном нажатии
+        triggerVibration(50);
+      }
     }
-
   };
-
 
   const handleSaveDua = async () => {
     if (isSaving) return;
@@ -351,8 +378,9 @@ export default function DuaCard({
 
   return (
     <div
+      id={`dua-${locale}-${duaId}`}
       className={cn(
-        "relative w-full overflow-hidden transition-all duration-300",
+        "relative w-full  overflow-hidden transition-all duration-300",
         "rounded-2xl shadow-sm border",
         isDuaCompleted && !isHidden ? "border-green-400" : "hover:shadow-md",
         isHidden
@@ -361,7 +389,7 @@ export default function DuaCard({
         isShaking && "animate-pulse"
       )}
       style={{
-        animation: isShaking ? 'gentleShake 0.6s ease-in-out' : undefined,
+        animation: isShaking ? "gentleShake 0.6s ease-in-out" : undefined,
         backgroundColor: isDuaCompleted
           ? "rgba(16, 185, 129, 0.1)"
           : "var(--color-background-secondary)",
@@ -372,14 +400,14 @@ export default function DuaCard({
       }}
     >
       {/* Completion Badge with Animation */}
-{isDuaCompleted && (
-  <div className="absolute top-4 right-4 z-10">
-    <div className="bg-green-500 text-white px-3 py-2 rounded-full text-sm font-bold flex items-center gap-2 shadow-lg celebration-badge">
-      <Check className="w-4 h-4" />
-      🎉 Завершено!
-    </div>
-  </div>
-)}
+      {isDuaCompleted && (
+        <div className="absolute top-4 right-4 z-10">
+          <div className="bg-green-500 text-white px-3 py-2 rounded-full text-sm font-bold flex items-center gap-2 shadow-lg celebration-badge">
+            <Check className="w-4 h-4" />
+            🎉 Завершено!
+          </div>
+        </div>
+      )}
 
       {/* Celebration Overlay */}
       {isDuaCompleted && !isHidden && (
@@ -482,7 +510,7 @@ export default function DuaCard({
             </p>
           </div>
         )}
-          {/* Counter Controls - Always Visible for Reading Count */}
+        {/* Counter Controls - Always Visible for Reading Count */}
         <div
           className="rounded-2xl p-4 md:p-5 border mb-6"
           style={{
@@ -523,9 +551,11 @@ export default function DuaCard({
               <div className="text-xs text-gray-500">
                 {isDuaCompleted
                   ? "🎉 Завершено!"
-                  : targetCount > 1 
-                    ? `${Math.round((currentCount / targetCount) * 100)}% (${currentCount}/${targetCount})`
-                    : "Счетчик прочтений"}
+                  : targetCount > 1
+                  ? `${Math.round(
+                      (currentCount / targetCount) * 100
+                    )}% (${currentCount}/${targetCount})`
+                  : "Счетчик прочтений"}
               </div>
             </div>
 
@@ -673,6 +703,11 @@ export default function DuaCard({
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2">
+            <Button  variant="outline"
+              size="sm"
+              onClick={handleShare} className="rounded-full border-gray-300 hover:border-green-400 hover:bg-green-50 dark:hover:bg-green-900/20 transition-all ">
+              <Share className="w-4 h-4" />
+            </Button>
             {/* Copy Button */}
             <Button
               variant="outline"
@@ -682,13 +717,12 @@ export default function DuaCard({
             >
               {isCopied ? (
                 <>
-                  <Check className="w-4 h-4 mr-2 text-green-600" />
-                  <span className="text-green-600">Скопировано</span>
+                  <Check className="w-4 h-4 text-green-600" />
                 </>
               ) : (
                 <>
                   <Copy className="w-4 h-4 mr-2" />
-                  Копировать
+                  {t("copy")}
                 </>
               )}
             </Button>

@@ -146,7 +146,7 @@ export default function DuaDhikrPage() {
             </div>
 
             {/* Right - Saved Duas */}
-            <div className="flex items-center">
+            <div className=" hidden lg:flex items-center">
               <Link href="/dua-dhikr/saved">
                 <Button variant="outline" size="sm" className="gap-2">
                   <Star className="w-4 h-4" />
@@ -296,7 +296,7 @@ export default function DuaDhikrPage() {
           <Link href="/dua-dhikr/saved" className="group flex justify-center">
             <div
               className={`
-              relative p-8 rounded-full  w-80 h-80 border-4 border-yellow-300 transition-all duration-500 
+              relative p-8 rounded-full  w-80 h-80 border-4 bg-yellow-300 border-yellow-300 transition-all duration-500 
               hover:shadow-2xl hover:-translate-y-2 hover:scale-105
               flex flex-col items-center justify-center
               overflow-hidden

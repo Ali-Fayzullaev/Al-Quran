@@ -354,7 +354,7 @@ export default function DuaList({ category, duaData }: DuaListProps) {
           {/* Mobile Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4" 
-                    style={{ color: 'var(--color-text-secondary)' }} />
+                    style={{ color: 'var(--color-primary)' }} />
             <Input
               placeholder={t('DuaDhikr.searchPlaceholder')}
               value={searchTerm}
@@ -408,29 +408,6 @@ export default function DuaList({ category, duaData }: DuaListProps) {
               >
                 <Settings className="w-3 h-3" />
               </Button>
-              
-              <div className="flex rounded-md overflow-hidden" style={{ 
-                borderStyle: 'solid',
-                borderWidth: '1px',
-                borderColor: 'var(--color-border)' 
-              }}>
-                <Button
-                  variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('grid')}
-                  className="rounded-none px-2 h-8"
-                >
-                  <Grid3X3 className="w-3 h-3" />
-                </Button>
-                <Button
-                  variant={viewMode === 'list' ? 'default' : 'ghost'}
-                  size="sm"
-                  onClick={() => setViewMode('list')}
-                  className="rounded-none px-2 h-8"
-                >
-                  <List className="w-3 h-3" />
-                </Button>
-              </div>
             </div>
           </div>
         </div>
@@ -518,30 +495,6 @@ export default function DuaList({ category, duaData }: DuaListProps) {
               <Settings className="w-4 h-4" />
               {t('DuaDhikr.settings')}
             </Button>
-
-            {/* View Mode Toggle */}
-            <div className="flex rounded-lg overflow-hidden" style={{ 
-              borderStyle: 'solid',
-              borderWidth: '1px',
-              borderColor: 'var(--color-border)' 
-            }}>
-              <Button
-                variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('grid')}
-                className="rounded-none px-3"
-              >
-                <Grid3X3 className="w-4 h-4" />
-              </Button>
-              <Button
-                variant={viewMode === 'list' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => setViewMode('list')}
-                className="rounded-none px-3"
-              >
-                <List className="w-4 h-4" />
-              </Button>
-            </div>
           </div>
         </div>
       </div>
@@ -712,76 +665,6 @@ export default function DuaList({ category, duaData }: DuaListProps) {
           </div>
         </div>
       )}
-
-      {/* Enhanced Stats - Mobile Optimized */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs sm:text-sm" style={{ color: 'var(--color-text-secondary)' }}>
-        <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
-          <span>📖 {filteredDuas.length}/{currentDuas.length}</span>
-          {completedCount > 0 && (
-            <span className="px-2 py-1 rounded-full text-xs font-medium" style={{
-              backgroundColor: 'var(--color-primary)',
-              color: 'white'
-            }}>
-              ✅ {completedCount}
-            </span>
-          )}
-          {remainingCount > 0 && remainingCount <= 3 && (
-            <span className="px-2 py-1 rounded-full text-xs font-medium" style={{
-              backgroundColor: 'var(--color-warning, #f59e0b)',
-              color: 'white'
-            }}>
-              🔥 {remainingCount}!
-            </span>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          <div className={`w-2 h-2 rounded-full ${
-            categoryProgress === 100 ? 'bg-green-500' : 
-            remainingCount <= 3 ? 'bg-orange-500' : 'bg-blue-500'
-          }`}></div>
-          <span className="text-xs">
-            {categoryProgress === 100 ? t('DuaDhikr.statusReady') : 
-             remainingCount <= 3 ? t('DuaDhikr.statusAlmostDone') : 
-             completedCount > 0 ? t('DuaDhikr.statusInProgress') : t('DuaDhikr.statusStart')}
-          </span>
-        </div>
-      </div>
-
-      {/* Language Info Panel */}
-      <div className="mb-6 p-4 rounded-xl border-2 border-dashed opacity-90" style={{
-        backgroundColor: 'var(--color-background-secondary)',
-        borderColor: 'var(--color-border)'
-      }}>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{
-              backgroundColor: 'var(--color-primary-alpha, var(--color-primary))',
-              opacity: 0.2
-            }}>
-              <Languages className="w-4 h-4" style={{ color: 'var(--color-primary)' }} />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-lg">{currentLanguageInfo.flag}</span>
-                <span className="font-semibold" style={{ color: 'var(--color-text)' }}>
-                  {currentLanguageInfo.name}
-                </span>
-              </div>
-              <p className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-                {t('DuaDhikr.languageDescription')} • {currentDuas.length} {t('DuaDhikr.duasAvailable')}
-              </p>
-            </div>
-          </div>
-          <div className="ml-auto text-right">
-            <div className="text-sm font-medium" style={{ color: 'var(--color-primary)' }}>
-              {localDuaLanguage.toUpperCase()}
-            </div>
-            <div className="text-xs" style={{ color: 'var(--color-text-secondary)' }}>
-              {t('DuaDhikr.activeLanguage')}
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Dua List */}
       {filteredDuas.length > 0 ? (
