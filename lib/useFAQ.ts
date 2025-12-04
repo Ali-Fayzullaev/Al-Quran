@@ -18,7 +18,7 @@ export const useFAQ = () => {
       
       try {
         const fileName = `200_faq_for_islam-${locale}.json`;
-        const response = await fetch(`/data/${fileName}`);
+        const response = await fetch(`/messages/${fileName}`);
         
         if (!response.ok) {
           throw new Error(`Failed to load FAQ data for ${locale}`);
