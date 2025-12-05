@@ -944,7 +944,14 @@ export default function QuranReader({
                 }}
                 dir="rtl"
               >
-                <p>
+                <p 
+                  className=" text-right mb-4 leading-loose font-amiri px-2 quran-arabic-text"
+                style={{ 
+                  fontSize: `${fontSize + 2}px`,
+                  color: effectiveTextColor || 'var(--quran-arabic-color)'
+                }}
+                dir="rtl"
+                >
                   {verse.text}
                 </p>
               </div>
