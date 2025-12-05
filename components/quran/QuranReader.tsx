@@ -97,11 +97,15 @@ export default function QuranReader({
   // Хук для предзагрузки соседних сур
   const { prefetchNeighbors } = usePrefetchNeighborSurahs();
 
-  // ИСПРАВЛЕНИЕ: Мемоизируем список изданий для предотвращения ненужных перезагрузок
+  // ИСПРАВЛЕНИЕ: Мемоизируем список изданий - по умолчанию только арабский текст
   const requestedEditions = useMemo(() => {
     const baseEdition = 'quran-uthmani';
-    // Включаем переводы только если они действительно нужны
-    const translationsToLoad = showTranslation ? selectedTranslations.filter(t => t !== baseEdition) : [];
+    // По умолчанию загружаем только арабский текст
+    if (!showTranslation) {
+      return [baseEdition];
+    }
+    // Переводы добавляются только когда пользователь включает отображение переводов
+    const translationsToLoad = selectedTranslations.filter(t => t !== baseEdition && t !== '');
     return [baseEdition, ...translationsToLoad];
   }, [selectedTranslations, showTranslation]);
 
@@ -112,12 +116,34 @@ export default function QuranReader({
   );
 
   // ИСПРАВЛЕНИЕ: Перемещаем все мемоизированные значения до условных возвратов
-  const arabicSurah = surahData?.[0];
+  // НАХОДИМ арабский текст по идентификатору, а не по позиции
+  const arabicSurah = useMemo(() => {
+    if (!surahData || surahData.length === 0) return null;
+    
+    // Ищем суру с идентификатором 'quran-uthmani'
+    const foundArabicSurah = surahData.find(surah => 
+      surah.edition?.identifier === 'quran-uthmani'
+    );
+    
+    if (!foundArabicSurah) {
+      console.error('Arabic text (quran-uthmani) not found in surahData:', 
+        surahData.map(s => s.edition?.identifier));
+      return surahData[0];
+    }
+    
+    return foundArabicSurah;
+  }, [surahData]);
   
-  // ИСПРАВЛЕНИЕ: Фильтруем переводы только при отображении - ПЕРЕМЕЩЕНО СЮДА
+  // Получаем только переводы (исключая арабский текст)
   const translationSurahs = useMemo(() => {
     if (!showTranslation || !surahData) return [];
-    return surahData.slice(1) || [];
+    
+    // Исключаем арабский текст и оставляем только переводы
+    const translations = surahData.filter(surah => 
+      surah.edition?.identifier !== 'quran-uthmani'
+    );
+    
+    return translations;
   }, [surahData, showTranslation]);
 
   // Автоскролл к текущему аяту - оптимизировано
@@ -339,11 +365,16 @@ export default function QuranReader({
       surah.ayahs?.[verseNumber - 1]?.text
     ).filter(Boolean);
 
+    // Арабский текст сначала, затем переводы
     let text = `${arabicVerse?.text}\n\n`;
-    translationVerses.forEach((translation) => {
-      text += `${translation}\n`;
-    });
-    text += `\n${arabicSurah.englishName} ${verseNumber}:${arabicSurah.number}`;
+    
+    if (translationVerses.length > 0) {
+      translationVerses.forEach((translation) => {
+        text += `${translation}\n\n`;
+      });
+    }
+    
+    text += `${arabicSurah.englishName} ${arabicSurah.number}:${verseNumber}`;
 
     try {
       await navigator.clipboard.writeText(text);
@@ -424,7 +455,9 @@ export default function QuranReader({
     requestedEditions,
     isLoading,
     error,
-    surahData: surahData ? `${surahData.length} editions` : 'No data'
+    surahData: surahData ? `${surahData.length} editions` : 'No data',
+    arabicFound: arabicSurah ? 'Yes' : 'No',
+    translationsCount: translationSurahs.length
   });
 
   // Обработка ошибок загрузки
@@ -600,24 +633,14 @@ export default function QuranReader({
                 "fixed inset-x-4 top-20 mobile-settings-content sm:relative sm:inset-auto sm:top-auto sm:z-auto",
                 "max-h-[80vh] overflow-y-auto mobile-scroll"
               )}
-              style={{ 
-                backgroundColor: '#ffffff',
-                borderColor: '#10b981',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(16, 185, 129, 0.1)',
-                zIndex: 50,
-                opacity: 1,
-                transform: 'translateZ(0)'
-              }}
+              style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
               {/* Header with close button - улучшено для мобильных */}
               <div className="flex items-center justify-between pb-3 border-b-2 sticky top-0 z-10" 
-                   style={{ 
-                     borderColor: '#10b981',
-                     backgroundColor: '#ffffff'
-                   }}>
-                <h3 className="text-lg sm:text-xl font-bold" style={{ color: '#1f2937' }}>
+                   style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
+                <h3 className="text-lg sm:text-xl font-bold">
                   {locale === 'en' ? 'Settings' : 'Настройки'}
                 </h3>
                 <Button
@@ -625,13 +648,7 @@ export default function QuranReader({
                   size="lg"
                   onClick={() => setShowSettings(false)}
                   className="p-2 rounded-full hover:bg-red-50 touch-manipulation"
-                  style={{ 
-                    minHeight: '44px', 
-                    minWidth: '44px',
-                    backgroundColor: 'transparent',
-                    color: '#ef4444',
-                    border: '1px solid #fecaca'
-                  }}
+                  style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}
                 >
                   <X className="w-5 h-5" />
                 </Button>
@@ -639,28 +656,20 @@ export default function QuranReader({
 
               {/* Reciter Selection - Улучшено для мобильных */}
               <div className="space-y-3">
-                <label className="flex items-center gap-2 text-sm font-semibold" style={{ color: '#374151' }}>
-                  <User className="w-4 h-4" style={{ color: '#10b981' }} />
+                <label className="flex items-center gap-2 text-sm font-semibold">
+                  <User className="w-4 h-4"/>
                   {locale === 'en' ? 'Select Reciter (Qari)' : 'Выбрать чтеца (Кари)'}
                 </label>
                 <Select value={audioReciter} onValueChange={setAudioReciter}>
                   <SelectTrigger 
                     className="w-full h-12 touch-manipulation border-2" 
-                    style={{ 
-                      backgroundColor: '#f9fafb',
-                      borderColor: '#d1d5db',
-                      minHeight: '48px',
-                      color: '#1f2937'
-                    }}
+                    style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}
                   >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent 
-                    className="max-h-60 z-[60] border-2"
-                    style={{ 
-                      backgroundColor: '#ffffff',
-                      borderColor: '#10b981'
-                    }}
+                    className="max-h-60 z-60 border-2"
+                   style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}
                   >
                     {availableReciters.map((reciter) => (
                       <SelectItem key={reciter.id} value={reciter.id}>
@@ -676,36 +685,25 @@ export default function QuranReader({
 
               {/* Translation Selection - Улучшенный и адаптивный */}
               <div className="space-y-3">
-                <label className="flex items-center gap-2 text-sm font-semibold" style={{ color: '#374151' }}>
-                  <Globe className="w-4 h-4" style={{ color: '#10b981' }} />
+                <label className="flex items-center gap-2 text-sm font-semibold">
+                  <Globe className="w-4 h-4"/>
                   {locale === 'en' ? 'Select Translations' : 'Выбрать переводы'}
                 </label>
                 <div className="grid grid-cols-1 gap-3 max-h-48 overflow-y-auto border-2 rounded-lg p-3" 
-                     style={{ 
-                       borderColor: '#d1d5db',
-                       backgroundColor: '#f9fafb'
-                     }}>
+                    style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}>
                   {availableTranslations
                     .filter(t => t.type === 'translation')
                     .map((translation) => (
                       <label
                         key={translation.id}
                         className="flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-colors hover:bg-green-50 touch-manipulation border"
-                        style={{ 
-                          backgroundColor: '#ffffff',
-                          minHeight: '48px',
-                          borderColor: '#e5e7eb'
-                        }}
+                        style={{ backgroundColor: 'var(--color-background-secondary)', borderColor: 'var(--color-border)', borderWidth: '1px' }}
                       >
                         <input
                           type="checkbox"
                           checked={selectedTranslations.includes(translation.id)}
                           onChange={(e) => handleTranslationChange(translation.id, e.target.checked)}
                           className="rounded w-5 h-5 touch-manipulation border-2" 
-                          style={{
-                            accentColor: '#10b981',
-                            borderColor: '#10b981'
-                          }}
                         />
                         <div className="flex-1 min-w-0">
                           <div className="text-sm font-semibold truncate" style={{ color: '#1f2937' }}>
@@ -940,20 +938,11 @@ export default function QuranReader({
                 className="text-right mb-4 leading-loose font-amiri px-2 quran-arabic-text"
                 style={{ 
                   fontSize: `${fontSize + 2}px`,
-                  color: effectiveTextColor || 'var(--quran-arabic-color)'
+                  color: effectiveTextColor || 'var(--color-primary)'
                 }}
                 dir="rtl"
               >
-                <p 
-                  className=" text-right mb-4 leading-loose font-amiri px-2 quran-arabic-text"
-                style={{ 
-                  fontSize: `${fontSize + 2}px`,
-                  color: effectiveTextColor || 'var(--quran-arabic-color)'
-                }}
-                dir="rtl"
-                >
-                  {verse.text}
-                </p>
+                {verse.text}
               </div>
 
               {/* НОВАЯ Индивидуальная аудио-панель для каждого аята */}
@@ -1122,7 +1111,8 @@ export default function QuranReader({
                       const translationVerse = translationSurah.ayahs?.[index];
                       if (!translationVerse) return null;
 
-                      const translationId = selectedTranslations[tIndex];
+                      // Используем индекс для определения идентификатора перевода
+                      const translationId = selectedTranslations.filter(t => t !== 'quran-uthmani')[tIndex];
                       const translationInfo = availableTranslations.find(t => t.id === translationId);
 
                       return (
@@ -1180,7 +1170,7 @@ export default function QuranReader({
             </span>
           </Button>
           
-          <span className="px-3 sm:px-4 py-2 bg-[var(--color-primary)] rounded-lg text-xs sm:text-sm font-medium ">
+          <span className="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium ">
             {currentVerse} / {arabicSurah.numberOfAyahs}
           </span>
           
@@ -1270,7 +1260,7 @@ export default function QuranReader({
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold" style={{ color: 'var(--fixed-text)' }}>
+                <h3 className="text-lg font-bold">
                   {locale === 'en' ? 'Settings' : 'Настройки'}
                 </h3>
                 <Button
