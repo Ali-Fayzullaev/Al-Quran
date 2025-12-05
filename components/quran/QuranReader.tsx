@@ -116,33 +116,37 @@ export default function QuranReader({
   );
 
   // ИСПРАВЛЕНИЕ: Перемещаем все мемоизированные значения до условных возвратов
-  // НАХОДИМ арабский текст по идентификатору, а не по позиции
+  // НАХОДИМ арабский текст - по умолчанию первая сура должна быть арабской
   const arabicSurah = useMemo(() => {
     if (!surahData || surahData.length === 0) return null;
     
-    // Ищем суру с идентификатором 'quran-uthmani'
-    const foundArabicSurah = surahData.find(surah => 
-      surah.edition?.identifier === 'quran-uthmani'
-    );
+    // Поскольку мы получаем данные в том порядке, в котором запрашиваем в requestedEditions,
+    // первая сура всегда должна быть quran-uthmani (арабская)
+    const firstSurah = surahData[0];
     
-    if (!foundArabicSurah) {
-      console.error('Arabic text (quran-uthmani) not found in surahData:', 
-        surahData.map(s => s.edition?.identifier));
-      return surahData[0];
+    // Проверяем, что у нас есть аяты и они на арабском (содержат арабские символы)
+    if (firstSurah?.ayahs?.[0]?.text) {
+      const firstVerseText = firstSurah.ayahs[0].text;
+      const hasArabicChars = /[\u0600-\u06FF\u0750-\u077F]/.test(firstVerseText);
+      
+      if (!hasArabicChars) {
+        console.warn('⚠️ First surah does not appear to be Arabic text:', firstVerseText.substring(0, 50));
+      } else {
+        console.log('✓ Arabic text confirmed');
+      }
     }
     
-    return foundArabicSurah;
+    return firstSurah;
   }, [surahData]);
   
-  // Получаем только переводы (исключая арабский текст)
+  // Получаем только переводы (все кроме первой суры - арабской)
   const translationSurahs = useMemo(() => {
-    if (!showTranslation || !surahData) return [];
+    if (!showTranslation || !surahData || surahData.length <= 1) return [];
     
-    // Исключаем арабский текст и оставляем только переводы
-    const translations = surahData.filter(surah => 
-      surah.edition?.identifier !== 'quran-uthmani'
-    );
+    // Поскольку первая сура - арабская, все остальные - переводы
+    const translations = surahData.slice(1);
     
+    console.log('✓ Translations loaded:', translations.length, 'editions');
     return translations;
   }, [surahData, showTranslation]);
 
