@@ -192,19 +192,40 @@ export async function getPrayerTimesByCity(
 }
 
 /**
+ * Возвращает текущее время как Date, у которого час/минута соответствуют
+ * стенным часам в указанной IANA-таймзоне (сам timestamp внутри объекта
+ * при этом смещён — важны только getHours/getMinutes/getDate для сравнения
+ * с временем намазов, которое тоже приходит в виде стенных часов локации).
+ */
+function getNowInTimezone(timezone: string): Date {
+  try {
+    return new Date(new Date().toLocaleString('en-US', { timeZone: timezone }));
+  } catch {
+    return new Date();
+  }
+}
+
+function formatDurationMs(ms: number): string {
+  const hours = Math.floor(ms / (1000 * 60 * 60));
+  const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+  return `${hours}ч ${minutes}м`;
+}
+
+/**
  * Обрабатывает ответ от API Aladhan
  */
 function processPrayerTimesResponse(
-  data: any, 
-  coordinates: { lat: number; lng: number } | null, 
+  data: any,
+  coordinates: { lat: number; lng: number } | null,
   autoDetected: boolean
 ): PrayerTimesSystem {
   const timings = data.timings;
   const meta = data.meta;
   const date = data.date;
 
-  // Определяем следующий намаз
-  const currentTime = new Date();
+  // Считаем "сейчас" в таймзоне искомой локации, а не в таймзоне устройства —
+  // иначе для города в другом часовом поясе "время до намаза" будет неверным.
+  const currentTime = getNowInTimezone(meta.timezone);
   const prayerNames = [
     { key: 'Fajr', name: 'Фаджр', arabic: 'الفجر' },
     { key: 'Dhuhr', name: 'Зухр', arabic: 'الظهر' },
@@ -218,24 +239,26 @@ function processPrayerTimesResponse(
 
   // Находим следующий намаз
   for (const prayer of prayerNames) {
-    const prayerTime = new Date();
+    const prayerTime = new Date(currentTime);
     const [hours, minutes] = timings[prayer.key].split(':');
     prayerTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-    
+
     if (prayerTime > currentTime) {
       nextPrayer = prayer;
-      const diffMs = prayerTime.getTime() - currentTime.getTime();
-      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-      const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-      timeUntil = `${diffHours}ч ${diffMinutes}м`;
+      timeUntil = formatDurationMs(prayerTime.getTime() - currentTime.getTime());
       break;
     }
   }
 
-  // Если все намазы прошли, следующий - завтрашний фаджр
+  // Если все намазы на сегодня прошли, следующий - завтрашний фаджр;
+  // считаем реальное время ожидания, а не показываем статичную надпись.
   if (!timeUntil) {
     nextPrayer = prayerNames[0];
-    timeUntil = 'Завтра';
+    const tomorrowFajr = new Date(currentTime);
+    tomorrowFajr.setDate(tomorrowFajr.getDate() + 1);
+    const [fajrHours, fajrMinutes] = timings.Fajr.split(':');
+    tomorrowFajr.setHours(parseInt(fajrHours), parseInt(fajrMinutes), 0, 0);
+    timeUntil = formatDurationMs(tomorrowFajr.getTime() - currentTime.getTime());
   }
 
   return {
