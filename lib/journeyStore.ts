@@ -171,8 +171,8 @@ export const useJourneyStore = create<JourneyStore>()(
           totalTimeSpent: currentProgress.totalTimeSpent + timeSpent,
           isPerfect: isPerfect || currentProgress.isPerfect,
           status: isPerfect ? 'perfect' : isCompleted ? 'completed' : currentProgress.status,
-          lastAttemptedAt: new Date(),
-          firstCompletedAt: isFirstCompletion && isCompleted ? new Date() : currentProgress.firstCompletedAt,
+          lastAttemptedAt: new Date().toISOString(),
+          firstCompletedAt: isFirstCompletion && isCompleted ? new Date().toISOString() : currentProgress.firstCompletedAt,
         };
 
         const updatedSurahProgress = {
@@ -322,7 +322,7 @@ export const useJourneyStore = create<JourneyStore>()(
               ...achievements,
               [achievementId]: {
                 ...achievements[achievementId],
-                unlockedAt: new Date(),
+                unlockedAt: new Date().toISOString(),
               },
             },
             stats: {

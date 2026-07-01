@@ -7,8 +7,8 @@ export interface SurahProgress {
   status: SurahStatus;
   bestScore: number; // 0-100
   attempts: number;
-  firstCompletedAt?: Date;
-  lastAttemptedAt?: Date;
+  firstCompletedAt?: string; // ISO date string — переживает JSON persist/hydrate без потери типа
+  lastAttemptedAt?: string; // ISO date string
   totalTimeSpent: number; // в секундах
   isPerfect: boolean; // 100% результат
 }
@@ -48,7 +48,7 @@ export interface Achievement {
   title: { en: string; ru: string };
   description: { en: string; ru: string };
   icon: string;
-  unlockedAt?: Date;
+  unlockedAt?: string; // ISO date string
   progress?: number; // 0-100 для прогресс-ачивок
   requirement?: number;
 }
@@ -90,13 +90,4 @@ export interface QuizResult {
     correctAnswer: number;
     isCorrect: boolean;
   }>;
-}
-
-export interface JourneyState {
-  surahProgress: Map<number, SurahProgress>;
-  achievements: Map<AchievementId, Achievement>;
-  stats: JourneyStats;
-  currentSurah: number | null;
-  lastPlayedDate?: Date;
-  streakDays: number;
 }
