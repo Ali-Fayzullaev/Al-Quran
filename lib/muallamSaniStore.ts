@@ -1,4 +1,5 @@
 import { MuallamSaniProfile, LearningLevel, Achievement, StudyStats, Quiz, AchievementNotification } from '@/types/muallim-sani';
+import { updateStreakOnActivity } from './streakEngine';
 
 const STORAGE_KEY = 'muallam-sani-profile';
 const ACHIEVEMENTS_KEY = 'muallam-sani-achievements';
@@ -213,28 +214,14 @@ class MuallamSaniStore {
   }
 
   updateStreak(profile: MuallamSaniProfile): void {
-    const today = new Date();
-    const lastStudy = new Date(profile.progress.lastStudyDate);
+    const result = updateStreakOnActivity(profile.progress.lastStudyDate, profile.progress.streak);
 
-    // Сравниваем календарные дни, а не разницу в миллисекундах — иначе результат
-    // зависит от времени суток занятия (напр. 23:00 -> 06:00 через два дня даёт
-    // всего ~31ч и ошибочно засчитывается как "занимался вчера").
-    const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    const lastStudyMidnight = new Date(lastStudy.getFullYear(), lastStudy.getMonth(), lastStudy.getDate());
-    const daysDiff = Math.round((todayMidnight.getTime() - lastStudyMidnight.getTime()) / (1000 * 60 * 60 * 24));
-
-    if (daysDiff === 0) {
-      // Сегодня уже учились
+    if (result.alreadyLoggedToday) {
       return;
-    } else if (daysDiff === 1) {
-      // Учились вчера - продолжаем streak
-      profile.progress.streak += 1;
-    } else {
-      // Перерыв больше дня - сбрасываем streak
-      profile.progress.streak = 1;
     }
-    
-    profile.progress.lastStudyDate = today;
+
+    profile.progress.streak = result.streak;
+    profile.progress.lastStudyDate = new Date();
   }
 
   // Достижения - проверка только после завершения теста

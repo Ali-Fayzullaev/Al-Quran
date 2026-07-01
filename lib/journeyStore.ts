@@ -6,8 +6,9 @@ import {
   Achievement, 
   AchievementId, 
   QuizResult,
-  SurahStatus 
+  SurahStatus
 } from './journeyTypes';
+import { updateStreakOnActivity } from './streakEngine';
 
 // Данные о сурах
 export const SURAHS_DATA = [
@@ -375,16 +376,12 @@ export const useJourneyStore = create<JourneyStore>()(
 
       updateStreak: () => {
         const { lastPlayedDate, streakDays } = get();
-        const today = new Date().toDateString();
-        
-        if (lastPlayedDate !== today) {
-          const yesterday = new Date();
-          yesterday.setDate(yesterday.getDate() - 1);
-          const isConsecutive = lastPlayedDate === yesterday.toDateString();
-          
+        const result = updateStreakOnActivity(lastPlayedDate, streakDays);
+
+        if (!result.alreadyLoggedToday) {
           set({
-            lastPlayedDate: today,
-            streakDays: isConsecutive ? streakDays + 1 : 1,
+            lastPlayedDate: result.lastActiveDateKey,
+            streakDays: result.streak,
           });
         }
       },

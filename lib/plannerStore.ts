@@ -17,6 +17,7 @@ import {
   TaskStatus
 } from './plannerTypes';
 import { getAllSurahsForPlanner } from './api';
+import { daysBetweenKeys } from './streakEngine';
 
 class PlannerStore {
   private version = '1.0.0';
@@ -362,13 +363,11 @@ class PlannerStore {
 
     let longestStreak = 0;
     let currentStreak = 0;
-    let previousDate: Date | null = null;
+    let previousDateKey: string | null = null;
 
-    for (const dateStr of completedDates) {
-      const taskDate = new Date(dateStr);
-
-      if (previousDate) {
-        const daysDiff = Math.round((taskDate.getTime() - previousDate.getTime()) / (1000 * 60 * 60 * 24));
+    for (const dateKey of completedDates) {
+      if (previousDateKey) {
+        const daysDiff = daysBetweenKeys(previousDateKey, dateKey);
 
         if (daysDiff === 1) {
           currentStreak++;
@@ -380,7 +379,7 @@ class PlannerStore {
         currentStreak = 1;
       }
 
-      previousDate = taskDate;
+      previousDateKey = dateKey;
     }
 
     return Math.max(longestStreak, currentStreak);
