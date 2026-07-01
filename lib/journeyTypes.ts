@@ -23,25 +23,19 @@ export interface JourneyStats {
   perfectSurahs: number;
 }
 
-export type AchievementId = 
+// Держите в синхроне со списком ACHIEVEMENTS_LIST в lib/journeyStore.ts —
+// раньше здесь было 18 id, а определений в ACHIEVEMENTS_LIST только 9,
+// что приводило к падению unlockAchievement на несуществующем достижении.
+export type AchievementId =
   | 'first_step'
   | 'meccan_master'
   | 'medinan_master'
   | 'speed_runner'
   | 'perfectionist'
   | 'complete_collection'
-  | 'juz_1_complete'
-  | 'juz_10_complete'
-  | 'juz_20_complete'
-  | 'juz_30_complete'
-  | 'all_juz_complete'
   | 'ten_surahs'
   | 'fifty_surahs'
-  | 'hundred_surahs'
-  | 'night_owl'
-  | 'early_bird'
-  | 'week_streak'
-  | 'month_streak';
+  | 'week_streak';
 
 export interface Achievement {
   id: AchievementId;

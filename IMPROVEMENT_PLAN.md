@@ -26,7 +26,7 @@
 **Готово, когда:** `tsc --noEmit` не показывает несоответствий, и в коде нет мест, ожидающих `Map`-интерфейс от plain object.
 
 ### Шаг 0.3 — Защитить `unlockAchievement` от несуществующих id
-**Статус:** TODO
+**Статус:** DONE (тип `AchievementId` сужен до реально определённых 9 достижений + добавлен defensive guard в `unlockAchievement` на случай будущего расхождения)
 **Проблема:** `journeyStore.ts` (`unlockAchievement`, ~316-334) делает `achievements[id].unlockedAt` без проверки на `undefined`. `AchievementId` в типах включает 18 значений, `ACHIEVEMENTS_LIST` определяет только 9 — вызов с любым из недостающих id уронит приложение.
 **Файлы:** `lib/journeyStore.ts`, `lib/journeyTypes.ts`.
 **Что сделать:** либо добавить недостающие achievement-определения в `ACHIEVEMENTS_LIST`, либо сузить тип `AchievementId` до реально существующих, добавить guard (`if (!achievements[id]) return;`).

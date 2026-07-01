@@ -315,8 +315,15 @@ export const useJourneyStore = create<JourneyStore>()(
 
       unlockAchievement: (achievementId: AchievementId) => {
         const { achievements, stats } = get();
-        
-        if (!achievements[achievementId].unlockedAt) {
+        const achievement = achievements[achievementId];
+
+        if (!achievement) {
+          // Достижение объявлено в AchievementId, но отсутствует в ACHIEVEMENTS_LIST —
+          // не роняем приложение, просто игнорируем неизвестный id.
+          return;
+        }
+
+        if (!achievement.unlockedAt) {
           set({
             achievements: {
               ...achievements,
