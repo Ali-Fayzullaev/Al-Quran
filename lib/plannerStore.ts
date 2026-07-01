@@ -331,22 +331,35 @@ class PlannerStore {
     return plan;
   }
 
+  // Группирует задачи по календарной дате (task.date уже в формате YYYY-MM-DD),
+  // чтобы несколько задач в один день считались одним днём, а не несколькими
+  // отдельными "днями" в серии (streak).
+  private groupTasksByDate(tasks: DailyTask[]): Map<string, { completed: boolean; skipped: boolean }> {
+    const days = new Map<string, { completed: boolean; skipped: boolean }>();
+
+    for (const task of tasks) {
+      const day = days.get(task.date) ?? { completed: false, skipped: true };
+      day.completed = day.completed || task.completed;
+      day.skipped = day.skipped && task.skipped;
+      days.set(task.date, day);
+    }
+
+    return days;
+  }
+
   private calculateCurrentStreak(tasks: DailyTask[]): number {
-    const sortedTasks = tasks
-      .filter(task => !this.isFutureDate(task.date))
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    const days = this.groupTasksByDate(tasks.filter(task => !this.isFutureDate(task.date)));
+    const sortedDates = Array.from(days.keys()).sort((a, b) => (a > b ? -1 : a < b ? 1 : 0));
+    const todayStr = this.formatDate(new Date());
 
     let streak = 0;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
 
-    for (const task of sortedTasks) {
-      const taskDate = new Date(task.date);
-      taskDate.setHours(0, 0, 0, 0);
+    for (const date of sortedDates) {
+      const day = days.get(date)!;
 
-      if (task.completed) {
+      if (day.completed) {
         streak++;
-      } else if (!task.skipped && taskDate < today) {
+      } else if (!day.skipped && date < todayStr) {
         break;
       }
     }
@@ -355,20 +368,22 @@ class PlannerStore {
   }
 
   private calculateLongestStreak(tasks: DailyTask[]): number {
-    const sortedTasks = tasks
-      .filter(task => task.completed)
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const days = this.groupTasksByDate(tasks);
+    const completedDates = Array.from(days.entries())
+      .filter(([, day]) => day.completed)
+      .map(([date]) => date)
+      .sort();
 
     let longestStreak = 0;
     let currentStreak = 0;
     let previousDate: Date | null = null;
 
-    for (const task of sortedTasks) {
-      const taskDate = new Date(task.date);
-      
+    for (const dateStr of completedDates) {
+      const taskDate = new Date(dateStr);
+
       if (previousDate) {
-        const daysDiff = Math.floor((taskDate.getTime() - previousDate.getTime()) / (1000 * 60 * 60 * 24));
-        
+        const daysDiff = Math.round((taskDate.getTime() - previousDate.getTime()) / (1000 * 60 * 60 * 24));
+
         if (daysDiff === 1) {
           currentStreak++;
         } else {
@@ -378,7 +393,7 @@ class PlannerStore {
       } else {
         currentStreak = 1;
       }
-      
+
       previousDate = taskDate;
     }
 
