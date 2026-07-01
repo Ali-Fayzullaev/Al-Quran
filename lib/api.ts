@@ -21,6 +21,61 @@ function setCachedData(key: string, data: any, ttl: number = 10 * 60 * 1000) {
   });
 }
 
+const DEFAULT_TIMEOUT_MS = 15000;
+const DEFAULT_RETRIES = 2;
+const RETRY_BASE_DELAY_MS = 300;
+
+// true для сетевых сбоев, на которых имеет смысл повторить запрос
+// (обрыв соединения, DNS-сбой, таймаут). false для HTTP-ошибок вида 404/500 —
+// повтор идентичного запроса к тому же эндпоинту их не исправит.
+function isTransientFetchError(error: unknown): boolean {
+  if (error instanceof DOMException && error.name === "AbortError") return true;
+  if (error instanceof TypeError) return true;
+  return false;
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Единая точка входа для всех запросов к api.alquran.cloud: таймаут через
+// AbortController (зависший запрос больше не вешает UI навсегда) и несколько
+// повторов с задержкой только для транзиентных сетевых сбоев.
+async function fetchJson<T>(
+  url: string,
+  options: { timeoutMs?: number; retries?: number } = {}
+): Promise<T> {
+  const { timeoutMs = DEFAULT_TIMEOUT_MS, retries = DEFAULT_RETRIES } = options;
+  let lastError: unknown;
+
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      const response = await fetch(url, { signal: controller.signal });
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}: ${url}`);
+      }
+      return (await response.json()) as T;
+    } catch (error) {
+      const isAbort = error instanceof DOMException && error.name === "AbortError";
+      lastError = isAbort ? new Error(`Request timed out after ${timeoutMs}ms: ${url}`) : error;
+
+      const isLastAttempt = attempt === retries;
+      if (isLastAttempt || !isTransientFetchError(error)) {
+        throw lastError;
+      }
+
+      await delay(RETRY_BASE_DELAY_MS * (attempt + 1));
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  throw lastError;
+}
+
 export interface ApiVerse {
   number: number;
   text: string;
@@ -70,10 +125,7 @@ export async function getSurahs(): Promise<ApiSurah[]> {
   if (cached) return cached;
 
   try {
-    const response = await fetch(`${BASE_URL}/surah`);
-    if (!response.ok) throw new Error("Failed to fetch surahs");
-
-    const data: ApiResponse<ApiSurah[]> = await response.json();
+    const data = await fetchJson<ApiResponse<ApiSurah[]>>(`${BASE_URL}/surah`);
     setCachedData(cacheKey, data.data, 24 * 60 * 60 * 1000); // 24 часа
     return data.data;
   } catch (error) {
@@ -92,10 +144,7 @@ export async function getSurah(
   if (cached) return cached;
 
   try {
-    const response = await fetch(`${BASE_URL}/surah/${surahNumber}/${edition}`);
-    if (!response.ok) throw new Error(`Failed to fetch surah ${surahNumber}`);
-
-    const data: ApiResponse<ApiSurah> = await response.json();
+    const data = await fetchJson<ApiResponse<ApiSurah>>(`${BASE_URL}/surah/${surahNumber}/${edition}`);
     setCachedData(cacheKey, data.data, 10 * 60 * 1000); // 10 минут
     return data.data;
   } catch (error) {
@@ -119,21 +168,9 @@ export async function getSurahMultipleEditions(
 
   try {
     const url = `${BASE_URL}/surah/${surahNumber}/editions/${editionString}`;
-    console.log(`getSurahMultipleEditions: Fetching from URL: ${url}`);
-    
-    const response = await fetch(url);
-    
-    console.log(`getSurahMultipleEditions: Response status: ${response.status}`);
-    
-    if (!response.ok) {
-      throw new Error(
-        `Failed to fetch surah ${surahNumber} with multiple editions. Status: ${response.status}`
-      );
-    }
 
-    const data: ApiResponse<ApiSurah[]> = await response.json();
-    console.log(`getSurahMultipleEditions: Success! Got ${data.data?.length} editions`);
-    
+    const data = await fetchJson<ApiResponse<ApiSurah[]>>(url);
+
     setCachedData(cacheKey, data.data, 10 * 60 * 1000); // 10 минут
     return data.data;
   } catch (error) {
@@ -151,13 +188,10 @@ export async function getJuz(
   edition: string = "quran-uthmani"
 ): Promise<{ ayahs: ApiVerse[]; surahs: Record<number, ApiSurah> }> {
   try {
-    const response = await fetch(`${BASE_URL}/juz/${juzNumber}/${edition}`);
-    if (!response.ok) throw new Error(`Failed to fetch juz ${juzNumber}`);
-
-    const data: ApiResponse<{
+    const data = await fetchJson<ApiResponse<{
       ayahs: ApiVerse[];
       surahs: Record<number, ApiSurah>;
-    }> = await response.json();
+    }>>(`${BASE_URL}/juz/${juzNumber}/${edition}`);
     return data.data;
   } catch (error) {
     console.error(`Error fetching juz ${juzNumber}:`, error);
@@ -171,13 +205,10 @@ export async function getPage(
   edition: string = "quran-uthmani"
 ): Promise<{ ayahs: ApiVerse[]; surahs: Record<number, ApiSurah> }> {
   try {
-    const response = await fetch(`${BASE_URL}/page/${pageNumber}/${edition}`);
-    if (!response.ok) throw new Error(`Failed to fetch page ${pageNumber}`);
-
-    const data: ApiResponse<{
+    const data = await fetchJson<ApiResponse<{
       ayahs: ApiVerse[];
       surahs: Record<number, ApiSurah>;
-    }> = await response.json();
+    }>>(`${BASE_URL}/page/${pageNumber}/${edition}`);
     return data.data;
   } catch (error) {
     console.error(`Error fetching page ${pageNumber}:`, error);
@@ -188,10 +219,7 @@ export async function getPage(
 // Получить список доступных изданий
 export async function getEditions(): Promise<Edition[]> {
   try {
-    const response = await fetch(`${BASE_URL}/edition`);
-    if (!response.ok) throw new Error("Failed to fetch editions");
-
-    const data: ApiResponse<Edition[]> = await response.json();
+    const data = await fetchJson<ApiResponse<Edition[]>>(`${BASE_URL}/edition`);
     return data.data;
   } catch (error) {
     console.error("Error fetching editions:", error);
@@ -202,11 +230,7 @@ export async function getEditions(): Promise<Edition[]> {
 // Получить издания по типу (translation, tafsir, transliteration)
 export async function getEditionsByType(type: string): Promise<Edition[]> {
   try {
-    const response = await fetch(`${BASE_URL}/edition/type/${type}`);
-    if (!response.ok)
-      throw new Error(`Failed to fetch editions of type ${type}`);
-
-    const data: ApiResponse<Edition[]> = await response.json();
+    const data = await fetchJson<ApiResponse<Edition[]>>(`${BASE_URL}/edition/type/${type}`);
     return data.data;
   } catch (error) {
     console.error(`Error fetching editions of type ${type}:`, error);
@@ -219,11 +243,7 @@ export async function getEditionsByLanguage(
   language: string
 ): Promise<Edition[]> {
   try {
-    const response = await fetch(`${BASE_URL}/edition/language/${language}`);
-    if (!response.ok)
-      throw new Error(`Failed to fetch editions for language ${language}`);
-
-    const data: ApiResponse<Edition[]> = await response.json();
+    const data = await fetchJson<ApiResponse<Edition[]>>(`${BASE_URL}/edition/language/${language}`);
     return data.data;
   } catch (error) {
     console.error(`Error fetching editions for language ${language}:`, error);
@@ -252,10 +272,7 @@ export async function searchQuran(
       url += `/${surah}`;
     }
 
-    const response = await fetch(url);
-    if (!response.ok) throw new Error("Failed to search Quran");
-
-    const data: ApiResponse<{
+    const data = await fetchJson<ApiResponse<{
       count: number;
       matches: Array<{
         number: number;
@@ -264,7 +281,7 @@ export async function searchQuran(
         surah: ApiSurah;
         numberInSurah: number;
       }>;
-    }> = await response.json();
+    }>>(url);
 
     return data.data;
   } catch (error) {
@@ -280,12 +297,9 @@ export async function getAyah(
 ): Promise<ApiVerse[]> {
   try {
     const editionString = editions.join(",");
-    const response = await fetch(
+    const data = await fetchJson<ApiResponse<ApiVerse[]>>(
       `${BASE_URL}/ayah/${reference}/editions/${editionString}`
     );
-    if (!response.ok) throw new Error(`Failed to fetch ayah ${reference}`);
-
-    const data: ApiResponse<ApiVerse[]> = await response.json();
     return data.data;
   } catch (error) {
     console.error(`Error fetching ayah ${reference}:`, error);
@@ -298,10 +312,7 @@ export async function getRandomAyah(
   edition: string = "quran-uthmani"
 ): Promise<ApiVerse> {
   try {
-    const response = await fetch(`${BASE_URL}/ayah/random/${edition}`);
-    if (!response.ok) throw new Error("Failed to fetch random ayah");
-
-    const data: ApiResponse<ApiVerse> = await response.json();
+    const data = await fetchJson<ApiResponse<ApiVerse>>(`${BASE_URL}/ayah/random/${edition}`);
     return data.data;
   } catch (error) {
     console.error("Error fetching random ayah:", error);
@@ -323,13 +334,10 @@ export async function getAyahsRange(
     const toAyahNum = parseInt(toAyah);
     
     // Получаем суру целиком и фильтруем нужные аяты
-    const response = await fetch(`${BASE_URL}/surah/${surahNum}/${edition}`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch surah ${surah}`);
-    }
+    const data = await fetchJson<ApiResponse<{ ayahs: ApiVerse[] }>>(
+      `${BASE_URL}/surah/${surahNum}/${edition}`
+    );
 
-    const data: ApiResponse<{ ayahs: ApiVerse[] }> = await response.json();
-    
     // Фильтруем аяты в нужном диапазоне
     const filteredAyahs = data.data.ayahs.filter(ayah => 
       ayah.numberInSurah >= fromAyahNum && ayah.numberInSurah <= toAyahNum
@@ -347,10 +355,7 @@ export async function getSajdas(
   edition: string = "quran-uthmani"
 ): Promise<ApiVerse[]> {
   try {
-    const response = await fetch(`${BASE_URL}/sajda/${edition}`);
-    if (!response.ok) throw new Error("Failed to fetch sajdas");
-
-    const data: ApiResponse<ApiVerse[]> = await response.json();
+    const data = await fetchJson<ApiResponse<ApiVerse[]>>(`${BASE_URL}/sajda/${edition}`);
     return data.data;
   } catch (error) {
     console.error("Error fetching sajdas:", error);
@@ -1105,12 +1110,9 @@ export function clearAudioCache(): void {
 // Функция для получения доступных аудио изданий через API AlQuran Cloud
 export async function getAvailableAudioEditions(): Promise<Edition[]> {
   try {
-    const response = await fetch(
+    const data = await fetchJson<ApiResponse<Edition[]>>(
       `${BASE_URL}/edition?format=audio&type=versebyverse`
     );
-    if (!response.ok) throw new Error("Failed to fetch audio editions");
-
-    const data: ApiResponse<Edition[]> = await response.json();
     return data.data;
   } catch (error) {
     console.error("Error fetching audio editions:", error);
@@ -1278,13 +1280,10 @@ export async function getManzil(
   edition: string = "quran-uthmani"
 ): Promise<{ ayahs: ApiVerse[]; surahs: Record<number, ApiSurah> } | null> {
   try {
-    const response = await fetch(`${BASE_URL}/manzil/${manzilNumber}/${edition}`);
-    if (!response.ok) throw new Error(`Failed to fetch manzil ${manzilNumber}`);
-
-    const data: ApiResponse<{
+    const data = await fetchJson<ApiResponse<{
       ayahs: ApiVerse[];
       surahs: Record<number, ApiSurah>;
-    }> = await response.json();
+    }>>(`${BASE_URL}/manzil/${manzilNumber}/${edition}`);
     return data.data;
   } catch (error) {
     console.error(`Error fetching manzil ${manzilNumber}:`, error);
@@ -1302,10 +1301,7 @@ export async function getQuranMetaForPlanner(): Promise<{
   sajdas: { count: number; references: any[] };
 } | null> {
   try {
-    const response = await fetch(`${BASE_URL}/meta`);
-    if (!response.ok) throw new Error('Failed to fetch Quran meta');
-
-    const data: ApiResponse<any> = await response.json();
+    const data = await fetchJson<ApiResponse<any>>(`${BASE_URL}/meta`);
     return data.data;
   } catch (error) {
     console.error('Error fetching Quran meta:', error);
