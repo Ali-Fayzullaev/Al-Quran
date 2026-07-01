@@ -215,9 +215,14 @@ class MuallamSaniStore {
   updateStreak(profile: MuallamSaniProfile): void {
     const today = new Date();
     const lastStudy = new Date(profile.progress.lastStudyDate);
-    
-    const daysDiff = Math.floor((today.getTime() - lastStudy.getTime()) / (1000 * 60 * 60 * 24));
-    
+
+    // Сравниваем календарные дни, а не разницу в миллисекундах — иначе результат
+    // зависит от времени суток занятия (напр. 23:00 -> 06:00 через два дня даёт
+    // всего ~31ч и ошибочно засчитывается как "занимался вчера").
+    const todayMidnight = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    const lastStudyMidnight = new Date(lastStudy.getFullYear(), lastStudy.getMonth(), lastStudy.getDate());
+    const daysDiff = Math.round((todayMidnight.getTime() - lastStudyMidnight.getTime()) / (1000 * 60 * 60 * 24));
+
     if (daysDiff === 0) {
       // Сегодня уже учились
       return;
@@ -285,8 +290,9 @@ class MuallamSaniStore {
         // Только если сейчас получили 100% за тест
         return testScore === 100;
       case 'week-streak':
-        // Только если достигли streak в 7 дней сегодня
-        return profile.progress.streak === 7;
+        // Достигли streak в 7+ дней (>=, а не ===, чтобы не пропустить
+        // достижение, если проверка не сработала ровно на 7-й день)
+        return profile.progress.streak >= 7;
       case 'alifba-master':
         // Только если сейчас завершили последний урок уровня Алифба
         return this.isLevelCompleted('alifba', profile) && !!completedLessonId;
