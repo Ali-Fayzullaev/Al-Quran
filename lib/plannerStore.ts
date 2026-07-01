@@ -16,6 +16,7 @@ import {
   CalendarDay,
   TaskStatus
 } from './plannerTypes';
+import { getAllSurahsForPlanner } from './api';
 
 class PlannerStore {
   private version = '1.0.0';
@@ -86,16 +87,16 @@ class PlannerStore {
 
   // === УПРАВЛЕНИЕ ПЛАНАМИ ИЗУЧЕНИЯ ===
 
-  createStudyPlan(
+  async createStudyPlan(
     title: string,
     goal: StudyGoal,
     schedule: StudySchedule,
     description?: string
-  ): StudyPlan {
+  ): Promise<StudyPlan> {
     const profile = this.getUserProfile();
     if (!profile) throw new Error('User profile not found');
 
-    const tasks = this.generateDailyTasks(goal, schedule);
+    const tasks = await this.generateDailyTasks(goal, schedule);
     
     const plan: StudyPlan = {
       id: this.generateId(),
@@ -209,13 +210,13 @@ class PlannerStore {
 
   // === ГЕНЕРАЦИЯ ЕЖЕДНЕВНЫХ ЗАДАЧ ===
 
-  private generateDailyTasks(goal: StudyGoal, schedule: StudySchedule): DailyTask[] {
+  private async generateDailyTasks(goal: StudyGoal, schedule: StudySchedule): Promise<DailyTask[]> {
     const tasks: DailyTask[] = [];
     const startDate = new Date(schedule.startDate);
     const ayahsPerDay = schedule.ayahsPerDay;
 
     // Получаем информацию о том, какие аяты нужно изучить
-    const ayahsToStudy = this.getAyahsFromGoal(goal);
+    const ayahsToStudy = await this.getAyahsFromGoal(goal);
     
     let currentAyahIndex = 0;
     let currentDate = new Date(startDate);
@@ -259,34 +260,25 @@ class PlannerStore {
     return tasks;
   }
 
-  private getAyahsFromGoal(goal: StudyGoal): Array<{surah: number, ayahInSurah: number}> {
+  private async getAyahsFromGoal(goal: StudyGoal): Promise<Array<{surah: number, ayahInSurah: number}>> {
     const ayahs: Array<{surah: number, ayahInSurah: number}> = [];
+    // Один запрос (закешированный на 24ч в lib/api.ts) на все 114 сур вместо
+    // отдельного похода за каждой сурой в цикле.
+    const surahs = await getAllSurahsForPlanner();
+    const ayahCountBySurah = new Map(surahs.map((s) => [s.number, s.numberOfAyahs]));
+
+    const pushSurah = (surahNumber: number) => {
+      const ayahCount = ayahCountBySurah.get(surahNumber);
+      if (!ayahCount) return;
+      for (let i = 1; i <= ayahCount; i++) {
+        ayahs.push({ surah: surahNumber, ayahInSurah: i });
+      }
+    };
 
     switch (goal.type) {
       case 'surah':
-        if (goal.surahs && goal.surahs.length > 0) {
-          for (const surahNumber of goal.surahs) {
-            const surahInfo = this.getSurahInfo(surahNumber);
-            if (surahInfo) {
-              for (let i = 1; i <= surahInfo.ayahCount; i++) {
-                ayahs.push({ surah: surahNumber, ayahInSurah: i });
-              }
-            }
-          }
-        }
-        break;
-
       case 'multiple_surahs':
-        if (goal.surahs) {
-          for (const surahNumber of goal.surahs) {
-            const surahInfo = this.getSurahInfo(surahNumber);
-            if (surahInfo) {
-              for (let i = 1; i <= surahInfo.ayahCount; i++) {
-                ayahs.push({ surah: surahNumber, ayahInSurah: i });
-              }
-            }
-          }
-        }
+        goal.surahs?.forEach(pushSurah);
         break;
 
       case 'juz':
@@ -295,14 +287,8 @@ class PlannerStore {
         break;
 
       case 'complete_quran':
-        // Для полного Корана
         for (let surah = 1; surah <= 114; surah++) {
-          const surahInfo = this.getSurahInfo(surah);
-          if (surahInfo) {
-            for (let ayah = 1; ayah <= surahInfo.ayahCount; ayah++) {
-              ayahs.push({ surah, ayahInSurah: ayah });
-            }
-          }
+          pushSurah(surah);
         }
         break;
     }
@@ -611,21 +597,6 @@ class PlannerStore {
     return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
   }
 
-  private getSurahInfo(surahNumber: number): { ayahCount: number } | null {
-    // Здесь должна быть полная информация о сурах
-    // Пока упрощенная версия с основными сурами
-    const surahAyahCounts: { [key: number]: number } = {
-      1: 7,    // Аль-Фатиха
-      2: 286,  // Аль-Бакара
-      3: 200,  // Аль Имран
-      4: 176,  // Ан-Ниса
-      5: 120,  // Аль-Маида
-      // ... остальные суры будут добавлены из API
-    };
-
-    const ayahCount = surahAyahCounts[surahNumber];
-    return ayahCount ? { ayahCount } : null;
-  }
 
   private rescheduleRemainingTasks(plan: StudyPlan, skippedDate: string): void {
     // Логика перепланирования оставшихся задач после пропуска

@@ -172,7 +172,7 @@ export default function CreatePlanForm({ onPlanCreated, onCancel }: CreatePlanFo
     setLoading(true);
     
     try {
-      const plan = plannerStore.createStudyPlan(title, goal, schedule, description);
+      const plan = await plannerStore.createStudyPlan(title, goal, schedule, description);
       onPlanCreated(plan.id);
     } catch (error) {
       console.error('Error creating plan:', error);
