@@ -757,47 +757,35 @@ export const TRANSLATIONS = [
 ];
 
 // Исправленная функция для получения аудио суры
+// Единая таблица reciter -> путь на mp3quran.net. Раньше это же соответствие
+// было продублировано отдельно в getAudioUrl (switch) и в getMP3QuranSources
+// (объект mp3Sources), и они успели разойтись: ar.abdullahbasfar был только
+// в одной из двух копий.
+const MP3QURAN_SERVER_PATHS: Record<string, string> = {
+  "ar.alafasy": "server8.mp3quran.net/afs",
+  "ar.abdulbasitmurattal": "server7.mp3quran.net/basit",
+  "ar.abdurrahmaansudais": "server11.mp3quran.net/sds",
+  "ar.mahermuaiqly": "server12.mp3quran.net/maher",
+  "ar.husary": "server6.mp3quran.net/husary",
+  "ar.minshawi": "server10.mp3quran.net/minsh",
+  "ar.shaatree": "server13.mp3quran.net/shatri",
+  "ar.abdullahbasfar": "server12.mp3quran.net/basfar",
+  "ar.saoodshuraym": "server15.mp3quran.net/shuraym",
+  "ar.muhammadayyoub": "server14.mp3quran.net/ayyub",
+  "ar.parhizgar": "server16.mp3quran.net/parhizgar",
+  "ar.tablawi": "server17.mp3quran.net/tablawi",
+  "ar.abdullahawadallah": "server18.mp3quran.net/juhani",
+  "ar.hanirifai": "server19.mp3quran.net/rifai",
+  "ar.ibrahimakhbar": "server20.mp3quran.net/akhdar",
+};
+
 export function getAudioUrl(
   surahNumber: number,
   reciter: string = "ar.husary"
 ): string {
   const paddedSurah = surahNumber.toString().padStart(3, "0");
-
-  // Используем правильный URL для аудио сур
-  switch (reciter) {
-    case "ar.alafasy":
-      return `https://server8.mp3quran.net/afs/${paddedSurah}.mp3`;
-    case "ar.abdulbasitmurattal":
-      return `https://server7.mp3quran.net/basit/${paddedSurah}.mp3`;
-    case "ar.abdurrahmaansudais":
-      return `https://server11.mp3quran.net/sds/${paddedSurah}.mp3`;
-    case "ar.mahermuaiqly":
-      return `https://server12.mp3quran.net/maher/${paddedSurah}.mp3`;
-    case "ar.husary":
-      return `https://server6.mp3quran.net/husary/${paddedSurah}.mp3`;
-    case "ar.minshawi":
-      return `https://server10.mp3quran.net/minsh/${paddedSurah}.mp3`;
-    case "ar.shaatree":
-      return `https://server13.mp3quran.net/shatri/${paddedSurah}.mp3`;
-    case "ar.abdullahbasfar":
-      return `https://server12.mp3quran.net/basfar/${paddedSurah}.mp3`;
-    case "ar.saoodshuraym":
-      return `https://server15.mp3quran.net/shuraym/${paddedSurah}.mp3`;
-    case "ar.muhammadayyoub":
-      return `https://server14.mp3quran.net/ayyub/${paddedSurah}.mp3`;
-    case "ar.parhizgar":
-      return `https://server16.mp3quran.net/parhizgar/${paddedSurah}.mp3`;
-    case "ar.tablawi":
-      return `https://server17.mp3quran.net/tablawi/${paddedSurah}.mp3`;
-    case "ar.abdullahawadallah":
-      return `https://server18.mp3quran.net/juhani/${paddedSurah}.mp3`;
-    case "ar.hanirifai":
-      return `https://server19.mp3quran.net/rifai/${paddedSurah}.mp3`;
-    case "ar.ibrahimakhbar":
-      return `https://server20.mp3quran.net/akhdar/${paddedSurah}.mp3`;
-    default:
-      return `https://server6.mp3quran.net/husary/${paddedSurah}.mp3`;
-  }
+  const serverPath = MP3QURAN_SERVER_PATHS[reciter] || MP3QURAN_SERVER_PATHS["ar.husary"];
+  return `https://${serverPath}/${paddedSurah}.mp3`;
 }
 
 // Функция для получения источников MP3Quran по конкретным чтецам
@@ -808,41 +796,15 @@ function getMP3QuranSources(
 ): string[] {
   const paddedSurah = surahNumber.toString().padStart(3, "0");
   const paddedAyah = ayahNumber.toString().padStart(3, "0");
+  const serverPath = MP3QURAN_SERVER_PATHS[reciter];
 
-  // Проверенные рабочие источники для аятов
-  const mp3Sources: Record<string, string> = {
-    "ar.husary": `https://server6.mp3quran.net/husary/${paddedSurah}${paddedAyah}.mp3`,
-    "ar.alafasy": `https://server8.mp3quran.net/afs/${paddedSurah}${paddedAyah}.mp3`,
-    "ar.abdulbasitmurattal": `https://server7.mp3quran.net/basit/${paddedSurah}${paddedAyah}.mp3`,
-    "ar.abdurrahmaansudais": `https://server11.mp3quran.net/sds/${paddedSurah}${paddedAyah}.mp3`,
-    "ar.mahermuaiqly": `https://server12.mp3quran.net/maher/${paddedSurah}${paddedAyah}.mp3`,
-    "ar.minshawi": `https://server10.mp3quran.net/minsh/${paddedSurah}${paddedAyah}.mp3`,
-    "ar.shaatree": `https://server13.mp3quran.net/shatri/${paddedSurah}${paddedAyah}.mp3`,
-    // Новые чтецы - пробуем разные серверы
-    "ar.muhammadayyoub": `https://server14.mp3quran.net/ayyub/${paddedSurah}${paddedAyah}.mp3`,
-    "ar.saoodshuraym": `https://server15.mp3quran.net/shuraym/${paddedSurah}${paddedAyah}.mp3`,
-    "ar.parhizgar": `https://server16.mp3quran.net/parhizgar/${paddedSurah}${paddedAyah}.mp3`,
-    "ar.tablawi": `https://server17.mp3quran.net/tablawi/${paddedSurah}${paddedAyah}.mp3`,
-    "ar.abdullahawadallah": `https://server18.mp3quran.net/juhani/${paddedSurah}${paddedAyah}.mp3`,
-    "ar.hanirifai": `https://server19.mp3quran.net/rifai/${paddedSurah}${paddedAyah}.mp3`,
-    "ar.ibrahimakhbar": `https://server20.mp3quran.net/akhdar/${paddedSurah}${paddedAyah}.mp3`,
-  };
+  if (!serverPath) return [];
 
-  const sources = [];
-  if (mp3Sources[reciter]) {
-    sources.push(mp3Sources[reciter]);
-  }
-
-  // Добавляем fallback - полную суру если аят не найден
-  if (mp3Sources[reciter]) {
-    const surahUrl = mp3Sources[reciter].replace(
-      `${paddedSurah}${paddedAyah}.mp3`,
-      `${paddedSurah}.mp3`
-    );
-    sources.push(surahUrl);
-  }
-
-  return sources;
+  return [
+    `https://${serverPath}/${paddedSurah}${paddedAyah}.mp3`,
+    // Fallback - полная сура, если конкретный аят не найден
+    `https://${serverPath}/${paddedSurah}.mp3`,
+  ];
 }
 
 // Новая улучшенная функция для получения аудио аятов с множественными источниками

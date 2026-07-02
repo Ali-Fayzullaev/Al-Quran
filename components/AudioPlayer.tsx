@@ -3,6 +3,7 @@ import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Loader2, AlertCir
 import { useQuranStore } from '@/lib/store';
 import { useLocale } from '@/context/LocaleContext';
 import { cn } from '@/lib/utils';
+import { getAyahAudioSources } from '@/lib/api';
 
 interface AudioPlayerProps {
   surahNumber: number;
@@ -37,50 +38,6 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   const audioRef = useRef<HTMLAudioElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
 
-  // Multiple audio sources for reliability
-  const getAudioSources = (surah: number, verse: number) => {
-    const paddedSurah = surah.toString().padStart(3, '0');
-    const paddedVerse = verse.toString().padStart(3, '0');
-    const reciterCode = audioReciter.replace('ar.', '');
-    
-    return [
-      // EveryAyah - самый надежный источник для аятов
-      `https://everyayah.com/data/${getEveryAyahReciterCode(audioReciter)}/${paddedSurah}${paddedVerse}.mp3`,
-      
-      // QuranCDN
-      `https://audio.qurancdn.com/${reciterCode}/${paddedSurah}${paddedVerse}.mp3`,
-      
-      // Islamic Network CDN
-      `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${paddedSurah}${paddedVerse}.mp3`,
-      
-      // MP3Quran servers (для полных сур)
-      `https://server8.mp3quran.net/afs/${paddedSurah}.mp3`,
-      `https://server7.mp3quran.net/basit/${paddedSurah}.mp3`,
-      `https://server11.mp3quran.net/sds/${paddedSurah}.mp3`,
-      
-      // Резервный источник
-      `https://everyayah.com/data/Alafasy_128kbps/${paddedSurah}${paddedVerse}.mp3`,
-    ];
-  };
-
-  // Конвертация ID чтеца в формат EveryAyah
-  const getEveryAyahReciterCode = (reciterId: string): string => {
-    const reciterMap: Record<string, string> = {
-      'ar.alafasy': 'Alafasy_128kbps',
-      'ar.abdulbasitmurattal': 'Abdul_Basit_Murattal_192kbps',
-      'ar.abdurrahmaansudais': 'Sudais_128kbps',
-      'ar.mahermuaiqly': 'MaherAlMuaiqly128kbps',
-      'ar.husary': 'Husary_128kbps',
-      'ar.minshawi': 'Minshawi_Murattal_128kbps',
-      'ar.muhammadayyoub': 'Muhammad_Ayyoub_128kbps',
-      'ar.saoodshuraym': 'Saood_ash-Shuraym_128kbps',
-      'ar.shaatree': 'Shaatree_128kbps',
-      'ar.abdullahbasfar': 'Abdullah_Basfar_192kbps'
-    };
-    
-    return reciterMap[reciterId] || 'Alafasy_128kbps';
-  };
-
   // Проверка доступности аудио источника
   const checkAudioSource = async (url: string): Promise<boolean> => {
     return new Promise((resolve) => {
@@ -113,7 +70,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
     setIsLoading(true);
     setError(null);
 
-    const sources = getAudioSources(surahNumber, verseNumber);
+    const sources = getAyahAudioSources(surahNumber, verseNumber, audioReciter);
     
     for (let i = currentSourceIndex; i < sources.length; i++) {
       try {
