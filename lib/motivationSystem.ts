@@ -7,9 +7,17 @@ import {
   ProgressStats 
 } from './plannerTypes';
 
+const UNLOCKED_ACHIEVEMENTS_KEY = 'quran_planner_unlocked_achievements';
+
+type AchievementDefinition = Omit<Achievement, 'unlockedAt'>;
+
 export class MotivationSystem {
-  // Предустановленные достижения
-  private static achievements: Achievement[] = [
+  // Предустановленные достижения (без unlockedAt — статус разблокировки
+  // хранится отдельно в localStorage, а не мутируется прямо в этом массиве.
+  // Раньше unlockedAt писался сюда же, в static-поле класса: это состояние
+  // жило только в памяти текущей вкладки и терялось при каждой перезагрузке
+  // страницы, а не персистилось как во всех остальных хранилищах приложения).
+  private static readonly achievementDefinitions: AchievementDefinition[] = [
     // Достижения серий
     {
       id: 'streak_7',
@@ -116,7 +124,7 @@ export class MotivationSystem {
   ];
 
   // Мотивационные сообщения по контексту
-  private static motivationalMessages: MotivationalMessage[] = [
+  private static readonly motivationalMessages: MotivationalMessage[] = [
     // Поощрения за серии
     {
       type: 'celebration',
@@ -174,24 +182,53 @@ export class MotivationSystem {
     }
   ];
 
+  // Читает карту { achievementId: unlockedAt } из localStorage
+  private static getUnlockedMap(): Record<string, string> {
+    if (typeof window === 'undefined') return {};
+    try {
+      const raw = localStorage.getItem(UNLOCKED_ACHIEVEMENTS_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (error) {
+      console.error('Error loading unlocked achievements:', error);
+      return {};
+    }
+  }
+
+  private static saveUnlockedMap(map: Record<string, string>): void {
+    if (typeof window === 'undefined') return;
+    try {
+      localStorage.setItem(UNLOCKED_ACHIEVEMENTS_KEY, JSON.stringify(map));
+    } catch (error) {
+      console.error('Error saving unlocked achievements:', error);
+    }
+  }
+
+  private static withUnlockedState(unlockedMap: Record<string, string>): Achievement[] {
+    return this.achievementDefinitions.map((def) => ({
+      ...def,
+      unlockedAt: unlockedMap[def.id],
+    }));
+  }
+
   // Проверка и разблокировка достижений
   static checkAchievements(stats: ProgressStats): Achievement[] {
+    const unlockedMap = this.getUnlockedMap();
     const newlyUnlocked: Achievement[] = [];
 
-    for (const achievement of this.achievements) {
+    for (const achievement of this.achievementDefinitions) {
       // Проверяем, не было ли достижение уже разблокировано
-      if (achievement.unlockedAt) continue;
+      if (unlockedMap[achievement.id]) continue;
 
       let shouldUnlock = false;
 
       switch (achievement.type) {
         case 'streak':
-          if (achievement.requirements.streak && 
+          if (achievement.requirements.streak &&
               stats.currentStreak >= achievement.requirements.streak) {
             shouldUnlock = true;
           }
           break;
-        
+
         case 'completion':
           if (achievement.requirements.plansCompleted &&
               stats.completedPlans >= achievement.requirements.plansCompleted) {
@@ -216,9 +253,14 @@ export class MotivationSystem {
       }
 
       if (shouldUnlock) {
-        achievement.unlockedAt = new Date().toISOString();
-        newlyUnlocked.push(achievement);
+        const unlockedAt = new Date().toISOString();
+        unlockedMap[achievement.id] = unlockedAt;
+        newlyUnlocked.push({ ...achievement, unlockedAt });
       }
+    }
+
+    if (newlyUnlocked.length > 0) {
+      this.saveUnlockedMap(unlockedMap);
     }
 
     return newlyUnlocked;
@@ -304,12 +346,12 @@ export class MotivationSystem {
 
   // Получение всех доступных достижений
   static getAllAchievements(): Achievement[] {
-    return [...this.achievements];
+    return this.withUnlockedState(this.getUnlockedMap());
   }
 
   // Получение разблокированных достижений
   static getUnlockedAchievements(): Achievement[] {
-    return this.achievements.filter(achievement => achievement.unlockedAt);
+    return this.getAllAchievements().filter(achievement => achievement.unlockedAt);
   }
 
   // Получение прогресса к следующему достижению
@@ -318,8 +360,9 @@ export class MotivationSystem {
     progress: number;
     remaining: number;
   } | null {
-    const lockedAchievements = this.achievements.filter(a => !a.unlockedAt);
-    
+    const unlockedMap = this.getUnlockedMap();
+    const lockedAchievements = this.withUnlockedState(unlockedMap).filter(a => !a.unlockedAt);
+
     for (const achievement of lockedAchievements) {
       let progress = 0;
       let total = 0;
