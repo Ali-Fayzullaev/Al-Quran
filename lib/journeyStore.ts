@@ -97,7 +97,6 @@ interface JourneyStore {
   checkAchievements: () => void;
   updateStreak: () => void;
   resetJourney: () => void;
-  unlockAllSurahsForTesting: () => void;
 }
 
 export const useJourneyStore = create<JourneyStore>()(
@@ -149,9 +148,7 @@ export const useJourneyStore = create<JourneyStore>()(
       completeSurahQuiz: (result: QuizResult) => {
         const { surahProgress, stats } = get();
         const { surahNumber, score, correctAnswers, totalQuestions, timeSpent } = result;
-        
-        console.log('completeSurahQuiz called:', { surahNumber, score, correctAnswers, totalQuestions });
-        
+
         const currentProgress = surahProgress[surahNumber] || {
           surahNumber,
           status: 'available' as SurahStatus,
@@ -223,10 +220,6 @@ export const useJourneyStore = create<JourneyStore>()(
               status: 'available',
             };
           });
-          
-          if (surahsToUnlock.length > 0) {
-            console.log(`Разблокированы суры: ${surahsToUnlock.join(', ')}`);
-          }
         }
 
         // Обновляем статистику
@@ -251,10 +244,7 @@ export const useJourneyStore = create<JourneyStore>()(
           perfectSurahs: perfectCount,
         };
 
-        console.log('Updated stats:', updatedStats);
-        console.log('Updated progress for surah', surahNumber, ':', updatedProgress);
-
-        set({ 
+        set({
           surahProgress: updatedSurahProgress,
           stats: updatedStats,
           currentSurah: surahNumber,
@@ -403,23 +393,6 @@ export const useJourneyStore = create<JourneyStore>()(
           streakDays: 0,
         });
         get().initializeJourney();
-      },
-
-      // Функция для тестирования - разблокировать все суры
-      unlockAllSurahsForTesting: () => {
-        const { surahProgress } = get();
-        const updatedProgress = { ...surahProgress };
-        
-        for (let i = 1; i <= 114; i++) {
-          if (updatedProgress[i]) {
-            updatedProgress[i] = {
-              ...updatedProgress[i],
-              status: 'available',
-            };
-          }
-        }
-        
-        set({ surahProgress: updatedProgress });
       },
     }),
     {
